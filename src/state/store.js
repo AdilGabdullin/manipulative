@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import { produce } from "immer";
+import { current, produce } from "immer";
 import { leftToolbarWidth } from "../components/LeftToolbar";
 import { newId, numberBetween } from "../util";
 import { bottomToolbarHeight } from "../components/BottomToolbar";
@@ -49,15 +49,15 @@ export const useAppStore = create((set) => ({
   selected: [],
   lockSelect: false,
   geoboardBands: [
-    // {
-    //   id: newId(),
-    //   color: "#d32f2f",
-    //   points: [
-    //     { id: newId(), x: -100, y: -100, locked: true },
-    //     { id: newId(), x: 180, y: 120, locked: false },
-    //     { id: newId(), x: 50, y: -200, locked: false },
-    //   ],
-    // },
+    {
+      id: newId(),
+      color: "#d32f2f",
+      points: [
+        { id: newId(), x: -100, y: -100, locked: false },
+        { id: newId(), x: 0, y: 0, locked: false },
+        { id: newId(), x: 50, y: -200, locked: false },
+      ],
+    },
   ],
   elements: {},
   setValue: (field, value) =>
@@ -264,11 +264,54 @@ export const useAppStore = create((set) => ({
               };
             })
             .filter((band) => band.points.length > 1);
+          while (state.selected.pop()) {}
         } else {
           let id;
           while ((id = state.selected.pop())) {
             delete state.elements[id];
           }
+        }
+        pushHistory(state);
+      })
+    ),
+  copySelected: () =>
+    set(
+      produce((state) => {
+        if (state.mode == "geoboard") {
+          const bands = {};
+          // search selected
+          current(state).geoboardBands.forEach((band, i) => {
+            for (const point of band.points) {
+              if (state.selected.includes(point.id)) {
+                bands[i] = band;
+              }
+            }
+          });
+          // select all points
+          for (const i in bands) {
+            bands[i].points.forEach((p) => {
+              if (!state.selected.includes(p.id)) {
+                state.selected.push(p.id);
+              }
+            });
+          }
+          // add copy
+          for (let band of Object.values(bands)) {
+            const copy = { ...band, id: newId() };
+            copy.points = copy.points.map((point) => {
+              return { ...point, id: newId() };
+            });
+            state.geoboardBands.push(copy);
+          }
+          // shift original
+          for (const i in bands) {
+            state.geoboardBands[i].points.forEach((point) => {
+              point.x += 20;
+              point.y += 20;
+            });
+          }
+        } else {
+          // copy element
         }
         pushHistory(state);
       })
@@ -284,6 +327,7 @@ export const useAppStore = create((set) => ({
               }
             }
           }
+          while (state.selected.pop()) {}
         } else {
           let id;
           while ((id = state.selected.pop())) {

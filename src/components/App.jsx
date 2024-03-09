@@ -26,6 +26,8 @@ const App = () => {
   const stageRef = useRef(null);
   const containerRef = useRef(null);
 
+  // console.log(state.geoboardBands);
+
   useLayoutEffect(() => {
     function updateSize() {
       state.setSize();
@@ -44,6 +46,7 @@ const App = () => {
   };
 
   const onMouseDown = (e) => {
+    // console.log("stage down");
     if (state.fdMode) {
       const { x, y } = getStageXY(stageRef.current, state);
       const pos = stageRef.current.getPointerPosition();
@@ -100,6 +103,7 @@ const App = () => {
   };
 
   const onMouseUp = (e) => {
+    // console.log("stage up");
     e.evt.preventDefault();
     if (!downPos) return;
 
@@ -138,6 +142,7 @@ const App = () => {
   };
 
   const onMouseClick = (e) => {
+    console.log("stage click");
     const pos = getStageXY(stageRef.current, state);
     for (const band of state.geoboardBands) {
       for (const point of band.points) {
@@ -164,7 +169,11 @@ const App = () => {
     return <div ref={containerRef} />;
   }
 
-  const findOne = (id) => stageRef.current.findOne("#" + id);
+  const findOne = (id) => {
+    const node = stageRef.current.findOne("#" + id);
+    if (node) return node;
+    console.error(`id (${id}) not found`);
+  };
   return (
     <div
       ref={containerRef}

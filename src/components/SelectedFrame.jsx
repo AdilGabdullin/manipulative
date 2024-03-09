@@ -1,44 +1,48 @@
 import { Rect, Text } from "react-konva";
 import { useAppStore } from "../state/store";
 import { bandPointRadius } from "./GeoboardBand";
-import { Fragment } from "react";
+import { Fragment, useEffect } from "react";
 
 const SelectedFrame = (props) => {
   const state = useAppStore();
   const { selected, lockSelect, geoboardBands, elements, origin, offset, scale, mode } = state;
 
-  if (selected.length == 0) {
-    return <></>;
-  }
   const selectedTargets = [];
-  if (selected) {
-    if (mode == "geoboard") {
-      for (const band of geoboardBands) {
-        for (const [pointIndex, point] of band.points.entries()) {
-          if (selected.includes(point.id)) {
-            const node = props.findOne(point.id);
+
+  useEffect(() => {
+    if (selected) {
+      if (mode == "geoboard") {
+        for (const band of geoboardBands) {
+          for (const [pointIndex, point] of band.points.entries()) {
+            if (selected.includes(point.id)) {
+              const node = props.findOne(point.id);
+              selectedTargets.push({
+                point: node,
+                sides: props.findOne(`${band.id}-sides`),
+                x: node.x(),
+                y: node.y(),
+                pointIndex,
+              });
+            }
+          }
+        }
+      } else {
+        for (const id of selected) {
+          const node = props.findOne(id);
+          if (node) {
             selectedTargets.push({
-              point: node,
-              sides: props.findOne(`${band.id}-sides`),
+              node,
               x: node.x(),
               y: node.y(),
-              pointIndex,
             });
           }
         }
       }
-    } else {
-      for(const id of selected) {
-        const node  = props.findOne(id);
-        if (node) {
-          selectedTargets.push({
-            node,
-            x: node.x(),
-            y: node.y(),
-          });
-        }
-      }
     }
+  });
+
+  if (selected.length == 0) {
+    return <></>;
   }
 
   const { xMin, yMin, xMax, yMax } = getBounds(state);
@@ -76,9 +80,21 @@ const SelectedFrame = (props) => {
 
   const menuButtons = [
     {
+      text: "Copy",
+      active: !lockSelect,
+      onClick: (e) => {
+        e.cancelBubble = true;
+        if (lockSelect) {
+          return;
+        }
+        state.copySelected();
+      },
+    },
+    {
       text: "Delete",
       active: !lockSelect,
       onClick: (e) => {
+        e.cancelBubble = true;
         if (lockSelect) {
           return;
         }
@@ -89,6 +105,7 @@ const SelectedFrame = (props) => {
       text: lockSelect ? "Unlock" : "Lock",
       active: true,
       onClick: (e) => {
+        e.cancelBubble = true;
         state.lockSelected(!lockSelect);
       },
     },
