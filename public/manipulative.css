@@ -1,0 +1,23 @@
+#manipulative-canvas-root {
+  width: 100%;
+  height: 600px;
+}
+
+.stage-wrap {
+}
+
+.stage-wrap-default {
+  width: fit-content;
+  position: relative;
+  justify-content: center;
+  outline: none;
+  border: 2px solid black;
+  margin: 0 auto;
+}
+
+.stage-wrap-fullscreen {
+  position: fixed;
+  left: 0;
+  top: 0;
+  outline: none;
+}
