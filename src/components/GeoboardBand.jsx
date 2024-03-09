@@ -5,7 +5,7 @@ import { SEARCH_THRESHOLD, flattenPoints, isPointCloseToLine, pointsIsClose } fr
 export const bandPointRadius = 7;
 const bandSideWidth = 7;
 
-const GeoboardBand = ({ id, points, color }) => {
+const GeoboardBand = ({ id, points, color, fill }) => {
   const state = useAppStore();
   const { origin } = state;
   const sidesId = `${id}-sides`;
@@ -20,22 +20,13 @@ const GeoboardBand = ({ id, points, color }) => {
         lineCap="round"
         closed={true}
         strokeWidth={bandSideWidth}
+        fill={fill ? color + "50" : null}
       />
       {points.map((point, pointIndex) => {
         const id = point.id;
         const x = origin.x + point.x;
         const y = origin.y + point.y;
-        return (
-          <Circle
-            key={id}
-            id={id}
-            x={x}
-            y={y}
-            stroke={color}
-            radius={bandPointRadius}
-            fill={color}
-          />
-        );
+        return <Circle key={id} id={id} x={x} y={y} stroke={color} radius={bandPointRadius} fill={color} />;
       })}
     </>
   );

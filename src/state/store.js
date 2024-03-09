@@ -51,6 +51,7 @@ export const useAppStore = create((set) => ({
   geoboardBands: [
     {
       id: newId(),
+      fill: true,
       color: "#d32f2f",
       points: [
         { id: newId(), x: -100, y: -100, locked: false },
@@ -148,11 +149,12 @@ export const useAppStore = create((set) => ({
         state.geoboardBands.push({
           id,
           color,
+          locked: false,
+          fill: false,
           points: [
             { id: newId(), x: x, y: y },
             { id: newId(), x: x + gridStep, y: y },
           ],
-          locked: false,
         });
         state.fdMode = null;
         pushHistory(state);
@@ -274,19 +276,25 @@ export const useAppStore = create((set) => ({
         pushHistory(state);
       })
     ),
+  toggleValueSelected: (field) =>
+    set(
+      produce((state) => {
+        if (state.mode == "geoboard") {
+          const bands = searchSelectedBands(state);
+          for (const i in bands) {
+            state.geoboardBands[i][field] = !state.geoboardBands[i][field];
+          }
+        } else {
+          // toggle element
+        }
+        pushHistory(state);
+      })
+    ),
   copySelected: () =>
     set(
       produce((state) => {
         if (state.mode == "geoboard") {
-          const bands = {};
-          // search selected
-          current(state).geoboardBands.forEach((band, i) => {
-            for (const point of band.points) {
-              if (state.selected.includes(point.id)) {
-                bands[i] = band;
-              }
-            }
-          });
+          const bands = searchSelectedBands(state);
           // select all points
           for (const i in bands) {
             bands[i].points.forEach((p) => {
@@ -355,4 +363,17 @@ export const useAppStore = create((set) => ({
 function keepOrigin(state) {
   state.origin.x = ((state.width - leftToolbarWidth) / 2 + leftToolbarWidth) / state.scale;
   state.origin.y = state.height / 2 / state.scale;
+}
+
+function searchSelectedBands(state) {
+  const bands = {};
+  // search selected
+  current(state).geoboardBands.forEach((band, i) => {
+    for (const point of band.points) {
+      if (state.selected.includes(point.id)) {
+        bands[i] = band;
+      }
+    }
+  });
+  return bands;
 }

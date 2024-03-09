@@ -80,13 +80,16 @@ const SelectedFrame = (props) => {
 
   const menuButtons = [
     {
+      text: "Fill On/Off",
+      active: !lockSelect,
+      onClick: (e) => {
+        state.toggleValueSelected("fill");
+      },
+    },
+    {
       text: "Copy",
       active: !lockSelect,
       onClick: (e) => {
-        e.cancelBubble = true;
-        if (lockSelect) {
-          return;
-        }
         state.copySelected();
       },
     },
@@ -94,10 +97,6 @@ const SelectedFrame = (props) => {
       text: "Delete",
       active: !lockSelect,
       onClick: (e) => {
-        e.cancelBubble = true;
-        if (lockSelect) {
-          return;
-        }
         state.deleteSelected();
       },
     },
@@ -111,7 +110,7 @@ const SelectedFrame = (props) => {
     },
   ];
   const buttonHeight = 20;
-  const buttonWidth = 70;
+  const buttonWidth = 90;
   const padding = 8;
 
   const onMouseEnter = (e, i) => {
@@ -187,7 +186,13 @@ const SelectedFrame = (props) => {
             cornerRadius={5}
             onMouseEnter={(e) => onMouseEnter(e, i)}
             onMouseLeave={(e) => onMouseLeave(e, i)}
-            onMouseUp={onClick}
+            onMouseUp={(e) => {
+              e.cancelBubble = true;
+              if (lockSelect) {
+                return;
+              }
+              onClick(e);
+            }}
           />
           <Text
             id={"menu-item-text" + i}
@@ -197,7 +202,13 @@ const SelectedFrame = (props) => {
             fill={active ? "black" : "#aaaaaa"}
             fontSize={18}
             fontFamily="Calibri"
-            onMouseUp={onClick}
+            onMouseUp={(e) => {
+              e.cancelBubble = true;
+              if (lockSelect) {
+                return;
+              }
+              onClick(e);
+            }}
             onMouseEnter={(e) => onMouseEnter(e, i)}
             onMouseLeave={(e) => onMouseLeave(e, i)}
           />

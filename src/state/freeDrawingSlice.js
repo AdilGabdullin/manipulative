@@ -39,12 +39,14 @@ export const freeDrawingSlice = (set) => ({
     set(
       produce((state) => {
         state.fdMode = state.fdMode == "brush" ? null : "brush";
+        while (state.selected.pop()) {}
       })
     ),
   toggleEraser: () =>
     set(
       produce((state) => {
         state.fdMode = state.fdMode == "eraser" ? null : "eraser";
+        while (state.selected.pop()) {}
       })
     ),
 });
