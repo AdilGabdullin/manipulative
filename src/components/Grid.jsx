@@ -7,9 +7,9 @@ const Grid = () => {
     <>
       {state.grid.map(({ x, y }, i) => {
         let color = "#78909c";
-        if ((x == 0 && y == 0) || i == 0 || i == state.grid.length - 1) {
-          color = "red";
-        }
+        // if ((x == 0 && y == 0) || i == 0 || i == state.grid.length - 1) {
+        //   color = "red";
+        // }
         return (
           <Circle
             key={`grid-${x}-${y}`}

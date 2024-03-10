@@ -13,22 +13,6 @@ export const boardSize = {
   height: 1660,
 };
 
-const initGrid = () => {
-  const { width, height } = boardSize;
-  const step = gridStep;
-  const xStop = Math.ceil(width / 2 / step) * step + gridStep;
-  const xStart = -xStop;
-  const yStop = Math.ceil(height / 2 / step) * step;
-  const yStart = -yStop - gridStep;
-  const grid = [];
-  for (let x = xStart; x <= xStop; x += step) {
-    for (let y = yStart; y <= yStop; y += step) {
-      grid.push({ x, y });
-    }
-  }
-  return grid;
-};
-
 const queryString = window.location.search;
 const urlParams = new URLSearchParams(queryString);
 const mode = urlParams.get("mode") ?? "geoboard";
@@ -42,35 +26,36 @@ export const useAppStore = create((set) => ({
   // offset: { x: 50, y: 100 },
   // scale: 0.7,
   fullscreen: true,
-  grid: mode == "geoboard" ? initGrid() : [],
+  workspace: "square",
+  grid: mode == "geoboard" ? initGrid("square") : [],
   width: 0,
   height: 0,
   origin: { x: 0, y: 0 },
   selected: [],
   lockSelect: false,
   geoboardBands: [
-  {
-    id: newId(),
-    fill: false,
-    measures: true,
-    color: "#d32f2f",
-    points: [
-      { id: newId(), x: -100, y: -100, locked: false },
-      { id: newId(), x: 0, y: 0, locked: false },
-      { id: newId(), x: 50, y: -200, locked: false },
-    ],
-  },
-  {
-    id: newId(),
-    fill: false,
-    measures: true,
-    color: "#d32f2f",
-    points: [
-      { id: newId(), x: -100+300, y: -100, locked: false },
-      { id: newId(), x: 0+100, y: 0, locked: false },
-      { id: newId(), x: 50+100, y: -200, locked: false },
-    ],
-  },
+    // {
+    //   id: newId(),
+    //   fill: false,
+    //   measures: true,
+    //   color: "#d32f2f",
+    //   points: [
+    //     { id: newId(), x: -100, y: -100, locked: false },
+    //     { id: newId(), x: 0, y: 0, locked: false },
+    //     { id: newId(), x: 50, y: -200, locked: false },
+    //   ],
+    // },
+    // {
+    //   id: newId(),
+    //   fill: false,
+    //   measures: true,
+    //   color: "#d32f2f",
+    //   points: [
+    //     { id: newId(), x: -100 + 300, y: -100, locked: false },
+    //     { id: newId(), x: 0 + 100, y: 0, locked: false },
+    //     { id: newId(), x: 50 + 100, y: -200, locked: false },
+    //   ],
+    // },
   ],
   elements: {},
   setValue: (field, value) =>
@@ -93,7 +78,13 @@ export const useAppStore = create((set) => ({
         keepOrigin(state);
       })
     ),
-
+  setWorkspace: (workspace) =>
+    set(
+      produce((state) => {
+        state.workspace = workspace;
+        state.grid = initGrid(workspace);
+      })
+    ),
   toggle: (field) =>
     set(
       produce((state) => {
@@ -388,4 +379,38 @@ function searchSelectedBands(state) {
     }
   });
   return bands;
+}
+
+function initGrid(workspace) {
+  const grid = [];
+  if (workspace == "circular") {
+    const rings = [1, 4, 12, 24, 36];
+    let r = 0;
+    for (const n of rings) {
+      let theta = 0;
+      for (let i = 0; i < n; i += 1) {
+        theta += (Math.PI * 2) / n;
+        grid.push({ x: Math.cos(theta) * r, y: Math.sin(theta) * r });
+      }
+      r += gridStep * 1.3;
+    }
+    return grid;
+  }
+  const { width, height } = boardSize;
+  const stepX = gridStep;
+  const stepY = workspace == "square" ? gridStep : gridStep * Math.sin(Math.PI / 3);
+  const xStop = Math.ceil(width / 2 / stepX) * stepX + gridStep;
+  const xStart = -xStop;
+  const yStop = Math.ceil(height / 2 / stepX) * stepX;
+  const yStart = -yStop - gridStep;
+  for (let y = yStart, i = 0; y <= yStop; y += stepY, i += 1) {
+    for (let x = xStart; x <= xStop; x += stepX) {
+      if (workspace == "square") {
+        grid.push({ x, y });
+      } else {
+        grid.push({ x: x + Math.cos(Math.PI / 3) * gridStep * (i % 2), y: y });
+      }
+    }
+  }
+  return grid;
 }

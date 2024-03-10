@@ -36,12 +36,12 @@ const GeoboardBand = ({ id, points, color, fill, measures }) => {
         const y = origin.y + point.y;
         return <Circle key={id} id={id} x={x} y={y} stroke={color} radius={bandPointRadius} fill={color} />;
       })}
-      {measures && <Angles bandId={id} points={points} color={color} />}
     </>
   );
 };
 
-const Angles = ({ bandId, points, color }) => {
+export const Angles = ({ id, points, color, measures }) => {
+  if (!measures) return null;
   const state = useAppStore();
   const { origin } = state;
   const length = points.length;
@@ -61,7 +61,7 @@ const Angles = ({ bandId, points, color }) => {
       {arcs.map((props, i) => {
         const { x, y, angle, labelVector } = props;
         return (
-          <Fragment key={`${bandId}-${i}`}>
+          <Fragment key={`${id}-${i}`}>
             <Arc
               name={"angle-measure"}
               {...props}
@@ -71,7 +71,7 @@ const Angles = ({ bandId, points, color }) => {
               fill={color}
               strokeWidth={2}
             />
-            <AngleValue x={x + labelVector.x * 50} y={y + labelVector.y * 50} angle={angle < 0 ? 360 + angle : angle} />
+            <AngleValue x={x + labelVector.x * 70} y={y + labelVector.y * 70} angle={angle < 0 ? 360 + angle : angle} />
           </Fragment>
         );
       })}

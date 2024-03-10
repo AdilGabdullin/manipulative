@@ -4,6 +4,7 @@ import Grid from "./Grid";
 import SelectRect, { selectRectMove, selectRectStop } from "./SelectRect";
 import { useAppStore } from "../state/store";
 import GeoboardBand, {
+  Angles,
   bandPointMove,
   bandPointRadius,
   bandPointSearch,
@@ -207,9 +208,17 @@ const App = () => {
           scaleX={state.scale}
           scaleY={state.scale}
         >
-          {state.mode == "geoboard" &&
-            state.geoboardBands.map((band) => <GeoboardBand key={band.id} {...band} findOne={findOne} />)}
-          {state.mode == "geoboard" && <Grid />}
+          {state.mode == "geoboard" && (
+            <>
+              {state.geoboardBands.map((band) => (
+                <GeoboardBand key={band.id} {...band} findOne={findOne} />
+              ))}
+              <Grid />
+              {state.geoboardBands.map((band) => (
+                <Angles key={band.id} {...band} />
+              ))}
+            </>
+          )}
           {state.mode != "geoboard" && <Elements />}
           <SelectRect />
         </Layer>
