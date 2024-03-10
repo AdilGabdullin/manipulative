@@ -92,7 +92,9 @@ function angleBetweenVectors(A, B, C) {
 export function getArcAngles(A, B, C, isClockwise) {
   const angle = angleBetweenVectors(A, B, C) * (isClockwise ? 1 : -1);
   const rotation = angleBetweenVectors({ ...B, x: 1000 }, B, C) - angle * (isClockwise ? 1 : 0);
-  return { angle, rotation };
+  const lv = [A.x - B.x + C.x - B.x, A.y - B.y + C.y - B.y];
+  const mag = vectorMagnitude(lv) * Math.sign(angle);
+  return { angle, rotation, labelVector: { x: lv[0] / mag, y: lv[1] / mag } };
 }
 
 export function checkClockwise(points) {

@@ -119,7 +119,7 @@ const WidthSelector = (props) => {
         fontFamily="Calibri"
       />
       <Text
-        x={x + width / 2 + (fdBrushSize > 9 ? -9 : -4)}
+        x={x + width / 2 + (fdBrushSize > 9 ? -10 : -5)}
         y={y + 5}
         text={fdBrushSize}
         fill={widthSelectorColor}
@@ -128,7 +128,7 @@ const WidthSelector = (props) => {
       />
       <Text
         onClick={onClick}
-        x={x + width - 16}
+        x={x + width - 17}
         y={y + 5}
         text={"+"}
         fill={widthSelectorColor}
