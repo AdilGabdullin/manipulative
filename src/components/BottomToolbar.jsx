@@ -19,11 +19,14 @@ const BottomToolbar = () => {
 
       <Button text="brush" onClick={state.toggleBrush} />
       <Button text="eraser" onClick={state.toggleEraser} />
-      <select onChange={(e) => state.setWorkspace(e.target.value)} value={state.workspace} style={{ fontSize: 20 }}>
-        <option value="square">Square</option>
-        <option value="isometric">Isometric</option>
-        <option value="circular">Circular</option>
-      </select>
+
+      {state.mode == "geoboard" && (
+        <select onChange={(e) => state.setWorkspace(e.target.value)} value={state.workspace} style={{ fontSize: 20 }}>
+          <option value="square">Square</option>
+          <option value="isometric">Isometric</option>
+          <option value="circular">Circular</option>
+        </select>
+      )}
     </div>
   );
 };

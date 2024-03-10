@@ -315,7 +315,6 @@ export const useAppStore = create((set) => ({
           const { elements } = current(state);
           for (const id of state.selected) {
             const copy = { ...elements[id], id: newId() };
-            console.log({ copy });
             state.elements[copy.id] = copy;
             state.elements[id].x += shift;
             state.elements[id].y += shift;
@@ -339,7 +338,7 @@ export const useAppStore = create((set) => ({
         } else {
           let id;
           while ((id = state.selected.pop())) {
-            state.elements[id].locked = true;
+            state.elements[id].locked = value;
           }
         }
         pushHistory(state);
