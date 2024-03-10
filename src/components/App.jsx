@@ -118,7 +118,7 @@ const App = () => {
 
   const onMouseUp = (e) => {
     // console.log("stage up");
-    e.evt.preventDefault();
+    e && e.evt.preventDefault();
     if (!downPos) return;
 
     if (state.fdMode) {
@@ -169,7 +169,7 @@ const App = () => {
         }
       }
     }
-    state.clearSelect();
+    if (state.selected.length > 0) state.clearSelect();
   };
 
   const onWheel = (e) => {
@@ -181,6 +181,11 @@ const App = () => {
       state.setOffsetY(state.offset.y - 50 * sign);
     }
   };
+
+  const onMouseLeave = (e) => {
+    console.log("Leave");
+    onMouseUp();
+  }
 
   if (state.width == 0) {
     return <div ref={containerRef} />;
@@ -199,6 +204,7 @@ const App = () => {
         onMouseDown={onMouseDown}
         onMouseUp={onMouseUp}
         onMouseMove={onMouseMove}
+        onMouseLeave={onMouseLeave}
         onWheel={onWheel}
       >
         <Layer

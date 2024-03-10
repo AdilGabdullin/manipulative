@@ -145,13 +145,10 @@ const SelectedFrame = (props) => {
   };
 
   const setVisibility = (e, value) => {
-    const stage = e.target.getStage();
-    stage.findOne("#popup-menu").visible(value);
-    for (let i = 0; i < menuButtons.length; i += 1) {
-      stage.findOne("#menu-item-" + i).visible(value);
-      stage.findOne("#menu-item-text" + i).visible(value);
-    }
-    stage.find(".angle-measure").forEach(node => node.visible(value));
+    e.target
+      .getStage()
+      .find(".popup-menu,.angle-measure")
+      .forEach((node) => node.visible(value));
   };
 
   return (
@@ -170,6 +167,7 @@ const SelectedFrame = (props) => {
       />
       <Rect
         id="popup-menu"
+        name={"popup-menu"}
         x={x + width + padding}
         y={y}
         width={buttonWidth + padding * 2}
@@ -187,6 +185,7 @@ const SelectedFrame = (props) => {
         <Fragment key={text}>
           <Rect
             id={"menu-item-" + i}
+            name={"popup-menu"}
             x={x + width + padding * 2}
             y={y + padding + (padding * 3 + buttonHeight) * i}
             width={buttonWidth}
@@ -204,6 +203,7 @@ const SelectedFrame = (props) => {
           />
           <Text
             id={"menu-item-text" + i}
+            name={"popup-menu"}
             x={x + width + padding * 3}
             y={y + padding * 2 + (padding * 3 + buttonHeight) * i}
             text={text}

@@ -33,29 +33,41 @@ export const useAppStore = create((set) => ({
   origin: { x: 0, y: 0 },
   selected: [],
   lockSelect: false,
+  fill: true,
+  measures: true,
+  toggleGlobal: (field) =>
+    set(
+      produce((state) => {
+        const value = !state[field];
+        state[field] = value;
+        state.geoboardBands.forEach((band) => {
+          band[field] = value;
+        });
+      })
+    ),
   geoboardBands: [
-    // {
-    //   id: newId(),
-    //   fill: false,
-    //   measures: true,
-    //   color: "#d32f2f",
-    //   points: [
-    //     { id: newId(), x: -100, y: -100, locked: false },
-    //     { id: newId(), x: 0, y: 0, locked: false },
-    //     { id: newId(), x: 50, y: -200, locked: false },
-    //   ],
-    // },
-    // {
-    //   id: newId(),
-    //   fill: false,
-    //   measures: true,
-    //   color: "#d32f2f",
-    //   points: [
-    //     { id: newId(), x: -100 + 300, y: -100, locked: false },
-    //     { id: newId(), x: 0 + 100, y: 0, locked: false },
-    //     { id: newId(), x: 50 + 100, y: -200, locked: false },
-    //   ],
-    // },
+    {
+      id: newId(),
+      fill: false,
+      measures: true,
+      color: "#d32f2f",
+      points: [
+        { id: newId(), x: -100, y: -100, locked: false },
+        { id: newId(), x: 0, y: 0, locked: false },
+        { id: newId(), x: 50, y: -200, locked: false },
+      ],
+    },
+    {
+      id: newId(),
+      fill: false,
+      measures: true,
+      color: "#d32f2f",
+      points: [
+        { id: newId(), x: -100 + 300, y: -100, locked: false },
+        { id: newId(), x: 0 + 100, y: 0, locked: false },
+        { id: newId(), x: 50 + 100, y: -200, locked: false },
+      ],
+    },
   ],
   elements: {},
   setValue: (field, value) =>
