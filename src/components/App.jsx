@@ -27,7 +27,10 @@ const App = () => {
   const stageRef = useRef(null);
   const containerRef = useRef(null);
 
-  // console.log(state.geoboardBands);
+  // console.log(
+  //   state.elements,
+  //   state.selected
+  // );
 
   useLayoutEffect(() => {
     function updateSize() {
@@ -185,7 +188,7 @@ const App = () => {
   const onMouseLeave = (e) => {
     console.log("Leave");
     onMouseUp();
-  }
+  };
 
   if (state.width == 0) {
     return <div ref={containerRef} />;

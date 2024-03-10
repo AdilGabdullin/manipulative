@@ -45,30 +45,7 @@ export const useAppStore = create((set) => ({
         });
       })
     ),
-  geoboardBands: [
-    {
-      id: newId(),
-      fill: false,
-      measures: true,
-      color: "#d32f2f",
-      points: [
-        { id: newId(), x: -100, y: -100, locked: false },
-        { id: newId(), x: 0, y: 0, locked: false },
-        { id: newId(), x: 50, y: -200, locked: false },
-      ],
-    },
-    {
-      id: newId(),
-      fill: false,
-      measures: true,
-      color: "#d32f2f",
-      points: [
-        { id: newId(), x: -100 + 300, y: -100, locked: false },
-        { id: newId(), x: 0 + 100, y: 0, locked: false },
-        { id: newId(), x: 50 + 100, y: -200, locked: false },
-      ],
-    },
-  ],
+  geoboardBands: [],
   elements: {},
   setValue: (field, value) =>
     set(
@@ -308,6 +285,7 @@ export const useAppStore = create((set) => ({
   copySelected: () =>
     set(
       produce((state) => {
+        const shift = 20;
         if (state.mode == "geoboard") {
           const bands = searchSelectedBands(state);
           // select all points
@@ -329,12 +307,19 @@ export const useAppStore = create((set) => ({
           // shift original
           for (const i in bands) {
             state.geoboardBands[i].points.forEach((point) => {
-              point.x += 20;
-              point.y += 20;
+              point.x += shift;
+              point.y += shift;
             });
           }
         } else {
-          // copy element
+          const { elements } = current(state);
+          for (const id of state.selected) {
+            const copy = { ...elements[id], id: newId() };
+            console.log({ copy });
+            state.elements[copy.id] = copy;
+            state.elements[id].x += shift;
+            state.elements[id].y += shift;
+          }
         }
         pushHistory(state);
       })

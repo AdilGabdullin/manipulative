@@ -116,6 +116,11 @@ const SelectedFrame = (props) => {
       },
     },
   ];
+
+  if (state.mode != "geoboard") {
+    menuButtons.shift();
+    menuButtons.shift();
+  }
   const buttonHeight = 20;
   const buttonWidth = 110;
   const padding = 8;
