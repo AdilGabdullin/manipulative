@@ -200,7 +200,7 @@ const SelectedFrame = (props) => {
             onMouseLeave={(e) => onMouseLeave(e, i)}
             onMouseUp={(e) => {
               e.cancelBubble = true;
-              if (lockSelect) {
+              if (!active) {
                 return;
               }
               onClick(e);
@@ -217,7 +217,7 @@ const SelectedFrame = (props) => {
             fontFamily="Calibri"
             onMouseUp={(e) => {
               e.cancelBubble = true;
-              if (lockSelect) {
+              if (!active) {
                 return;
               }
               onClick(e);
