@@ -45,6 +45,16 @@ const App = () => {
     return state.grid.find((gridItem) => pointsIsClose(movePos, gridItem)) || movePos;
   };
 
+  const findOne = (id) => {
+    const node = stageRef.current.findOne("#" + id);
+    if (node) return node;
+    console.error(`id (${id}) not found`);
+  };
+
+  const findAll = (name) => {
+    return stageRef.current.find("." + name);
+  };
+
   const onMouseDown = (e) => {
     // console.log("stage down");
     if (state.fdMode) {
@@ -70,6 +80,9 @@ const App = () => {
         downPos,
       };
     dragTarget.nodes = dragTarget.nodes.map((id) => stageRef.current.findOne("#" + id));
+    if (dragTarget.type != "select-rect") {
+      findAll("angle-measure").forEach((node) => node.visible(false));
+    }
   };
 
   const onMouseMove = (e) => {
@@ -137,6 +150,9 @@ const App = () => {
         state.select(downPos, upPos);
         break;
     }
+    if (dragTarget.type != "select-rect") {
+      findAll("angle-measure").forEach((node) => node.visible(true));
+    }
     downPos = null;
     dragTarget = null;
   };
@@ -169,11 +185,6 @@ const App = () => {
     return <div ref={containerRef} />;
   }
 
-  const findOne = (id) => {
-    const node = stageRef.current.findOne("#" + id);
-    if (node) return node;
-    console.error(`id (${id}) not found`);
-  };
   return (
     <div
       ref={containerRef}

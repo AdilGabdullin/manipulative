@@ -1,11 +1,11 @@
-import { Circle, Line } from "react-konva";
+import { Arc, Circle, Line } from "react-konva";
 import { useAppStore } from "../state/store";
-import { SEARCH_THRESHOLD, flattenPoints, isPointCloseToLine, pointsIsClose } from "../util";
+import { SEARCH_THRESHOLD, checkClockwise, flattenPoints, getArcAngles, isPointCloseToLine, pointsIsClose } from "../util";
 
 export const bandPointRadius = 7;
 const bandSideWidth = 7;
 
-const GeoboardBand = ({ id, points, color, fill }) => {
+const GeoboardBand = ({ id, points, color, fill, measures }) => {
   const state = useAppStore();
   const { origin } = state;
   const sidesId = `${id}-sides`;
@@ -22,12 +22,37 @@ const GeoboardBand = ({ id, points, color, fill }) => {
         strokeWidth={bandSideWidth}
         fill={fill ? color + "50" : null}
       />
-      {points.map((point, pointIndex) => {
+      {points.map((point) => {
         const id = point.id;
         const x = origin.x + point.x;
         const y = origin.y + point.y;
         return <Circle key={id} id={id} x={x} y={y} stroke={color} radius={bandPointRadius} fill={color} />;
       })}
+      {measures && <Angles points={points} color={color} />}
+    </>
+  );
+};
+
+const Angles = ({ points, color }) => {
+  const state = useAppStore();
+  const { origin } = state;
+  const length = points.length;
+  const isClockwise = checkClockwise(points);
+  points = [points[length - 1], ...points, points[0]];
+  const arcs = [];
+  for (let i = 1; i < length + 1; i += 1) {
+    arcs.push({
+      name: "angle-measure",
+      x: origin.x + points[i].x,
+      y: origin.y + points[i].y,
+      ...getArcAngles(points[i - 1], points[i], points[i + 1], isClockwise),
+    });
+  }
+  return (
+    <>
+      {arcs.map((props, i) => (
+        <Arc {...props} key={i} innerRadius={40} outerRadius={42} stroke={color} fill={color} strokeWidth={2} />
+      ))}
     </>
   );
 };

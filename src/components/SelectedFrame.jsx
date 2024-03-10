@@ -87,6 +87,13 @@ const SelectedFrame = (props) => {
       },
     },
     {
+      text: "Angle On/Off",
+      active: !lockSelect,
+      onClick: (e) => {
+        state.toggleValueSelected("measures");
+      },
+    },
+    {
       text: "Copy",
       active: !lockSelect,
       onClick: (e) => {
@@ -110,7 +117,7 @@ const SelectedFrame = (props) => {
     },
   ];
   const buttonHeight = 20;
-  const buttonWidth = 90;
+  const buttonWidth = 110;
   const padding = 8;
 
   const onMouseEnter = (e, i) => {
@@ -144,6 +151,7 @@ const SelectedFrame = (props) => {
       stage.findOne("#menu-item-" + i).visible(value);
       stage.findOne("#menu-item-text" + i).visible(value);
     }
+    stage.find(".angle-measure").forEach(node => node.visible(value));
   };
 
   return (

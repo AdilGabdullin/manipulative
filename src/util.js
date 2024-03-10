@@ -63,3 +63,44 @@ export function flattenPoints(points, originX, originY) {
 export function numberBetween(x, a, b) {
   return (x >= a && x <= b) || (x <= a && x >= b);
 }
+
+function vectorMagnitude(vector) {
+  return Math.sqrt(vector[0] ** 2 + vector[1] ** 2);
+}
+
+function dotProduct(vector1, vector2) {
+  return vector1[0] * vector2[0] + vector1[1] * vector2[1];
+}
+
+function angleBetweenVectors(A, B, C) {
+  const vector1 = [A.x - B.x, A.y - B.y];
+  const vector2 = [C.x - B.x, C.y - B.y];
+  const mag1 = vectorMagnitude(vector1);
+  const mag2 = vectorMagnitude(vector2);
+  const dot = dotProduct(vector1, vector2);
+  if (mag1 === 0 || mag2 === 0) {
+    console.error("Invalid angle");
+    return NaN;
+  }
+  const cosTheta = dot / (mag1 * mag2);
+  const theta = (Math.acos(cosTheta) * 180) / Math.PI;
+  const sinTheta = vector1[0] * vector2[1] - vector1[1] * vector2[0];
+  const sign = Math.sign(sinTheta);
+  return theta * sign;
+}
+
+export function getArcAngles(A, B, C, isClockwise) {
+  const angle = angleBetweenVectors(A, B, C) * (isClockwise ? 1 : -1);
+  const rotation = angleBetweenVectors({ ...B, x: 1000 }, B, C) - angle * (isClockwise ? 1 : 0);
+  return { angle, rotation };
+}
+
+export function checkClockwise(points) {
+  let area = 0;
+  let j = points.length - 1;
+  for (let i = 0; i < points.length; i++) {
+    area += (points[j].x + points[i].x) * (points[j].y - points[i].y);
+    j = i;
+  }
+  return area > 0.0;
+}

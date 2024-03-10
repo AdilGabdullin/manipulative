@@ -37,10 +37,10 @@ export const useAppStore = create((set) => ({
   ...freeDrawingSlice(set),
   ...historySlice(set),
   mode,
-  offset: { x: 0, y: 0 },
-  scale: 1.0,
-  // offset: { x: 50, y: 100 },
-  // scale: 0.7,
+  // offset: { x: 0, y: 0 },
+  // scale: 1.0,
+  offset: { x: 50, y: 100 },
+  scale: 0.7,
   fullscreen: true,
   grid: mode == "geoboard" ? initGrid() : [],
   width: 0,
@@ -49,16 +49,28 @@ export const useAppStore = create((set) => ({
   selected: [],
   lockSelect: false,
   geoboardBands: [
-    {
-      id: newId(),
-      fill: true,
-      color: "#d32f2f",
-      points: [
-        { id: newId(), x: -100, y: -100, locked: false },
-        { id: newId(), x: 0, y: 0, locked: false },
-        { id: newId(), x: 50, y: -200, locked: false },
-      ],
-    },
+  {
+    id: newId(),
+    fill: false,
+    measures: true,
+    color: "#d32f2f",
+    points: [
+      { id: newId(), x: -100, y: -100, locked: false },
+      { id: newId(), x: 0, y: 0, locked: false },
+      { id: newId(), x: 50, y: -200, locked: false },
+    ],
+  },
+  {
+    id: newId(),
+    fill: false,
+    measures: true,
+    color: "#d32f2f",
+    points: [
+      { id: newId(), x: -100+300, y: -100, locked: false },
+      { id: newId(), x: 0+100, y: 0, locked: false },
+      { id: newId(), x: 50+100, y: -200, locked: false },
+    ],
+  },
   ],
   elements: {},
   setValue: (field, value) =>
@@ -149,11 +161,11 @@ export const useAppStore = create((set) => ({
         state.geoboardBands.push({
           id,
           color,
-          locked: false,
           fill: false,
+          measures: false,
           points: [
-            { id: newId(), x: x, y: y },
-            { id: newId(), x: x + gridStep, y: y },
+            { id: newId(), x: x, y: y, locked: false },
+            { id: newId(), x: x + gridStep, y: y, locked: false },
           ],
         });
         state.fdMode = null;
