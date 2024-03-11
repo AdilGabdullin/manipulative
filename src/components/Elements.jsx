@@ -7,24 +7,42 @@ const Elements = () => {
   const { origin, elements } = state;
   return (
     <>
-      {Object.keys(elements).map((id) => {
-        return <Element key={id} {...elements[id]} onClick={() => state.selectIds([id], elements[id].locked)} />;
-      })}
+      <Cubes />
       <Image id="shadow-image" x={origin.x} y={origin.y} />
     </>
   );
 };
 
-const Element = (props) => {
-  switch (props.type) {
-    case "cube":
-      return <Cube {...props} />;
-      break;
-  }
-  return;
+const Cubes = () => {
+  const state = useAppStore();
+  const { elements } = state;
+
+  const list = Object.keys(elements).map((id) => elements[id]);
+  list.sort((a, b) => {
+    if (a.rotation < b.rotation) {
+      return -1;
+    }
+    if (a.rotation > b.rotation) {
+      return 1;
+    }
+    if (a.rotation == 1) {
+      return a.x - b.x;
+    }
+    if (a.rotation == 0) {
+      return b.y - a.y;
+    }
+  });
+
+  return (
+    <>
+      {list.map(({ id }) => {
+        return <Cube key={id} {...elements[id]} onClick={() => state.selectIds([id], elements[id].locked)} />;
+      })}
+    </>
+  );
 };
 
-const Cube = ({ id, x, y, image, onClick, rotation }) => {
+const Cube = ({ id, x, y, image, onClick, rotation, locked }) => {
   const state = useAppStore();
   const { origin } = state;
 
@@ -68,7 +86,7 @@ const Cube = ({ id, x, y, image, onClick, rotation }) => {
       x={origin.x + x}
       y={origin.y + y}
       image={image}
-      draggable
+      draggable={!locked}
       onDragMove={onDragMove}
       onDragEnd={onDragEnd}
       onClick={onClick}

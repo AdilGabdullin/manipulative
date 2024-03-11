@@ -165,7 +165,7 @@ const SelectedFrame = (props) => {
         height={height}
         stroke="#2196f3"
         strokeWidth={2}
-        draggable
+        draggable={!lockSelect}
         onDragStart={onDragStart}
         onDragMove={onDragMove}
         onDragEnd={onDragEnd}
