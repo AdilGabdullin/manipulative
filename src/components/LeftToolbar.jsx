@@ -1,6 +1,6 @@
 import { Image, Rect } from "react-konva";
 import { useAppStore } from "../state/store";
-import { distance2, getStageXY } from "../util";
+import { distance2, getStageXY, numberBetween } from "../util";
 
 export const leftToolbarWidth = 180;
 const ids = {
@@ -34,9 +34,37 @@ const LeftToolbar = ({ findOne }) => {
     }
   };
 
+  const sens = 10;
+  const magnet = (i, { x, y }) => {
+    for (const id in state.elements) {
+      const el = state.elements[id];
+      if (el.rotation != i) continue
+      if (i % 2 == 0) {
+        if (numberBetween(x - 26, el.x - sens, el.x + sens) && numberBetween(y - 26 + 50, el.y - sens, el.y + sens)) {
+          x = el.x + 26;
+          y = el.y + 26 - 50;
+        }
+        if (numberBetween(x - 26, el.x - sens, el.x + sens) && numberBetween(y - 26 - 50, el.y - sens, el.y + sens)) {
+          x = el.x + 26;
+          y = el.y + 26 + 50;
+        }
+      } else {
+        if (numberBetween(y - 26, el.y - sens, el.y + sens) && numberBetween(x - 26 + 50, el.x - sens, el.x + sens)) {
+          y = el.y + 26;
+          x = el.x + 26 - 50;
+        }
+        if (numberBetween(y - 26, el.y - sens, el.y + sens) && numberBetween(x - 26 - 50, el.x - sens, el.x + sens)) {
+          y = el.y + 26;
+          x = el.x + 26 + 50;
+        }
+      }
+    }
+    return { x, y };
+  };
+
   const onDragMove = (e, i) => {
     if (mode == "linking-cubes") {
-      const { x, y } = getStageXY(e.target.getStage(), state);
+      const { x, y } = magnet(i, getStageXY(e.target.getStage(), state));
       findOne("shadow-image").setAttrs({
         x: origin.x + x - 26,
         y: origin.y + y - 26,
@@ -45,7 +73,7 @@ const LeftToolbar = ({ findOne }) => {
   };
 
   const onDragEnd = (e, i) => {
-    const { x, y } = getStageXY(e.target.getStage(), state);
+    const { x, y } = magnet(i, getStageXY(e.target.getStage(), state));
     e.target.setAttrs({ x: imageX(i), y: imageY(i), visible: true });
     switch (mode) {
       case "geoboard":
@@ -56,6 +84,7 @@ const LeftToolbar = ({ findOne }) => {
         findOne("shadow-image").setAttrs({ visible: false });
         state.addElement({
           type: "cube",
+          rotation: i % 2,
           x: x - 26,
           y: y - 26,
           width: images[i].width,
@@ -84,7 +113,14 @@ const LeftToolbar = ({ findOne }) => {
     <>
       <Rect fill="#f3f9ff" x={0} y={0} width={leftToolbarWidth} height={state.height} />
       {images.map((image, i) => (
-        <Image key={i} x={imageX(i)} y={imageY(i)} image={image} width={width} height={height} />
+        <Image
+          key={i}
+          x={imageX(i)}
+          y={imageY(i)}
+          image={image}
+          width={images[i].width * 0.75}
+          height={images[i].height * 0.75}
+        />
       ))}
       {images.map((image, i) => (
         <Image
@@ -92,8 +128,8 @@ const LeftToolbar = ({ findOne }) => {
           x={imageX(i)}
           y={imageY(i)}
           image={image}
-          width={width}
-          height={height}
+          width={images[i].width * 0.75}
+          height={images[i].height * 0.75}
           draggable
           onDragStart={(e) => onDragStart(e, i)}
           onDragMove={(e) => onDragMove(e, i)}
