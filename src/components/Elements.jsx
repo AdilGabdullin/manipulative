@@ -45,8 +45,12 @@ const Cubes = () => {
 const Cube = ({ id, x, y, image, onClick, rotation, locked }) => {
   const state = useAppStore();
   const { origin } = state;
-
   const sens = 10;
+
+  const onDragStart = () => {
+    state.clearSelect();
+  };
+
   const onDragMove = (e) => {
     const node = e.target;
     const x = node.x() - origin.x;
@@ -87,6 +91,7 @@ const Cube = ({ id, x, y, image, onClick, rotation, locked }) => {
       y={origin.y + y}
       image={image}
       draggable={!locked}
+      onDragStart={onDragStart}
       onDragMove={onDragMove}
       onDragEnd={onDragEnd}
       onClick={onClick}

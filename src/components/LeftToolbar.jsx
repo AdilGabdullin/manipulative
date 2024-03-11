@@ -25,6 +25,7 @@ const LeftToolbar = ({ findOne }) => {
   const imageY = (i) => margin * (i + 1) + height * i;
 
   const onDragStart = (e, i) => {
+    state.clearSelect();
     if (mode == "linking-cubes") {
       e.target.visible(false);
       findOne("shadow-image").setAttrs({
