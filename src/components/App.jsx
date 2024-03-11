@@ -12,9 +12,9 @@ import GeoboardBand, {
   bandSideSearch,
 } from "./GeoboardBand";
 import LeftToolbar, { leftToolbarWidth } from "./LeftToolbar";
-import { SEARCH_THRESHOLD, flattenPoints, getStageXY, pointsIsClose } from "../util";
+import { SEARCH_THRESHOLD,  getStageXY, pointsIsClose } from "../util";
 import BottomToolbar, { bottomToolbarHeight } from "./BottomToolbar";
-import BottomMenu from "./BottomMenu";
+import Menu from "./Menu";
 import Scrolls from "./Scrolls";
 import SelectedFrame from "./SelectedFrame";
 import Elements from "./Elements";
@@ -247,7 +247,7 @@ const App = () => {
         {state.imagesReady && (
           <Layer id="interface-layer">
             <LeftToolbar findOne={findOne} />
-            <BottomMenu />
+            <Menu />
             <Scrolls />
             <SelectedFrame findOne={findOne} />
           </Layer>

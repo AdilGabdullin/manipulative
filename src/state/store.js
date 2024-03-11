@@ -35,8 +35,8 @@ export const useAppStore = create((set) => ({
   origin: { x: 0, y: 0 },
   selected: [],
   lockSelect: false,
-  fill: true,
-  measures: true,
+  fill: false,
+  measures: false,
   toggleGlobal: (field) =>
     set(
       produce((state) => {
@@ -143,8 +143,8 @@ export const useAppStore = create((set) => ({
         state.geoboardBands.push({
           id,
           color,
-          fill: false,
-          measures: false,
+          fill: state.fill,
+          measures: state.measures,
           points: [
             { id: newId(), x: x, y: y, locked: false },
             { id: newId(), x: x + gridStep, y: y, locked: false },

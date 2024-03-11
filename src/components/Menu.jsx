@@ -1,4 +1,4 @@
-import { Line, Rect, Text } from "react-konva";
+import { Image, Line, Rect, Text } from "react-konva";
 import { useAppStore } from "../state/store";
 import { leftToolbarWidth } from "./LeftToolbar";
 import BrushMenu from "./BrushMenu";
@@ -6,7 +6,7 @@ import { Fragment } from "react";
 
 export const bottomMenuHeight = 50;
 
-const BottomMenu = () => {
+const Menu = () => {
   const state = useAppStore();
   const { width, height, fdMode, mode } = state;
   const x = leftToolbarWidth;
@@ -27,8 +27,8 @@ const DefaultMenu = (props) => {
   const {} = state;
 
   const buttons = [
-    { text: "Fills", field: "fill" },
-    { text: "Angle Measure", field: "measures" },
+    { text: "Fills", field: "fill", image: document.getElementById("fill-button"), width: 80 },
+    { text: "Angle Measure", field: "measures", image: document.getElementById("angle-button"), width: 160 },
   ];
   const padding = 8;
   const buttonHeight = 20;
@@ -36,12 +36,12 @@ const DefaultMenu = (props) => {
 
   return (
     <>
-      {buttons.map(({ text, field }, i) => (
+      {buttons.map(({ text, field, image, width }, i) => (
         <Fragment key={text}>
           <Rect
-            x={x + padding + (padding * 3 + buttonWidth) * i}
+            x={x + padding + buttonWidth * i}
             y={y + padding}
-            width={buttonWidth + padding * 2}
+            width={width + padding * 2}
             height={buttonHeight + padding * 2}
             cornerRadius={5}
             fill={state[field] ? "#e8f4fe" : "#ffffff"}
@@ -50,8 +50,19 @@ const DefaultMenu = (props) => {
               state.toggleGlobal(field);
             }}
           />
+          <Image
+            image={image}
+            x={x + padding + buttonWidth * i + 4}
+            y={y + padding + 4}
+            width={30}
+            height={(image.height / image.width) * 30}
+            onMouseUp={(e) => {
+              e.cancelBubble = true;
+              state.toggleGlobal(field);
+            }}
+          />
           <Text
-            x={x + padding * 2 + (padding * 3 + buttonWidth) * i}
+            x={x + padding * 2 + buttonWidth * i + 33}
             y={y + padding * 2}
             text={text}
             fill={"black"}
@@ -68,4 +79,4 @@ const DefaultMenu = (props) => {
   );
 };
 
-export default BottomMenu;
+export default Menu;

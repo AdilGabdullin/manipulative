@@ -44,3 +44,8 @@
 .workspace-selector-label {
   margin-right: 8px;
 }
+
+.workspace-selector select {
+  font-size: 18px;
+  font-family: Calibri;
+}
