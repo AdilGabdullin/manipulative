@@ -14,7 +14,7 @@ const colors = {
 
 const LeftToolbar = ({ findOne }) => {
   const state = useAppStore();
-  const { mode, origin, fdMode } = state;
+  const { mode, origin } = state;
   const images = ids[mode].map((id) => document.getElementById(id));
   const width = images[0].width * 0.75;
   const height = images[0].height * 0.75;
@@ -60,7 +60,7 @@ const LeftToolbar = ({ findOne }) => {
           y: y - 26,
           width: images[i].width,
           height: images[i].height,
-          color: colors[mode][i],
+          // color: colors[mode][i],
           image: images[i],
         });
         break;

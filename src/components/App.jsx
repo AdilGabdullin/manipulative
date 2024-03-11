@@ -241,12 +241,14 @@ const App = () => {
         >
           <FreeDrawing />
         </Layer>
-        <Layer id="interface-layer">
-          <LeftToolbar findOne={findOne} />
-          <BottomMenu />
-          <Scrolls />
-          <SelectedFrame findOne={findOne} />
-        </Layer>
+        {state.imagesReady && (
+          <Layer id="interface-layer">
+            <LeftToolbar findOne={findOne} />
+            <BottomMenu />
+            <Scrolls />
+            <SelectedFrame findOne={findOne} />
+          </Layer>
+        )}
       </Stage>
       <BottomToolbar />
       <ImagePreloader />

@@ -21,6 +21,8 @@ export const useAppStore = create((set) => ({
   ...freeDrawingSlice(set),
   ...historySlice(set),
   mode,
+  imagesReady: false,
+  loadedImagesCount: 0,
   offset: { x: 0, y: 0 },
   scale: 1.0,
   // offset: { x: 50, y: 100 },
