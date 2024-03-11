@@ -3,24 +3,23 @@ import { useAppStore } from "../state/store";
 import { distance2, getStageXY } from "../util";
 
 export const leftToolbarWidth = 180;
-const ids = (mode) => {
-  switch (mode) {
-    case "geoboard":
-      return ["band-1", "band-2", "band-3", "band-4", "band-5", "band-6", "band-7"];
-      break;
-    case "linking-cubes":
-      return ["cube-0-up", "cube-0-right"];
-  }
+const ids = {
+  geoboard: ["band-0", "band-1", "band-2", "band-3", "band-4", "band-5"],
+  "linking-cubes": ["cube-0-up", "cube-0-right"],
 };
-const colors = ["#d32f2f", "#2196f3", "#ffeb3b", "#4caf50", "#616161", "#a936bd", "#f06292"];
+
+const colors = {
+  geoboard: ["#d90080", "#900580", "#002a84", "#20a19a", "#fdd700", "#df040b"],
+};
 
 const LeftToolbar = ({ findOne }) => {
   const state = useAppStore();
   const { mode, origin, fdMode } = state;
-  const images = ids(mode).map((id) => document.getElementById(id));
-  const { width, height } = images[0];
+  const images = ids[mode].map((id) => document.getElementById(id));
+  const width = images[0].width * 0.75;
+  const height = images[0].height * 0.75;
   const left = (leftToolbarWidth - width) / 2;
-  const margin = (state.height - 7 * height) / 8;
+  const margin = (state.height - images.length * height) / (images.length + 1);
 
   const imageX = (i) => left;
   const imageY = (i) => margin * (i + 1) + height * i;
@@ -51,7 +50,7 @@ const LeftToolbar = ({ findOne }) => {
     switch (mode) {
       case "geoboard":
         const closest = closestGrid({ x, y });
-        state.addBand(closest.x, closest.y, colors[i]);
+        state.addBand(closest.x, closest.y, colors[mode][i]);
         break;
       case "linking-cubes":
         findOne("shadow-image").setAttrs({ visible: false });
@@ -61,7 +60,7 @@ const LeftToolbar = ({ findOne }) => {
           y: y - 26,
           width: images[i].width,
           height: images[i].height,
-          color: colors[i],
+          color: colors[mode][i],
           image: images[i],
         });
         break;
@@ -85,7 +84,7 @@ const LeftToolbar = ({ findOne }) => {
     <>
       <Rect fill="#f3f9ff" x={0} y={0} width={leftToolbarWidth} height={state.height} />
       {images.map((image, i) => (
-        <Image key={i} x={imageX(i)} y={imageY(i)} image={image} />
+        <Image key={i} x={imageX(i)} y={imageY(i)} image={image} width={width} height={height} />
       ))}
       {images.map((image, i) => (
         <Image
@@ -93,6 +92,8 @@ const LeftToolbar = ({ findOne }) => {
           x={imageX(i)}
           y={imageY(i)}
           image={image}
+          width={width}
+          height={height}
           draggable
           onDragStart={(e) => onDragStart(e, i)}
           onDragMove={(e) => onDragMove(e, i)}

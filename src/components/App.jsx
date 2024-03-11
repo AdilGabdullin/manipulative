@@ -19,6 +19,7 @@ import Scrolls from "./Scrolls";
 import SelectedFrame from "./SelectedFrame";
 import Elements from "./Elements";
 import FreeDrawing from "./FreeDrawing";
+import ImagePreloader from "./ImagePreloader";
 
 const App = () => {
   const state = useAppStore();
@@ -248,6 +249,7 @@ const App = () => {
         </Layer>
       </Stage>
       <BottomToolbar />
+      <ImagePreloader />
     </div>
   );
 };
