@@ -1,6 +1,7 @@
 import { Image, Rect } from "react-konva";
 import { useAppStore } from "../state/store";
 import { distance2, getStageXY, numberBetween } from "../util";
+import { useState } from "react";
 
 export const leftToolbarWidth = 180;
 const ids = {
@@ -10,9 +11,30 @@ const ids = {
 
 const colors = {
   geoboard: ["#d90080", "#900580", "#002a84", "#20a19a", "#fdd700", "#df040b"],
+  "cuisenaire-rods": ["red", "green", "blue"],
 };
 
-const LeftToolbar = ({ findOne }) => {
+const LeftToolbarShapes = ({ findOne }) => {
+  const state = useAppStore();
+  const { mode, origin } = state;
+  const width = (i) => (i + 8) * 10;
+  const height = 100;
+  const left = (i) => (leftToolbarWidth - width(i)) / 2;
+  const margin = 20;
+
+  const imageX = (i) => left;
+  const imageY = (i) => margin * (i + 1) + height * i;
+  return (
+    <>
+      <Rect fill="#f3f9ff" x={0} y={0} width={leftToolbarWidth} height={state.height} />
+      {colors["cuisenaire-rods"].map((color, i) => (
+        <Rect key={i} x={left(i)} y={imageY(i)} width={width(i)} height={height} fill={color} />
+      ))}
+    </>
+  );
+};
+
+const LeftToolbarImages = ({ findOne }) => {
   const state = useAppStore();
   const { mode, origin } = state;
   const images = ids[mode].map((id) => document.getElementById(id));
@@ -39,7 +61,7 @@ const LeftToolbar = ({ findOne }) => {
   const magnet = (i, { x, y }) => {
     for (const id in state.elements) {
       const el = state.elements[id];
-      if (el.rotation != i) continue
+      if (el.rotation != i) continue;
       if (i % 2 == 0) {
         if (numberBetween(x - 26, el.x - sens, el.x + sens) && numberBetween(y - 26 + 50, el.y - sens, el.y + sens)) {
           x = el.x + 26;
@@ -88,8 +110,8 @@ const LeftToolbar = ({ findOne }) => {
           rotation: i % 2,
           x: x - 26,
           y: y - 26,
-          width: images[i].width,
-          height: images[i].height,
+          width: 110,
+          height: (images[i].height * 110) / images[i].width,
           // color: colors[mode][i],
           image: images[i],
         });
@@ -119,8 +141,8 @@ const LeftToolbar = ({ findOne }) => {
           x={imageX(i)}
           y={imageY(i)}
           image={image}
-          width={images[i].width * 0.75}
-          height={images[i].height * 0.75}
+          width={110}
+          height={(images[i].height * 110) / images[i].width}
         />
       ))}
       {images.map((image, i) => (
@@ -129,8 +151,8 @@ const LeftToolbar = ({ findOne }) => {
           x={imageX(i)}
           y={imageY(i)}
           image={image}
-          width={images[i].width * 0.75}
-          height={images[i].height * 0.75}
+          width={110}
+          height={(images[i].height * 110) / images[i].width}
           draggable
           onDragStart={(e) => onDragStart(e, i)}
           onDragMove={(e) => onDragMove(e, i)}
@@ -139,6 +161,15 @@ const LeftToolbar = ({ findOne }) => {
       ))}
     </>
   );
+};
+
+const LeftToolbar = (props) => {
+  const state = useAppStore();
+  if (["geoboard", "linking-cubes"].includes(state.mode)) {
+    return <LeftToolbarImages {...props} />;
+  } else {
+    return <LeftToolbarShapes {...props} />;
+  }
 };
 
 export default LeftToolbar;

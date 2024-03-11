@@ -25,6 +25,7 @@ const config = {
     { id: "cube-0-up", src: "cubes/cube-0-up.png" },
     { id: "cube-0-right", src: "cubes/cube-0-right.png" },
   ],
+  "cuisenaire-rods": [],
 };
 
 const ImagePreloader = () => {
