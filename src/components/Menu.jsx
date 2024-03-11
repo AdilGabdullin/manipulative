@@ -27,8 +27,8 @@ const DefaultMenu = (props) => {
   const {} = state;
 
   const buttons = [
-    { text: "Fills", field: "fill", image: document.getElementById("fill-button"), width: 80 },
-    { text: "Angle Measure", field: "measures", image: document.getElementById("angle-button"), width: 160 },
+    { text: "Fills", field: "fill", image: document.getElementById("fill-button"), width: 70 },
+    { text: "Angle Measure", field: "measures", image: document.getElementById("angle-button"), width: 150 },
   ];
   const padding = 8;
   const buttonHeight = 20;

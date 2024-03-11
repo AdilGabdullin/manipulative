@@ -16,8 +16,8 @@ const BottomToolbar = () => {
         <Button text="zoom out" imageSrc="buttons/zoom-out-min.png" onClick={() => state.setScale(state.scale + 0.1)} />
         <Button text="fullscreen" imageSrc="buttons/full-screen-min.png" onClick={state.toggleFullscreen} />
 
-        <Button text="brush" imageSrc="buttons/pencil-min.png" onClick={state.toggleBrush} />
-        <Button text="eraser" imageSrc="buttons/eraser-min.png" onClick={state.toggleEraser} />
+        <Button text="brush" imageSrc="buttons/pencil-min.png" onClick={state.toggleBrush}  active={state.fdMode == "brush"}/>
+        <Button text="eraser" imageSrc="buttons/eraser-min.png" onClick={state.toggleEraser} active={state.fdMode == "eraser"} />
       </div>
       {state.mode == "geoboard" && (
         <div className="workspace-selector">
@@ -33,8 +33,12 @@ const BottomToolbar = () => {
   );
 };
 
-const Button = ({ onClick, imageSrc, text }) => {
-  return <img src={"./img/" + imageSrc} height={32} onClick={onClick} />;
+const Button = ({ onClick, imageSrc, text, active }) => {
+  return (
+    <div className={"toolbar-button-wrap" + (active ? " active" : "")}>
+      <img src={"./img/" + imageSrc} height={32} onClick={onClick} title={text}/>
+    </div>
+  );
 };
 
 export default BottomToolbar;
