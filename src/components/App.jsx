@@ -177,9 +177,12 @@ const App = () => {
   };
 
   const onWheel = (e) => {
-    const { wheelDeltaX, shiftKey } = e.evt;
+    e.evt.preventDefault();
+    const { wheelDeltaX, shiftKey, ctrlKey } = e.evt;
     const sign = Math.sign(e.evt.wheelDelta);
-    if (shiftKey || wheelDeltaX != 0) {
+    if (ctrlKey) {
+      state.setScale(state.scale + 0.1 * sign);
+    } else if (shiftKey || wheelDeltaX != 0) {
       state.setOffsetX(state.offset.x - 50 * sign);
     } else {
       state.setOffsetY(state.offset.y - 50 * sign);
