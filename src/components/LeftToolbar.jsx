@@ -270,7 +270,7 @@ const LeftToolbarFractions = ({ findOne }) => {
       findOne("shadow-arc").setAttrs({
         visible: true,
         innerRadius: 0,
-        outerRadius: height(i) * 2,
+        outerRadius: gridStep * 2,
         angle: 360 / (i + 1),
         rotation: (180 - 360 / (i + 1)) / 2,
         fill: colors["fractions"][i][0],
@@ -279,7 +279,7 @@ const LeftToolbarFractions = ({ findOne }) => {
     } else {
       findOne("shadow-circle").setAttrs({
         visible: true,
-        radius: height(i) * 2,
+        radius: gridStep * 2,
         fill: colors["fractions"][i][0],
         stroke: colors["fractions"][i][1],
       });
@@ -315,7 +315,8 @@ const LeftToolbarFractions = ({ findOne }) => {
       outerRadius: height(i) * 2,
       angle: 360 / (i + 1),
       rotation: (180 - 360 / (i + 1)) / 2,
-      fill: colors["fractions"][i][0],
+      fill: state.fill,
+      fillColor: colors["fractions"][i][0],
       stroke: colors["fractions"][i][1],
     });
   };

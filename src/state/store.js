@@ -37,7 +37,7 @@ export const useAppStore = create((set) => ({
   origin: { x: 0, y: 0 },
   selected: [],
   lockSelect: false,
-  fill: mode == "rods",
+  fill: mode != "geoboard",
   measures: false,
   toggleGlobal: (field) =>
     set(

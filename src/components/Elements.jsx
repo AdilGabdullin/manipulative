@@ -9,6 +9,7 @@ const Elements = () => {
     <>
       {mode == "rods" && <Rods />}
       {mode == "linking-cubes" && <Cubes />}
+      {mode == "fractions" && <Fractions />}
       <Image id="shadow-image" x={origin.x} y={origin.y} />
       <Rect id="shadow-rect" />
       <Arc id="shadow-arc" />
@@ -155,6 +156,79 @@ const Rod = ({ id, x, y, width, height, fill, fillColor, stroke, locked }) => {
       onDragMove={onDragMove}
       onDragEnd={onDragEnd}
       onClick={onClick}
+    />
+  );
+};
+
+const Fractions = () => {
+  const state = useAppStore();
+  const { elements } = state;
+  return (
+    <>
+      {Object.values(elements).map((element) => {
+        return <Fraction key={element.id} {...element} onClick={() => state.selectIds([element.id], element.locked)} />;
+      })}
+    </>
+  );
+};
+
+const Fraction = ({ id, x, y, angle, rotation, fill, fillColor, stroke, locked }) => {
+  const state = useAppStore();
+  const { origin, fdMode } = state;
+  const sens = 10;
+
+  const onDragStart = () => {
+    state.clearSelect();
+  };
+
+  const onDragMove = (e) => {
+    return;
+    const node = e.target;
+    const x = node.x() - origin.x;
+    const y = node.y() - origin.y;
+    for (const id in state.elements) {
+      const el = state.elements[id];
+      if (el.id == node.id || el.rotation != rotation) continue;
+      if (rotation == 1) {
+        if (numberBetween(x - 50, el.x - sens, el.x + sens) && numberBetween(y, el.y - sens, el.y + sens)) {
+          e.target.x(el.x + origin.x + 50);
+          e.target.y(el.y + origin.y);
+        }
+        if (numberBetween(x + 50, el.x - sens, el.x + sens) && numberBetween(y, el.y - sens, el.y + sens)) {
+          e.target.x(el.x + origin.x - 50);
+          e.target.y(el.y + origin.y);
+        }
+      } else {
+        if (numberBetween(y - 50, el.y - sens, el.y + sens) && numberBetween(x, el.x - sens, el.x + sens)) {
+          e.target.y(el.y + origin.y + 50);
+          e.target.x(el.x + origin.x);
+        }
+        if (numberBetween(y + 50, el.y - sens, el.y + sens) && numberBetween(x, el.x - sens, el.x + sens)) {
+          e.target.y(el.y + origin.y - 50);
+          e.target.x(el.x + origin.x);
+        }
+      }
+    }
+  };
+  const onDragEnd = (e) => {
+    return;
+    const dx = e.target.x() - x - origin.x;
+    const dy = e.target.y() - y - origin.y;
+    state.relocateElement(id, dx, dy);
+  };
+
+  return (
+    <Arc
+      id={id}
+      x={origin.x + x}
+      y={origin.y + y}
+      innerRadius={0}
+      outerRadius={gridStep * 2}
+      angle={angle}
+      rotation={rotation}
+      fill={fill ? fillColor : null}
+      stroke={stroke}
+      strokeWidth={2}
     />
   );
 };
