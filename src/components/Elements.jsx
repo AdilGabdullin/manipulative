@@ -46,7 +46,7 @@ const Cubes = () => {
 
 const Cube = ({ id, x, y, image, onClick, rotation, locked }) => {
   const state = useAppStore();
-  const { origin } = state;
+  const { origin , fdMode} = state;
   const sens = 10;
 
   const onDragStart = () => {
@@ -92,7 +92,7 @@ const Cube = ({ id, x, y, image, onClick, rotation, locked }) => {
       x={origin.x + x}
       y={origin.y + y}
       image={image}
-      draggable={!locked}
+      draggable={!locked && !fdMode}
       onDragStart={onDragStart}
       onDragMove={onDragMove}
       onDragEnd={onDragEnd}
@@ -108,15 +108,15 @@ const Rods = () => {
   return (
     <>
       {Object.values(elements).map((element) => (
-        <Shape key={element.id} {...element} />
+        <Rod key={element.id} {...element} />
       ))}
     </>
   );
 };
 
-const Shape = ({ id, x, y, width, height, fill, fillColor, stroke, locked }) => {
+const Rod = ({ id, x, y, width, height, fill, fillColor, stroke, locked }) => {
   const state = useAppStore();
-  const { origin, elements } = state;
+  const { origin, elements, fdMode } = state;
 
   const onDragStart = () => {
     state.clearSelect();
@@ -147,7 +147,7 @@ const Shape = ({ id, x, y, width, height, fill, fillColor, stroke, locked }) => 
       y={origin.y + y}
       width={width}
       height={height}
-      draggable={!locked}
+      draggable={!locked && !fdMode}
       fill={fill ? fillColor : null}
       stroke={stroke}
       onDragStart={onDragStart}

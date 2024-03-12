@@ -163,6 +163,9 @@ export const useAppStore = create((set) => ({
     set(
       produce((state) => {
         state.geoboardBands = [];
+        for(const id in current(state).elements) {
+          delete state.elements[id];
+        }
         pushHistory(state);
       })
     ),
