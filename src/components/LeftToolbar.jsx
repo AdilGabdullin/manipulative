@@ -52,7 +52,7 @@ const LeftToolbarRods = ({ findOne }) => {
     state.clearSelect();
     if (mode == "rods") {
       e.target.visible(false);
-      findOne("shadow-shape").setAttrs({
+      findOne("shadow-rect").setAttrs({
         visible: true,
         fill: fill(i),
         stroke: stroke(i),
@@ -73,7 +73,7 @@ const LeftToolbarRods = ({ findOne }) => {
   const onDragMove = (e, i) => {
     if (mode == "rods") {
       const { x, y } = magnet(i, getStageXY(e.target.getStage(), state));
-      findOne("shadow-shape").setAttrs({
+      findOne("shadow-rect").setAttrs({
         x: origin.x + x,
         y: origin.y + y,
       });
@@ -85,7 +85,7 @@ const LeftToolbarRods = ({ findOne }) => {
     e.target.setAttrs({ x: imageX(i), y: imageY(i), visible: true });
     switch (mode) {
       case "rods":
-        findOne("shadow-shape").setAttrs({ visible: false });
+        findOne("shadow-rect").setAttrs({ visible: false });
         state.addElement({
           type: "rod",
           x: x,
@@ -258,7 +258,6 @@ const LeftToolbarFractions = ({ findOne }) => {
   const { mode, origin } = state;
   const margin = 20;
   const height = (i) => (state.height - margin * 12) / 10;
-  const width = (i) => (height(i) * (i + 10)) / 10;
   const imageX = (i) => leftToolbarWidth / 2;
   const imageY = (i) => margin * (i + 2) + height(i) * (i + 1);
   const fill = (i) => colors["fractions"][i][0];
@@ -266,19 +265,29 @@ const LeftToolbarFractions = ({ findOne }) => {
 
   const onDragStart = (e, i) => {
     state.clearSelect();
-    if (mode == "rods") {
-      e.target.visible(false);
-      findOne("shadow-shape").setAttrs({
+    e.target.visible(false);
+    if (i > 0) {
+      findOne("shadow-arc").setAttrs({
         visible: true,
-        fill: fill(i),
-        stroke: stroke(i),
-        width: gridStep * (i + 1) - 2,
-        height: gridStep - 2,
+        innerRadius: 0,
+        outerRadius: height(i) * 2,
+        angle: 360 / (i + 1),
+        rotation: (180 - 360 / (i + 1)) / 2,
+        fill: colors["fractions"][i][0],
+        stroke: colors["fractions"][i][1],
+      });
+    } else {
+      findOne("shadow-circle").setAttrs({
+        visible: true,
+        radius: height(i) * 2,
+        fill: colors["fractions"][i][0],
+        stroke: colors["fractions"][i][1],
       });
     }
   };
 
   const magnet = (i, { x, y }) => {
+    return { x, y: y - height(0) };
     x = x - (gridStep * (i + 1)) / 2;
     x -= x % (gridStep / 2);
     y = y - gridStep / 2;
@@ -287,33 +296,28 @@ const LeftToolbarFractions = ({ findOne }) => {
   };
 
   const onDragMove = (e, i) => {
-    if (mode == "rods") {
-      const { x, y } = magnet(i, getStageXY(e.target.getStage(), state));
-      findOne("shadow-shape").setAttrs({
-        x: origin.x + x,
-        y: origin.y + y,
-      });
-    }
+    const { x, y } = magnet(i, getStageXY(e.target.getStage(), state));
+    findOne(i > 0 ? "shadow-arc" : "shadow-circle").setAttrs({
+      x: origin.x + x,
+      y: origin.y + y,
+    });
   };
 
   const onDragEnd = (e, i) => {
     const { x, y } = magnet(i, getStageXY(e.target.getStage(), state));
     e.target.setAttrs({ x: imageX(i), y: imageY(i), visible: true });
-    switch (mode) {
-      case "rods":
-        findOne("shadow-shape").setAttrs({ visible: false });
-        state.addElement({
-          type: "rod",
-          x: x,
-          y: y,
-          width: gridStep * (i + 1) - 2,
-          height: gridStep - 2,
-          fill: state.fill,
-          stroke: stroke(i),
-          fillColor: fill(i),
-        });
-        break;
-    }
+    findOne(i > 0 ? "shadow-arc" : "shadow-circle").setAttrs({ visible: false });
+    state.addElement({
+      type: "fraction",
+      x: x,
+      y: y,
+      innerRadius: 0,
+      outerRadius: height(i) * 2,
+      angle: 360 / (i + 1),
+      rotation: (180 - 360 / (i + 1)) / 2,
+      fill: colors["fractions"][i][0],
+      stroke: colors["fractions"][i][1],
+    });
   };
 
   return (

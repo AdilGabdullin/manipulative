@@ -1,4 +1,4 @@
-import { Image, Rect } from "react-konva";
+import { Arc, Circle, Image, Rect } from "react-konva";
 import { gridStep, useAppStore } from "../state/store";
 import { numberBetween } from "../util";
 
@@ -10,7 +10,9 @@ const Elements = () => {
       {mode == "rods" && <Rods />}
       {mode == "linking-cubes" && <Cubes />}
       <Image id="shadow-image" x={origin.x} y={origin.y} />
-      <Rect id="shadow-shape" />
+      <Rect id="shadow-rect" />
+      <Arc id="shadow-arc" />
+      <Circle id="shadow-circle" />
     </>
   );
 };
