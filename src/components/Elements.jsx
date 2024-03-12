@@ -217,7 +217,7 @@ const Fraction = ({ id, x, y, angle, rotation, fill, fillColor, stroke, locked }
     state.relocateElement(id, dx, dy);
   };
 
-  return (
+  return angle < 360 ? (
     <Arc
       id={id}
       x={origin.x + x}
@@ -226,6 +226,16 @@ const Fraction = ({ id, x, y, angle, rotation, fill, fillColor, stroke, locked }
       outerRadius={gridStep * 2}
       angle={angle}
       rotation={rotation}
+      fill={fill ? fillColor : null}
+      stroke={stroke}
+      strokeWidth={2}
+    />
+  ) : (
+    <Circle
+      id={id}
+      x={origin.x + x}
+      y={origin.y + y}
+      radius={gridStep * 2}
       fill={fill ? fillColor : null}
       stroke={stroke}
       strokeWidth={2}

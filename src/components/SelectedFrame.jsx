@@ -1,4 +1,4 @@
-import { Rect, Text } from "react-konva";
+import { Circle, Rect, Text } from "react-konva";
 import { gridStep, useAppStore } from "../state/store";
 import { bandPointRadius } from "./GeoboardBand";
 import { Fragment, useEffect } from "react";
@@ -87,7 +87,7 @@ const SelectedFrame = (props) => {
     {
       text: "Rotate",
       active: !lockSelect,
-      hide: ["geoboard", "linking-cubes"],
+      hide: ["geoboard", "linking-cubes", "fractions"],
       onClick: (e) => {
         state.rotateSelected();
       },
@@ -103,7 +103,7 @@ const SelectedFrame = (props) => {
     {
       text: "Angle On/Off",
       active: !lockSelect,
-      hide: ["linking-cubes", "rods"],
+      hide: ["linking-cubes", "rods", "fractions"],
       onClick: (e) => {
         state.toggleValueSelected("measures");
       },
@@ -202,6 +202,7 @@ const SelectedFrame = (props) => {
         shadowOffset={{ x: 3, y: 3 }}
         shadowOpacity={0.5}
       />
+      <RotateHandle x={x + width / 2} y={y + height + 20} />
       {menuButtons.map(({ text, active, onClick }, i) => (
         <Fragment key={text}>
           <Rect
@@ -247,6 +248,32 @@ const SelectedFrame = (props) => {
   );
 };
 
+const RotateHandle = ({ x, y }) => {
+  const state = useAppStore();
+  const { selected, mode } = state;
+  if (selected.length != 1 || mode != "fractions") {
+    return null;
+  }
+  const onDragStart = (e) => {};
+  const onDragMove = (e) => {
+    const node = e.target.getStage().findOne("#" + selected[0]);
+    node.setAttrs({ rotation: Math.random() * 360 });
+  };
+  const onDragEnd = (e) => {};
+  return (
+    <Circle
+      x={x}
+      y={y}
+      radius={10}
+      fill="#2196f3"
+      draggable
+      onDragStart={onDragStart}
+      onDragMove={onDragMove}
+      onDragEnd={onDragEnd}
+    />
+  );
+};
+
 function getBounds(state) {
   const { selected, geoboardBands, mode, elements } = state;
   let xMin = Infinity;
@@ -268,8 +295,8 @@ function getBounds(state) {
   } else {
     Object.keys(elements).map((key) => {
       const element = elements[key];
-      const { id, x, y, width, height } = element;
-      if (selected.includes(id)) {
+      const { x, y, width, height } = elementBox(element);
+      if (selected.includes(element.id)) {
         if (x < xMin) xMin = x;
         if (x + width > xMax) xMax = x + width;
         if (y < yMin) yMin = y;
@@ -278,6 +305,34 @@ function getBounds(state) {
     });
   }
   return { xMin, yMin, xMax, yMax };
+}
+
+function elementBox(element) {
+  if (!element.type == "fraction") return element;
+  const { x, y, rotation, angle } = element;
+
+  const angle1 = (rotation / 180) * Math.PI;
+  const angle2 = ((rotation + angle / 2) / 180) * Math.PI;
+  const angle3 = ((rotation + angle) / 180) * Math.PI;
+
+  const xs = [
+    x,
+    x + gridStep * 2 * Math.cos(angle1),
+    x + gridStep * 2 * Math.cos(angle2),
+    x + gridStep * 2 * Math.cos(angle3),
+  ];
+  const ys = [
+    y,
+    y + gridStep * 2 * Math.sin(angle1),
+    y + gridStep * 2 * Math.sin(angle2),
+    y + gridStep * 2 * Math.sin(angle3),
+  ];
+
+  const minX = Math.min(...xs);
+  const maxX = Math.max(...xs);
+  const minY = Math.min(...ys);
+  const maxY = Math.max(...ys);
+  return { x: minX, y: minY, width: maxX - minX, height: maxY - minY };
 }
 
 export default SelectedFrame;
