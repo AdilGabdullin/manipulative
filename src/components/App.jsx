@@ -28,10 +28,9 @@ const App = () => {
   const stageRef = useRef(null);
   const containerRef = useRef(null);
 
-  // console.log(
-  //   state.elements,
-  //   state.selected
-  // );
+  console.log(
+    Object.values(state.elements).map(e => e.fill)
+  );
 
   useLayoutEffect(() => {
     function updateSize() {

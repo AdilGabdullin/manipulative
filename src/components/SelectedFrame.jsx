@@ -1,5 +1,5 @@
 import { Rect, Text } from "react-konva";
-import { useAppStore } from "../state/store";
+import { gridStep, useAppStore } from "../state/store";
 import { bandPointRadius } from "./GeoboardBand";
 import { Fragment, useEffect } from "react";
 
@@ -55,8 +55,12 @@ const SelectedFrame = (props) => {
     setVisibility(e, false);
   };
   const onDragMove = (e) => {
-    const dx = (e.target.x() - x) / state.scale;
-    const dy = (e.target.y() - y) / state.scale;
+    let dx = (e.target.x() - x) / state.scale;
+    let dy = (e.target.y() - y) / state.scale;
+    if (mode == "rods") {
+      dx -= dx % (gridStep / 2);
+      dy -= dy % (gridStep / 2);
+    }
     if (mode == "geoboard") {
       selectedTargets.forEach(({ point, sides, x, y, pointIndex }) => {
         point.setAttrs({ x: x + dx, y: y + dy });
@@ -69,6 +73,7 @@ const SelectedFrame = (props) => {
       selectedTargets.forEach(({ node, x, y }) => {
         node.setAttrs({ x: x + dx, y: y + dy });
       });
+      e.target.setAttrs({ x: x + dx, y: y + dy });
     }
   };
   const onDragEnd = (e) => {
@@ -78,10 +83,11 @@ const SelectedFrame = (props) => {
     setVisibility(e, true);
   };
 
-  const menuButtons = [
+  let menuButtons = [
     {
       text: "Fill On/Off",
       active: !lockSelect,
+      hide: ["linking-cubes"],
       onClick: (e) => {
         state.toggleValueSelected("fill");
       },
@@ -89,6 +95,7 @@ const SelectedFrame = (props) => {
     {
       text: "Angle On/Off",
       active: !lockSelect,
+      hide: ["linking-cubes", "rods"],
       onClick: (e) => {
         state.toggleValueSelected("measures");
       },
@@ -96,6 +103,7 @@ const SelectedFrame = (props) => {
     {
       text: "Copy",
       active: !lockSelect,
+      hide: [],
       onClick: (e) => {
         state.copySelected();
       },
@@ -103,6 +111,7 @@ const SelectedFrame = (props) => {
     {
       text: "Delete",
       active: !lockSelect,
+      hide: [],
       onClick: (e) => {
         state.deleteSelected();
       },
@@ -110,6 +119,7 @@ const SelectedFrame = (props) => {
     {
       text: lockSelect ? "Unlock" : "Lock",
       active: true,
+      hide: [],
       onClick: (e) => {
         e.cancelBubble = true;
         state.lockSelected(!lockSelect);
@@ -117,10 +127,8 @@ const SelectedFrame = (props) => {
     },
   ];
 
-  if (state.mode != "geoboard") {
-    menuButtons.shift();
-    menuButtons.shift();
-  }
+  menuButtons = menuButtons.filter((button) => !button.hide.includes(mode));
+
   const buttonHeight = 20;
   const buttonWidth = 110;
   const padding = 8;

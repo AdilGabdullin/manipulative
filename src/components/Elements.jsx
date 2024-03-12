@@ -114,7 +114,7 @@ const Rods = () => {
   );
 };
 
-const Shape = ({ id, x, y, width, height, fill, stroke, locked }) => {
+const Shape = ({ id, x, y, width, height, fill, fillColor, stroke, locked }) => {
   const state = useAppStore();
   const { origin, elements } = state;
 
@@ -148,7 +148,7 @@ const Shape = ({ id, x, y, width, height, fill, stroke, locked }) => {
       width={width}
       height={height}
       draggable={!locked}
-      fill={fill}
+      fill={fill ? fillColor : null}
       stroke={stroke}
       onDragStart={onDragStart}
       onDragMove={onDragMove}

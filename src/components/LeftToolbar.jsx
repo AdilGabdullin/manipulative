@@ -81,8 +81,9 @@ const LeftToolbarShapes = ({ findOne }) => {
           y: y,
           width: gridStep * (i + 1) - 2,
           height: gridStep - 2,
-          fill: fill(i),
+          fill: state.fill,
           stroke: stroke(i),
+          fillColor: fill(i),
         });
         break;
     }

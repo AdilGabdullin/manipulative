@@ -15,8 +15,11 @@ const Menu = () => {
     <>
       <Line id="bottom-menu-line" points={[x, y, width, y]} stroke="#c0c0c0" />
       <Rect id="bottom-menu-rect" fill="#ffffff" x={x} y={y} width={width} height={bottomMenuHeight} />
-      {!fdMode && mode == "geoboard" && <DefaultMenu x={x} y={y} height={bottomMenuHeight} />}
-      {fdMode && <BrushMenu x={x} y={y} height={bottomMenuHeight} />}
+      {fdMode ? (
+        <BrushMenu x={x} y={y} height={bottomMenuHeight} />
+      ) : (
+        <DefaultMenu x={x} y={y} height={bottomMenuHeight} />
+      )}
     </>
   );
 };
@@ -24,12 +27,25 @@ const Menu = () => {
 const DefaultMenu = (props) => {
   const state = useAppStore();
   const { x, y, height } = props;
-  const {} = state;
+  const {mode} = state;
 
-  const buttons = [
-    { text: "Fills", field: "fill", image: document.getElementById("fill-button"), width: 70 },
-    { text: "Angle Measure", field: "measures", image: document.getElementById("angle-button"), width: 150 },
+  let buttons = [
+    {
+      text: "Fills",
+      visible: ["geoboard", "rods"],
+      field: "fill",
+      image: document.getElementById("fill-button"),
+      width: 70,
+    },
+    {
+      text: "Angle Measure",
+      visible: ["geoboard"],
+      field: "measures",
+      image: document.getElementById("angle-button"),
+      width: 150,
+    },
   ];
+  buttons = buttons.filter(b => b.visible.includes(mode));
   const padding = 8;
   const buttonHeight = 20;
   const buttonWidth = 110;

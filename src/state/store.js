@@ -36,7 +36,7 @@ export const useAppStore = create((set) => ({
   origin: { x: 0, y: 0 },
   selected: [],
   lockSelect: false,
-  fill: false,
+  fill: mode == "rods",
   measures: false,
   toggleGlobal: (field) =>
     set(
@@ -46,6 +46,9 @@ export const useAppStore = create((set) => ({
         state.geoboardBands.forEach((band) => {
           band[field] = value;
         });
+        for (const id in current(state).elements) {
+          state.elements[id][field] = value;
+        }
       })
     ),
   geoboardBands: [],
@@ -280,7 +283,9 @@ export const useAppStore = create((set) => ({
             state.geoboardBands[i][field] = !state.geoboardBands[i][field];
           }
         } else {
-          // toggle element
+          for (const id of current(state).selected) {
+            state.elements[id][field] = !state.elements[id][field];
+          }
         }
         pushHistory(state);
       })
@@ -288,7 +293,7 @@ export const useAppStore = create((set) => ({
   copySelected: () =>
     set(
       produce((state) => {
-        const shift = 20;
+        const shift = state.mode == "rods" ? gridStep * 0.5 : 20;
         if (state.mode == "geoboard") {
           const bands = searchSelectedBands(state);
           // select all points
