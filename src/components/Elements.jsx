@@ -46,7 +46,7 @@ const Cubes = () => {
 
 const Cube = ({ id, x, y, image, onClick, rotation, locked }) => {
   const state = useAppStore();
-  const { origin , fdMode} = state;
+  const { origin, fdMode } = state;
   const sens = 10;
 
   const onDragStart = () => {
@@ -103,11 +103,10 @@ const Cube = ({ id, x, y, image, onClick, rotation, locked }) => {
 
 const Rods = () => {
   const state = useAppStore();
-  const { elements } = state;
-
+  const elements = Object.values(state.elements).toSorted((a, b) => a.x + a.y - b.x - b.y);
   return (
     <>
-      {Object.values(elements).map((element) => (
+      {elements.map((element) => (
         <Rod key={element.id} {...element} />
       ))}
     </>

@@ -162,7 +162,7 @@ const App = () => {
   };
 
   const onMouseClick = (e) => {
-    console.log("stage click");
+    // console.log("stage click");
     const pos = getStageXY(stageRef.current, state);
     for (const band of state.geoboardBands) {
       for (const point of band.points) {
@@ -189,7 +189,7 @@ const App = () => {
   };
 
   const onMouseLeave = (e) => {
-    console.log("Leave");
+    // console.log("Leave");
     onMouseUp();
   };
 
