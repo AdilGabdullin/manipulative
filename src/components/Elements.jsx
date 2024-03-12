@@ -1,5 +1,5 @@
 import { Image, Rect } from "react-konva";
-import { useAppStore } from "../state/store";
+import { gridStep, useAppStore } from "../state/store";
 import { numberBetween } from "../util";
 
 const Elements = () => {
@@ -116,7 +116,30 @@ const Rods = () => {
 
 const Shape = ({ id, x, y, width, height, fill, stroke, locked }) => {
   const state = useAppStore();
-  const { origin } = state;
+  const { origin, elements } = state;
+
+  const onDragStart = () => {
+    state.clearSelect();
+  };
+
+  const onDragMove = (e) => {
+    const node = e.target;
+    let x = node.x() - origin.x;
+    let y = node.y() - origin.y;
+    x -= x % (gridStep / 2);
+    y -= y % (gridStep / 2);
+    node.setAttrs({ x: origin.x + x + 1, y: origin.y + y + 1 });
+  };
+  const onDragEnd = (e) => {
+    const dx = e.target.x() - x - origin.x;
+    const dy = e.target.y() - y - origin.y;
+    state.relocateElement(id, dx, dy);
+  };
+
+  const onClick = (e) => {
+    state.selectIds([id], elements[id].locked);
+  };
+
   return (
     <Rect
       id={id}
@@ -127,10 +150,10 @@ const Shape = ({ id, x, y, width, height, fill, stroke, locked }) => {
       draggable={!locked}
       fill={fill}
       stroke={stroke}
-      // onDragStart={onDragStart}
-      // onDragMove={onDragMove}
-      // onDragEnd={onDragEnd}
-      // onClick={onClick}
+      onDragStart={onDragStart}
+      onDragMove={onDragMove}
+      onDragEnd={onDragEnd}
+      onClick={onClick}
     />
   );
 };
