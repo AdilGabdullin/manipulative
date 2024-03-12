@@ -7,7 +7,7 @@ import { maxOffset } from "../components/Scrolls";
 import { freeDrawingSlice } from "./freeDrawingSlice";
 import { historySlice, pushHistory } from "./historySlice";
 
-const gridStep = 60;
+export const gridStep = 60;
 export const boardSize = {
   width: 2460,
   height: 1660,
@@ -15,7 +15,7 @@ export const boardSize = {
 
 const queryString = window.location.search;
 const urlParams = new URLSearchParams(queryString);
-const mode = urlParams.get("mode") ?? "geoboard";
+const mode = urlParams.get("mode").replace("cuisenaire-", "") ?? "geoboard";
 
 export const useAppStore = create((set) => ({
   ...freeDrawingSlice(set),

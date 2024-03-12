@@ -1,14 +1,16 @@
-import { Circle, Image } from "react-konva";
+import { Image, Rect } from "react-konva";
 import { useAppStore } from "../state/store";
-import { getStageXY, numberBetween } from "../util";
+import { numberBetween } from "../util";
 
 const Elements = () => {
   const state = useAppStore();
-  const { origin, elements } = state;
+  const { origin, mode } = state;
   return (
     <>
-      <Cubes />
+      {mode == "rods" && <Rods />}
+      {mode == "linking-cubes" && <Cubes />}
       <Image id="shadow-image" x={origin.x} y={origin.y} />
+      <Rect id="shadow-shape" />
     </>
   );
 };
@@ -95,6 +97,40 @@ const Cube = ({ id, x, y, image, onClick, rotation, locked }) => {
       onDragMove={onDragMove}
       onDragEnd={onDragEnd}
       onClick={onClick}
+    />
+  );
+};
+
+const Rods = () => {
+  const state = useAppStore();
+  const { elements } = state;
+
+  return (
+    <>
+      {Object.values(elements).map((element) => (
+        <Shape key={element.id} {...element} />
+      ))}
+    </>
+  );
+};
+
+const Shape = ({ id, x, y, width, height, fill, stroke, locked }) => {
+  const state = useAppStore();
+  const { origin } = state;
+  return (
+    <Rect
+      id={id}
+      x={origin.x + x}
+      y={origin.y + y}
+      width={width}
+      height={height}
+      draggable={!locked}
+      fill={fill}
+      stroke={stroke}
+      // onDragStart={onDragStart}
+      // onDragMove={onDragMove}
+      // onDragEnd={onDragEnd}
+      // onClick={onClick}
     />
   );
 };

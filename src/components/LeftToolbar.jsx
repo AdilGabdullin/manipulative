@@ -1,7 +1,7 @@
 import { Image, Rect } from "react-konva";
 import { useAppStore } from "../state/store";
 import { distance2, getStageXY, numberBetween } from "../util";
-import { useState } from "react";
+import { Fragment, useState } from "react";
 
 export const leftToolbarWidth = 180;
 const ids = {
@@ -11,23 +11,98 @@ const ids = {
 
 const colors = {
   geoboard: ["#d90080", "#900580", "#002a84", "#20a19a", "#fdd700", "#df040b"],
-  "cuisenaire-rods": ["red", "green", "blue", "#d90080", "#900580", "#002a84", "#20a19a", "#fdd700", "#df040b", "#000000"],
+  rods: [
+    ["#efefef", "#bdbdbd"],
+    ["#f44336", "#d32f2f"],
+    ["#8bc34a", "#689f38"],
+    ["#9c27b0", "#7b1fa2"],
+    ["#ffeb3b", "#fdd835"],
+    ["#009688", "#00796b"],
+    ["#616161", "#2b2e31"],
+    ["#795548", "#5d4037"],
+    ["#3f51b5", "#303f9f"],
+    ["#ff5722", "#e64a19"],
+    ["#e91e63", "#c2185b"],
+  ],
 };
 
 const LeftToolbarShapes = ({ findOne }) => {
   const state = useAppStore();
   const { mode, origin } = state;
   const margin = 20;
-  const height = (state.height - margin * 13) / 10;
-  const width = (i) => height * (i + 10) / 10;
-  const left = (i) => (leftToolbarWidth - width(i)) / 2;
-  const imageX = (i) => left;
-  const imageY = (i) => margin * (i + 2) + height * i;
+  const height = (i) => (state.height - margin * 17) / 10;
+  const width = (i) => (height(i) * (i + 10)) / 10;
+  const imageX = (i) => (leftToolbarWidth - width(i)) / 2;
+  const imageY = (i) => margin * (i + 2) + height(i) * i;
+  const fill = (i) => colors["rods"][i][0];
+  const stroke = (i) => colors["rods"][i][1];
+
+  const onDragStart = (e, i) => {
+    state.clearSelect();
+    if (mode == "rods") {
+      e.target.visible(false);
+      findOne("shadow-shape").setAttrs({
+        visible: true,
+        fill: fill(i),
+        stroke: stroke(i),
+        width: height(i) * (i + 1),
+        height: height(i),
+    });
+    }
+  };
+
+  const magnet = (i, { x, y }) => {
+    return { x, y };
+  };
+
+  const onDragMove = (e, i) => {
+    if (mode == "rods") {
+      const { x, y } = magnet(i, getStageXY(e.target.getStage(), state));
+      findOne("shadow-shape").setAttrs({
+        x: origin.x + x - width(i) / 2,
+        y: origin.y + y - height(i) / 2,
+      });
+    }
+  };
+
+  const onDragEnd = (e, i) => {
+    const { x, y } = magnet(i, getStageXY(e.target.getStage(), state));
+    e.target.setAttrs({ x: imageX(i), y: imageY(i), visible: true });
+    switch (mode) {
+      case "rods":
+        findOne("shadow-shape").setAttrs({ visible: false });
+        state.addElement({
+          type: "rod",
+          x: x - width(i) / 2,
+          y: y - height(i) / 2,
+          width: height(i) * (i + 1),
+          height: height(i),
+          fill: fill(i),
+          stroke: stroke(i),
+        });
+        break;
+    }
+  };
+
   return (
     <>
       <Rect fill="#f3f9ff" x={0} y={0} width={leftToolbarWidth} height={state.height} />
-      {colors["cuisenaire-rods"].map((color, i) => (
-        <Rect key={i} x={left(i)} y={imageY(i)} width={width(i)} height={height} fill={color} />
+      {colors["rods"].map((color, i) => (
+        <Fragment key={i}>
+          <Rect x={imageX(i)} y={imageY(i)} width={width(i)} height={height(i)} fill={color[0]} stroke={color[1]} />
+          <Rect
+            x={imageX(i)}
+            y={imageY(i)}
+            width={width(i)}
+            height={height(i)}
+            fill={color[0]}
+            stroke={color[1]}
+            draggable
+            onDragStart={(e) => onDragStart(e, i)}
+            onDragMove={(e) => onDragMove(e, i)}
+            onDragEnd={(e) => onDragEnd(e, i)}
+          />
+        </Fragment>
       ))}
     </>
   );
