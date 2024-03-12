@@ -30,6 +30,7 @@ export const useAppStore = create((set) => ({
   fullscreen: true,
   workspace: "square",
   grid: mode == "geoboard" ? initGrid("square") : [],
+  lineGrid: mode == "rods" ? initLineGrid() : [],
   width: 0,
   height: 0,
   origin: { x: 0, y: 0 },
@@ -408,6 +409,24 @@ function initGrid(workspace) {
       } else {
         grid.push({ x: x + Math.cos(Math.PI / 3) * gridStep * (i % 2), y: y });
       }
+    }
+  }
+  return grid;
+}
+
+function initLineGrid() {
+  const grid = [];
+  const { width, height } = boardSize;
+  const stepX = gridStep;
+  const stepY = gridStep;
+  const xStop = Math.ceil(width / 2 / stepX) * stepX + gridStep;
+  const xStart = -xStop;
+  const yStop = Math.ceil(height / 2 / stepX) * stepX;
+  const yStart = -yStop - gridStep;
+  for (let y = yStart, i = 0; y <= yStop; y += stepY, i += 1) {
+    for (let x = xStart; x <= xStop; x += stepX) {
+      grid.push([x, yStart, x, yStop]);
+      grid.push([xStart, y, xStop, y]);
     }
   }
   return grid;

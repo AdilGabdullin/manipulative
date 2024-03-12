@@ -12,7 +12,7 @@ import GeoboardBand, {
   bandSideSearch,
 } from "./GeoboardBand";
 import LeftToolbar, { leftToolbarWidth } from "./LeftToolbar";
-import { SEARCH_THRESHOLD,  getStageXY, pointsIsClose } from "../util";
+import { SEARCH_THRESHOLD, getStageXY, pointsIsClose } from "../util";
 import BottomToolbar, { bottomToolbarHeight } from "./BottomToolbar";
 import Menu from "./Menu";
 import Scrolls from "./Scrolls";
@@ -211,9 +211,18 @@ const App = () => {
         onMouseDown={onMouseDown}
         onMouseUp={onMouseUp}
         onMouseMove={onMouseMove}
-        onTouchStart={(e) => {e.evt.preventDefault(); onMouseDown(e)}}
-        onTouchEnd={(e) => {e.evt.preventDefault(); onMouseUp(e)}}
-        onTouchMove={(e) => {e.evt.preventDefault(); onMouseMove(e)}}
+        onTouchStart={(e) => {
+          e.evt.preventDefault();
+          onMouseDown(e);
+        }}
+        onTouchEnd={(e) => {
+          e.evt.preventDefault();
+          onMouseUp(e);
+        }}
+        onTouchMove={(e) => {
+          e.evt.preventDefault();
+          onMouseMove(e);
+        }}
         onMouseLeave={onMouseLeave}
         onWheel={onWheel}
       >
@@ -235,7 +244,12 @@ const App = () => {
               ))}
             </>
           )}
-          {state.mode != "geoboard" && <Elements />}
+          {state.mode != "geoboard" && (
+            <>
+              <Grid />
+              <Elements />
+            </>
+          )}
           <SelectRect />
         </Layer>
         <Layer
