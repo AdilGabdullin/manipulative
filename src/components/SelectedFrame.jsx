@@ -5,7 +5,7 @@ import { Fragment, useEffect } from "react";
 
 const SelectedFrame = (props) => {
   const state = useAppStore();
-  const { selected, lockSelect, geoboardBands, elements, origin, offset, scale, mode } = state;
+  const { selected, lockSelect, geoboardBands, origin, offset, scale, mode } = state;
 
   const selectedTargets = [];
 
@@ -73,7 +73,7 @@ const SelectedFrame = (props) => {
       selectedTargets.forEach(({ node, x, y }) => {
         node.setAttrs({ x: x + dx, y: y + dy });
       });
-      e.target.setAttrs({ x: x + dx, y: y + dy });
+      e.target.setAttrs({ x: x + dx * scale, y: y + dy * scale });
     }
   };
   const onDragEnd = (e) => {
@@ -84,6 +84,14 @@ const SelectedFrame = (props) => {
   };
 
   let menuButtons = [
+    {
+      text: "Rotate",
+      active: !lockSelect,
+      hide: ["geoboard", "linking-cubes"],
+      onClick: (e) => {
+        state.rotateSelected();
+      },
+    },
     {
       text: "Fill On/Off",
       active: !lockSelect,

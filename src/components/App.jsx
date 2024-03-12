@@ -28,9 +28,7 @@ const App = () => {
   const stageRef = useRef(null);
   const containerRef = useRef(null);
 
-  console.log(
-    Object.values(state.elements).map(e => e.fill)
-  );
+  // console.log(state);
 
   useLayoutEffect(() => {
     function updateSize() {
@@ -115,6 +113,7 @@ const App = () => {
         break;
       case "select-rect":
         selectRectMove(dragTarget, downPos, movePos, state.origin.x, state.origin.y);
+        findAll("popup-menu").forEach((node) => node.visible(false));
         break;
     }
   };
@@ -151,6 +150,7 @@ const App = () => {
         break;
       case "select-rect":
         selectRectStop(dragTarget, upPos);
+        findAll("popup-menu").forEach((node) => node.visible(true));
         state.select(downPos, upPos);
         break;
     }
