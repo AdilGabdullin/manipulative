@@ -1,4 +1,4 @@
-import { Image, Rect } from "react-konva";
+import { Arc, Circle, Image, Rect } from "react-konva";
 import { gridStep, useAppStore } from "../state/store";
 import { distance2, getStageXY, numberBetween } from "../util";
 import { Fragment, useState } from "react";
@@ -24,9 +24,20 @@ const colors = {
     ["#ff5722", "#e64a19"],
     ["#e91e63", "#c2185b"],
   ],
+  fractions: [
+    ["#f44336", "#d73130"],
+    ["#f06292", "#e92467"],
+    ["#ff9800", "#f57f07"],
+    ["#ffeb3b", "#fed936"],
+    ["#4caf50", "#388f3d"],
+    ["#03a9f4", "#0a8cd2"],
+    ["#3f51b5", "#3240a0"],
+    ["#9c27b0", "#7d22a3"],
+    ["#616161", "#2b2e31"],
+  ],
 };
 
-const LeftToolbarShapes = ({ findOne }) => {
+const LeftToolbarRods = ({ findOne }) => {
   const state = useAppStore();
   const { mode, origin } = state;
   const margin = 20;
@@ -242,12 +253,142 @@ const LeftToolbarImages = ({ findOne }) => {
   );
 };
 
+const LeftToolbarFractions = ({ findOne }) => {
+  const state = useAppStore();
+  const { mode, origin } = state;
+  const margin = 20;
+  const height = (i) => (state.height - margin * 12) / 10;
+  const width = (i) => (height(i) * (i + 10)) / 10;
+  const imageX = (i) => leftToolbarWidth / 2;
+  const imageY = (i) => margin * (i + 2) + height(i) * (i + 1);
+  const fill = (i) => colors["fractions"][i][0];
+  const stroke = (i) => colors["fractions"][i][1];
+
+  const onDragStart = (e, i) => {
+    state.clearSelect();
+    if (mode == "rods") {
+      e.target.visible(false);
+      findOne("shadow-shape").setAttrs({
+        visible: true,
+        fill: fill(i),
+        stroke: stroke(i),
+        width: gridStep * (i + 1) - 2,
+        height: gridStep - 2,
+      });
+    }
+  };
+
+  const magnet = (i, { x, y }) => {
+    x = x - (gridStep * (i + 1)) / 2;
+    x -= x % (gridStep / 2);
+    y = y - gridStep / 2;
+    y -= y % (gridStep / 2);
+    return { x: x + 1, y: y + 1 };
+  };
+
+  const onDragMove = (e, i) => {
+    if (mode == "rods") {
+      const { x, y } = magnet(i, getStageXY(e.target.getStage(), state));
+      findOne("shadow-shape").setAttrs({
+        x: origin.x + x,
+        y: origin.y + y,
+      });
+    }
+  };
+
+  const onDragEnd = (e, i) => {
+    const { x, y } = magnet(i, getStageXY(e.target.getStage(), state));
+    e.target.setAttrs({ x: imageX(i), y: imageY(i), visible: true });
+    switch (mode) {
+      case "rods":
+        findOne("shadow-shape").setAttrs({ visible: false });
+        state.addElement({
+          type: "rod",
+          x: x,
+          y: y,
+          width: gridStep * (i + 1) - 2,
+          height: gridStep - 2,
+          fill: state.fill,
+          stroke: stroke(i),
+          fillColor: fill(i),
+        });
+        break;
+    }
+  };
+
+  return (
+    <>
+      <Rect fill="#f3f9ff" x={0} y={0} width={leftToolbarWidth} height={state.height} />
+      <Circle
+        x={imageX(0)}
+        y={margin * 2 + height(0)}
+        radius={height(0)}
+        fill={colors["fractions"][0][0]}
+        stroke={colors["fractions"][0][1]}
+        strokeWidth={2}
+      />
+      <Circle
+        x={imageX(0)}
+        y={margin * 2 + height(0)}
+        radius={height(0)}
+        fill={colors["fractions"][0][0]}
+        stroke={colors["fractions"][0][1]}
+        strokeWidth={2}
+        draggable
+        onDragStart={(e) => onDragStart(e, 0)}
+        onDragMove={(e) => onDragMove(e, 0)}
+        onDragEnd={(e) => onDragEnd(e, 0)}
+      />
+      {colors["fractions"].map(
+        (color, i) =>
+          i > 0 && (
+            <Fragment key={i}>
+              <Arc
+                x={imageX(i)}
+                y={imageY(i)}
+                innerRadius={0}
+                outerRadius={height(i)}
+                angle={360 / (i + 1)}
+                rotation={(180 - 360 / (i + 1)) / 2}
+                fill={color[0]}
+                stroke={color[1]}
+                strokeWidth={2}
+              />
+              <Arc
+                x={imageX(i)}
+                y={imageY(i)}
+                innerRadius={0}
+                outerRadius={height(i)}
+                angle={360 / (i + 1)}
+                rotation={(180 - 360 / (i + 1)) / 2}
+                fill={color[0]}
+                stroke={color[1]}
+                strokeWidth={2}
+                draggable
+                onDragStart={(e) => onDragStart(e, i)}
+                onDragMove={(e) => onDragMove(e, i)}
+                onDragEnd={(e) => onDragEnd(e, i)}
+              />
+            </Fragment>
+          )
+      )}
+    </>
+  );
+};
+
 const LeftToolbar = (props) => {
   const state = useAppStore();
-  if (["geoboard", "linking-cubes"].includes(state.mode)) {
-    return <LeftToolbarImages {...props} />;
-  } else {
-    return <LeftToolbarShapes {...props} />;
+  switch (state.mode) {
+    case "geoboard":
+    case "linking-cubes":
+      return <LeftToolbarImages {...props} />;
+      break;
+    case "rods":
+      return <LeftToolbarRods {...props} />;
+      break;
+    case "fractions":
+      return <LeftToolbarFractions {...props} />;
+      break;
   }
 };
 

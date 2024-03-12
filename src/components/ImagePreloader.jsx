@@ -25,20 +25,20 @@ const config = {
     { id: "cube-0-up", src: "cubes/cube-0-up.png" },
     { id: "cube-0-right", src: "cubes/cube-0-right.png" },
   ],
-  "rods": [],
 };
 
 const ImagePreloader = () => {
   const state = useAppStore();
   const { mode, loadedImagesCount } = state;
+  const special = config[mode] || [];
   const onLoad = (e) => {
-    if (loadedImagesCount + 1 == config[mode].length + config.common.length) {
+    if (loadedImagesCount + 1 == special.length + config.common.length) {
       state.setValue("imagesReady", true);
     } else {
       state.setValue("loadedImagesCount", loadedImagesCount + 1);
     }
   };
-  const images = [...config.common, ...config[mode]];
+  const images = [...config.common, ...special];
   return (
     <div style={{ display: "none" }}>
       {images.map(({ id, src }) => (

@@ -15,7 +15,8 @@ export const boardSize = {
 
 const queryString = window.location.search;
 const urlParams = new URLSearchParams(queryString);
-const mode = urlParams.get("mode").replace("cuisenaire-", "") ?? "geoboard";
+const mode =
+  urlParams.get("mode").replace("cuisenaire-rods", "rods").replace("fraction-circle", "fractions") ?? "geoboard";
 
 export const useAppStore = create((set) => ({
   ...freeDrawingSlice(set),
@@ -163,7 +164,7 @@ export const useAppStore = create((set) => ({
     set(
       produce((state) => {
         state.geoboardBands = [];
-        for(const id in current(state).elements) {
+        for (const id in current(state).elements) {
           delete state.elements[id];
         }
         pushHistory(state);
