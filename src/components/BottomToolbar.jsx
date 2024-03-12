@@ -2,8 +2,6 @@ import { useAppStore } from "../state/store";
 
 export const bottomToolbarHeight = 60;
 
-const bgColor = "#c1cedb";
-
 const BottomToolbar = () => {
   const state = useAppStore();
   return (
@@ -12,8 +10,8 @@ const BottomToolbar = () => {
         <Button text="undo" imageSrc="buttons/undo-min.png" onClick={state.undo} />
         <Button text="redo" imageSrc="buttons/redo-min.png" onClick={state.redo} />
         <Button text="clear" imageSrc="buttons/clear-canvas-min.png" onClick={state.clear} />
-        <Button text="zoom in" imageSrc="buttons/zoom-in-min.png" onClick={() => state.setScale(state.scale - 0.1)} />
-        <Button text="zoom out" imageSrc="buttons/zoom-out-min.png" onClick={() => state.setScale(state.scale + 0.1)} />
+        <Button text="zoom in" imageSrc="buttons/zoom-in-min.png" onClick={() => state.setScale(state.scale + 0.1)} />
+        <Button text="zoom out" imageSrc="buttons/zoom-out-min.png" onClick={() => state.setScale(state.scale - 0.1)} />
         <Button text="fullscreen" imageSrc="buttons/full-screen-min.png" onClick={state.toggleFullscreen} />
 
         <Button text="brush" imageSrc="buttons/pencil-min.png" onClick={state.toggleBrush}  active={state.fdMode == "brush"}/>

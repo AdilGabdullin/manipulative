@@ -11,19 +11,18 @@ const ids = {
 
 const colors = {
   geoboard: ["#d90080", "#900580", "#002a84", "#20a19a", "#fdd700", "#df040b"],
-  "cuisenaire-rods": ["red", "green", "blue"],
+  "cuisenaire-rods": ["red", "green", "blue", "#d90080", "#900580", "#002a84", "#20a19a", "#fdd700", "#df040b", "#000000"],
 };
 
 const LeftToolbarShapes = ({ findOne }) => {
   const state = useAppStore();
   const { mode, origin } = state;
-  const width = (i) => (i + 8) * 10;
-  const height = 100;
-  const left = (i) => (leftToolbarWidth - width(i)) / 2;
   const margin = 20;
-
+  const height = (state.height - margin * 13) / 10;
+  const width = (i) => height * (i + 10) / 10;
+  const left = (i) => (leftToolbarWidth - width(i)) / 2;
   const imageX = (i) => left;
-  const imageY = (i) => margin * (i + 1) + height * i;
+  const imageY = (i) => margin * (i + 2) + height * i;
   return (
     <>
       <Rect fill="#f3f9ff" x={0} y={0} width={leftToolbarWidth} height={state.height} />

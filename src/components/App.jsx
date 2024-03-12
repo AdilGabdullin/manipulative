@@ -211,6 +211,9 @@ const App = () => {
         onMouseDown={onMouseDown}
         onMouseUp={onMouseUp}
         onMouseMove={onMouseMove}
+        onTouchStart={(e) => {e.evt.preventDefault(); onMouseDown(e)}}
+        onTouchEnd={(e) => {e.evt.preventDefault(); onMouseUp(e)}}
+        onTouchMove={(e) => {e.evt.preventDefault(); onMouseMove(e)}}
         onMouseLeave={onMouseLeave}
         onWheel={onWheel}
       >
