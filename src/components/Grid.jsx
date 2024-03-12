@@ -32,9 +32,9 @@ const Grid = () => {
     const { x, y } = origin;
     return (
       <>
-        {lineGrid.map((points) => {
+        {lineGrid.map((points, i) => {
           const [x1, y1, x2, y2] = points;
-          return <Line points={[x1 + x, y1 + y, x2 + x, y2 + y]} stroke={"#dddddb"} strokeWidth={1} />;
+          return <Line key={i} points={[x1 + x, y1 + y, x2 + x, y2 + y]} stroke={"#dddddb"} strokeWidth={1} />;
         })}
       </>
     );

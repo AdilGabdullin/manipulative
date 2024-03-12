@@ -1,5 +1,5 @@
 import { Image, Rect } from "react-konva";
-import { useAppStore } from "../state/store";
+import { gridStep, useAppStore } from "../state/store";
 import { distance2, getStageXY, numberBetween } from "../util";
 import { Fragment, useState } from "react";
 
@@ -45,22 +45,26 @@ const LeftToolbarShapes = ({ findOne }) => {
         visible: true,
         fill: fill(i),
         stroke: stroke(i),
-        width: height(i) * (i + 1),
-        height: height(i),
-    });
+        width: gridStep * (i + 1) - 2,
+        height: gridStep - 2,
+      });
     }
   };
 
   const magnet = (i, { x, y }) => {
-    return { x, y };
+    x = x - (gridStep * (i + 1)) / 2;
+    x -= x % (gridStep / 2);
+    y = y - gridStep / 2;
+    y -= y % (gridStep / 2);
+    return { x: x + 1, y: y + 1 };
   };
 
   const onDragMove = (e, i) => {
     if (mode == "rods") {
       const { x, y } = magnet(i, getStageXY(e.target.getStage(), state));
       findOne("shadow-shape").setAttrs({
-        x: origin.x + x - width(i) / 2,
-        y: origin.y + y - height(i) / 2,
+        x: origin.x + x,
+        y: origin.y + y,
       });
     }
   };
@@ -73,10 +77,10 @@ const LeftToolbarShapes = ({ findOne }) => {
         findOne("shadow-shape").setAttrs({ visible: false });
         state.addElement({
           type: "rod",
-          x: x - width(i) / 2,
-          y: y - height(i) / 2,
-          width: height(i) * (i + 1),
-          height: height(i),
+          x: x,
+          y: y,
+          width: gridStep * (i + 1) - 2,
+          height: gridStep - 2,
           fill: fill(i),
           stroke: stroke(i),
         });
