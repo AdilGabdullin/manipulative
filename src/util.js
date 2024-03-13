@@ -1,3 +1,5 @@
+import { gridStep } from "./state/store";
+
 export const SEARCH_THRESHOLD = 6;
 let id = 0;
 
@@ -118,4 +120,32 @@ export function clearSelected(state) {
   if (state.selected.length > 0) {
     while (state.selected.pop()) {}
   }
+}
+
+export function elementBox(element) {
+  if (element.type != "fraction") return element;
+  const { x, y, rotation, angle } = element;
+
+  const angle1 = (rotation / 180) * Math.PI;
+  const angle2 = ((rotation + angle / 2) / 180) * Math.PI;
+  const angle3 = ((rotation + angle) / 180) * Math.PI;
+
+  const xs = [
+    x,
+    x + gridStep * 2 * Math.cos(angle1),
+    x + gridStep * 2 * Math.cos(angle2),
+    x + gridStep * 2 * Math.cos(angle3),
+  ];
+  const ys = [
+    y,
+    y + gridStep * 2 * Math.sin(angle1),
+    y + gridStep * 2 * Math.sin(angle2),
+    y + gridStep * 2 * Math.sin(angle3),
+  ];
+
+  const minX = Math.min(...xs);
+  const maxX = Math.max(...xs);
+  const minY = Math.min(...ys);
+  const maxY = Math.max(...ys);
+  return { x: minX, y: minY, width: maxX - minX, height: maxY - minY };
 }

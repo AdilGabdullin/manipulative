@@ -1,7 +1,7 @@
 import { create } from "zustand";
 import { current, produce } from "immer";
 import { leftToolbarWidth } from "../components/LeftToolbar";
-import { clearSelected, newId, numberBetween } from "../util";
+import { clearSelected, elementBox, newId, numberBetween } from "../util";
 import { bottomToolbarHeight } from "../components/BottomToolbar";
 import { maxOffset } from "../components/Scrolls";
 import { freeDrawingSlice } from "./freeDrawingSlice";
@@ -204,6 +204,7 @@ export const useAppStore = create((set) => ({
   select: (downPos, upPos) =>
     set((state) => {
       const inRect = (x, y) => numberBetween(x, downPos.x, upPos.x) && numberBetween(y, downPos.y, upPos.y);
+      
       const selected = [];
       if (state.mode == "geoboard") {
         for (const band of state.geoboardBands) {
@@ -219,8 +220,12 @@ export const useAppStore = create((set) => ({
 
       Object.keys(state.elements).map((key) => {
         const element = state.elements[key];
-        const { id, x, y, locked } = element;
-        if (!locked && inRect(x, y)) {
+        const { id, locked } = element;
+        const {x, y, width, height} = elementBox(element);
+        if (
+          !locked &&
+          (inRect(x, y) || inRect(x + width, y) || inRect(x, y + height) || inRect(x + width, y + height))
+        ) {
           selected.push(id);
         }
       });
