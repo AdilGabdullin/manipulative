@@ -27,7 +27,7 @@ const Menu = () => {
 const DefaultMenu = (props) => {
   const state = useAppStore();
   const { x, y, height } = props;
-  const {mode} = state;
+  const { mode } = state;
 
   let buttons = [
     {
@@ -44,8 +44,15 @@ const DefaultMenu = (props) => {
       image: document.getElementById("angle-button"),
       width: 150,
     },
+    {
+      text: "Grid",
+      visible: ["rods"],
+      field: "showLineGrid",
+      image: null,
+      width: 35,
+    },
   ];
-  buttons = buttons.filter(b => b.visible.includes(mode));
+  buttons = buttons.filter((b) => b.visible.includes(mode));
   const padding = 8;
   const buttonHeight = 20;
   const buttonWidth = 110;
@@ -66,19 +73,21 @@ const DefaultMenu = (props) => {
               state.toggleGlobal(field);
             }}
           />
-          <Image
-            image={image}
-            x={x + padding + buttonWidth * i + 4}
-            y={y + padding + 4}
-            width={30}
-            height={(image.height / image.width) * 30}
-            onMouseUp={(e) => {
-              e.cancelBubble = true;
-              state.toggleGlobal(field);
-            }}
-          />
+          {image && (
+            <Image
+              image={image}
+              x={x + padding + buttonWidth * i + 4}
+              y={y + padding + 4}
+              width={30}
+              height={(image.height / image.width) * 30}
+              onMouseUp={(e) => {
+                e.cancelBubble = true;
+                state.toggleGlobal(field);
+              }}
+            />
+          )}
           <Text
-            x={x + padding * 2 + buttonWidth * i + 33}
+            x={x + padding * 2 + buttonWidth * i + (image ? 33 : 0)}
             y={y + padding * 2}
             text={text}
             fill={"black"}

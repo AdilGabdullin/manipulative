@@ -3,7 +3,7 @@ import { boardSize, gridStep, useAppStore } from "../state/store";
 
 const Grid = () => {
   const state = useAppStore();
-  const { mode, origin, lineGrid } = state;
+  const { mode, origin, lineGrid, showLineGrid } = state;
 
   if (mode == "geoboard") {
     return (
@@ -32,7 +32,7 @@ const Grid = () => {
     const { x, y } = origin;
     return (
       <>
-        {lineGrid.map((points, i) => {
+        {showLineGrid && lineGrid.map((points, i) => {
           const [x1, y1, x2, y2] = points;
           return <Line key={i} points={[x1 + x, y1 + y, x2 + x, y2 + y]} stroke={"#dddddb"} strokeWidth={1} />;
         })}

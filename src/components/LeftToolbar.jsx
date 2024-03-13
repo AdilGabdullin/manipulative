@@ -50,16 +50,14 @@ const LeftToolbarRods = ({ findOne }) => {
 
   const onDragStart = (e, i) => {
     state.clearSelect();
-    if (mode == "rods") {
-      e.target.visible(false);
-      findOne("shadow-rect").setAttrs({
-        visible: true,
-        fill: fill(i),
-        stroke: stroke(i),
-        width: gridStep * (i + 1) - 2,
-        height: gridStep - 2,
-      });
-    }
+    e.target.visible(false);
+    findOne("shadow-rect").setAttrs({
+      visible: true,
+      fill: fill(i),
+      stroke: stroke(i),
+      width: gridStep * (i + 1) - 2,
+      height: gridStep - 2,
+    });
   };
 
   const magnet = (i, { x, y }) => {
@@ -71,33 +69,27 @@ const LeftToolbarRods = ({ findOne }) => {
   };
 
   const onDragMove = (e, i) => {
-    if (mode == "rods") {
-      const { x, y } = magnet(i, getStageXY(e.target.getStage(), state));
-      findOne("shadow-rect").setAttrs({
-        x: origin.x + x,
-        y: origin.y + y,
-      });
-    }
+    const { x, y } = magnet(i, getStageXY(e.target.getStage(), state));
+    findOne("shadow-rect").setAttrs({
+      x: origin.x + x,
+      y: origin.y + y,
+    });
   };
 
   const onDragEnd = (e, i) => {
     const { x, y } = magnet(i, getStageXY(e.target.getStage(), state));
     e.target.setAttrs({ x: imageX(i), y: imageY(i), visible: true });
-    switch (mode) {
-      case "rods":
-        findOne("shadow-rect").setAttrs({ visible: false });
-        state.addElement({
-          type: "rod",
-          x: x,
-          y: y,
-          width: gridStep * (i + 1) - 2,
-          height: gridStep - 2,
-          fill: state.fill,
-          stroke: stroke(i),
-          fillColor: fill(i),
-        });
-        break;
-    }
+    findOne("shadow-rect").setAttrs({ visible: false });
+    state.addElement({
+      type: "rod",
+      x: x,
+      y: y,
+      width: gridStep * (i + 1) - 2,
+      height: gridStep - 2,
+      fill: state.fill,
+      stroke: stroke(i),
+      fillColor: fill(i),
+    });
   };
 
   return (
