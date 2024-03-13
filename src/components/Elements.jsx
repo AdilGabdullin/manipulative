@@ -182,36 +182,34 @@ const Fraction = ({ id, x, y, angle, rotation, fill, fillColor, stroke, locked }
   };
 
   const onDragMove = (e) => {
-    return;
-    const node = e.target;
-    const x = node.x() - origin.x;
-    const y = node.y() - origin.y;
-    for (const id in state.elements) {
-      const el = state.elements[id];
-      if (el.id == node.id || el.rotation != rotation) continue;
-      if (rotation == 1) {
-        if (numberBetween(x - 50, el.x - sens, el.x + sens) && numberBetween(y, el.y - sens, el.y + sens)) {
-          e.target.x(el.x + origin.x + 50);
-          e.target.y(el.y + origin.y);
-        }
-        if (numberBetween(x + 50, el.x - sens, el.x + sens) && numberBetween(y, el.y - sens, el.y + sens)) {
-          e.target.x(el.x + origin.x - 50);
-          e.target.y(el.y + origin.y);
-        }
-      } else {
-        if (numberBetween(y - 50, el.y - sens, el.y + sens) && numberBetween(x, el.x - sens, el.x + sens)) {
-          e.target.y(el.y + origin.y + 50);
-          e.target.x(el.x + origin.x);
-        }
-        if (numberBetween(y + 50, el.y - sens, el.y + sens) && numberBetween(x, el.x - sens, el.x + sens)) {
-          e.target.y(el.y + origin.y - 50);
-          e.target.x(el.x + origin.x);
-        }
-      }
-    }
+    // const node = e.target;
+    // const x = node.x() - origin.x;
+    // const y = node.y() - origin.y;
+    // for (const id in state.elements) {
+    //   const el = state.elements[id];
+    //   if (el.id == node.id || el.rotation != rotation) continue;
+    //   if (rotation == 1) {
+    //     if (numberBetween(x - 50, el.x - sens, el.x + sens) && numberBetween(y, el.y - sens, el.y + sens)) {
+    //       e.target.x(el.x + origin.x + 50);
+    //       e.target.y(el.y + origin.y);
+    //     }
+    //     if (numberBetween(x + 50, el.x - sens, el.x + sens) && numberBetween(y, el.y - sens, el.y + sens)) {
+    //       e.target.x(el.x + origin.x - 50);
+    //       e.target.y(el.y + origin.y);
+    //     }
+    //   } else {
+    //     if (numberBetween(y - 50, el.y - sens, el.y + sens) && numberBetween(x, el.x - sens, el.x + sens)) {
+    //       e.target.y(el.y + origin.y + 50);
+    //       e.target.x(el.x + origin.x);
+    //     }
+    //     if (numberBetween(y + 50, el.y - sens, el.y + sens) && numberBetween(x, el.x - sens, el.x + sens)) {
+    //       e.target.y(el.y + origin.y - 50);
+    //       e.target.x(el.x + origin.x);
+    //     }
+    //   }
+    // }
   };
   const onDragEnd = (e) => {
-    return;
     const dx = e.target.x() - x - origin.x;
     const dy = e.target.y() - y - origin.y;
     state.relocateElement(id, dx, dy);
@@ -234,6 +232,9 @@ const Fraction = ({ id, x, y, angle, rotation, fill, fillColor, stroke, locked }
       stroke={stroke}
       strokeWidth={2}
       draggable
+      onDragStart={onDragStart}
+      onDragMove={onDragMove}
+      onDragEnd={onDragEnd}
       onClick={onClick}
     />
   ) : (
@@ -246,6 +247,9 @@ const Fraction = ({ id, x, y, angle, rotation, fill, fillColor, stroke, locked }
       stroke={stroke}
       strokeWidth={2}
       draggable
+      onDragStart={onDragStart}
+      onDragMove={onDragMove}
+      onDragEnd={onDragEnd}
       onClick={onClick}
     />
   );
