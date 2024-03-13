@@ -124,8 +124,12 @@ export function clearSelected(state) {
 
 export function elementBox(element) {
   if (element.type != "fraction") return element;
+
   const { x, y, rotation, angle } = element;
 
+  if (angle == 360) {
+    return { x: x - gridStep * 2, y: y - gridStep * 2, width: gridStep * 4, height: gridStep * 4 };
+  }
   const angle1 = (rotation / 180) * Math.PI;
   const angle2 = ((rotation + angle / 2) / 180) * Math.PI;
   const angle3 = ((rotation + angle) / 180) * Math.PI;

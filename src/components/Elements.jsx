@@ -174,7 +174,7 @@ const Fractions = () => {
 
 const Fraction = ({ id, x, y, angle, rotation, fill, fillColor, stroke, locked }) => {
   const state = useAppStore();
-  const { origin, fdMode } = state;
+  const { origin, fdMode, elements } = state;
   const sens = 10;
 
   const onDragStart = () => {
@@ -217,6 +217,10 @@ const Fraction = ({ id, x, y, angle, rotation, fill, fillColor, stroke, locked }
     state.relocateElement(id, dx, dy);
   };
 
+  const onClick = (e) => {
+    state.selectIds([id], elements[id].locked);
+  };
+
   return angle < 360 ? (
     <Arc
       id={id}
@@ -229,6 +233,8 @@ const Fraction = ({ id, x, y, angle, rotation, fill, fillColor, stroke, locked }
       fill={fill ? fillColor : null}
       stroke={stroke}
       strokeWidth={2}
+      draggable
+      onClick={onClick}
     />
   ) : (
     <Circle
@@ -239,6 +245,8 @@ const Fraction = ({ id, x, y, angle, rotation, fill, fillColor, stroke, locked }
       fill={fill ? fillColor : null}
       stroke={stroke}
       strokeWidth={2}
+      draggable
+      onClick={onClick}
     />
   );
 };
