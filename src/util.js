@@ -116,6 +116,13 @@ export function setVisibility(e, value) {
     .forEach((node) => node.visible(value));
 }
 
+export function setVisibilityFrame(e, value) {
+  e.target
+    .getStage()
+    .find(".popup-menu,#selected-frame")
+    .forEach((node) => node.visible(value));
+}
+
 export function clearSelected(state) {
   if (state.selected.length > 0) {
     while (state.selected.pop()) {}

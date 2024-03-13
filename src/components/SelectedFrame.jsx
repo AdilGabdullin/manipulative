@@ -3,7 +3,7 @@ import { gridStep, useAppStore } from "../state/store";
 import { bandPointRadius } from "./GeoboardBand";
 import { Fragment, useEffect } from "react";
 import ResizeHandle from "./ResizeHandle";
-import { elementBox, setVisibility } from "../util";
+import { elementBox, setVisibility, setVisibilityFrame } from "../util";
 
 const SelectedFrame = (props) => {
   const state = useAppStore();
@@ -265,16 +265,34 @@ const SelectedFrame = (props) => {
 
 const RotateHandle = ({ x, y }) => {
   const state = useAppStore();
-  const { selected, mode } = state;
+  const { selected, mode, elements, origin } = state;
   if (selected.length != 1 || mode != "fractions") {
     return null;
   }
-  const onDragStart = (e) => {};
-  const onDragMove = (e) => {
-    const node = e.target.getStage().findOne("#" + selected[0]);
-    node.setAttrs({ rotation: Math.random() * 360 });
+
+  const onDragStart = (e) => {
+    setVisibilityFrame(e, false);
   };
-  const onDragEnd = (e) => {};
+  const onDragMove = (e) => {
+    const stage = e.target.getStage();
+    const { x, y } = stage.getPointerPosition();
+    const element = selected.length == 1 && elements[selected[0]];
+    const ex = origin.x + element.x;
+    const ey = origin.y + element.y;
+    const rotation = (Math.atan2(y - ey, x - ex) / Math.PI) * 180 - element.angle / 2;
+    const node = stage.findOne("#" + selected[0]);
+    node.setAttrs({ rotation });
+  };
+  const onDragEnd = (e) => {
+    setVisibilityFrame(e, true);
+    const stage = e.target.getStage();
+    const { x, y } = stage.getPointerPosition();
+    const element = selected.length == 1 && elements[selected[0]];
+    const ex = origin.x + element.x;
+    const ey = origin.y + element.y;
+    const rotation = (Math.atan2(y - ey, x - ex) / Math.PI) * 180 - element.angle / 2;
+    state.updateElement(element.id, { rotation });
+  };
   return (
     <Circle
       x={x}

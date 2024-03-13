@@ -28,7 +28,7 @@ const App = () => {
   const stageRef = useRef(null);
   const containerRef = useRef(null);
 
-  // console.log(state);
+  // console.log();
 
   useLayoutEffect(() => {
     function updateSize() {
