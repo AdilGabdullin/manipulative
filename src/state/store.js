@@ -1,7 +1,7 @@
 import { create } from "zustand";
 import { current, produce } from "immer";
 import { leftToolbarWidth } from "../components/LeftToolbar";
-import { newId, numberBetween } from "../util";
+import { clearSelected, newId, numberBetween } from "../util";
 import { bottomToolbarHeight } from "../components/BottomToolbar";
 import { maxOffset } from "../components/Scrolls";
 import { freeDrawingSlice } from "./freeDrawingSlice";
@@ -165,10 +165,12 @@ export const useAppStore = create((set) => ({
   clear: () =>
     set(
       produce((state) => {
+        const curr = current(state);
         state.geoboardBands = [];
-        for (const id in current(state).elements) {
+        for (const id in curr.elements) {
           delete state.elements[id];
         }
+        clearSelected(state);
         pushHistory(state);
       })
     ),
@@ -258,6 +260,15 @@ export const useAppStore = create((set) => ({
       })
     ),
 
+  updateElement: (id, attrs) =>
+    set(
+      produce((state) => {
+        for (const key in attrs) {
+          state.elements[id][key] = attrs[key];
+        }
+      })
+    ),
+
   deleteSelected: () =>
     set(
       produce((state) => {
@@ -270,7 +281,7 @@ export const useAppStore = create((set) => ({
               };
             })
             .filter((band) => band.points.length > 1);
-          while (state.selected.pop()) {}
+          clearSelected(state);
         } else {
           let id;
           while ((id = state.selected.pop())) {

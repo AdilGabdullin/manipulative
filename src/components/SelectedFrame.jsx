@@ -2,10 +2,12 @@ import { Circle, Rect, Text } from "react-konva";
 import { gridStep, useAppStore } from "../state/store";
 import { bandPointRadius } from "./GeoboardBand";
 import { Fragment, useEffect } from "react";
+import ResizeHandle from "./ResizeHandle";
+import { setVisibility } from "../util";
 
 const SelectedFrame = (props) => {
   const state = useAppStore();
-  const { selected, lockSelect, geoboardBands, origin, offset, scale, mode } = state;
+  const { selected, lockSelect, geoboardBands, origin, offset, scale, mode, elements } = state;
 
   const selectedTargets = [];
 
@@ -51,15 +53,31 @@ const SelectedFrame = (props) => {
   const width = (xMax - xMin + bandPointRadius * 2) * scale + 2;
   const height = (yMax - yMin + bandPointRadius * 2) * scale + 2;
 
+  const showResizeHandle = selected.length == 1 && elements[selected[0]].resizable;
+  const rhShift = showResizeHandle ? 10 : 0;
+
+  let rhNode, rhX, rhY;
+  const onMouseDown = (e) => {
+    if (showResizeHandle) {
+      rhNode = props.findOne("resize-handle");
+      rhX = rhNode.x();
+      rhY = rhNode.y();
+    }
+  };
+
   const onDragStart = (e) => {
     setVisibility(e, false);
   };
+
   const onDragMove = (e) => {
     let dx = (e.target.x() - x) / state.scale;
     let dy = (e.target.y() - y) / state.scale;
     if (mode == "rods") {
       dx -= dx % (gridStep / 2);
       dy -= dy % (gridStep / 2);
+      if (showResizeHandle) {
+        rhNode.setAttrs({ x: rhX + dx * state.scale, y: rhY + dy * state.scale });
+      }
     }
     if (mode == "geoboard") {
       selectedTargets.forEach(({ point, sides, x, y, pointIndex }) => {
@@ -76,6 +94,7 @@ const SelectedFrame = (props) => {
       e.target.setAttrs({ x: x + dx * scale, y: y + dy * scale });
     }
   };
+
   const onDragEnd = (e) => {
     const dx = (e.target.x() - x) / state.scale;
     const dy = (e.target.y() - y) / state.scale;
@@ -165,16 +184,10 @@ const SelectedFrame = (props) => {
       });
   };
 
-  const setVisibility = (e, value) => {
-    e.target
-      .getStage()
-      .find(".popup-menu,.angle-measure")
-      .forEach((node) => node.visible(value));
-  };
-
   return (
     <>
       <Rect
+        id="selected-frame"
         x={x}
         y={y}
         width={width}
@@ -182,14 +195,16 @@ const SelectedFrame = (props) => {
         stroke="#2196f3"
         strokeWidth={2}
         draggable={!lockSelect}
+        onMouseDown={onMouseDown}
         onDragStart={onDragStart}
         onDragMove={onDragMove}
         onDragEnd={onDragEnd}
       />
+      {showResizeHandle && <ResizeHandle frameProps={{ x, y, width, height }} element={elements[selected[0]]} />}
       <Rect
         id="popup-menu"
         name={"popup-menu"}
-        x={x + width + padding}
+        x={x + width + padding + rhShift}
         y={y}
         width={buttonWidth + padding * 2}
         height={padding * 3 * menuButtons.length + padding + buttonHeight * menuButtons.length}
@@ -208,7 +223,7 @@ const SelectedFrame = (props) => {
           <Rect
             id={"menu-item-" + i}
             name={"popup-menu"}
-            x={x + width + padding * 2}
+            x={x + width + padding * 2 + rhShift}
             y={y + padding + (padding * 3 + buttonHeight) * i}
             width={buttonWidth}
             height={buttonHeight + padding * 2}
@@ -226,7 +241,7 @@ const SelectedFrame = (props) => {
           <Text
             id={"menu-item-text" + i}
             name={"popup-menu"}
-            x={x + width + padding * 3}
+            x={x + width + padding * 3 + rhShift}
             y={y + padding * 2 + (padding * 3 + buttonHeight) * i}
             text={text}
             fill={active ? "black" : "#aaaaaa"}

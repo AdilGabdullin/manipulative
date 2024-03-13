@@ -1,5 +1,5 @@
 import { current, produce } from "immer";
-import { newId } from "../util";
+import { clearSelected, newId } from "../util";
 import { pushHistory } from "./historySlice";
 
 export const eraserSize = 20;
@@ -39,14 +39,14 @@ export const freeDrawingSlice = (set) => ({
     set(
       produce((state) => {
         state.fdMode = state.fdMode == "brush" ? null : "brush";
-        while (state.selected.pop()) {}
+        clearSelected(state);
       })
     ),
   toggleEraser: () =>
     set(
       produce((state) => {
         state.fdMode = state.fdMode == "eraser" ? null : "eraser";
-        while (state.selected.pop()) {}
+        clearSelected(state);
       })
     ),
 });

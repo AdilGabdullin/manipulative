@@ -106,3 +106,16 @@ export function checkClockwise(points) {
   }
   return area > 0.0;
 }
+
+export function setVisibility(e, value) {
+  e.target
+    .getStage()
+    .find(".popup-menu,.angle-measure")
+    .forEach((node) => node.visible(value));
+}
+
+export function clearSelected(state) {
+  if (state.selected.length > 0) {
+    while (state.selected.pop()) {}
+  }
+}

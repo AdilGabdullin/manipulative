@@ -2,6 +2,7 @@ import { Arc, Circle, Image, Rect } from "react-konva";
 import { gridStep, useAppStore } from "../state/store";
 import { distance2, getStageXY, numberBetween } from "../util";
 import { Fragment, useState } from "react";
+import ResizableIcon from "./ResizableIcon";
 
 export const leftToolbarWidth = 180;
 const ids = {
@@ -39,8 +40,8 @@ const colors = {
 
 const LeftToolbarRods = ({ findOne }) => {
   const state = useAppStore();
-  const { mode, origin } = state;
-  const margin = 20;
+  const { mode, origin, fullscreen } = state;
+  const margin = fullscreen ? 20 : 10;
   const height = (i) => (state.height - margin * 17) / 10;
   const width = (i) => (height(i) * (i + 10)) / 10;
   const imageX = (i) => (leftToolbarWidth - width(i)) / 2;
@@ -89,29 +90,42 @@ const LeftToolbarRods = ({ findOne }) => {
       fill: state.fill,
       stroke: stroke(i),
       fillColor: fill(i),
+      resizable: i == colors["rods"].length - 1,
     });
   };
 
   return (
     <>
       <Rect fill="#f3f9ff" x={0} y={0} width={leftToolbarWidth} height={state.height} />
-      {colors["rods"].map((color, i) => (
-        <Fragment key={i}>
-          <Rect x={imageX(i)} y={imageY(i)} width={width(i)} height={height(i)} fill={color[0]} stroke={color[1]} />
-          <Rect
-            x={imageX(i)}
-            y={imageY(i)}
-            width={width(i)}
-            height={height(i)}
-            fill={color[0]}
-            stroke={color[1]}
-            draggable
-            onDragStart={(e) => onDragStart(e, i)}
-            onDragMove={(e) => onDragMove(e, i)}
-            onDragEnd={(e) => onDragEnd(e, i)}
-          />
-        </Fragment>
-      ))}
+      {colors["rods"].map((color, i) => {
+        const last = i == colors["rods"].length - 1;
+        return (
+          <Fragment key={i}>
+            <Rect x={imageX(i)} y={imageY(i)} width={width(i)} height={height(i)} fill={color[0]} stroke={color[1]} />
+            <Rect
+              x={imageX(i)}
+              y={imageY(i)}
+              width={width(i)}
+              height={height(i)}
+              fill={color[0]}
+              stroke={color[1]}
+              draggable
+              onDragStart={(e) => onDragStart(e, i)}
+              onDragMove={(e) => onDragMove(e, i)}
+              onDragEnd={(e) => onDragEnd(e, i)}
+            />
+
+            {last && (
+              <ResizableIcon
+                width={width(i) / 3}
+                height={height(i) / 4}
+                x={imageX(i) + width(i) - width(i) / 3 / 2}
+                y={imageY(i) + height(i) / 2}
+              />
+            )}
+          </Fragment>
+        );
+      })}
     </>
   );
 };

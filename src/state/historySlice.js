@@ -1,4 +1,5 @@
 import { current, original, produce } from "immer";
+import { clearSelected } from "../util";
 
 export const historySlice = (set) => ({
   history: [{ geoboardBands: [], elements: {}, fdLines: {} }],
@@ -7,26 +8,30 @@ export const historySlice = (set) => ({
   undo: () =>
     set(
       produce((state) => {
+        const curr = current(state);
         if (state.historyIndex > 0) {
           state.historyIndex -= 1;
-          const history = current(state).history;
+          const history = curr.history;
           const historyState = history[state.historyIndex];
           state.geoboardBands = historyState.geoboardBands;
           state.elements = historyState.elements;
           state.fdLines = historyState.fdLines;
+          clearSelected(state);
         }
       })
     ),
   redo: () =>
     set(
       produce((state) => {
+        const curr = current(state);
         if (state.historyIndex < state.history.length - 1) {
           state.historyIndex += 1;
-          const history = current(state).history;
+          const history = curr.history;
           const historyState = history[state.historyIndex];
           state.geoboardBands = historyState.geoboardBands;
           state.elements = historyState.elements;
           state.fdLines = historyState.fdLines;
+          clearSelected(state);
         }
       })
     ),
