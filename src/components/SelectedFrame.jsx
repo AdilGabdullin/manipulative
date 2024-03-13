@@ -308,7 +308,7 @@ function getBounds(state) {
 }
 
 function elementBox(element) {
-  if (!element.type == "fraction") return element;
+  if (element.type != "fraction") return element;
   const { x, y, rotation, angle } = element;
 
   const angle1 = (rotation / 180) * Math.PI;
