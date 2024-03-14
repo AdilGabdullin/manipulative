@@ -179,7 +179,7 @@ const LeftToolbarCubes = ({ findOne }) => {
   const magnet = (i, { x, y }) => {
     for (const id in state.elements) {
       const el = state.elements[id];
-      if (el.rotation != i) continue;
+      if (el.rotation != i % 2) continue;
       if (i % 2 == 0) {
         if (numberBetween(x - d + 9, el.x - sens, el.x + sens) && numberBetween(y - d + 56, el.y - sens, el.y + sens)) {
           x = el.x + d - 9;
@@ -324,38 +324,13 @@ const LeftToolbarGeoboard = ({ findOne }) => {
     return { x, y };
   };
 
-  const onDragMove = (e, i) => {
-    if (mode == "linking-cubes") {
-      const { x, y } = magnet(i, getStageXY(e.target.getStage(), state));
-      findOne("shadow-image").setAttrs({
-        x: origin.x + x - 26,
-        y: origin.y + y - 26,
-      });
-    }
-  };
+  const onDragMove = (e, i) => {};
 
   const onDragEnd = (e, i) => {
     const { x, y } = magnet(i, getStageXY(e.target.getStage(), state));
     e.target.setAttrs({ x: imageX(i), y: imageY(i), visible: true });
-    switch (mode) {
-      case "geoboard":
-        const closest = closestGrid({ x, y });
-        state.addBand(closest.x, closest.y, colors[mode][i]);
-        break;
-      case "linking-cubes":
-        findOne("shadow-image").setAttrs({ visible: false });
-        state.addElement({
-          type: "cube",
-          rotation: i % 2,
-          x: x - 26,
-          y: y - 26,
-          width: 110,
-          height: (images[i].height * 110) / images[i].width,
-          // color: colors[mode][i],
-          image: images[i],
-        });
-        break;
-    }
+    const closest = closestGrid({ x, y });
+    state.addBand(closest.x, closest.y, colors[mode][i]);
   };
 
   const closestGrid = (movePos) => {
