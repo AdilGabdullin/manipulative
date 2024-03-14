@@ -230,7 +230,7 @@ const SelectedFrame = (props) => {
             cornerRadius={5}
             onMouseEnter={(e) => onMouseEnter(e, i)}
             onMouseLeave={(e) => onMouseLeave(e, i)}
-            onMouseUp={(e) => {
+            onPointerClick={(e) => {
               e.cancelBubble = true;
               if (!active) {
                 return;
@@ -247,7 +247,7 @@ const SelectedFrame = (props) => {
             fill={active ? "black" : "#aaaaaa"}
             fontSize={18}
             fontFamily="Calibri"
-            onMouseUp={(e) => {
+            onPointerClick={(e) => {
               e.cancelBubble = true;
               if (!active) {
                 return;

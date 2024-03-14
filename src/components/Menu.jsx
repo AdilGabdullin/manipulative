@@ -57,6 +57,12 @@ const DefaultMenu = (props) => {
   const buttonHeight = 20;
   const buttonWidth = 110;
 
+  const onClick = (field) => (e) => {
+    console.log(e.evt);
+    e.cancelBubble = true;
+    state.toggleGlobal(field);
+  };
+
   return (
     <>
       {buttons.map(({ text, field, image, width }, i) => (
@@ -68,10 +74,8 @@ const DefaultMenu = (props) => {
             height={buttonHeight + padding * 2}
             cornerRadius={5}
             fill={state[field] ? "#e8f4fe" : "#ffffff"}
-            onMouseUp={(e) => {
-              e.cancelBubble = true;
-              state.toggleGlobal(field);
-            }}
+            onMouseUp={onClick(field)}
+            onTap={onClick(field)}
           />
           {image && (
             <Image
@@ -80,11 +84,9 @@ const DefaultMenu = (props) => {
               y={y + padding + 4}
               width={30}
               height={(image.height / image.width) * 30}
-              onMouseUp={(e) => {
-                e.cancelBubble = true;
-                state.toggleGlobal(field);
-              }}
-            />
+              onMouseUp={onClick(field)}
+              onTap={onClick(field)}
+              />
           )}
           <Text
             x={x + padding * 2 + buttonWidth * i + (image ? 33 : 0)}
@@ -93,10 +95,8 @@ const DefaultMenu = (props) => {
             fill={"black"}
             fontSize={18}
             fontFamily="Calibri"
-            onMouseUp={(e) => {
-              e.cancelBubble = true;
-              state.toggleGlobal(field);
-            }}
+            onMouseUp={onClick(field)}
+            onTap={onClick(field)}
           />
         </Fragment>
       ))}
