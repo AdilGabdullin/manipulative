@@ -53,7 +53,7 @@ const SelectedFrame = (props) => {
   const width = (xMax - xMin + bandPointRadius * 2) * scale + 2;
   const height = (yMax - yMin + bandPointRadius * 2) * scale + 2;
 
-  const showResizeHandle = selected.length == 1 && elements[selected[0]].resizable;
+  const showResizeHandle = mode == "rods" && selected.length == 1 && elements[selected[0]].resizable;
   const rhShift = showResizeHandle ? 10 : 0;
 
   let rhNode, rhX, rhY;
