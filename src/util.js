@@ -23,7 +23,7 @@ export function getStageXY(stage, state) {
   return { x: x / scale + offset.x - origin.x, y: y / scale + offset.y - origin.y };
 }
 
-export function isPointCloseToLine(point, line1, line2) {
+export function isPointCloseToLine(point, line1, line2, dist = SEARCH_THRESHOLD) {
   const { x, y } = point;
   const x1 = line1.x;
   const y1 = line1.y;
@@ -51,7 +51,41 @@ export function isPointCloseToLine(point, line1, line2) {
   }
   let dx = x - xx;
   let dy = y - yy;
-  return dx * dx + dy * dy < SEARCH_THRESHOLD * SEARCH_THRESHOLD;
+  return dx * dx + dy * dy < dist * dist;
+}
+
+export function fractionMagnet(point, fraction, originalAnlge, origin) {
+  const { x, y, rotation, angle } = fraction;
+  if (angle == 360 && distance2(point, { x, y }) < SEARCH_THRESHOLD ** 2) {
+    return { x, y, rotation: 90 - originalAnlge / 2 };
+  }
+  if (
+    isPointCloseToLine(
+      point,
+      fraction,
+      {
+        x: x + cos(rotation) * gridStep * 2,
+        y: y + sin(rotation) * gridStep * 2,
+      },
+      30
+    )
+  ) {
+    return { x: origin.x + x, y: origin.y + y, rotation: rotation - originalAnlge };
+  }
+  if (
+    isPointCloseToLine(
+      point,
+      fraction,
+      {
+        x: x + cos(rotation + angle) * gridStep * 2,
+        y: y + sin(rotation + angle) * gridStep * 2,
+      },
+      30
+    )
+  ) {
+    return { x: origin.x + x, y: origin.y + y, rotation: rotation + angle  };
+  }
+  return null;
 }
 
 export function flattenPoints(points, originX, originY) {
@@ -159,4 +193,12 @@ export function elementBox(element) {
   const minY = Math.min(...ys);
   const maxY = Math.max(...ys);
   return { x: minX, y: minY, width: maxX - minX, height: maxY - minY };
+}
+
+export function cos(rotation) {
+  return Math.cos((rotation / 180) * Math.PI);
+}
+
+export function sin(rotation) {
+  return Math.sin((rotation / 180) * Math.PI);
 }

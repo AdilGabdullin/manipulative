@@ -281,7 +281,7 @@ const RotateHandle = ({ x, y }) => {
     const ey = origin.y + element.y;
     const rotation = (Math.atan2(y - ey, x - ex) / Math.PI) * 180 - element.angle / 2;
     const node = stage.findOne("#" + selected[0]);
-    node.setAttrs({ rotation });
+    node.setAttrs({ rotation: rotation });
   };
   const onDragEnd = (e) => {
     setVisibilityFrame(e, true);
@@ -295,6 +295,7 @@ const RotateHandle = ({ x, y }) => {
   };
   return (
     <Circle
+      name="popup-menu"
       x={x}
       y={y}
       radius={10}

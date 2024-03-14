@@ -1,6 +1,6 @@
 import { Arc, Circle, Image, Rect } from "react-konva";
 import { cubeShift, cubeSize, gridStep, useAppStore } from "../state/store";
-import { numberBetween } from "../util";
+import { cos, fractionMagnet, isPointCloseToLine, numberBetween, sin } from "../util";
 
 const Elements = () => {
   const state = useAppStore();
@@ -178,44 +178,34 @@ const Fractions = () => {
 const Fraction = ({ id, x, y, angle, rotation, fill, fillColor, stroke, locked }) => {
   const state = useAppStore();
   const { origin, fdMode, elements } = state;
-  const sens = 10;
 
   const onDragStart = () => {
     state.clearSelect();
   };
 
   const onDragMove = (e) => {
-    // const node = e.target;
-    // const x = node.x() - origin.x;
-    // const y = node.y() - origin.y;
-    // for (const id in state.elements) {
-    //   const el = state.elements[id];
-    //   if (el.id == node.id() || el.rotation != rotation) continue;
-    //   if (rotation == 1) {
-    //     if (numberBetween(x - 50, el.x - sens, el.x + sens) && numberBetween(y, el.y - sens, el.y + sens)) {
-    //       e.target.x(el.x + origin.x + 50);
-    //       e.target.y(el.y + origin.y);
-    //     }
-    //     if (numberBetween(x + 50, el.x - sens, el.x + sens) && numberBetween(y, el.y - sens, el.y + sens)) {
-    //       e.target.x(el.x + origin.x - 50);
-    //       e.target.y(el.y + origin.y);
-    //     }
-    //   } else {
-    //     if (numberBetween(y - 50, el.y - sens, el.y + sens) && numberBetween(x, el.x - sens, el.x + sens)) {
-    //       e.target.y(el.y + origin.y + 50);
-    //       e.target.x(el.x + origin.x);
-    //     }
-    //     if (numberBetween(y + 50, el.y - sens, el.y + sens) && numberBetween(x, el.x - sens, el.x + sens)) {
-    //       e.target.y(el.y + origin.y - 50);
-    //       e.target.x(el.x + origin.x);
-    //     }
-    //   }
-    // }
+    const node = e.target;
+    let { x, y } = e.target.getStage().getPointerPosition();
+    x -= origin.x;
+    y -= origin.y;
+    let magnet = null;
+    for (const id in state.elements) {
+      const el = state.elements[id];
+      if (el.id == node.id()) continue;
+      magnet = fractionMagnet({ x, y }, el, angle, origin) || magnet;
+    }
+    e.target.setAttrs(magnet || { x: node.x(), y: node.y(), rotation });
   };
   const onDragEnd = (e) => {
+    const node = e.target;
     const dx = e.target.x() - x - origin.x;
     const dy = e.target.y() - y - origin.y;
     state.relocateElement(id, dx, dy);
+    state.updateElement(id, {
+      x: node.x() - origin.x,
+      y: node.y() - origin.y,
+      rotation: node.rotation(),
+    });
   };
 
   const onClick = (e) => {
