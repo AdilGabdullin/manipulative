@@ -106,7 +106,7 @@ const SelectedFrame = (props) => {
       for (const id in state.elements) {
         const el = state.elements[id];
         if (el.id == node.id()) continue;
-        magnet = fractionMagnet({ x, y }, el, node.angle(), origin) || magnet;
+        magnet = fractionMagnet({ x, y }, el, node.angle ? node.angle() : 360, origin) || magnet;
       }
       node.setAttrs(magnet || { rotation: elements[selected[0]].rotation });
     }
