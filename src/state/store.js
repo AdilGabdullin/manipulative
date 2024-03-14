@@ -8,6 +8,7 @@ import { freeDrawingSlice } from "./freeDrawingSlice";
 import { historySlice, pushHistory } from "./historySlice";
 
 export const gridStep = 60;
+export const cubeSize = 80;
 export const boardSize = {
   width: 2460,
   height: 1660,
@@ -31,7 +32,7 @@ export const useAppStore = create((set) => ({
   fullscreen: true,
   workspace: "square",
   grid: mode == "geoboard" ? initGrid("square") : [],
-  lineGrid: mode == "rods" ? initLineGrid() : [],
+  lineGrid: mode == "rods" || true ? initLineGrid() : [],
   width: 0,
   height: 0,
   origin: { x: 0, y: 0 },
@@ -40,7 +41,7 @@ export const useAppStore = create((set) => ({
 
   fill: mode != "geoboard",
   measures: false,
-  showLineGrid: mode == "rods",
+  showLineGrid: mode == "rods" || true,
   toggleGlobal: (field) =>
     set(
       produce((state) => {
@@ -204,7 +205,7 @@ export const useAppStore = create((set) => ({
   select: (downPos, upPos) =>
     set((state) => {
       const inRect = (x, y) => numberBetween(x, downPos.x, upPos.x) && numberBetween(y, downPos.y, upPos.y);
-      
+
       const selected = [];
       if (state.mode == "geoboard") {
         for (const band of state.geoboardBands) {
@@ -221,7 +222,7 @@ export const useAppStore = create((set) => ({
       Object.keys(state.elements).map((key) => {
         const element = state.elements[key];
         const { id, locked } = element;
-        const {x, y, width, height} = elementBox(element);
+        const { x, y, width, height } = elementBox(element);
         if (
           !locked &&
           (inRect(x, y) || inRect(x + width, y) || inRect(x, y + height) || inRect(x + width, y + height))

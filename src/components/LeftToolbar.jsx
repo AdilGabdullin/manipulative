@@ -1,5 +1,5 @@
 import { Arc, Circle, Image, Rect } from "react-konva";
-import { gridStep, useAppStore } from "../state/store";
+import { cubeSize, gridStep, useAppStore } from "../state/store";
 import { distance2, getStageXY, numberBetween } from "../util";
 import { Fragment, useState } from "react";
 import ResizableIcon from "./ResizableIcon";
@@ -176,6 +176,7 @@ const LeftToolbarCubes = ({ findOne }) => {
 
   const sens = 10;
   const magnet = (i, { x, y }) => {
+    return {x,y};
     for (const id in state.elements) {
       const el = state.elements[id];
       if (el.rotation != i) continue;
@@ -206,8 +207,8 @@ const LeftToolbarCubes = ({ findOne }) => {
     if (mode == "linking-cubes") {
       const { x, y } = magnet(i, getStageXY(e.target.getStage(), state));
       findOne("shadow-image").setAttrs({
-        x: origin.x + x - 26,
-        y: origin.y + y - 26,
+        x: origin.x + x - cubeSize / 2 - (cubeSize - gridStep) / 2,
+        y: origin.y + y - cubeSize / 2 - (cubeSize - gridStep) / 2,
       });
     }
   };
@@ -225,11 +226,10 @@ const LeftToolbarCubes = ({ findOne }) => {
         state.addElement({
           type: "cube",
           rotation: i % 2,
-          x: x - 26,
-          y: y - 26,
-          width: 110,
-          height: (images[i].height * 110) / images[i].width,
-          // color: colors[mode][i],
+          x: x - cubeSize / 2,
+          y: y - cubeSize / 2,
+          width: gridStep - 5,
+          height: gridStep,
           image: images[i],
         });
         break;

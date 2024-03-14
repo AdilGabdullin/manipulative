@@ -1,5 +1,5 @@
 import { Arc, Circle, Image, Rect } from "react-konva";
-import { gridStep, useAppStore } from "../state/store";
+import { cubeSize, gridStep, useAppStore } from "../state/store";
 import { numberBetween } from "../util";
 
 const Elements = () => {
@@ -10,7 +10,7 @@ const Elements = () => {
       {mode == "rods" && <Rods />}
       {mode == "linking-cubes" && <Cubes />}
       {mode == "fractions" && <Fractions />}
-      <Image id="shadow-image" x={origin.x} y={origin.y} width={gridStep} height={gridStep} />
+      <Image id="shadow-image" x={origin.x} y={origin.y} width={cubeSize} height={cubeSize} />
       <Rect id="shadow-rect" />
       <Arc id="shadow-arc" />
       <Circle id="shadow-circle" />
@@ -47,7 +47,7 @@ const Cubes = () => {
   );
 };
 
-const Cube = ({ id, x, y, image, onClick, rotation, locked }) => {
+const Cube = ({ id, x, y, width, height, image, onClick, rotation, locked }) => {
   const state = useAppStore();
   const { origin, fdMode } = state;
   const sens = 10;
@@ -92,10 +92,10 @@ const Cube = ({ id, x, y, image, onClick, rotation, locked }) => {
   return (
     <Image
       id={id}
-      x={origin.x + x}
-      y={origin.y + y}
-      width={gridStep}
-      height={gridStep}
+      x={origin.x + x - (cubeSize - gridStep) / 2}
+      y={origin.y + y - (cubeSize - gridStep) / 2}
+      width={cubeSize}
+      height={cubeSize}
       image={image}
       draggable={!locked && !fdMode}
       onDragStart={onDragStart}
