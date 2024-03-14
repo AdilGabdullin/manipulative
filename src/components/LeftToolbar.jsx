@@ -1,5 +1,5 @@
 import { Arc, Circle, Image, Rect } from "react-konva";
-import { cubeSize, gridStep, useAppStore } from "../state/store";
+import { cubeShift, cubeSize, gridStep, useAppStore } from "../state/store";
 import { distance2, getStageXY, numberBetween } from "../util";
 import { Fragment, useState } from "react";
 import ResizableIcon from "./ResizableIcon";
@@ -174,29 +174,29 @@ const LeftToolbarCubes = ({ findOne }) => {
     });
   };
 
-  const sens = 10;
+  const d = 49;
+  const sens = 12;
   const magnet = (i, { x, y }) => {
-    return {x,y};
     for (const id in state.elements) {
       const el = state.elements[id];
       if (el.rotation != i) continue;
       if (i % 2 == 0) {
-        if (numberBetween(x - 26, el.x - sens, el.x + sens) && numberBetween(y - 26 + 50, el.y - sens, el.y + sens)) {
-          x = el.x + 26;
-          y = el.y + 26 - 50;
+        if (numberBetween(x - d + 9, el.x - sens, el.x + sens) && numberBetween(y - d + 56, el.y - sens, el.y + sens)) {
+          x = el.x + d - 9;
+          y = el.y + d - 56;
         }
-        if (numberBetween(x - 26, el.x - sens, el.x + sens) && numberBetween(y - 26 - 50, el.y - sens, el.y + sens)) {
-          x = el.x + 26;
-          y = el.y + 26 + 50;
+        if (numberBetween(x - d + 9, el.x - sens, el.x + sens) && numberBetween(y - d - 38, el.y - sens, el.y + sens)) {
+          x = el.x + d - 9;
+          y = el.y + d + 38;
         }
       } else {
-        if (numberBetween(y - 26, el.y - sens, el.y + sens) && numberBetween(x - 26 + 50, el.x - sens, el.x + sens)) {
-          y = el.y + 26;
-          x = el.x + 26 - 50;
+        if (numberBetween(y - d + 9, el.y - sens, el.y + sens) && numberBetween(x - d + 56, el.x - sens, el.x + sens)) {
+          y = el.y + d - 9;
+          x = el.x + d - 56;
         }
-        if (numberBetween(y - 26, el.y - sens, el.y + sens) && numberBetween(x - 26 - 50, el.x - sens, el.x + sens)) {
-          y = el.y + 26;
-          x = el.x + 26 + 50;
+        if (numberBetween(y - d + 9, el.y - sens, el.y + sens) && numberBetween(x - d - 38, el.x - sens, el.x + sens)) {
+          y = el.y + d - 9;
+          x = el.x + d + 38;
         }
       }
     }
@@ -207,8 +207,8 @@ const LeftToolbarCubes = ({ findOne }) => {
     if (mode == "linking-cubes") {
       const { x, y } = magnet(i, getStageXY(e.target.getStage(), state));
       findOne("shadow-image").setAttrs({
-        x: origin.x + x - cubeSize / 2 - (cubeSize - gridStep) / 2,
-        y: origin.y + y - cubeSize / 2 - (cubeSize - gridStep) / 2,
+        x: origin.x + x - cubeSize / 2 - cubeShift,
+        y: origin.y + y - cubeSize / 2 - cubeShift,
       });
     }
   };

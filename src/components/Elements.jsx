@@ -1,5 +1,5 @@
 import { Arc, Circle, Image, Rect } from "react-konva";
-import { cubeSize, gridStep, useAppStore } from "../state/store";
+import { cubeShift, cubeSize, gridStep, useAppStore } from "../state/store";
 import { numberBetween } from "../util";
 
 const Elements = () => {
@@ -50,7 +50,8 @@ const Cubes = () => {
 const Cube = ({ id, x, y, width, height, image, onClick, rotation, locked }) => {
   const state = useAppStore();
   const { origin, fdMode } = state;
-  const sens = 10;
+  const d = 47;
+  const sens = 12;
 
   const onDragStart = () => {
     state.clearSelect();
@@ -62,38 +63,38 @@ const Cube = ({ id, x, y, width, height, image, onClick, rotation, locked }) => 
     const y = node.y() - origin.y;
     for (const id in state.elements) {
       const el = state.elements[id];
-      if (el.id == node.id || el.rotation != rotation) continue;
+      if (el.id == node.id() || el.rotation != rotation) continue;
       if (rotation == 1) {
-        if (numberBetween(x - 50, el.x - sens, el.x + sens) && numberBetween(y, el.y - sens, el.y + sens)) {
-          e.target.x(el.x + origin.x + 50);
-          e.target.y(el.y + origin.y);
+        if (numberBetween(x - d, el.x - sens, el.x + sens) && numberBetween(y, el.y - sens, el.y + sens)) {
+          e.target.x(el.x + origin.x - cubeShift + d);
+          e.target.y(el.y + origin.y - cubeShift);
         }
-        if (numberBetween(x + 50, el.x - sens, el.x + sens) && numberBetween(y, el.y - sens, el.y + sens)) {
-          e.target.x(el.x + origin.x - 50);
-          e.target.y(el.y + origin.y);
+        if (numberBetween(x + d, el.x - sens, el.x + sens) && numberBetween(y, el.y - sens, el.y + sens)) {
+          e.target.x(el.x + origin.x - cubeShift - d);
+          e.target.y(el.y + origin.y - cubeShift);
         }
       } else {
-        if (numberBetween(y - 50, el.y - sens, el.y + sens) && numberBetween(x, el.x - sens, el.x + sens)) {
-          e.target.y(el.y + origin.y + 50);
-          e.target.x(el.x + origin.x);
+        if (numberBetween(y - d, el.y - sens, el.y + sens) && numberBetween(x, el.x - sens, el.x + sens)) {
+          e.target.y(el.y + origin.y - cubeShift + d);
+          e.target.x(el.x + origin.x - cubeShift);
         }
-        if (numberBetween(y + 50, el.y - sens, el.y + sens) && numberBetween(x, el.x - sens, el.x + sens)) {
-          e.target.y(el.y + origin.y - 50);
-          e.target.x(el.x + origin.x);
+        if (numberBetween(y + d, el.y - sens, el.y + sens) && numberBetween(x, el.x - sens, el.x + sens)) {
+          e.target.y(el.y + origin.y - cubeShift - d);
+          e.target.x(el.x + origin.x - cubeShift);
         }
       }
     }
   };
   const onDragEnd = (e) => {
-    const dx = e.target.x() - x - origin.x;
-    const dy = e.target.y() - y - origin.y;
+    const dx = e.target.x() - x - origin.x + cubeShift;
+    const dy = e.target.y() - y - origin.y + cubeShift;
     state.relocateElement(id, dx, dy);
   };
   return (
     <Image
       id={id}
-      x={origin.x + x - (cubeSize - gridStep) / 2}
-      y={origin.y + y - (cubeSize - gridStep) / 2}
+      x={origin.x + x - cubeShift}
+      y={origin.y + y - cubeShift}
       width={cubeSize}
       height={cubeSize}
       image={image}
@@ -189,7 +190,7 @@ const Fraction = ({ id, x, y, angle, rotation, fill, fillColor, stroke, locked }
     // const y = node.y() - origin.y;
     // for (const id in state.elements) {
     //   const el = state.elements[id];
-    //   if (el.id == node.id || el.rotation != rotation) continue;
+    //   if (el.id == node.id() || el.rotation != rotation) continue;
     //   if (rotation == 1) {
     //     if (numberBetween(x - 50, el.x - sens, el.x + sens) && numberBetween(y, el.y - sens, el.y + sens)) {
     //       e.target.x(el.x + origin.x + 50);

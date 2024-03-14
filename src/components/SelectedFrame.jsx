@@ -337,7 +337,6 @@ function getBounds(state) {
       }
     });
   }
-  console.log(xMax - xMin);
   return { xMin, yMin, xMax, yMax };
 }
 

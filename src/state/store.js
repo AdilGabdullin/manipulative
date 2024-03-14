@@ -9,6 +9,7 @@ import { historySlice, pushHistory } from "./historySlice";
 
 export const gridStep = 60;
 export const cubeSize = 80;
+export const cubeShift = (cubeSize - gridStep) / 2;
 export const boardSize = {
   width: 2460,
   height: 1660,
@@ -32,7 +33,7 @@ export const useAppStore = create((set) => ({
   fullscreen: true,
   workspace: "square",
   grid: mode == "geoboard" ? initGrid("square") : [],
-  lineGrid: mode == "rods" || true ? initLineGrid() : [],
+  lineGrid: mode == "rods" ? initLineGrid() : [],
   width: 0,
   height: 0,
   origin: { x: 0, y: 0 },
@@ -41,7 +42,7 @@ export const useAppStore = create((set) => ({
 
   fill: mode != "geoboard",
   measures: false,
-  showLineGrid: mode == "rods" || true,
+  showLineGrid: mode == "rods",
   toggleGlobal: (field) =>
     set(
       produce((state) => {
