@@ -153,25 +153,25 @@ const LeftToolbarRods = ({ findOne }) => {
 
 const LeftToolbarCubes = ({ findOne }) => {
   const state = useAppStore();
-  const { mode, origin } = state;
+  const { mode, origin, fullscreen } = state;
+  const margin = fullscreen ? 20 : 10;
   const images = ids[mode].map((id) => document.getElementById(id));
-  const width = 50;
-  const height = (width / images[0].width) * images[0].height;
-  const left = (leftToolbarWidth - width) / 2;
-  const margin = (state.height - images.length * height) / (images.length + 1);
+  const baseHeight = ((state.height - margin * 12) / images.length) * 2;
+  const baseWidth = (baseHeight / images[0].height) * images[0].width;
+  const height = baseWidth;
+  const width = baseWidth;
+  const left = (leftToolbarWidth - width * 2) / 3;
 
-  const imageX = (i) => left + left * (i % 2);
+  const imageX = (i) => left + (left + width) * (i % 2);
   const imageY = (i) => margin * (Math.floor(i / 2) + 1) + height * Math.floor(i / 2);
 
   const onDragStart = (e, i) => {
     state.clearSelect();
-    if (mode == "linking-cubes") {
-      e.target.visible(false);
-      findOne("shadow-image").setAttrs({
-        visible: true,
-        image: images[i],
-      });
-    }
+    e.target.visible(false);
+    findOne("shadow-image").setAttrs({
+      visible: true,
+      image: images[i],
+    });
   };
 
   const sens = 10;

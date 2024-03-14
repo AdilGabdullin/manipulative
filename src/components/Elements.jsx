@@ -10,7 +10,7 @@ const Elements = () => {
       {mode == "rods" && <Rods />}
       {mode == "linking-cubes" && <Cubes />}
       {mode == "fractions" && <Fractions />}
-      <Image id="shadow-image" x={origin.x} y={origin.y} />
+      <Image id="shadow-image" x={origin.x} y={origin.y} width={gridStep} height={gridStep} />
       <Rect id="shadow-rect" />
       <Arc id="shadow-arc" />
       <Circle id="shadow-circle" />
@@ -94,6 +94,8 @@ const Cube = ({ id, x, y, image, onClick, rotation, locked }) => {
       id={id}
       x={origin.x + x}
       y={origin.y + y}
+      width={gridStep}
+      height={gridStep}
       image={image}
       draggable={!locked && !fdMode}
       onDragStart={onDragStart}
