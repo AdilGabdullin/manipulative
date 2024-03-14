@@ -1,6 +1,6 @@
 import { Arc, Circle, Image, Rect } from "react-konva";
 import { cubeShift, cubeSize, gridStep, useAppStore } from "../state/store";
-import { cos, fractionMagnet, isPointCloseToLine, numberBetween, sin } from "../util";
+import { cos, fractionMagnet, getStageXY, isPointCloseToLine, numberBetween, sin } from "../util";
 
 const Elements = () => {
   const state = useAppStore();
@@ -185,9 +185,7 @@ const Fraction = ({ id, x, y, angle, rotation, fill, fillColor, stroke, locked }
 
   const onDragMove = (e) => {
     const node = e.target;
-    let { x, y } = e.target.getStage().getPointerPosition();
-    x -= origin.x;
-    y -= origin.y;
+    let { x, y } = getStageXY(e.target.getStage(), state)
     let magnet = null;
     for (const id in state.elements) {
       const el = state.elements[id];

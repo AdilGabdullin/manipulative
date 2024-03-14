@@ -1,6 +1,6 @@
 import { Arc, Circle, Image, Rect } from "react-konva";
 import { cubeShift, cubeSize, gridStep, useAppStore } from "../state/store";
-import { distance2, getStageXY, numberBetween } from "../util";
+import { distance2, fractionMagnet, getStageXY, numberBetween } from "../util";
 import { Fragment, useState } from "react";
 import ResizableIcon from "./ResizableIcon";
 
@@ -377,24 +377,28 @@ const LeftToolbarFractions = ({ findOne }) => {
   const height = (i) => (state.height - margin * 12) / 10;
   const imageX = (i) => leftToolbarWidth / 2;
   const imageY = (i) => margin * (i + 2) + height(i) * (i + 1);
-  const fill = (i) => colors["fractions"][i][0];
-  const stroke = (i) => colors["fractions"][i][1];
+  const angle = (i) => 360 / (i + 1);
+  const rotation = (i) => (180 - 360 / (i + 1)) / 2;
+
+  let shadowNode = null;
 
   const onDragStart = (e, i) => {
     state.clearSelect();
     e.target.visible(false);
     if (i > 0) {
-      findOne("shadow-arc").setAttrs({
+      shadowNode = findOne("shadow-arc");
+      shadowNode.setAttrs({
         visible: true,
         innerRadius: 0,
         outerRadius: gridStep * 2,
-        angle: 360 / (i + 1),
-        rotation: (180 - 360 / (i + 1)) / 2,
+        angle: angle(i),
+        rotation: rotation(i),
         fill: colors["fractions"][i][0],
         stroke: colors["fractions"][i][1],
       });
     } else {
-      findOne("shadow-circle").setAttrs({
+      shadowNode = findOne("shadow-circle");
+      shadowNode.setAttrs({
         visible: true,
         radius: gridStep * 2,
         fill: colors["fractions"][i][0],
@@ -404,19 +408,23 @@ const LeftToolbarFractions = ({ findOne }) => {
   };
 
   const magnet = (i, { x, y }) => {
-    return { x, y: y - height(0) };
-    x = x - (gridStep * (i + 1)) / 2;
-    x -= x % (gridStep / 2);
-    y = y - gridStep / 2;
-    y -= y % (gridStep / 2);
-    return { x: x + 1, y: y + 1 };
+    shadowNode = findOne("shadow-arc");
+    const node = shadowNode;
+    let magnet = null;
+    for (const id in state.elements) {
+      const el = state.elements[id];
+      if (el.id == node.id()) continue;
+      magnet = fractionMagnet({ x, y }, el, angle(i), origin) || magnet;
+    }
+    return magnet || { x: x + origin.x, y: y + origin.y, rotation: rotation(i) };
   };
 
   const onDragMove = (e, i) => {
-    const { x, y } = magnet(i, getStageXY(e.target.getStage(), state));
+    const { x, y, rotation } = magnet(i, getStageXY(e.target.getStage(), state));
     findOne(i > 0 ? "shadow-arc" : "shadow-circle").setAttrs({
-      x: origin.x + x,
-      y: origin.y + y,
+      x: x,
+      y: y,
+      rotation,
     });
   };
 
@@ -426,12 +434,12 @@ const LeftToolbarFractions = ({ findOne }) => {
     findOne(i > 0 ? "shadow-arc" : "shadow-circle").setAttrs({ visible: false });
     state.addElement({
       type: "fraction",
-      x: x,
-      y: y,
+      x: x - origin.x,
+      y: y - origin.y,
       innerRadius: 0,
       outerRadius: height(i) * 2,
-      angle: 360 / (i + 1),
-      rotation: (180 - 360 / (i + 1)) / 2,
+      angle: angle(i),
+      rotation: rotation(i),
       fill: state.fill,
       fillColor: colors["fractions"][i][0],
       stroke: colors["fractions"][i][1],
@@ -470,8 +478,8 @@ const LeftToolbarFractions = ({ findOne }) => {
                 y={imageY(i)}
                 innerRadius={0}
                 outerRadius={height(i)}
-                angle={360 / (i + 1)}
-                rotation={(180 - 360 / (i + 1)) / 2}
+                angle={angle(i)}
+                rotation={rotation(i)}
                 fill={color[0]}
                 stroke={color[1]}
                 strokeWidth={2}
@@ -481,8 +489,8 @@ const LeftToolbarFractions = ({ findOne }) => {
                 y={imageY(i)}
                 innerRadius={0}
                 outerRadius={height(i)}
-                angle={360 / (i + 1)}
-                rotation={(180 - 360 / (i + 1)) / 2}
+                angle={angle(i)}
+                rotation={rotation(i)}
                 fill={color[0]}
                 stroke={color[1]}
                 strokeWidth={2}

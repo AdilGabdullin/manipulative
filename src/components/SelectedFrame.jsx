@@ -3,7 +3,7 @@ import { gridStep, useAppStore } from "../state/store";
 import { bandPointRadius } from "./GeoboardBand";
 import { Fragment, useEffect } from "react";
 import ResizeHandle from "./ResizeHandle";
-import { elementBox, fractionMagnet, setVisibility, setVisibilityFrame } from "../util";
+import { elementBox, fractionMagnet, getStageXY, setVisibility, setVisibilityFrame } from "../util";
 
 const SelectedFrame = (props) => {
   const state = useAppStore();
@@ -99,9 +99,7 @@ const SelectedFrame = (props) => {
 
     if (mode == "fractions" && selectedTargets.length == 1) {
       const node = selectedTargets[0].node;
-      let { x, y } = e.target.getStage().getPointerPosition();
-      x -= origin.x;
-      y -= origin.y;
+      let { x, y } = getStageXY(e.target.getStage(), state);
       let magnet = null;
       for (const id in state.elements) {
         const el = state.elements[id];
@@ -292,7 +290,7 @@ const SelectedFrame = (props) => {
 const RotateHandle = ({ x, y }) => {
   const state = useAppStore();
   const { selected, mode, elements, origin } = state;
-  if (selected.length != 1 || mode != "fractions") {
+  if (selected.length != 1 || mode != "fractions" || elements[selected[0]].angle == 360) {
     return null;
   }
 
@@ -301,22 +299,17 @@ const RotateHandle = ({ x, y }) => {
   };
   const onDragMove = (e) => {
     const stage = e.target.getStage();
-    const { x, y } = stage.getPointerPosition();
+    const { x, y } = getStageXY(e.target.getStage(), state);
     const element = selected.length == 1 && elements[selected[0]];
-    const ex = origin.x + element.x;
-    const ey = origin.y + element.y;
-    const rotation = (Math.atan2(y - ey, x - ex) / Math.PI) * 180 - element.angle / 2;
+    const rotation = (Math.atan2(y - element.y, x - element.x) / Math.PI) * 180 - element.angle / 2;
     const node = stage.findOne("#" + selected[0]);
     node.setAttrs({ rotation: rotation });
   };
   const onDragEnd = (e) => {
     setVisibilityFrame(e, true);
-    const stage = e.target.getStage();
-    const { x, y } = stage.getPointerPosition();
+    const { x, y } = getStageXY(e.target.getStage(), state);
     const element = selected.length == 1 && elements[selected[0]];
-    const ex = origin.x + element.x;
-    const ey = origin.y + element.y;
-    const rotation = (Math.atan2(y - ey, x - ex) / Math.PI) * 180 - element.angle / 2;
+    const rotation = (Math.atan2(y - element.y, x - element.x) / Math.PI) * 180 - element.angle / 2;
     state.updateElement(element.id, { rotation });
   };
   return (
