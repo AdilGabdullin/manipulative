@@ -8,7 +8,7 @@ export const bottomMenuHeight = 50;
 
 const Menu = () => {
   const state = useAppStore();
-  const { width, height, fdMode, mode } = state;
+  const { width, height, fdMode } = state;
   const x = leftToolbarWidth;
   const y = height - bottomMenuHeight;
   return (
@@ -32,7 +32,7 @@ const DefaultMenu = (props) => {
   let buttons = [
     {
       text: "Fills",
-      visible: ["geoboard", "rods"],
+      visible: ["geoboard", "rods", "fractions"],
       field: "fill",
       image: document.getElementById("fill-button"),
       width: 70,
@@ -58,7 +58,6 @@ const DefaultMenu = (props) => {
   const buttonWidth = 110;
 
   const onClick = (field) => (e) => {
-    console.log(e.evt);
     e.cancelBubble = true;
     state.toggleGlobal(field);
   };
