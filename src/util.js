@@ -54,10 +54,10 @@ export function isPointCloseToLine(point, line1, line2, dist = SEARCH_THRESHOLD)
   return dx * dx + dy * dy < dist * dist;
 }
 
-export function fractionMagnet(point, fraction, originalAnlge, origin) {
+export function fractionMagnet(point, fraction, originalAngle, origin) {
   const { x, y, rotation, angle } = fraction;
   if (angle == 360 && distance2(point, { x, y }) < SEARCH_THRESHOLD ** 2) {
-    return { x, y, rotation: 90 - originalAnlge / 2 };
+    return { x, y, rotation: 90 - originalAngle / 2 };
   }
   if (
     isPointCloseToLine(
@@ -70,7 +70,7 @@ export function fractionMagnet(point, fraction, originalAnlge, origin) {
       30
     )
   ) {
-    return { x: origin.x + x, y: origin.y + y, rotation: rotation - originalAnlge };
+    return { x: origin.x + x, y: origin.y + y, rotation: rotation - originalAngle };
   }
   if (
     isPointCloseToLine(

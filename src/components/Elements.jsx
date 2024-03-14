@@ -198,9 +198,6 @@ const Fraction = ({ id, x, y, angle, rotation, fill, fillColor, stroke, locked }
   };
   const onDragEnd = (e) => {
     const node = e.target;
-    const dx = e.target.x() - x - origin.x;
-    const dy = e.target.y() - y - origin.y;
-    state.relocateElement(id, dx, dy);
     state.updateElement(id, {
       x: node.x() - origin.x,
       y: node.y() - origin.y,

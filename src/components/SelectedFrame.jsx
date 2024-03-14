@@ -3,7 +3,7 @@ import { gridStep, useAppStore } from "../state/store";
 import { bandPointRadius } from "./GeoboardBand";
 import { Fragment, useEffect } from "react";
 import ResizeHandle from "./ResizeHandle";
-import { elementBox, setVisibility, setVisibilityFrame } from "../util";
+import { elementBox, fractionMagnet, setVisibility, setVisibilityFrame } from "../util";
 
 const SelectedFrame = (props) => {
   const state = useAppStore();
@@ -67,6 +67,9 @@ const SelectedFrame = (props) => {
 
   const onDragStart = (e) => {
     setVisibility(e, false);
+    if (mode == "fractions" && selectedTargets.length == 1) {
+      setVisibilityFrame(e, false);
+    }
   };
 
   const onDragMove = (e) => {
@@ -93,13 +96,36 @@ const SelectedFrame = (props) => {
       });
       e.target.setAttrs({ x: x + dx * scale, y: y + dy * scale });
     }
+
+    if (mode == "fractions" && selectedTargets.length == 1) {
+      const node = selectedTargets[0].node;
+      let { x, y } = e.target.getStage().getPointerPosition();
+      x -= origin.x;
+      y -= origin.y;
+      let magnet = null;
+      for (const id in state.elements) {
+        const el = state.elements[id];
+        if (el.id == node.id()) continue;
+        magnet = fractionMagnet({ x, y }, el, node.angle(), origin) || magnet;
+      }
+      node.setAttrs(magnet || { rotation: elements[selected[0]].rotation });
+    }
   };
 
   const onDragEnd = (e) => {
-    const dx = (e.target.x() - x) / state.scale;
-    const dy = (e.target.y() - y) / state.scale;
-    state.relocateSelected(dx, dy);
-    setVisibility(e, true);
+    if (mode == "fractions" && selectedTargets.length == 1) {
+      const node = selectedTargets[0].node;
+      state.updateElement(selected[0], {
+        x: node.x() - origin.x,
+        y: node.y() - origin.y,
+        rotation: node.rotation(),
+      });
+    } else {
+      const dx = (e.target.x() - x) / state.scale;
+      const dy = (e.target.y() - y) / state.scale;
+      state.relocateSelected(dx, dy);
+    }
+    setVisibilityFrame(e, true);
   };
 
   let menuButtons = [
