@@ -59,6 +59,7 @@ export const useAppStore = create((set) => ({
     ),
   geoboardBands: [],
   elements: {},
+  lastActiveElement: null,
   setValue: (field, value) =>
     set(
       produce((state) => {
@@ -174,6 +175,7 @@ export const useAppStore = create((set) => ({
           delete state.elements[id];
         }
         clearSelected(state);
+        state.lastActiveElement = null;
         pushHistory(state);
       })
     ),
@@ -254,6 +256,7 @@ export const useAppStore = create((set) => ({
           for (const id of state.selected) {
             state.elements[id].x += dx;
             state.elements[id].y += dy;
+            state.lastActiveElement = id;
           }
         }
         pushHistory(state);
@@ -265,6 +268,7 @@ export const useAppStore = create((set) => ({
       produce((state) => {
         state.elements[id].x += dx;
         state.elements[id].y += dy;
+        state.lastActiveElement = id;
       })
     ),
 
@@ -296,6 +300,7 @@ export const useAppStore = create((set) => ({
             delete state.elements[id];
           }
         }
+        state.lastActiveElement = null;
         pushHistory(state);
       })
     ),
@@ -395,12 +400,18 @@ export const useAppStore = create((set) => ({
 
   // elements
 
-  addElement: (data) =>
+  addElement: (element) =>
     set(
       produce((state) => {
         const id = newId();
-        state.elements[id] = { ...data, id, locked: false };
+        if (element.x == undefined && element.y == undefined) {
+          state.elements[id] = { ...element, id, locked: false, ...getNextElementPosition(state, element) };
+        } else {
+          state.elements[id] = { ...element, id, locked: false };
+        }
         state.fdMode = null;
+        state.lastActiveElement = id;
+        clearSelected(state);
         pushHistory(state);
       })
     ),
@@ -475,4 +486,16 @@ function initLineGrid() {
     }
   }
   return grid;
+}
+
+function getNextElementPosition(state, element) {
+  if (state.lastActiveElement == null) {
+    return { x: 0, y: 0 };
+  }
+  const last = state.elements[state.lastActiveElement];
+  if (last.rotation == 0) {
+    return { x: last.x, y: last.y - 47 };
+  } else {
+    return { x: last.x + 47, y: last.y };
+  }
 }

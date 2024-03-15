@@ -16,6 +16,7 @@ export const historySlice = (set) => ({
           state.geoboardBands = historyState.geoboardBands;
           state.elements = historyState.elements;
           state.fdLines = historyState.fdLines;
+          state.lastActiveElement = historyState.lastActiveElement;
           clearSelected(state);
         }
       })
@@ -31,6 +32,7 @@ export const historySlice = (set) => ({
           state.geoboardBands = historyState.geoboardBands;
           state.elements = historyState.elements;
           state.fdLines = historyState.fdLines;
+          state.lastActiveElement = historyState.lastActiveElement;
           clearSelected(state);
         }
       })
@@ -49,6 +51,7 @@ export function pushHistory(state) {
     geoboardBands: currentState.geoboardBands,
     elements: currentState.elements,
     fdLines: currentState.fdLines,
+    lastActiveElement: currentState.lastActiveElement,
   });
   state.historyIndex += 1;
 }

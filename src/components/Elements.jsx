@@ -41,7 +41,16 @@ const Cubes = () => {
   return (
     <>
       {list.map(({ id }) => {
-        return <Cube key={id} {...elements[id]} onPointerClick={() => state.selectIds([id], elements[id].locked)} />;
+        return (
+          <Cube
+            key={id}
+            {...elements[id]}
+            onPointerClick={() => {
+              console.log(elements[id])
+              state.selectIds([id], elements[id].locked);
+            }}
+          />
+        );
       })}
     </>
   );
@@ -169,7 +178,13 @@ const Fractions = () => {
   return (
     <>
       {Object.values(elements).map((element) => {
-        return <Fraction key={element.id} {...element} onPointerClick={() => state.selectIds([element.id], element.locked)} />;
+        return (
+          <Fraction
+            key={element.id}
+            {...element}
+            onPointerClick={() => state.selectIds([element.id], element.locked)}
+          />
+        );
       })}
     </>
   );
@@ -185,7 +200,7 @@ const Fraction = ({ id, x, y, angle, rotation, fill, fillColor, stroke, locked }
 
   const onDragMove = (e) => {
     const node = e.target;
-    let { x, y } = getStageXY(e.target.getStage(), state)
+    let { x, y } = getStageXY(e.target.getStage(), state);
     let magnet = null;
     for (const id in state.elements) {
       const el = state.elements[id];

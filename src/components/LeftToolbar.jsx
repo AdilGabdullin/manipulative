@@ -153,7 +153,7 @@ const LeftToolbarRods = ({ findOne }) => {
 
 const LeftToolbarCubes = ({ findOne }) => {
   const state = useAppStore();
-  const { mode, origin, fullscreen } = state;
+  const { mode, origin, fullscreen, addElement } = state;
   const margin = fullscreen ? 20 : 10;
   const images = ids[mode].map((id) => document.getElementById(id));
   const baseHeight = ((state.height - margin * 12) / images.length) * 2;
@@ -267,6 +267,16 @@ const LeftToolbarCubes = ({ findOne }) => {
           onDragStart={(e) => onDragStart(e, i)}
           onDragMove={(e) => onDragMove(e, i)}
           onDragEnd={(e) => onDragEnd(e, i)}
+          onPointerClick={(e) => {
+            findOne("shadow-image").setAttrs({ visible: false });
+            addElement({
+              type: "cube",
+              rotation: i % 2,
+              width: gridStep - 5,
+              height: gridStep,
+              image: images[i],
+            });
+          }}
         />
       ))}
     </>
