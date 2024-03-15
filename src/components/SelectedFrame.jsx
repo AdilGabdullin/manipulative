@@ -131,7 +131,7 @@ const SelectedFrame = (props) => {
       text: "Rotate",
       active: !lockSelect,
       hide: ["geoboard", "linking-cubes", "fractions"],
-      onClick: (e) => {
+      onPointerClick: (e) => {
         state.rotateSelected();
       },
     },
@@ -139,7 +139,7 @@ const SelectedFrame = (props) => {
       text: "Fill On/Off",
       active: !lockSelect,
       hide: ["linking-cubes"],
-      onClick: (e) => {
+      onPointerClick: (e) => {
         state.toggleValueSelected("fill");
       },
     },
@@ -147,7 +147,7 @@ const SelectedFrame = (props) => {
       text: "Angle On/Off",
       active: !lockSelect,
       hide: ["linking-cubes", "rods", "fractions"],
-      onClick: (e) => {
+      onPointerClick: (e) => {
         state.toggleValueSelected("measures");
       },
     },
@@ -155,7 +155,7 @@ const SelectedFrame = (props) => {
       text: "Copy",
       active: !lockSelect,
       hide: [],
-      onClick: (e) => {
+      onPointerClick: (e) => {
         state.copySelected();
       },
     },
@@ -163,7 +163,7 @@ const SelectedFrame = (props) => {
       text: "Delete",
       active: !lockSelect,
       hide: [],
-      onClick: (e) => {
+      onPointerClick: (e) => {
         state.deleteSelected();
       },
     },
@@ -171,7 +171,7 @@ const SelectedFrame = (props) => {
       text: lockSelect ? "Unlock" : "Lock",
       active: true,
       hide: [],
-      onClick: (e) => {
+      onPointerClick: (e) => {
         e.cancelBubble = true;
         state.lockSelected(!lockSelect);
       },
@@ -242,7 +242,7 @@ const SelectedFrame = (props) => {
         shadowOpacity={0.5}
       />
       <RotateHandle x={x + width / 2} y={y + height + 20} />
-      {menuButtons.map(({ text, active, onClick }, i) => (
+      {menuButtons.map(({ text, active, onPointerClick }, i) => (
         <Fragment key={text}>
           <Rect
             id={"menu-item-" + i}
@@ -259,7 +259,7 @@ const SelectedFrame = (props) => {
               if (!active) {
                 return;
               }
-              onClick(e);
+              onPointerClick(e);
             }}
           />
           <Text
@@ -276,7 +276,7 @@ const SelectedFrame = (props) => {
               if (!active) {
                 return;
               }
-              onClick(e);
+              onPointerClick(e);
             }}
             onMouseEnter={(e) => onMouseEnter(e, i)}
             onMouseLeave={(e) => onMouseLeave(e, i)}

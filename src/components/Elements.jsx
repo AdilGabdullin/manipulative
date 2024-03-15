@@ -41,13 +41,13 @@ const Cubes = () => {
   return (
     <>
       {list.map(({ id }) => {
-        return <Cube key={id} {...elements[id]} onClick={() => state.selectIds([id], elements[id].locked)} />;
+        return <Cube key={id} {...elements[id]} onPointerClick={() => state.selectIds([id], elements[id].locked)} />;
       })}
     </>
   );
 };
 
-const Cube = ({ id, x, y, width, height, image, onClick, rotation, locked }) => {
+const Cube = ({ id, x, y, width, height, image, onPointerClick, rotation, locked }) => {
   const state = useAppStore();
   const { origin, fdMode } = state;
   const d = 47;
@@ -102,7 +102,7 @@ const Cube = ({ id, x, y, width, height, image, onClick, rotation, locked }) => 
       onDragStart={onDragStart}
       onDragMove={onDragMove}
       onDragEnd={onDragEnd}
-      onClick={onClick}
+      onPointerClick={onPointerClick}
     />
   );
 };
@@ -141,7 +141,7 @@ const Rod = ({ id, x, y, width, height, fill, fillColor, stroke, locked }) => {
     state.relocateElement(id, dx, dy);
   };
 
-  const onClick = (e) => {
+  const onPointerClick = (e) => {
     state.selectIds([id], elements[id].locked);
   };
 
@@ -158,7 +158,7 @@ const Rod = ({ id, x, y, width, height, fill, fillColor, stroke, locked }) => {
       onDragStart={onDragStart}
       onDragMove={onDragMove}
       onDragEnd={onDragEnd}
-      onClick={onClick}
+      onPointerClick={onPointerClick}
     />
   );
 };
@@ -169,7 +169,7 @@ const Fractions = () => {
   return (
     <>
       {Object.values(elements).map((element) => {
-        return <Fraction key={element.id} {...element} onClick={() => state.selectIds([element.id], element.locked)} />;
+        return <Fraction key={element.id} {...element} onPointerClick={() => state.selectIds([element.id], element.locked)} />;
       })}
     </>
   );
@@ -203,7 +203,7 @@ const Fraction = ({ id, x, y, angle, rotation, fill, fillColor, stroke, locked }
     });
   };
 
-  const onClick = (e) => {
+  const onPointerClick = (e) => {
     state.selectIds([id], elements[id].locked);
   };
 
@@ -223,7 +223,7 @@ const Fraction = ({ id, x, y, angle, rotation, fill, fillColor, stroke, locked }
       onDragStart={onDragStart}
       onDragMove={onDragMove}
       onDragEnd={onDragEnd}
-      onClick={onClick}
+      onPointerClick={onPointerClick}
     />
   ) : (
     <Circle
@@ -238,7 +238,7 @@ const Fraction = ({ id, x, y, angle, rotation, fill, fillColor, stroke, locked }
       onDragStart={onDragStart}
       onDragMove={onDragMove}
       onDragEnd={onDragEnd}
-      onClick={onClick}
+      onPointerClick={onPointerClick}
     />
   );
 };

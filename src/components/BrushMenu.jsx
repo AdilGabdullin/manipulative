@@ -42,7 +42,7 @@ const BrushMenu = (props) => {
 const ColorCircle = (props) => {
   const state = useAppStore();
   const { color, x, y, selected } = props;
-  const onClick = () => {
+  const onPointerClick = () => {
     state.setValue("fdBrushColor", color);
   };
   return (
@@ -63,7 +63,7 @@ const ColorCircle = (props) => {
         fill={color}
         stroke={"grey"}
         strokeWidth={1}
-        onClick={onClick}
+        onPointerClick={onPointerClick}
       />
     </>
   );
@@ -76,7 +76,7 @@ const WidthSelector = (props) => {
   const width = 80;
   const height = circleRadius * 2;
   const buttonWidth = 24;
-  const onClick = (e) => {
+  const onPointerClick = (e) => {
     const pos = e.target.getStage().getPointerPosition();
     if (pos.x - x < buttonWidth) {
       if (fdBrushSize > 2) state.setValue("fdBrushSize", fdBrushSize - 2);
@@ -88,7 +88,7 @@ const WidthSelector = (props) => {
   return (
     <>
       <Rect
-        onClick={onClick}
+        onPointerClick={onPointerClick}
         x={x}
         y={y}
         width={80}
@@ -98,19 +98,19 @@ const WidthSelector = (props) => {
         cornerRadius={4}
       />
       <Line
-        onClick={onClick}
+        onPointerClick={onPointerClick}
         points={[x + buttonWidth, y, x + buttonWidth, y + height]}
         strokeWidth={2}
         stroke={widthSelectorColor}
       />
       <Line
-        onClick={onClick}
+        onPointerClick={onPointerClick}
         points={[x + width - buttonWidth, y, x + width - buttonWidth, y + height]}
         strokeWidth={2}
         stroke={widthSelectorColor}
       />
       <Text
-        onClick={onClick}
+        onPointerClick={onPointerClick}
         x={x + 9}
         y={y + 5}
         text={"-"}
@@ -127,7 +127,7 @@ const WidthSelector = (props) => {
         fontFamily="Calibri"
       />
       <Text
-        onClick={onClick}
+        onPointerClick={onPointerClick}
         x={x + width - 17}
         y={y + 5}
         text={"+"}
@@ -143,13 +143,13 @@ const EraseAll = (props) => {
   const state = useAppStore();
 
   const { x, y } = props;
-  const onClick = () => {
+  const onPointerClick = () => {
     state.fdRemoveAll();
   };
   return (
     <>
       <Rect
-        onClick={onClick}
+        onPointerClick={onPointerClick}
         x={x}
         y={y}
         width={80}
@@ -158,7 +158,7 @@ const EraseAll = (props) => {
         cornerRadius={circleRadius}
       />
       <Text
-        onClick={onClick}
+        onPointerClick={onPointerClick}
         x={x + 8}
         y={y + 6}
         text={"Erase All"}
