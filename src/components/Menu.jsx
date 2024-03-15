@@ -51,6 +51,13 @@ const DefaultMenu = (props) => {
       image: null,
       width: 35,
     },
+    {
+      text: "Groups",
+      visible: ["linking-cubes"],
+      field: "showGroups",
+      image: null,
+      width: 50,
+    },
   ];
   buttons = buttons.filter((b) => b.visible.includes(mode));
   const padding = 8;

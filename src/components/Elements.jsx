@@ -22,7 +22,7 @@ const Elements = () => {
 
 const Cubes = () => {
   const state = useAppStore();
-  const { elements } = state;
+  const { elements, showGroups } = state;
 
   const list = Object.keys(elements).map((id) => elements[id]);
   list.sort((a, b) => {
@@ -53,7 +53,7 @@ const Cubes = () => {
           />
         );
       })}
-      <CubeGroups cubes={list}/>
+      {showGroups && <CubeGroups cubes={list} />}
     </>
   );
 };

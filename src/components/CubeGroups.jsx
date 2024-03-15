@@ -1,12 +1,12 @@
 import { Line, Text } from "react-konva";
 import { useAppStore } from "../state/store";
 
-const CubeGroups = ({cubes}) => {
+const CubeGroups = ({ cubes }) => {
   const groups = createGroups(cubes);
 
   return (
     <>
-      {groups[1].map((group, i) => (
+      {groups.map((group, i) => (
         <CubeGroup key={i} group={group} />
       ))}
     </>
@@ -54,7 +54,7 @@ const CubeGroupNumbers = ({ group }) => {
   return (
     <>
       {numbers.map((n, i) => (
-        <Text text={n} x={x[i]} y={y} stroke="black" fontSize={30} fontFamily="Arial" fill={"black"} />
+        <Text key={i} text={n} x={x[i]} y={y} stroke="black" fontSize={30} fontFamily="Arial" fill={"black"} />
       ))}
     </>
   );
@@ -63,13 +63,28 @@ const CubeGroupNumbers = ({ group }) => {
 const CubeGroupSum = ({ group }) => {
   const state = useAppStore();
   const { origin } = state;
-  const x = group[0].x;
-  const y = group[0].y + 75;
-  const x2 = group[group.length - 1].x + 47;
+  let { x: x1, y: y1, rotation } = group[0];
+  let points;
+  let { x: x2, y: y2 } = group[group.length - 1];
+  let textPos;
+  if (rotation) {
+    x2 += 47;
+    y1 += 75;
+    points = [x1, y1 - 5, x1, y1, x2, y1, x2, y1 - 5];
+    textPos = { x: (x1 + x2) / 2 + origin.x, y: y1 + origin.y };
+  } else {
+    x1 -= 25;
+    y1 += 11;
+    y2 += 55;
+    points = [x1 + 5, y1, x1, y1, x1, y2, x1 + 5, y2];
+    textPos = { x: x1 + origin.x, y: (y1 + y2) / 2 + origin.y };
+  }
+
+  points = addOrigin(points, origin);
   return (
     <>
-      <Line points={addOrigin([x, y - 5, x, y, x2, y, x2, y - 5], origin)} stroke="black" strokeWidth={2} />
-      <Text text={group.length} x={(x + x2) / 2+ origin.x} y={y+ origin.y} stroke="black" fontSize={30} fontFamily="Arial" fill={"black"} />
+      <Line points={points} stroke="black" strokeWidth={2} />
+      <Text text={group.length} {...textPos} stroke="black" fontSize={30} fontFamily="Arial" fill={"black"} />
     </>
   );
 };
@@ -79,11 +94,11 @@ function addOrigin(points, origin) {
 }
 
 export function createGroups(cubes) {
-  const groups = [[], []];
+  const groups = [];
 
   for (const cube of Object.values(cubes)) {
     let inGroup = false;
-    for (const group of groups[cube.rotation]) {
+    for (const group of groups) {
       if (cubeIsStartOfGroup(cube, group)) {
         group.unshift(cube);
         inGroup = true;
@@ -96,18 +111,18 @@ export function createGroups(cubes) {
       }
     }
     if (!inGroup) {
-      groups[cube.rotation].push([cube]);
+      groups.push([cube]);
     }
   }
   return groups;
 }
 
 function cubeIsStartOfGroup(cube, group) {
-  return cube.x == group[0].x - 47;
+  return cube.rotation == 0 ? cube.y == group[0].y - 47 : cube.x == group[0].x - 47;
 }
 
 function cubeIsEndOfGroup(cube, group) {
-  return cube.x == group[group.length - 1].x + 47;
+  return cube.rotation == 0 ? cube.y == group[group.length - 1].y + 47 : cube.x == group[group.length - 1].x + 47;
 }
 
 export default CubeGroups;
