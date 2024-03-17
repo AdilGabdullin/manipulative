@@ -33,7 +33,18 @@ const ids = {
 
 const colors = {
   geoboard: ["#d90080", "#900580", "#002a84", "#20a19a", "#fdd700", "#df040b"],
-  "linking-cubes": [],
+  "linking-cubes": [
+    "#ffc000",
+    "#e22da1",
+    "#1b57c1",
+    "#009bdd",
+    "#20a19a",
+    "#008f30",
+    "#4ba82c",
+    "#fdd700",
+    "#df040b",
+    "#8e8e8e",
+  ],
   rods: [
     ["#efefef", "#bdbdbd"],
     ["#f44336", "#d32f2f"],
@@ -232,6 +243,7 @@ const LeftToolbarCubes = ({ findOne }) => {
           width: gridStep - 5,
           height: gridStep,
           image: images[i],
+          color: colors["linking-cubes"][Math.floor(i / 2)],
         });
         break;
     }
@@ -276,6 +288,7 @@ const LeftToolbarCubes = ({ findOne }) => {
               width: gridStep - 5,
               height: gridStep,
               image: images[i],
+              color: colors["linking-cubes"][Math.floor(i / 2)],
             });
           }}
         />

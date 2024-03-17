@@ -5,7 +5,7 @@ const CubeGroups = ({ groups }) => {
   return (
     <>
       {groups.map((group, i) => (
-        <CubeGroup key={i} group={group} />
+        <CubeGroup key={group[0].id + "-group"} group={group} />
       ))}
     </>
   );
@@ -13,17 +13,20 @@ const CubeGroups = ({ groups }) => {
 
 const CubeGroup = ({ group }) => {
   const numbers = [];
+  const colors = [];
   let lastImage = null;
   let currentNumber = 0;
   for (const cube of group) {
     if (lastImage === null) {
       currentNumber++;
       lastImage = cube.image;
+      colors.push(cube.color);
     } else if (cube.image === lastImage) {
       currentNumber++;
     } else {
       numbers.push(currentNumber);
       lastImage = cube.image;
+      colors.push(cube.color);
       currentNumber = 1;
     }
   }
@@ -31,24 +34,31 @@ const CubeGroup = ({ group }) => {
 
   return (
     <>
-      <CubeGroupNumbers group={group} numbers={numbers} />
+      <CubeGroupNumbers group={group} numbers={numbers} colors={colors} />
       {numbers.length > 1 && <CubeGroupSum group={group} />}
     </>
   );
 };
 
-const CubeGroupNumbers = ({ group, numbers }) => {
+const CubeGroupNumbers = ({ group, numbers, colors }) => {
   const state = useAppStore();
   const { origin } = state;
-
   const x = [];
-  let left = 0;
-  for (const n of numbers) {
-    x.push(left + (n / 2) * 47 + origin.x + group[0].x);
-    left += n * 47;
-  }
+  const y = [];
+  let shift = 0;
+  const rotation = group[0].rotation;
 
-  const y = group[0].y - 16 + origin.y;
+  for (const n of numbers) {
+    if (rotation) {
+      x.push(shift + (n / 2) * 47 + group[0].x - 4);
+      y.push(group[0].y - 27);
+      shift += n * 47;
+    } else {
+      x.push(group[0].x + 62);
+      y.push(-shift - (n / 2) * 47 + group[0].y + 43);
+      shift += n * 47;
+    }
+  }
   return (
     <>
       {numbers.map((n, i) => (
@@ -56,12 +66,12 @@ const CubeGroupNumbers = ({ group, numbers }) => {
           name="cube-group"
           key={i}
           text={n}
-          x={x[i]}
-          y={y}
-          stroke="black"
+          x={origin.x + x[i]}
+          y={origin.y + y[i]}
+          stroke={colors[i]}
+          fill={colors[i]}
           fontSize={30}
           fontFamily="Arial"
-          fill={"black"}
         />
       ))}
     </>
@@ -76,30 +86,31 @@ const CubeGroupSum = ({ group }) => {
   let { x: x2, y: y2 } = group[group.length - 1];
   let textPos;
   if (rotation) {
+    x1 += 2;
     x2 += 47;
     y1 += 75;
-    points = [x1, y1 - 5, x1, y1, x2, y1, x2, y1 - 5];
-    textPos = { x: (x1 + x2) / 2 + origin.x, y: y1 + origin.y };
+    points = [x1, y1 - 8, x1, y1, x2, y1, x2, y1 - 8];
+    textPos = { x: (x1 + x2) / 2 + origin.x - 7, y: y1 + origin.y + 4 };
   } else {
-    x1 -= 25;
-    y1 += 11;
-    y2 += 55;
-    points = [x1 + 5, y1, x1, y1, x1, y2, x1 + 5, y2];
-    textPos = { x: x1 + origin.x, y: (y1 + y2) / 2 + origin.y };
+    x1 -= 18;
+    y1 += 11 + 47;
+    y2 += 56 - 47;
+    points = [x1 + 8, y1, x1, y1, x1, y2, x1 + 8, y2];
+    textPos = { x: x1 + origin.x - 20, y: (y1 + y2) / 2 + origin.y - 10 };
   }
 
   points = addOrigin(points, origin);
   return (
     <>
-      <Line name="cube-group" points={points} stroke="black" strokeWidth={2} />
+      <Line name="cube-group" points={points} stroke={"#56544d"} strokeWidth={2} />
       <Text
         name="cube-group"
         text={group.length}
         {...textPos}
-        stroke="black"
+        stroke={"#56544d"}
+        fill={"#56544d"}
         fontSize={30}
         fontFamily="Arial"
-        fill={"black"}
       />
     </>
   );

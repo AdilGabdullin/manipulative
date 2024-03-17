@@ -44,7 +44,7 @@ export const useAppStore = create((set) => ({
   fill: mode != "geoboard",
   measures: false,
   showLineGrid: mode == "rods",
-  showGroups: true,
+  showGroups: false,
   toggleGlobal: (field) =>
     set(
       produce((state) => {
