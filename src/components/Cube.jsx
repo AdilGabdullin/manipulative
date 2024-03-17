@@ -1,6 +1,6 @@
 import { Image } from "react-konva";
 import { cubeShift, cubeSize, useAppStore } from "../state/store";
-import { numberBetween } from "../util";
+import { numberBetween, setVisibility } from "../util";
 
 const Cube = (props) => {
   const { id, x, y, image, onPointerClick, rotation, locked, group } = props;
@@ -8,6 +8,7 @@ const Cube = (props) => {
   const { origin, fdMode } = state;
   const d = 47;
   const sens = 12;
+  const stackIds = [id, ...group.map((c) => c.id)];
 
   const moveGroup = (e) => {
     const target = e.target;
@@ -24,8 +25,9 @@ const Cube = (props) => {
     });
   };
 
-  const onDragStart = () => {
+  const onDragStart = (e) => {
     state.clearSelect();
+    setVisibility(e, false);
   };
 
   const onDragMove = (e) => {
@@ -34,19 +36,25 @@ const Cube = (props) => {
     const y = node.y() - origin.y;
     for (const id in state.elements) {
       const el = state.elements[id];
-      if (el.id == node.id() || el.rotation != rotation) continue;
+      if (stackIds.includes(el.id) || el.rotation != rotation) continue;
       if (rotation == 1) {
         if (numberBetween(x - d, el.x - sens, el.x + sens) && numberBetween(y, el.y - sens, el.y + sens)) {
           e.target.x(el.x + origin.x - cubeShift + d);
           e.target.y(el.y + origin.y - cubeShift);
         }
-        if (numberBetween(x + d, el.x - sens, el.x + sens) && numberBetween(y, el.y - sens, el.y + sens)) {
-          e.target.x(el.x + origin.x - cubeShift - d);
+        if (
+          numberBetween(x + d * stackIds.length, el.x - sens, el.x + sens) &&
+          numberBetween(y, el.y - sens, el.y + sens)
+        ) {
+          e.target.x(el.x + origin.x - cubeShift - d * stackIds.length);
           e.target.y(el.y + origin.y - cubeShift);
         }
       } else {
-        if (numberBetween(y - d, el.y - sens, el.y + sens) && numberBetween(x, el.x - sens, el.x + sens)) {
-          e.target.y(el.y + origin.y - cubeShift + d);
+        if (
+          numberBetween(y - d * stackIds.length, el.y - sens, el.y + sens) &&
+          numberBetween(x, el.x - sens, el.x + sens)
+        ) {
+          e.target.y(el.y + origin.y - cubeShift + d * stackIds.length);
           e.target.x(el.x + origin.x - cubeShift);
         }
         if (numberBetween(y + d, el.y - sens, el.y + sens) && numberBetween(x, el.x - sens, el.x + sens)) {
@@ -60,7 +68,8 @@ const Cube = (props) => {
   const onDragEnd = (e) => {
     const dx = e.target.x() - x - origin.x + cubeShift;
     const dy = e.target.y() - y - origin.y + cubeShift;
-    state.relocateElements([id, ...group.map((c) => c.id)], dx, dy);
+    state.relocateElements(stackIds, dx, dy);
+    setVisibility(e, true);
   };
   return (
     <Image

@@ -12,18 +12,6 @@ const CubeGroups = ({ groups }) => {
 };
 
 const CubeGroup = ({ group }) => {
-  return (
-    <>
-      <CubeGroupNumbers group={group} />
-      <CubeGroupSum group={group} />
-    </>
-  );
-};
-
-const CubeGroupNumbers = ({ group }) => {
-  const state = useAppStore();
-  const { origin } = state;
-
   const numbers = [];
   let lastImage = null;
   let currentNumber = 0;
@@ -41,6 +29,18 @@ const CubeGroupNumbers = ({ group }) => {
   }
   numbers.push(currentNumber);
 
+  return (
+    <>
+      <CubeGroupNumbers group={group} numbers={numbers} />
+      {numbers.length > 1 && <CubeGroupSum group={group} />}
+    </>
+  );
+};
+
+const CubeGroupNumbers = ({ group, numbers }) => {
+  const state = useAppStore();
+  const { origin } = state;
+
   const x = [];
   let left = 0;
   for (const n of numbers) {
@@ -52,7 +52,17 @@ const CubeGroupNumbers = ({ group }) => {
   return (
     <>
       {numbers.map((n, i) => (
-        <Text key={i} text={n} x={x[i]} y={y} stroke="black" fontSize={30} fontFamily="Arial" fill={"black"} />
+        <Text
+          name="cube-group"
+          key={i}
+          text={n}
+          x={x[i]}
+          y={y}
+          stroke="black"
+          fontSize={30}
+          fontFamily="Arial"
+          fill={"black"}
+        />
       ))}
     </>
   );
@@ -81,8 +91,16 @@ const CubeGroupSum = ({ group }) => {
   points = addOrigin(points, origin);
   return (
     <>
-      <Line points={points} stroke="black" strokeWidth={2} />
-      <Text text={group.length} {...textPos} stroke="black" fontSize={30} fontFamily="Arial" fill={"black"} />
+      <Line name="cube-group" points={points} stroke="black" strokeWidth={2} />
+      <Text
+        name="cube-group"
+        text={group.length}
+        {...textPos}
+        stroke="black"
+        fontSize={30}
+        fontFamily="Arial"
+        fill={"black"}
+      />
     </>
   );
 };

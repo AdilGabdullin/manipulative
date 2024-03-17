@@ -33,6 +33,7 @@ const ids = {
 
 const colors = {
   geoboard: ["#d90080", "#900580", "#002a84", "#20a19a", "#fdd700", "#df040b"],
+  "linking-cubes": [],
   rods: [
     ["#efefef", "#bdbdbd"],
     ["#f44336", "#d32f2f"],
@@ -306,7 +307,7 @@ const LeftToolbarGeoboard = ({ findOne }) => {
     }
   };
 
-  const sens = 10;
+  const sens = 12;
   const magnet = (i, { x, y }) => {
     for (const id in state.elements) {
       const el = state.elements[id];
