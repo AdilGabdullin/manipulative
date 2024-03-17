@@ -1,7 +1,7 @@
 import { Circle, Rect, Text } from "react-konva";
 import { gridStep, useAppStore } from "../state/store";
 import { bandPointRadius } from "./GeoboardBand";
-import { Fragment, useEffect } from "react";
+import { Fragment, useEffect, useRef } from "react";
 import ResizeHandle from "./ResizeHandle";
 import { elementBox, fractionMagnet, getStageXY, setVisibility, setVisibilityFrame } from "../util";
 
@@ -289,7 +289,8 @@ const SelectedFrame = (props) => {
 
 const RotateHandle = ({ x, y }) => {
   const state = useAppStore();
-  const { selected, mode, elements, origin } = state;
+  const { selected, mode, elements } = state;
+  const ref = useRef(null);
   if (selected.length != 1 || mode != "fractions" || elements[selected[0]].angle == 360) {
     return null;
   }
@@ -310,10 +311,13 @@ const RotateHandle = ({ x, y }) => {
     const { x, y } = getStageXY(e.target.getStage(), state);
     const element = selected.length == 1 && elements[selected[0]];
     const rotation = (Math.atan2(y - element.y, x - element.x) / Math.PI) * 180 - element.angle / 2;
+    ref.current.setAttrs({ x, y });
     state.updateElement(element.id, { rotation });
   };
+
   return (
     <Circle
+      ref={ref}
       name="popup-menu"
       x={x}
       y={y}
