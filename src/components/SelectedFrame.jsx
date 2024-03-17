@@ -79,6 +79,7 @@ const SelectedFrame = (props) => {
       dx -= dx % (gridStep / 2);
       dy -= dy % (gridStep / 2);
       if (showResizeHandle) {
+        if (!rhNode) rhNode = props.findOne("resize-handle");
         rhNode.setAttrs({ x: rhX + dx * state.scale, y: rhY + dy * state.scale });
       }
     }
