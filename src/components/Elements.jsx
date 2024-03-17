@@ -2,7 +2,7 @@ import { Arc, Circle, Image, Rect } from "react-konva";
 import { cubeSize, gridStep, useAppStore } from "../state/store";
 import { fractionMagnet, getStageXY } from "../util";
 import Cube from "./Cube";
-import CubeGroups from "./CubeGroups";
+import CubeGroups, { createGroups } from "./CubeGroups";
 
 const Elements = () => {
   const state = useAppStore();
@@ -40,9 +40,14 @@ const Cubes = () => {
     }
   });
 
+  const groups = createGroups(list);
+
   return (
     <>
       {list.map(({ id }) => {
+        const group = [...groups.find((g) => g.some((c) => c.id == id))];
+        const index = group.findIndex((c) => c.id == id);
+
         return (
           <Cube
             key={id}
@@ -50,10 +55,11 @@ const Cubes = () => {
             onPointerClick={() => {
               state.selectIds([id], elements[id].locked);
             }}
+            group={group.slice(index + 1)}
           />
         );
       })}
-      {showGroups && <CubeGroups cubes={list} />}
+      {showGroups && <CubeGroups groups={groups} />}
     </>
   );
 };

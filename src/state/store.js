@@ -272,6 +272,16 @@ export const useAppStore = create((set) => ({
         state.lastActiveElement = id;
       })
     ),
+  relocateElements: (ids, dx, dy) =>
+    set(
+      produce((state) => {
+        for (const id of ids) {
+          state.elements[id].x += dx;
+          state.elements[id].y += dy;
+          state.lastActiveElement = id;
+        }
+      })
+    ),
 
   updateElement: (id, attrs) =>
     set(

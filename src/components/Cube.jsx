@@ -2,11 +2,27 @@ import { Image } from "react-konva";
 import { cubeShift, cubeSize, useAppStore } from "../state/store";
 import { numberBetween } from "../util";
 
-const Cube = ({ id, x, y, image, onPointerClick, rotation, locked }) => {
+const Cube = (props) => {
+  const { id, x, y, image, onPointerClick, rotation, locked, group } = props;
   const state = useAppStore();
   const { origin, fdMode } = state;
   const d = 47;
   const sens = 12;
+
+  const moveGroup = (e) => {
+    const target = e.target;
+    const stage = target.getStage();
+    const dx = target.x() - props.x - origin.x + cubeShift;
+    const dy = target.y() - props.y - origin.y + cubeShift;
+    group.forEach((cube) => {
+      const cubeNode = stage.findOne("#" + cube.id);
+      if (cube.id != id)
+        cubeNode.setAttrs({
+          x: origin.x + cube.x - cubeShift + dx,
+          y: origin.y + cube.y - cubeShift + dy,
+        });
+    });
+  };
 
   const onDragStart = () => {
     state.clearSelect();
@@ -39,11 +55,12 @@ const Cube = ({ id, x, y, image, onPointerClick, rotation, locked }) => {
         }
       }
     }
+    moveGroup(e);
   };
   const onDragEnd = (e) => {
     const dx = e.target.x() - x - origin.x + cubeShift;
     const dy = e.target.y() - y - origin.y + cubeShift;
-    state.relocateElement(id, dx, dy);
+    state.relocateElements([id, ...group.map((c) => c.id)], dx, dy);
   };
   return (
     <Image

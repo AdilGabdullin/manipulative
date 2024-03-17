@@ -1,9 +1,7 @@
 import { Line, Text } from "react-konva";
 import { useAppStore } from "../state/store";
 
-const CubeGroups = ({ cubes }) => {
-  const groups = createGroups(cubes);
-
+const CubeGroups = ({ groups }) => {
   return (
     <>
       {groups.map((group, i) => (
@@ -114,7 +112,11 @@ export function createGroups(cubes) {
       groups.push([cube]);
     }
   }
-  return groups;
+  return groups.map(reverseIfVertical);
+}
+
+function reverseIfVertical(group) {
+  return group[0].rotation == 1 ? group : group.toReversed();
 }
 
 function cubeIsStartOfGroup(cube, group) {
