@@ -214,6 +214,8 @@ const Fraction = (props) => {
         onDragMove={onDragMove}
         onDragEnd={onDragEnd}
         onPointerClick={onPointerClick}
+        lineJoin="round"
+        lineCap="round"
       />
       <FractionLabel {...props} onPointerClick={onPointerClick} />
     </>
