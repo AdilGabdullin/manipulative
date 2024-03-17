@@ -83,7 +83,10 @@ const Cube = (props) => {
       onDragStart={onDragStart}
       onDragMove={onDragMove}
       onDragEnd={onDragEnd}
-      onPointerClick={onPointerClick}
+      onPointerClick={(e) => {
+        if (fdMode) return;
+        onPointerClick(e);
+      }}
     />
   );
 };

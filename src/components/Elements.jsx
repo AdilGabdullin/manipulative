@@ -103,6 +103,7 @@ const Rod = ({ id, x, y, width, height, fill, fillColor, stroke, locked, findOne
   };
 
   const onPointerClick = (e) => {
+    if (fdMode) return;
     state.selectIds([id], elements[id].locked);
   };
 
@@ -187,6 +188,7 @@ const Fraction = ({ id, x, y, angle, rotation, fill, fillColor, stroke, locked }
   };
 
   const onPointerClick = (e) => {
+    if (fdMode) return;
     state.selectIds([id], elements[id].locked);
   };
 
@@ -202,7 +204,7 @@ const Fraction = ({ id, x, y, angle, rotation, fill, fillColor, stroke, locked }
       fill={fill ? fillColor : null}
       stroke={stroke}
       strokeWidth={2}
-      draggable
+      draggable={!locked && !fdMode}
       onDragStart={onDragStart}
       onDragMove={onDragMove}
       onDragEnd={onDragEnd}
@@ -217,7 +219,7 @@ const Fraction = ({ id, x, y, angle, rotation, fill, fillColor, stroke, locked }
       fill={fill ? fillColor : null}
       stroke={stroke}
       strokeWidth={2}
-      draggable
+      draggable={!locked && !fdMode}
       onDragStart={onDragStart}
       onDragMove={onDragMove}
       onDragEnd={onDragEnd}

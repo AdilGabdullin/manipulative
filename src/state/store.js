@@ -45,7 +45,7 @@ export const useAppStore = create((set) => ({
   measures: false,
   showLineGrid: mode == "rods",
   showGroups: false,
-  labels: true,
+  labels: false,
   labelMode: "numbers",
   toggleGlobal: (field) =>
     set(
