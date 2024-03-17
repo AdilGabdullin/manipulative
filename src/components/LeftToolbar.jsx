@@ -455,7 +455,8 @@ const LeftToolbarFractions = ({ findOne }) => {
   const onDragEnd = (e, i) => {
     const { x, y } = magnet(i, getStageXY(e.target.getStage(), state));
     e.target.setAttrs({ x: imageX(i), y: imageY(i), visible: true });
-    findOne(i > 0 ? "shadow-arc" : "shadow-circle").setAttrs({ visible: false });
+    const shadow = findOne(i > 0 ? "shadow-arc" : "shadow-circle");
+    shadow.setAttrs({ visible: false });
     state.addElement({
       type: "fraction",
       x: x - origin.x,
@@ -463,7 +464,7 @@ const LeftToolbarFractions = ({ findOne }) => {
       innerRadius: 0,
       outerRadius: height(i) * 2,
       angle: angle(i),
-      rotation: rotation(i),
+      rotation: shadow.getAttr("rotation"),
       fill: state.fill,
       fillColor: colors["fractions"][i][0],
       stroke: colors["fractions"][i][1],

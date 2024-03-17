@@ -70,15 +70,51 @@ const DefaultMenu = (props) => {
       width: 47,
       shift: -40,
     },
+    {
+      text: "Fractions",
+      visible: ["fractions"],
+      field: "labelMode",
+      image: null,
+      width: 65,
+      shift: -10,
+    },
+    {
+      text: "Decimals",
+      visible: ["fractions"],
+      field: "labelMode",
+      image: null,
+      width: 68,
+      shift: -25,
+    },
+    {
+      text: "Percents",
+      visible: ["fractions"],
+      field: "labelMode",
+      image: null,
+      width: 62,
+      shift: -35,
+    },
+    {
+      text: "Blank",
+      visible: ["fractions"],
+      field: "labelMode",
+      image: null,
+      width: 42,
+      shift: -54,
+    },
   ];
   buttons = buttons.filter((b) => b.visible.includes(mode));
   const padding = 8;
   const buttonHeight = 20;
   const buttonWidth = 110;
 
-  const onPointerClick = (field) => (e) => {
+  const onPointerClick = (field, text) => (e) => {
     e.cancelBubble = true;
-    state.toggleGlobal(field);
+    if (field == "labelMode") {
+      state.setValue("labelMode", text);
+    } else {
+      state.toggleGlobal(field);
+    }
   };
 
   return (
@@ -91,8 +127,8 @@ const DefaultMenu = (props) => {
             width={width + padding * 2}
             height={buttonHeight + padding * 2}
             cornerRadius={5}
-            fill={state[field] ? "#e8f4fe" : "#ffffff"}
-            onPointerClick={onPointerClick(field)}
+            fill={(field == "labelMode" && state.labelMode == text) || (field != "labelMode" && state[field]) ? "#e8f4fe" : "#ffffff"}
+            onPointerClick={onPointerClick(field, text)}
           />
           {image && (
             <Image
@@ -101,7 +137,7 @@ const DefaultMenu = (props) => {
               y={y + padding + 4}
               width={30}
               height={(image.height / image.width) * 30}
-              onPointerClick={onPointerClick(field)}
+              onPointerClick={onPointerClick(field, text)}
             />
           )}
           <Text
@@ -111,7 +147,7 @@ const DefaultMenu = (props) => {
             fill={"black"}
             fontSize={18}
             fontFamily="Calibri"
-            onPointerClick={onPointerClick(field)}
+            onPointerClick={onPointerClick(field, text)}
           />
         </Fragment>
       ))}

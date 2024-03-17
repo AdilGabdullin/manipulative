@@ -46,7 +46,7 @@ export const useAppStore = create((set) => ({
   showLineGrid: mode == "rods",
   showGroups: false,
   labels: false,
-  labelMode: "numbers",
+  labelMode: "Fractions",
   toggleGlobal: (field) =>
     set(
       produce((state) => {
