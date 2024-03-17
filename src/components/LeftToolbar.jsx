@@ -401,8 +401,8 @@ const LeftToolbarFractions = ({ findOne }) => {
   const height = (i) => (state.height - margin * 12) / 10;
   const imageX = (i) => leftToolbarWidth / 2;
   const imageY = (i) => margin * (i + 2) + height(i) * (i + 1);
-  const angle = (i) => 360 / (i + 1);
-  const rotation = (i) => (180 - 360 / (i + 1)) / 2;
+  const angle = [360, 180, 120, 90, 72, 60, 45, 36, 30];
+  const rotation = (i) => (180 - angle[i]) / 2;
 
   let shadowNode = null;
 
@@ -415,7 +415,7 @@ const LeftToolbarFractions = ({ findOne }) => {
         visible: true,
         innerRadius: 0,
         outerRadius: gridStep * 2,
-        angle: angle(i),
+        angle: angle[i],
         rotation: rotation(i),
         fill: colors["fractions"][i][0],
         stroke: colors["fractions"][i][1],
@@ -438,7 +438,7 @@ const LeftToolbarFractions = ({ findOne }) => {
     for (const id in state.elements) {
       const el = state.elements[id];
       if (el.id == node.id()) continue;
-      magnet = fractionMagnet({ x, y }, el, angle(i), origin) || magnet;
+      magnet = fractionMagnet({ x, y }, el, angle[i], origin) || magnet;
     }
     return magnet || { x: x + origin.x, y: y + origin.y, rotation: rotation(i) };
   };
@@ -463,7 +463,7 @@ const LeftToolbarFractions = ({ findOne }) => {
       y: y - origin.y,
       innerRadius: 0,
       outerRadius: height(i) * 2,
-      angle: angle(i),
+      angle: angle[i],
       rotation: shadow.getAttr("rotation"),
       fill: state.fill,
       fillColor: colors["fractions"][i][0],
@@ -503,7 +503,7 @@ const LeftToolbarFractions = ({ findOne }) => {
                 y={imageY(i)}
                 innerRadius={0}
                 outerRadius={height(i)}
-                angle={angle(i)}
+                angle={angle[i]}
                 rotation={rotation(i)}
                 fill={color[0]}
                 stroke={color[1]}
@@ -514,7 +514,7 @@ const LeftToolbarFractions = ({ findOne }) => {
                 y={imageY(i)}
                 innerRadius={0}
                 outerRadius={height(i)}
-                angle={angle(i)}
+                angle={angle[i]}
                 rotation={rotation(i)}
                 fill={color[0]}
                 stroke={color[1]}

@@ -3,6 +3,7 @@ import { cubeSize, gridStep, useAppStore } from "../state/store";
 import { fractionMagnet, getStageXY, setVisibility } from "../util";
 import Cube from "./Cube";
 import CubeGroups, { createGroups } from "./CubeGroups";
+import FractionLabel from "./FractionLabel";
 
 const Elements = ({ findOne }) => {
   const state = useAppStore();
@@ -129,8 +130,8 @@ const Rod = ({ id, x, y, width, height, fill, fillColor, stroke, locked, findOne
         <Text
           name="cube-group"
           text={text}
-          x={origin.x + x + width / 2 - 7-(text % 1 !== 0 ? 10: 0)}
-          y={origin.y + y + height / 2 - 12 }
+          x={origin.x + x + width / 2 - 7 - (text % 1 !== 0 ? 10 : 0)}
+          y={origin.y + y + height / 2 - 12}
           stroke={"black"}
           fill={"black"}
           fontSize={30}
@@ -159,12 +160,14 @@ const Fractions = () => {
   );
 };
 
-const Fraction = ({ id, x, y, angle, rotation, fill, fillColor, stroke, locked }) => {
+const Fraction = (props) => {
+  const { id, x, y, angle, rotation, fill, fillColor, stroke, locked } = props;
   const state = useAppStore();
   const { origin, fdMode, elements } = state;
 
-  const onDragStart = () => {
+  const onDragStart = (e) => {
     state.clearSelect();
+    setVisibility(e, false);
   };
 
   const onDragMove = (e) => {
@@ -180,6 +183,7 @@ const Fraction = ({ id, x, y, angle, rotation, fill, fillColor, stroke, locked }
   };
   const onDragEnd = (e) => {
     const node = e.target;
+    setVisibility(e, true);
     state.updateElement(id, {
       x: node.x() - origin.x,
       y: node.y() - origin.y,
@@ -193,38 +197,44 @@ const Fraction = ({ id, x, y, angle, rotation, fill, fillColor, stroke, locked }
   };
 
   return angle < 360 ? (
-    <Arc
-      id={id}
-      x={origin.x + x}
-      y={origin.y + y}
-      innerRadius={0}
-      outerRadius={gridStep * 2}
-      angle={angle}
-      rotation={rotation}
-      fill={fill ? fillColor : null}
-      stroke={stroke}
-      strokeWidth={2}
-      draggable={!locked && !fdMode}
-      onDragStart={onDragStart}
-      onDragMove={onDragMove}
-      onDragEnd={onDragEnd}
-      onPointerClick={onPointerClick}
-    />
+    <>
+      <Arc
+        id={id}
+        x={origin.x + x}
+        y={origin.y + y}
+        innerRadius={0}
+        outerRadius={gridStep * 2}
+        angle={angle}
+        rotation={rotation}
+        fill={fill ? fillColor : null}
+        stroke={stroke}
+        strokeWidth={2}
+        draggable={!locked && !fdMode}
+        onDragStart={onDragStart}
+        onDragMove={onDragMove}
+        onDragEnd={onDragEnd}
+        onPointerClick={onPointerClick}
+      />
+      <FractionLabel {...props} onPointerClick={onPointerClick} />
+    </>
   ) : (
-    <Circle
-      id={id}
-      x={origin.x + x}
-      y={origin.y + y}
-      radius={gridStep * 2}
-      fill={fill ? fillColor : null}
-      stroke={stroke}
-      strokeWidth={2}
-      draggable={!locked && !fdMode}
-      onDragStart={onDragStart}
-      onDragMove={onDragMove}
-      onDragEnd={onDragEnd}
-      onPointerClick={onPointerClick}
-    />
+    <>
+      <Circle
+        id={id}
+        x={origin.x + x}
+        y={origin.y + y}
+        radius={gridStep * 2}
+        fill={fill ? fillColor : null}
+        stroke={stroke}
+        strokeWidth={2}
+        draggable={!locked && !fdMode}
+        onDragStart={onDragStart}
+        onDragMove={onDragMove}
+        onDragEnd={onDragEnd}
+        onPointerClick={onPointerClick}
+      />
+      <FractionLabel {...props} onPointerClick={onPointerClick} />
+    </>
   );
 };
 

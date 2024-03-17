@@ -150,14 +150,14 @@ export function checkClockwise(points) {
 export function setVisibility(e, value) {
   e.target
     .getStage()
-    .find(".popup-menu,.angle-measure,.cube-group")
+    .find(".popup-menu,.angle-measure,.cube-group,.drag-hidden")
     .forEach((node) => node.visible(value));
 }
 
 export function setVisibilityFrame(e, value) {
   e.target
     .getStage()
-    .find(".popup-menu,.cube-group,#selected-frame")
+    .find(".popup-menu,.cube-group,.drag-hidden,#selected-frame")
     .forEach((node) => node.visible(value));
 }
 
