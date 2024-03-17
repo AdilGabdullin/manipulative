@@ -3,10 +3,10 @@ import { setVisibility } from "../util";
 import { gridStep, useAppStore } from "../state/store";
 
 const ResizeHandle = ({ frameProps, element }) => {
-    const state = useAppStore();
+  const state = useAppStore();
   const { updateElement, scale } = state;
   const { x, y, width, height } = frameProps;
-  const isHorizontal = element.height == gridStep-2;
+  const isHorizontal = element.height == gridStep - 2;
   const handleWidth = isHorizontal ? height / 5 : width / 2;
   const handleHeight = isHorizontal ? height / 2 : width / 5;
   const handleX = isHorizontal ? x + width - handleWidth / 2 : x + width / 2 - handleWidth / 2;
@@ -49,15 +49,15 @@ const ResizeHandle = ({ frameProps, element }) => {
     const step = (gridStep / 2) * scale;
     if (isHorizontal) {
       let dx = handle.x() - handleX;
-      dx = Math.round(dx / step) * step;
       dx = Math.max(dx, (step / scale - element.width) * scale);
+      dx = Math.round(dx / step) * step;
       updateElement(element.id, { width: element.width + dx / scale });
     } else {
       let dy = handle.y() - handleY;
-      dy = Math.round(dy / step) * step;
       if (element.height - dy / scale < step / scale) {
         dy = (element.height - step / scale) * scale;
       }
+      dy = Math.round(dy / step) * step;
       updateElement(element.id, {
         height: element.height - dy / scale,
         y: element.y + dy / scale,

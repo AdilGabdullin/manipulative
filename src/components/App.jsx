@@ -246,7 +246,7 @@ const App = () => {
           {state.mode != "geoboard" && (
             <>
               <Grid />
-              <Elements />
+              <Elements findOne={findOne} />
             </>
           )}
           <SelectRect />

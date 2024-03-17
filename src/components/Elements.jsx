@@ -1,15 +1,15 @@
-import { Arc, Circle, Image, Rect } from "react-konva";
+import { Arc, Circle, Image, Rect, Text } from "react-konva";
 import { cubeSize, gridStep, useAppStore } from "../state/store";
-import { fractionMagnet, getStageXY } from "../util";
+import { fractionMagnet, getStageXY, setVisibility } from "../util";
 import Cube from "./Cube";
 import CubeGroups, { createGroups } from "./CubeGroups";
 
-const Elements = () => {
+const Elements = ({ findOne }) => {
   const state = useAppStore();
   const { origin, mode } = state;
   return (
     <>
-      {mode == "rods" && <Rods />}
+      {mode == "rods" && <Rods findOne={findOne} />}
       {mode == "linking-cubes" && <Cubes />}
       {mode == "fractions" && <Fractions />}
       <Image id="shadow-image" x={origin.x} y={origin.y} width={cubeSize} height={cubeSize} />
@@ -64,37 +64,41 @@ const Cubes = () => {
   );
 };
 
-const Rods = () => {
+const Rods = ({ findOne }) => {
   const state = useAppStore();
   const elements = Object.values(state.elements).toSorted((a, b) => a.x + a.y - b.x - b.y);
   return (
     <>
       {elements.map((element) => (
-        <Rod key={element.id} {...element} />
+        <Rod key={element.id} {...element} findOne={findOne} />
       ))}
     </>
   );
 };
 
-const Rod = ({ id, x, y, width, height, fill, fillColor, stroke, locked }) => {
+const Rod = ({ id, x, y, width, height, fill, fillColor, stroke, locked, findOne }) => {
   const state = useAppStore();
-  const { origin, elements, fdMode } = state;
+  const { origin, elements, fdMode, labels } = state;
 
-  const onDragStart = () => {
+  const onDragStart = (e) => {
     state.clearSelect();
+    setVisibility(e, false);
   };
 
   const onDragMove = (e) => {
-    const node = e.target;
-    let x = node.x() - origin.x;
-    let y = node.y() - origin.y;
-    x -= x % (gridStep / 2);
-    y -= y % (gridStep / 2);
-    node.setAttrs({ x: origin.x + x + 1, y: origin.y + y + 1 });
+    let dx = e.target.x() - x - origin.x;
+    let dy = e.target.y() - y - origin.y;
+    dx -= dx % (gridStep / 2);
+    dy -= dy % (gridStep / 2);
+    e.target.setAttrs({ x: origin.x + x + dx, y: origin.y + y + dy });
   };
+
   const onDragEnd = (e) => {
-    const dx = e.target.x() - x - origin.x;
-    const dy = e.target.y() - y - origin.y;
+    let dx = e.target.x() - x - origin.x;
+    let dy = e.target.y() - y - origin.y;
+    dx -= dx % (gridStep / 2);
+    dy -= dy % (gridStep / 2);
+    setVisibility(e, true);
     state.relocateElement(id, dx, dy);
   };
 
@@ -102,21 +106,37 @@ const Rod = ({ id, x, y, width, height, fill, fillColor, stroke, locked }) => {
     state.selectIds([id], elements[id].locked);
   };
 
+  let text = ((width > height ? width : height) + 2) / gridStep;
+  if (text < 1) text = "";
   return (
-    <Rect
-      id={id}
-      x={origin.x + x}
-      y={origin.y + y}
-      width={width}
-      height={height}
-      draggable={!locked && !fdMode}
-      fill={fill ? fillColor : null}
-      stroke={stroke}
-      onDragStart={onDragStart}
-      onDragMove={onDragMove}
-      onDragEnd={onDragEnd}
-      onPointerClick={onPointerClick}
-    />
+    <>
+      <Rect
+        id={id}
+        x={origin.x + x}
+        y={origin.y + y}
+        width={width}
+        height={height}
+        draggable={!locked && !fdMode}
+        fill={fill ? fillColor : null}
+        stroke={stroke}
+        onDragStart={onDragStart}
+        onDragMove={onDragMove}
+        onDragEnd={onDragEnd}
+        onPointerClick={onPointerClick}
+      />
+      {labels && (
+        <Text
+          name="cube-group"
+          text={text}
+          x={origin.x + x + width / 2 - 7-(text % 1 !== 0 ? 10: 0)}
+          y={origin.y + y + height / 2 - 12 }
+          stroke={"black"}
+          fill={"black"}
+          fontSize={30}
+          fontFamily="Calibri"
+        />
+      )}
+    </>
   );
 };
 

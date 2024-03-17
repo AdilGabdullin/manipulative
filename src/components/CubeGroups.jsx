@@ -71,7 +71,7 @@ const CubeGroupNumbers = ({ group, numbers, colors }) => {
           stroke={colors[i]}
           fill={colors[i]}
           fontSize={30}
-          fontFamily="Arial"
+          fontFamily="Calibri"
         />
       ))}
     </>
@@ -110,7 +110,7 @@ const CubeGroupSum = ({ group }) => {
         stroke={"#56544d"}
         fill={"#56544d"}
         fontSize={30}
-        fontFamily="Arial"
+        fontFamily="Calibri"
       />
     </>
   );

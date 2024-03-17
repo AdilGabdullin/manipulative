@@ -36,6 +36,7 @@ const DefaultMenu = (props) => {
       field: "fill",
       image: document.getElementById("fill-button"),
       width: 70,
+      shift: 0,
     },
     {
       text: "Angle Measure",
@@ -43,6 +44,7 @@ const DefaultMenu = (props) => {
       field: "measures",
       image: document.getElementById("angle-button"),
       width: 150,
+      shift: 0,
     },
     {
       text: "Grid",
@@ -50,6 +52,7 @@ const DefaultMenu = (props) => {
       field: "showLineGrid",
       image: null,
       width: 35,
+      shift: 0,
     },
     {
       text: "Groups",
@@ -57,6 +60,15 @@ const DefaultMenu = (props) => {
       field: "showGroups",
       image: null,
       width: 50,
+      shift: 0,
+    },
+    {
+      text: "Labels",
+      visible: ["rods"],
+      field: "labels",
+      image: null,
+      width: 47,
+      shift: -40,
     },
   ];
   buttons = buttons.filter((b) => b.visible.includes(mode));
@@ -71,10 +83,10 @@ const DefaultMenu = (props) => {
 
   return (
     <>
-      {buttons.map(({ text, field, image, width }, i) => (
+      {buttons.map(({ text, field, image, width, shift }, i) => (
         <Fragment key={text}>
           <Rect
-            x={x + padding + buttonWidth * i}
+            x={x + padding + buttonWidth * i + shift}
             y={y + padding}
             width={width + padding * 2}
             height={buttonHeight + padding * 2}
@@ -85,15 +97,15 @@ const DefaultMenu = (props) => {
           {image && (
             <Image
               image={image}
-              x={x + padding + buttonWidth * i + 4}
+              x={x + padding + buttonWidth * i + 4 + shift}
               y={y + padding + 4}
               width={30}
               height={(image.height / image.width) * 30}
               onPointerClick={onPointerClick(field)}
-              />
+            />
           )}
           <Text
-            x={x + padding * 2 + buttonWidth * i + (image ? 33 : 0)}
+            x={x + padding * 2 + buttonWidth * i + (image ? 33 : 0) + shift}
             y={y + padding * 2}
             text={text}
             fill={"black"}
