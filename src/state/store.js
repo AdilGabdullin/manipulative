@@ -417,7 +417,7 @@ export const useAppStore = create((set) => ({
     set(
       produce((state) => {
         const id = newId();
-        if (element.x == undefined && element.y == undefined) {
+        if (element.x == undefined && element.y == undefined && element.type == "cube") {
           state.elements[id] = { ...element, id, locked: false, ...getNextElementPosition(state, element) };
         } else {
           state.elements[id] = { ...element, id, locked: false };

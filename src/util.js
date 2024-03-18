@@ -4,7 +4,7 @@ export const SEARCH_THRESHOLD = 6;
 let id = 0;
 
 export function newId() {
-  return (id++).toString();
+  return `e-${id++}`;
 }
 
 export function pointsIsClose(pos1, pos2, sens = 10) {
@@ -219,7 +219,7 @@ function fractionBox(element) {
 }
 
 function textBox(element) {
-  const { x,y, fontSize } = element;
+  const { x, y, fontSize } = element;
   return { x: x, y: y, width: 100, height: fontSize };
 }
 
@@ -229,11 +229,11 @@ function ellipseBox(element) {
 }
 
 function lineBox(element) {
-  const { points } = element;
-  const minX = Math.min(points[0], points[2]);
-  const maxX = Math.max(points[0], points[2]);
-  const minY = Math.min(points[1], points[3]);
-  const maxY = Math.max(points[1], points[3]);
+  const { x, y, x2, y2 } = element;
+  const minX = Math.min(x, x + x2);
+  const maxX = Math.max(x, x + x2);
+  const minY = Math.min(y, y + y2);
+  const maxY = Math.max(y, y + y2);
   return { x: minX, y: minY, width: maxX - minX, height: maxY - minY };
 }
 

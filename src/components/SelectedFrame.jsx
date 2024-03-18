@@ -1,9 +1,10 @@
-import { Circle, Rect, Text } from "react-konva";
+import { Rect, Text } from "react-konva";
 import { gridStep, useAppStore } from "../state/store";
 import { bandPointRadius } from "./GeoboardBand";
 import { Fragment, useEffect, useRef } from "react";
 import ResizeHandle from "./ResizeHandle";
 import { elementBox, fractionMagnet, getStageXY, setVisibility, setVisibilityFrame } from "../util";
+import RotateHandle from "./RotateHandle";
 
 const SelectedFrame = (props) => {
   const state = useAppStore();
@@ -57,7 +58,7 @@ const SelectedFrame = (props) => {
   const rhShift = showResizeHandle ? 10 : 0;
 
   let rhNode, rhX, rhY;
-  const onMouseDown = (e) => {
+  const onPointerDown = (e) => {
     if (showResizeHandle) {
       rhNode = props.findOne("resize-handle");
       rhX = rhNode.x();
@@ -220,7 +221,7 @@ const SelectedFrame = (props) => {
         stroke="#2196f3"
         strokeWidth={2}
         draggable={!lockSelect}
-        onMouseDown={onMouseDown}
+        onPointerDown={onPointerDown}
         onDragStart={onDragStart}
         onDragMove={onDragMove}
         onDragEnd={onDragEnd}
@@ -288,50 +289,6 @@ const SelectedFrame = (props) => {
   );
 };
 
-const RotateHandle = ({ x, y }) => {
-  const state = useAppStore();
-  const { selected, mode, elements } = state;
-  const ref = useRef(null);
-  if (selected.length != 1 || mode != "fractions" || elements[selected[0]].angle == 360 || elements[selected[0]].type != "fraction") {
-    return null;
-  }
-
-  const onDragStart = (e) => {
-    setVisibilityFrame(e, false);
-  };
-  const onDragMove = (e) => {
-    const stage = e.target.getStage();
-    const { x, y } = getStageXY(e.target.getStage(), state);
-    const element = selected.length == 1 && elements[selected[0]];
-    const rotation = (Math.atan2(y - element.y, x - element.x) / Math.PI) * 180 - element.angle / 2;
-    const node = stage.findOne("#" + selected[0]);
-    node.setAttrs({ rotation: rotation });
-  };
-  const onDragEnd = (e) => {
-    setVisibilityFrame(e, true);
-    const { x, y } = getStageXY(e.target.getStage(), state);
-    const element = selected.length == 1 && elements[selected[0]];
-    const rotation = (Math.atan2(y - element.y, x - element.x) / Math.PI) * 180 - element.angle / 2;
-    ref.current.setAttrs({ x, y });
-    state.updateElement(element.id, { rotation });
-  };
-
-  return (
-    <Circle
-      ref={ref}
-      name="popup-menu"
-      x={x}
-      y={y}
-      radius={10}
-      fill="#2196f3"
-      draggable
-      onDragStart={onDragStart}
-      onDragMove={onDragMove}
-      onDragEnd={onDragEnd}
-    />
-  );
-};
-
 function getBounds(state) {
   const { selected, geoboardBands, mode, elements } = state;
   let xMin = Infinity;
@@ -350,18 +307,17 @@ function getBounds(state) {
         }
       }
     }
-  } else {
-    Object.keys(elements).map((key) => {
-      const element = elements[key];
-      const { x, y, width, height } = elementBox(element);
-      if (selected.includes(element.id)) {
-        if (x < xMin) xMin = x;
-        if (x + width > xMax) xMax = x + width;
-        if (y < yMin) yMin = y;
-        if (y + height > yMax) yMax = y + height;
-      }
-    });
   }
+  Object.keys(elements).map((key) => {
+    const element = elements[key];
+    const { x, y, width, height } = elementBox(element);
+    if (selected.includes(element.id)) {
+      if (x < xMin) xMin = x;
+      if (x + width > xMax) xMax = x + width;
+      if (y < yMin) yMin = y;
+      if (y + height > yMax) yMax = y + height;
+    }
+  });
   return { xMin, yMin, xMax, yMax };
 }
 

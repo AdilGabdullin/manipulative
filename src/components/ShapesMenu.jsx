@@ -26,7 +26,7 @@ const ShapesMenu = (props) => {
     {
       title: "Line",
       onPointerClick: (e) => {
-        state.addElement({ type: "line", points: [0, 0, 100, 0] });
+        state.addElement({ type: "line", x: 0, y: 0, x2: 100, y2: 100 });
       },
     },
   ];

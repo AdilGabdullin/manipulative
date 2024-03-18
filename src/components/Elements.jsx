@@ -55,7 +55,9 @@ const Cubes = () => {
   const state = useAppStore();
   const { elements, showGroups } = state;
 
-  const list = Object.keys(elements).map((id) => elements[id]);
+  const list = Object.keys(elements)
+    .filter((e) => e.type == "cube")
+    .map((id) => elements[id]);
   list.sort((a, b) => {
     if (a.rotation < b.rotation) {
       return -1;
@@ -97,7 +99,10 @@ const Cubes = () => {
 
 const Rods = ({ findOne }) => {
   const state = useAppStore();
-  const elements = Object.values(state.elements).toSorted((a, b) => a.x + a.y - b.x - b.y);
+
+  const elements = Object.values(state.elements)
+    .filter((e) => e.type == "rod")
+    .toSorted((a, b) => a.x + a.y - b.x - b.y);
   return (
     <>
       {elements.map((element) => (
@@ -112,15 +117,17 @@ const Fractions = () => {
   const { elements } = state;
   return (
     <>
-      {Object.values(elements).map((element) => {
-        return (
-          <Fraction
-            key={element.id}
-            {...element}
-            onPointerClick={() => state.selectIds([element.id], element.locked)}
-          />
-        );
-      })}
+      {Object.values(elements)
+        .filter((e) => e.type == "fraction")
+        .map((element) => {
+          return (
+            <Fraction
+              key={element.id}
+              {...element}
+              onPointerClick={() => state.selectIds([element.id], element.locked)}
+            />
+          );
+        })}
     </>
   );
 };
