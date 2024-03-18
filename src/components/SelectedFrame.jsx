@@ -1,7 +1,7 @@
 import { Rect, Text } from "react-konva";
 import { gridStep, useAppStore } from "../state/store";
 import { bandPointRadius } from "./GeoboardBand";
-import { Fragment, useEffect, useRef } from "react";
+import { Fragment, useEffect } from "react";
 import ResizeHandle from "./ResizeHandle";
 import { elementBox, fractionMagnet, getStageXY, setVisibility, setVisibilityFrame } from "../util";
 import RotateHandle from "./RotateHandle";
@@ -76,13 +76,13 @@ const SelectedFrame = (props) => {
   const onDragMove = (e) => {
     let dx = (e.target.x() - x) / state.scale;
     let dy = (e.target.y() - y) / state.scale;
-    if (mode == "rods") {
+    if (selected.some((id) => elements[id].type == "rod")) {
       dx -= dx % (gridStep / 2);
       dy -= dy % (gridStep / 2);
-      if (showResizeHandle) {
-        if (!rhNode) rhNode = props.findOne("resize-handle");
-        rhNode.setAttrs({ x: rhX + dx * state.scale, y: rhY + dy * state.scale });
-      }
+    }
+    if (showResizeHandle) {
+      if (!rhNode) rhNode = props.findOne("resize-handle");
+      rhNode.setAttrs({ x: rhX + dx * state.scale, y: rhY + dy * state.scale });
     }
     if (mode == "geoboard") {
       selectedTargets.forEach(({ point, sides, x, y, pointIndex }) => {
