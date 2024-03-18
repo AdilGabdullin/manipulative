@@ -1,6 +1,5 @@
 import { Ellipse, Line, Rect, Text } from "react-konva";
 import { useAppStore } from "../state/store";
-import { Fragment } from "react";
 
 const color = "purple";
 const buttonSize = 30;
@@ -48,7 +47,16 @@ const TextButton = ({ x, y, onPointerClick }) => {
   return (
     <>
       <Rect x={x} y={y} width={buttonSize} height={buttonSize} onPointerClick={onPointerClick} />
-      <Text text="T" fontSize={40} x={x + 6} y={y - 2} fill={color} stroke={color} fontFamily="Calibri" />
+      <Text
+        text="T"
+        fontSize={40}
+        x={x + 6}
+        y={y - 2}
+        fill={color}
+        stroke={color}
+        fontFamily="Calibri"
+        onPointerClick={onPointerClick}
+      />
     </>
   );
 };

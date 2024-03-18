@@ -58,7 +58,7 @@ const App = () => {
   };
 
   const onMouseDown = (e) => {
-    // console.log("stage down");
+    // console.log("stage down", e.target);
     if (state.fdMode) {
       const { x, y } = getStageXY(stageRef.current, state);
       const pos = stageRef.current.getPointerPosition();

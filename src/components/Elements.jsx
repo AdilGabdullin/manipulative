@@ -18,10 +18,10 @@ const Elements = ({ findOne }) => {
       {mode == "linking-cubes" && <Cubes />}
       {mode == "fractions" && <Fractions />}
       <CommonElements />
-      <Image id="shadow-image" x={origin.x} y={origin.y} width={cubeSize} height={cubeSize} />
-      <Rect id="shadow-rect" />
-      <Arc id="shadow-arc" />
-      <Circle id="shadow-circle" />
+      <Image id="shadow-image" x={-100} y={-100} width={cubeSize} height={cubeSize} />
+      <Rect id="shadow-rect" x={-100} y={-100} />
+      <Arc id="shadow-arc" x={-100} y={-100} />
+      <Circle id="shadow-circle" x={-100} y={-100} />
     </>
   );
 };
