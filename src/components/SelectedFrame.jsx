@@ -292,7 +292,7 @@ const RotateHandle = ({ x, y }) => {
   const state = useAppStore();
   const { selected, mode, elements } = state;
   const ref = useRef(null);
-  if (selected.length != 1 || mode != "fractions" || elements[selected[0]].angle == 360) {
+  if (selected.length != 1 || mode != "fractions" || elements[selected[0]].angle == 360 || elements[selected[0]].type != "fraction") {
     return null;
   }
 

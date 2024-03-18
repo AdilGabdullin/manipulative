@@ -56,7 +56,7 @@ export function isPointCloseToLine(point, line1, line2, dist = SEARCH_THRESHOLD)
 
 export function fractionMagnet(point, fraction, originalAngle, origin) {
   const { x, y, rotation, angle } = fraction;
-  if (originalAngle == 360 && distance2(point, { x, y}) < 50 ** 2) {
+  if (originalAngle == 360 && distance2(point, { x, y }) < 50 ** 2) {
     return { x: origin.x + x, y: origin.y + y };
   }
 
@@ -168,8 +168,27 @@ export function clearSelected(state) {
 }
 
 export function elementBox(element) {
-  if (element.type != "fraction") return element;
+  switch (element.type) {
+    case "fraction":
+      return fractionBox(element);
+      break;
+    case "text":
+      return textBox(element);
+      break;
+    case "rect":
+      return element;
+      break;
+    case "ellipse":
+      return ellipseBox(element);
+      break;
+    case "line":
+      return lineBox(element);
+      break;
+  }
+  return element;
+}
 
+function fractionBox(element) {
   const { x, y, rotation, angle } = element;
 
   if (angle == 360) {
@@ -196,6 +215,25 @@ export function elementBox(element) {
   const maxX = Math.max(...xs);
   const minY = Math.min(...ys);
   const maxY = Math.max(...ys);
+  return { x: minX, y: minY, width: maxX - minX, height: maxY - minY };
+}
+
+function textBox(element) {
+  const { x,y, fontSize } = element;
+  return { x: x, y: y, width: 100, height: fontSize };
+}
+
+function ellipseBox(element) {
+  const { x, y, radiusX, radiusY } = element;
+  return { x: x - radiusX, y: y - radiusY, width: radiusX * 2, height: radiusY * 2 };
+}
+
+function lineBox(element) {
+  const { points } = element;
+  const minX = Math.min(points[0], points[2]);
+  const maxX = Math.max(points[0], points[2]);
+  const minY = Math.min(points[1], points[3]);
+  const maxY = Math.max(points[1], points[3]);
   return { x: minX, y: minY, width: maxX - minX, height: maxY - minY };
 }
 

@@ -34,16 +34,16 @@ const CommonElements = () => {
       {Object.values(elements).map((element) => {
         switch (element.type) {
           case "text":
-            return <TextElement {...element} />;
+            return <TextElement key={element.id} {...element} />;
             break;
           case "rect":
-            return <RectElement {...element} />;
+            return <RectElement key={element.id} {...element} />;
             break;
           case "ellipse":
-            return <EllipseElement {...element} />;
+            return <EllipseElement key={element.id} {...element} />;
             break;
           case "line":
-            return <LineElement {...element} />;
+            return <LineElement key={element.id} {...element} />;
             break;
         }
       })}
