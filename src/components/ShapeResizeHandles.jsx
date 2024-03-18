@@ -43,6 +43,13 @@ const ShapeResizeHandles = (props) => {
           radiusY: Math.max(Math.abs(y1 - y2) / 2 - 8, 10),
         });
         break;
+      case "line":
+        findOne(element.id).setAttrs({
+          x: x1 + 8 * Math.sign(x2 - x1),
+          y: y1 + 8 * Math.sign(y2 - y1),
+          points: [0, 0, x2 - x1 - 16 * Math.sign(x2 - x1), y2 - y1 - 16 * Math.sign(y2 - y1)],
+        });
+        break;
     }
     findOne("selected-frame").setAttrs({
       x: Math.min(x1, x2),
@@ -73,6 +80,14 @@ const ShapeResizeHandles = (props) => {
           y: (y1 + y2) / 2 - origin.y,
           radiusX: Math.max(Math.abs(x1 - x2) / 2 - 8, 10),
           radiusY: Math.max(Math.abs(y1 - y2) / 2 - 8, 10),
+        });
+        break;
+      case "line":
+        state.updateElement(element.id, {
+          x: x1 + 8 * Math.sign(x2 - x1) - origin.x,
+          y: y1 + 8 * Math.sign(y2 - y1) - origin.y,
+          x2: x2 - x1 - 16 * Math.sign(x2 - x1),
+          y2: y2 - y1 - 16 * Math.sign(y2 - y1),
         });
         break;
     }
