@@ -5,6 +5,7 @@ import { Fragment, useEffect } from "react";
 import ResizeHandle from "./ResizeHandle";
 import { elementBox, fractionMagnet, getStageXY, setVisibility, setVisibilityFrame } from "../util";
 import RotateHandle from "./RotateHandle";
+import ShapeResizeHandles from "./ShapeResizeHandles";
 
 const SelectedFrame = (props) => {
   const state = useAppStore();
@@ -244,6 +245,7 @@ const SelectedFrame = (props) => {
         shadowOpacity={0.5}
       />
       <RotateHandle x={x + width / 2} y={y + height + 20} />
+      <ShapeResizeHandles x={x} y={y} width={width} height={height} findOne={props.findOne} />
       {menuButtons.map(({ text, active, onPointerClick }, i) => (
         <Fragment key={text}>
           <Rect

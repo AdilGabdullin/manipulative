@@ -342,9 +342,10 @@ export const useAppStore = create((set) => ({
       produce((state) => {
         for (const id of current(state).selected) {
           const el = state.elements[id];
+          if (!el || el.type != "rod") {
+            continue;
+          }
           const { x, y, width, height } = el;
-          const cx = x + width / 2;
-          const cy = y - height / 2;
           el.width = height;
           el.height = width;
           el.x += width / 2 - height / 2;
