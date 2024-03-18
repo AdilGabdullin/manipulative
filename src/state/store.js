@@ -223,18 +223,19 @@ export const useAppStore = create((set) => ({
             }
           }
         }
-        return { ...state, selected, lockSelect: false };
       }
 
       Object.keys(state.elements).map((key) => {
         const element = state.elements[key];
-        const { id, locked } = element;
-        const { x, y, width, height } = elementBox(element);
-        if (
-          !locked &&
-          (inRect(x, y) || inRect(x + width, y) || inRect(x, y + height) || inRect(x + width, y + height))
-        ) {
-          selected.push(id);
+        if (element) {
+          const { id, locked } = element;
+          const { x, y, width, height } = elementBox(element);
+          if (
+            !locked &&
+            (inRect(x, y) || inRect(x + width, y) || inRect(x, y + height) || inRect(x + width, y + height))
+          ) {
+            selected.push(id);
+          }
         }
       });
       return { ...state, selected, lockSelect: false };
@@ -255,10 +256,12 @@ export const useAppStore = create((set) => ({
               }),
             };
           });
-        } else {
-          for (const id of state.selected) {
-            state.elements[id].x += dx;
-            state.elements[id].y += dy;
+        }
+        for (const id of state.selected) {
+          const element = state.elements[id];
+          if (element) {
+            element.x += dx;
+            element.y += dy;
             state.lastActiveElement = id;
           }
         }
@@ -307,11 +310,10 @@ export const useAppStore = create((set) => ({
             })
             .filter((band) => band.points.length > 1);
           clearSelected(state);
-        } else {
-          let id;
-          while ((id = state.selected.pop())) {
-            delete state.elements[id];
-          }
+        }
+        let id;
+        while ((id = state.selected.pop())) {
+          delete state.elements[id];
         }
         state.lastActiveElement = null;
         pushHistory(state);
@@ -325,9 +327,11 @@ export const useAppStore = create((set) => ({
           for (const i in bands) {
             state.geoboardBands[i][field] = !state.geoboardBands[i][field];
           }
-        } else {
-          for (const id of current(state).selected) {
-            state.elements[id][field] = !state.elements[id][field];
+        }
+        for (const id of current(state).selected) {
+          const element = state.elements[id];
+          if (element) {
+            element[field] = !element[field];
           }
         }
         pushHistory(state);
@@ -377,15 +381,18 @@ export const useAppStore = create((set) => ({
               point.y += shift;
             });
           }
-        } else {
-          const { elements } = current(state);
-          for (const id of state.selected) {
+        }
+        const { elements } = current(state);
+        for (const id of state.selected) {
+          const element = elements[id];
+          if (element) {
             const copy = { ...elements[id], id: newId() };
             state.elements[copy.id] = copy;
             state.elements[id].x += shift;
             state.elements[id].y += shift;
           }
         }
+
         pushHistory(state);
       })
     ),
@@ -400,11 +407,12 @@ export const useAppStore = create((set) => ({
               }
             }
           }
-          while (state.selected.pop()) {}
-        } else {
-          let id;
-          while ((id = state.selected.pop())) {
-            state.elements[id].locked = value;
+        }
+        let id;
+        while ((id = state.selected.pop())) {
+          const element = state.elements[id];
+          if (element) {
+            element.locked = value;
           }
         }
         pushHistory(state);
