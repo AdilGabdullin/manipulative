@@ -3,12 +3,25 @@ import { useAppStore } from "../state/store";
 
 const EllipseElement = (props) => {
   const state = useAppStore();
-  const { origin, elements, fdMode } = state;
-  const { id, x, y, radiusX, radiusY, fill } = props;
+  const { origin, fdMode } = state;
+  const { id, x, y, radiusX, radiusY, fill, locked } = props;
 
   const onPointerClick = (e) => {
     if (fdMode) return;
-    state.selectIds([id], elements[id].locked);
+    state.selectIds([id], locked);
+  };
+
+  const onDragStart = (e) => {
+    state.clearSelect();
+  };
+
+  const onDragMove = (e) => {
+  };
+
+  const onDragEnd = (e) => {
+    let dx = e.target.x() - x - origin.x;
+    let dy = e.target.y() - y - origin.y;
+    state.relocateElement(id, dx, dy);
   };
 
   return (
@@ -21,6 +34,10 @@ const EllipseElement = (props) => {
       stroke={"black"}
       fill={fill ? "#56d2f5" : null}
       onPointerClick={onPointerClick}
+      draggable={!locked && !fdMode}
+      onDragStart={onDragStart}
+      onDragMove={onDragMove}
+      onDragEnd={onDragEnd}
     />
   );
 };

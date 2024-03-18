@@ -4,13 +4,25 @@ import { useAppStore } from "../state/store";
 const TextElement = (props) => {
   const state = useAppStore();
   const { origin, elements, fdMode } = state;
-  const { id, x, y, text, fontSize } = props;
+  const { id, x, y, text, fontSize, locked } = props;
 
   const onPointerClick = (e) => {
     if (fdMode) return;
-    state.selectIds([id], elements[id].locked);
+    state.selectIds([id], locked);
   };
-  
+
+  const onDragStart = (e) => {
+    state.clearSelect();
+  };
+
+  const onDragMove = (e) => {};
+
+  const onDragEnd = (e) => {
+    let dx = e.target.x() - x - origin.x;
+    let dy = e.target.y() - y - origin.y;
+    state.relocateElement(id, dx, dy);
+  };
+
   return (
     <Text
       id={id}
@@ -20,6 +32,10 @@ const TextElement = (props) => {
       fontSize={fontSize}
       fill={"black"}
       onPointerClick={onPointerClick}
+      draggable={!locked && !fdMode}
+      onDragStart={onDragStart}
+      onDragMove={onDragMove}
+      onDragEnd={onDragEnd}
     />
   );
 };
