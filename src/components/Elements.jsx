@@ -1,9 +1,13 @@
-import { Arc, Circle, Image, Rect, Text } from "react-konva";
-import { cubeSize, gridStep, useAppStore } from "../state/store";
-import { fractionMagnet, getStageXY, setVisibility } from "../util";
+import { Arc, Circle, Image, Rect } from "react-konva";
+import { cubeSize, useAppStore } from "../state/store";
 import Cube from "./Cube";
 import CubeGroups, { createGroups } from "./CubeGroups";
-import FractionLabel from "./FractionLabel";
+import Rod from "./Rod";
+import Fraction from "./Fraction";
+import LineElement from "./LineElement";
+import TextElement from "./TextElement";
+import RectElement from "./RectElement";
+import EllipseElement from "./EllipseElement";
 
 const Elements = ({ findOne }) => {
   const state = useAppStore();
@@ -13,10 +17,36 @@ const Elements = ({ findOne }) => {
       {mode == "rods" && <Rods findOne={findOne} />}
       {mode == "linking-cubes" && <Cubes />}
       {mode == "fractions" && <Fractions />}
+      <CommonElements />
       <Image id="shadow-image" x={origin.x} y={origin.y} width={cubeSize} height={cubeSize} />
       <Rect id="shadow-rect" />
       <Arc id="shadow-arc" />
       <Circle id="shadow-circle" />
+    </>
+  );
+};
+
+const CommonElements = () => {
+  const state = useAppStore();
+  const { elements } = state;
+  return (
+    <>
+      {Object.values(elements).map((element) => {
+        switch (element.type) {
+          case "text":
+            return <TextElement {...element} />;
+            break;
+          case "rect":
+            return <RectElement {...element} />;
+            break;
+          case "ellipse":
+            return <EllipseElement {...element} />;
+            break;
+          case "line":
+            return <LineElement {...element} />;
+            break;
+        }
+      })}
     </>
   );
 };
@@ -71,73 +101,8 @@ const Rods = ({ findOne }) => {
   return (
     <>
       {elements.map((element) => (
-        <Rod key={element.id} {...element} findOne={findOne} />
+        <Rod key={element.id} {...element} />
       ))}
-    </>
-  );
-};
-
-const Rod = ({ id, x, y, width, height, fill, fillColor, stroke, locked, findOne }) => {
-  const state = useAppStore();
-  const { origin, elements, fdMode, labels } = state;
-
-  const onDragStart = (e) => {
-    state.clearSelect();
-    setVisibility(e, false);
-  };
-
-  const onDragMove = (e) => {
-    let dx = e.target.x() - x - origin.x;
-    let dy = e.target.y() - y - origin.y;
-    dx -= dx % (gridStep / 2);
-    dy -= dy % (gridStep / 2);
-    e.target.setAttrs({ x: origin.x + x + dx, y: origin.y + y + dy });
-  };
-
-  const onDragEnd = (e) => {
-    let dx = e.target.x() - x - origin.x;
-    let dy = e.target.y() - y - origin.y;
-    dx -= dx % (gridStep / 2);
-    dy -= dy % (gridStep / 2);
-    setVisibility(e, true);
-    state.relocateElement(id, dx, dy);
-  };
-
-  const onPointerClick = (e) => {
-    if (fdMode) return;
-    state.selectIds([id], elements[id].locked);
-  };
-
-  let text = ((width > height ? width : height) + 2) / gridStep;
-  if (text < 1) text = "";
-  return (
-    <>
-      <Rect
-        id={id}
-        x={origin.x + x}
-        y={origin.y + y}
-        width={width}
-        height={height}
-        draggable={!locked && !fdMode}
-        fill={fill ? fillColor : null}
-        stroke={stroke}
-        onDragStart={onDragStart}
-        onDragMove={onDragMove}
-        onDragEnd={onDragEnd}
-        onPointerClick={onPointerClick}
-      />
-      {labels && (
-        <Text
-          name="cube-group"
-          text={text}
-          x={origin.x + x + width / 2 - 7 - (text % 1 !== 0 ? 10 : 0)}
-          y={origin.y + y + height / 2 - 12}
-          stroke={"black"}
-          fill={"black"}
-          fontSize={30}
-          fontFamily="Calibri"
-        />
-      )}
     </>
   );
 };
@@ -156,86 +121,6 @@ const Fractions = () => {
           />
         );
       })}
-    </>
-  );
-};
-
-const Fraction = (props) => {
-  const { id, x, y, angle, rotation, fill, fillColor, stroke, locked } = props;
-  const state = useAppStore();
-  const { origin, fdMode, elements } = state;
-
-  const onDragStart = (e) => {
-    state.clearSelect();
-    setVisibility(e, false);
-  };
-
-  const onDragMove = (e) => {
-    const node = e.target;
-    let { x, y } = getStageXY(e.target.getStage(), state);
-    let magnet = null;
-    for (const id in state.elements) {
-      const el = state.elements[id];
-      if (el.id == node.id()) continue;
-      magnet = fractionMagnet({ x, y }, el, angle, origin) || magnet;
-    }
-    e.target.setAttrs(magnet || { x: node.x(), y: node.y(), rotation });
-  };
-  const onDragEnd = (e) => {
-    const node = e.target;
-    setVisibility(e, true);
-    state.updateElement(id, {
-      x: node.x() - origin.x,
-      y: node.y() - origin.y,
-      rotation: node.rotation(),
-    });
-  };
-
-  const onPointerClick = (e) => {
-    if (fdMode) return;
-    state.selectIds([id], elements[id].locked);
-  };
-
-  return angle < 360 ? (
-    <>
-      <Arc
-        id={id}
-        x={origin.x + x}
-        y={origin.y + y}
-        innerRadius={0}
-        outerRadius={gridStep * 2}
-        angle={angle}
-        rotation={rotation}
-        fill={fill ? fillColor : null}
-        stroke={stroke}
-        strokeWidth={2}
-        draggable={!locked && !fdMode}
-        onDragStart={onDragStart}
-        onDragMove={onDragMove}
-        onDragEnd={onDragEnd}
-        onPointerClick={onPointerClick}
-        lineJoin="round"
-        lineCap="round"
-      />
-      <FractionLabel {...props} onPointerClick={onPointerClick} />
-    </>
-  ) : (
-    <>
-      <Circle
-        id={id}
-        x={origin.x + x}
-        y={origin.y + y}
-        radius={gridStep * 2}
-        fill={fill ? fillColor : null}
-        stroke={stroke}
-        strokeWidth={2}
-        draggable={!locked && !fdMode}
-        onDragStart={onDragStart}
-        onDragMove={onDragMove}
-        onDragEnd={onDragEnd}
-        onPointerClick={onPointerClick}
-      />
-      <FractionLabel {...props} onPointerClick={onPointerClick} />
     </>
   );
 };

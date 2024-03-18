@@ -3,6 +3,7 @@ import { useAppStore } from "../state/store";
 import { leftToolbarWidth } from "./LeftToolbar";
 import BrushMenu from "./BrushMenu";
 import { Fragment } from "react";
+import ShapesMenu from "./ShapesMenu";
 
 export const bottomMenuHeight = 50;
 
@@ -18,7 +19,7 @@ const Menu = () => {
       {fdMode ? (
         <BrushMenu x={x} y={y} height={bottomMenuHeight} />
       ) : (
-        <DefaultMenu x={x} y={y} height={bottomMenuHeight} />
+        <DefaultMenu x={x} y={y} height={bottomMenuHeight} width={width - leftToolbarWidth} />
       )}
     </>
   );
@@ -26,7 +27,7 @@ const Menu = () => {
 
 const DefaultMenu = (props) => {
   const state = useAppStore();
-  const { x, y, height } = props;
+  const { x, y } = props;
   const { mode } = state;
 
   let buttons = [
@@ -127,7 +128,11 @@ const DefaultMenu = (props) => {
             width={width + padding * 2}
             height={buttonHeight + padding * 2}
             cornerRadius={5}
-            fill={(field == "labelMode" && state.labelMode == text) || (field != "labelMode" && state[field]) ? "#e8f4fe" : "#ffffff"}
+            fill={
+              (field == "labelMode" && state.labelMode == text) || (field != "labelMode" && state[field])
+                ? "#e8f4fe"
+                : "#ffffff"
+            }
             onPointerClick={onPointerClick(field, text)}
           />
           {image && (
@@ -151,6 +156,7 @@ const DefaultMenu = (props) => {
           />
         </Fragment>
       ))}
+      <ShapesMenu {...props} />
     </>
   );
 };
