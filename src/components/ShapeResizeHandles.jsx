@@ -77,7 +77,7 @@ const ShapeResizeHandles = (props) => {
     e.target
       .getStage()
       .find(".popup-menu")
-      .forEach((node) => node.visible(false));
+      .forEach((node) => node.visible(true));
     const { x1, x2, y1, y2 } = getPositions(e, circles);
     const x = Math.min(x1, x2) / scale + offset.x + 8 ;
     const y = Math.min(y1, y2) / scale + offset.y + 8 ;

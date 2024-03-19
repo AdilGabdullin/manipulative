@@ -124,6 +124,7 @@ export function createGroups(cubes) {
   const groups = [];
 
   for (const cube of Object.values(cubes)) {
+    if (cube.type != "cube") continue;
     let inGroup = false;
     for (const group of groups) {
       if (cubeIsStartOfGroup(cube, group)) {

@@ -11,13 +11,57 @@ import EllipseElement from "./EllipseElement";
 
 const Elements = () => {
   const state = useAppStore();
-  const { mode } = state;
+  const { mode, elements, showGroups } = state;
+
+  const list = sortedElements(elements, mode);
+
+  const groups = mode == "linking-cubes" ? createGroups(list) : [];
   return (
     <>
-      {mode == "rods" && <Rods />}
-      {mode == "linking-cubes" && <Cubes />}
-      {mode == "fractions" && <Fractions />}
-      <CommonElements />
+      {list.map((element) => {
+        const id = element.id;
+        switch (element.type) {
+          case "text":
+            return <TextElement key={id} {...element} />;
+            break;
+          case "rect":
+            return <RectElement key={id} {...element} />;
+            break;
+          case "ellipse":
+            return <EllipseElement key={id} {...element} />;
+            break;
+          case "line":
+            return <LineElement key={id} {...element} />;
+            break;
+          case "cube":
+            const group = [...groups.find((g) => g.some((c) => c.id == id))];
+            const index = group.findIndex((c) => c.id == id);
+            return (
+              <Cube
+                key={id}
+                {...elements[id]}
+                onPointerClick={() => {
+                  state.selectIds([id], elements[id].locked);
+                }}
+                group={group.slice(index + 1)}
+              />
+            );
+            break;
+          case "rod":
+            return <Rod key={id} {...element} />;
+            break;
+          case "fraction":
+            return (
+              <Fraction
+                key={id}
+                {...element}
+                onPointerClick={() => state.selectIds([id], element.locked)}
+              />
+            );
+            break;
+        }
+      })}
+      {showGroups && <CubeGroups groups={groups} />}
       <Image id="shadow-image" x={-100} y={-100} width={cubeSize} height={cubeSize} />
       <Rect id="shadow-rect" x={-100} y={-100} />
       <Arc id="shadow-arc" x={-100} y={-100} />
@@ -26,108 +70,31 @@ const Elements = () => {
   );
 };
 
-const CommonElements = () => {
-  const state = useAppStore();
-  const { elements } = state;
-  return (
-    <>
-      {Object.values(elements).map((element) => {
-        switch (element.type) {
-          case "text":
-            return <TextElement key={element.id} {...element} />;
-            break;
-          case "rect":
-            return <RectElement key={element.id} {...element} />;
-            break;
-          case "ellipse":
-            return <EllipseElement key={element.id} {...element} />;
-            break;
-          case "line":
-            return <LineElement key={element.id} {...element} />;
-            break;
-        }
-      })}
-    </>
-  );
-};
-
-const Cubes = () => {
-  const state = useAppStore();
-  const { elements, showGroups } = state;
-
-  const list = Object.values(elements).filter((e) => e.type == "cube");
-  list.sort((a, b) => {
-    if (a.rotation < b.rotation) {
-      return -1;
-    }
-    if (a.rotation > b.rotation) {
-      return 1;
-    }
-    if (a.rotation == 1) {
-      return a.x - b.x;
-    }
-    if (a.rotation == 0) {
-      return b.y - a.y;
-    }
-  });
-
-  const groups = createGroups(list);
-
-  return (
-    <>
-      {list.map(({ id }) => {
-        const group = [...groups.find((g) => g.some((c) => c.id == id))];
-        const index = group.findIndex((c) => c.id == id);
-
-        return (
-          <Cube
-            key={id}
-            {...elements[id]}
-            onPointerClick={() => {
-              state.selectIds([id], elements[id].locked);
-            }}
-            group={group.slice(index + 1)}
-          />
-        );
-      })}
-      {showGroups && <CubeGroups groups={groups} />}
-    </>
-  );
-};
-
-const Rods = () => {
-  const state = useAppStore();
-
-  const elements = Object.values(state.elements)
-    .filter((e) => e.type == "rod")
-    .toSorted((a, b) => a.x + a.y - b.x - b.y);
-  return (
-    <>
-      {elements.map((element) => (
-        <Rod key={element.id} {...element} />
-      ))}
-    </>
-  );
-};
-
-const Fractions = () => {
-  const state = useAppStore();
-  const { elements } = state;
-  return (
-    <>
-      {Object.values(elements)
-        .filter((e) => e.type == "fraction")
-        .map((element) => {
-          return (
-            <Fraction
-              key={element.id}
-              {...element}
-              onPointerClick={() => state.selectIds([element.id], element.locked)}
-            />
-          );
-        })}
-    </>
-  );
-};
+function sortedElements(elements, mode) {
+  if (mode == "rods") {
+    return Object.values(elements).toSorted((a, b) => {
+      if (a.type != "rod" || b.type != "rod") return 0;
+      return a.x + a.y - b.x - b.y;
+    });
+  }
+  if (mode == "linking-cubes") {
+    return Object.values(elements).toSorted((a, b) => {
+      if (a.type != "cube" || b.type != "cube") return 0;
+      if (a.rotation < b.rotation) {
+        return -1;
+      }
+      if (a.rotation > b.rotation) {
+        return 1;
+      }
+      if (a.rotation == 1) {
+        return a.x - b.x;
+      }
+      if (a.rotation == 0) {
+        return b.y - a.y;
+      }
+    });
+  }
+  return Object.values(elements);
+}
 
 export default Elements;
