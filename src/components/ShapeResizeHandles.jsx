@@ -1,11 +1,12 @@
 import { Circle } from "react-konva";
 import { useAppStore } from "../state/store";
 
-const radius = 6;
+const handleRadius = 6;
+const minEllipseRadius = 10;
 
 const ShapeResizeHandles = (props) => {
   const state = useAppStore();
-  const { selected, elements, origin, scale } = state;
+  const { selected, elements, origin, scale, offset } = state;
   const { x, y, width, height, findOne } = props;
 
   if (selected.length != 1 || !["text", "rect", "ellipse", "line"].includes(elements[selected[0]].type)) {
@@ -13,9 +14,10 @@ const ShapeResizeHandles = (props) => {
   }
 
   const element = elements[selected[0]];
-  if (!element || !["text", "rect", "ellipse", "line"].includes(element.type)) {
+  if (!element || !["rect", "ellipse", "line"].includes(element.type)) {
     return null;
   }
+  let elementNode = null;
 
   const onDragStart = (e) => {
     e.target
@@ -25,29 +27,32 @@ const ShapeResizeHandles = (props) => {
   };
 
   const onDragMove = (e) => {
+    if (!elementNode) {
+      elementNode = findOne(element.id);
+    }
+
     const { x1, x2, y1, y2 } = getPositions(e, findOne);
+    const x = Math.min(x1, x2) / scale + offset.x + 9;
+    const y = Math.min(y1, y2) / scale + offset.y + 9;
+    const width = Math.abs(x1 - x2) / scale - 18;
+    const height = Math.abs(y1 - y2) / scale - 18;
     switch (element.type) {
       case "rect":
-        findOne(element.id).setAttrs({
-          x: Math.min(x1, x2) + 8,
-          y: Math.min(y1, y2) + 8,
-          width: Math.abs(x1 - x2) - 16,
-          height: Math.abs(y1 - y2) - 16,
-        });
+        elementNode.setAttrs({ x, y, width, height });
         break;
       case "ellipse":
-        findOne(element.id).setAttrs({
-          x: (x1 + x2) / 2,
-          y: (y1 + y2) / 2,
-          radiusX: Math.max(Math.abs(x1 - x2) / 2 - 8, 10),
-          radiusY: Math.max(Math.abs(y1 - y2) / 2 - 8, 10),
+        elementNode.setAttrs({
+          x: x + width / 2,
+          y: y + height / 2,
+          radiusX: Math.max(width / 2, minEllipseRadius),
+          radiusY: Math.max(height / 2, minEllipseRadius),
         });
         break;
       case "line":
-        findOne(element.id).setAttrs({
-          x: x1 + 8 * Math.sign(x2 - x1),
-          y: y1 + 8 * Math.sign(y2 - y1),
-          points: [0, 0, x2 - x1 - 16 * Math.sign(x2 - x1), y2 - y1 - 16 * Math.sign(y2 - y1)],
+        elementNode.setAttrs({
+          x: (x1 + 8 * Math.sign(x2 - x1)) / scale + offset.x,
+          y: (y1 + 8 * Math.sign(y2 - y1)) / scale + offset.y,
+          points: [0, 0, (x2 - x1 - 16 * Math.sign(x2 - x1)) / scale, (y2 - y1 - 16 * Math.sign(y2 - y1)) / scale],
         });
         break;
     }
@@ -65,29 +70,28 @@ const ShapeResizeHandles = (props) => {
       .find(".popup-menu")
       .forEach((node) => node.visible(false));
     const { x1, x2, y1, y2 } = getPositions(e, findOne);
+    const x = Math.min(x1, x2) / scale + offset.x + 9;
+    const y = Math.min(y1, y2) / scale + offset.y + 9;
+    const width = Math.abs(x1 - x2) / scale - 18;
+    const height = Math.abs(y1 - y2) / scale - 18;
     switch (element.type) {
       case "rect":
-        state.updateElement(element.id, {
-          x: Math.min(x1, x2) + 8 - origin.x,
-          y: Math.min(y1, y2) + 8 - origin.y,
-          width: Math.abs(x1 - x2) - 16,
-          height: Math.abs(y1 - y2) - 16,
-        });
+        state.updateElement(element.id, { x: x - origin.x, y: y - origin.y, width, height });
         break;
       case "ellipse":
         state.updateElement(element.id, {
-          x: (x1 + x2) / 2 - origin.x,
-          y: (y1 + y2) / 2 - origin.y,
-          radiusX: Math.max(Math.abs(x1 - x2) / 2 - 8, 10),
-          radiusY: Math.max(Math.abs(y1 - y2) / 2 - 8, 10),
+          x: x + width / 2 - origin.x,
+          y: y + height / 2 - origin.y,
+          radiusX: Math.max(width / 2, minEllipseRadius),
+          radiusY: Math.max(height / 2, minEllipseRadius),
         });
         break;
       case "line":
         state.updateElement(element.id, {
-          x: x1 + 8 * Math.sign(x2 - x1) - origin.x,
-          y: y1 + 8 * Math.sign(y2 - y1) - origin.y,
-          x2: x2 - x1 - 16 * Math.sign(x2 - x1),
-          y2: y2 - y1 - 16 * Math.sign(y2 - y1),
+          x: (x1 + 8 * Math.sign(x2 - x1)) / scale + offset.x - origin.x,
+          y: (y1 + 8 * Math.sign(y2 - y1)) / scale + offset.y - origin.y,
+          x2: (x2 - x1 - 16 * Math.sign(x2 - x1)) / scale,
+          y2: (y2 - y1 - 16 * Math.sign(y2 - y1)) / scale,
         });
         break;
     }
@@ -100,7 +104,7 @@ const ShapeResizeHandles = (props) => {
         name="drag-hidden"
         x={x}
         y={y}
-        radius={radius}
+        radius={handleRadius}
         stroke={"#2196f3"}
         fill="#ffffff"
         draggable
@@ -113,7 +117,7 @@ const ShapeResizeHandles = (props) => {
         name="drag-hidden"
         x={x + width}
         y={y}
-        radius={radius}
+        radius={handleRadius}
         stroke={"#2196f3"}
         fill="#ffffff"
         draggable
@@ -126,7 +130,7 @@ const ShapeResizeHandles = (props) => {
         name="drag-hidden"
         x={x}
         y={y + height}
-        radius={radius}
+        radius={handleRadius}
         stroke={"#2196f3"}
         fill="#ffffff"
         draggable
@@ -139,7 +143,7 @@ const ShapeResizeHandles = (props) => {
         name="drag-hidden"
         x={x + width}
         y={y + height}
-        radius={radius}
+        radius={handleRadius}
         stroke={"#2196f3"}
         fill="#ffffff"
         draggable
