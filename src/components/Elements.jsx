@@ -9,12 +9,12 @@ import TextElement from "./TextElement";
 import RectElement from "./RectElement";
 import EllipseElement from "./EllipseElement";
 
-const Elements = ({ findOne }) => {
+const Elements = () => {
   const state = useAppStore();
-  const { origin, mode } = state;
+  const { mode } = state;
   return (
     <>
-      {mode == "rods" && <Rods findOne={findOne} />}
+      {mode == "rods" && <Rods />}
       {mode == "linking-cubes" && <Cubes />}
       {mode == "fractions" && <Fractions />}
       <CommonElements />
@@ -55,9 +55,7 @@ const Cubes = () => {
   const state = useAppStore();
   const { elements, showGroups } = state;
 
-  const list = Object.keys(elements)
-    .filter((e) => e.type == "cube")
-    .map((id) => elements[id]);
+  const list = Object.values(elements).filter((e) => e.type == "cube");
   list.sort((a, b) => {
     if (a.rotation < b.rotation) {
       return -1;
@@ -97,7 +95,7 @@ const Cubes = () => {
   );
 };
 
-const Rods = ({ findOne }) => {
+const Rods = () => {
   const state = useAppStore();
 
   const elements = Object.values(state.elements)

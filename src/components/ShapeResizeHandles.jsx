@@ -41,10 +41,10 @@ const ShapeResizeHandles = (props) => {
     }
 
     const { x1, x2, y1, y2 } = getPositions(e, circles);
-    const x = Math.min(x1, x2) / scale + offset.x + 9;
-    const y = Math.min(y1, y2) / scale + offset.y + 9;
-    const width = Math.abs(x1 - x2) / scale - 18;
-    const height = Math.abs(y1 - y2) / scale - 18;
+    const x = Math.min(x1, x2) / scale + offset.x + 8;
+    const y = Math.min(y1, y2) / scale + offset.y + 8;
+    const width = Math.abs(x1 - x2) / scale - 16;
+    const height = Math.abs(y1 - y2) / scale - 16;
     switch (element.type) {
       case "rect":
         elementNode.setAttrs({ x, y, width, height });
@@ -59,9 +59,9 @@ const ShapeResizeHandles = (props) => {
         break;
       case "line":
         elementNode.setAttrs({
-          x: x1 / scale + offset.x + 9 * Math.sign(x2 - x1),
-          y: y1 / scale + offset.y + 9 * Math.sign(y2 - y1),
-          points: [0, 0, (x2 - x1) / scale - 18 * Math.sign(x2 - x1), (y2 - y1) / scale - 18 * Math.sign(y2 - y1)],
+          x: x1 / scale + offset.x + 8 * Math.sign(x2 - x1),
+          y: y1 / scale + offset.y + 8 * Math.sign(y2 - y1),
+          points: [0, 0, (x2 - x1) / scale - 16 * Math.sign(x2 - x1), (y2 - y1) / scale - 18 * Math.sign(y2 - y1)],
         });
         break;
     }
@@ -79,10 +79,10 @@ const ShapeResizeHandles = (props) => {
       .find(".popup-menu")
       .forEach((node) => node.visible(false));
     const { x1, x2, y1, y2 } = getPositions(e, circles);
-    const x = Math.min(x1, x2) / scale + offset.x + 9;
-    const y = Math.min(y1, y2) / scale + offset.y + 9;
-    const width = Math.abs(x1 - x2) / scale - 18;
-    const height = Math.abs(y1 - y2) / scale - 18;
+    const x = Math.min(x1, x2) / scale + offset.x + 8 ;
+    const y = Math.min(y1, y2) / scale + offset.y + 8 ;
+    const width = Math.abs(x1 - x2) / scale - 16 ;
+    const height = Math.abs(y1 - y2) / scale - 16 ;
     switch (element.type) {
       case "rect":
         state.updateElement(element.id, { x: x - origin.x, y: y - origin.y, width, height });
@@ -97,10 +97,10 @@ const ShapeResizeHandles = (props) => {
         break;
       case "line":
         state.updateElement(element.id, {
-          x: x1 / scale + offset.x + 9 * Math.sign(x2 - x1) - origin.x,
-          y: y1 / scale + offset.y + 9 * Math.sign(y2 - y1) - origin.y,
-          x2: (x2 - x1) / scale - 18 * Math.sign(x2 - x1),
-          y2: (y2 - y1) / scale - 18 * Math.sign(y2 - y1),
+          x: x1 / scale + offset.x + 8 * Math.sign(x2 - x1) - origin.x,
+          y: y1 / scale + offset.y + 8 * Math.sign(y2 - y1) - origin.y,
+          x2: (x2 - x1) / scale - 16 * Math.sign(x2 - x1),
+          y2: (y2 - y1) / scale - 16 * Math.sign(y2 - y1),
         });
         break;
     }
