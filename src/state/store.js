@@ -284,6 +284,7 @@ export const useAppStore = create((set) => ({
         state.elements[id].x += dx;
         state.elements[id].y += dy;
         state.lastActiveElement = id;
+        pushHistory(state);
       })
     ),
   relocateElements: (ids, dx, dy) =>
@@ -294,6 +295,7 @@ export const useAppStore = create((set) => ({
           state.elements[id].y += dy;
           state.lastActiveElement = id;
         }
+        pushHistory(state);
       })
     ),
 
@@ -361,6 +363,7 @@ export const useAppStore = create((set) => ({
           el.x += width / 2 - height / 2;
           el.y += height / 2 - width / 2;
         }
+        pushHistory(state);
       })
     ),
   copySelected: () =>
