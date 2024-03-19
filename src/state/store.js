@@ -30,7 +30,7 @@ export const useAppStore = create((set) => ({
   // scale: 1.0,
   // fullscreen: false,
   offset: { x: 50, y: 100 },
-  scale: .5,
+  scale: 0.5,
   fullscreen: true,
   workspace: "square",
   grid: mode == "geoboard" ? initGrid("square") : [],
@@ -225,15 +225,24 @@ export const useAppStore = create((set) => ({
         }
       }
 
+      const boxInRect = ({ x, y, width, height }) => {
+        return (
+          (numberBetween(x, downPos.x, upPos.x) ||
+            numberBetween(x + width, downPos.x, upPos.x) ||
+            numberBetween(downPos.x, x, x + width) ||
+            numberBetween(upPos.x, x, x + width)) &&
+          (numberBetween(y, downPos.y, upPos.y) ||
+            numberBetween(y + height, downPos.y, upPos.y) ||
+            numberBetween(downPos.y, y, y + height) ||
+            numberBetween(upPos.y, y, y + height))
+        );
+      };
+
       Object.keys(state.elements).map((key) => {
         const element = state.elements[key];
         if (element) {
           const { id, locked } = element;
-          const { x, y, width, height } = elementBox(element);
-          if (
-            !locked &&
-            (inRect(x, y) || inRect(x + width, y) || inRect(x, y + height) || inRect(x + width, y + height))
-          ) {
+          if (!locked && boxInRect(elementBox(element))) {
             selected.push(id);
           }
         }

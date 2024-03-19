@@ -100,7 +100,7 @@ const SelectedFrame = (props) => {
       e.target.setAttrs({ x: x + dx * scale, y: y + dy * scale });
     }
 
-    if (mode == "fractions" && selectedTargets.length == 1) {
+    if (mode == "fractions" && selectedTargets.length == 1 && elements[id].type == "fraction") {
       const node = selectedTargets[0].node;
       let { x, y } = getStageXY(e.target.getStage(), state);
       let magnet = null;
