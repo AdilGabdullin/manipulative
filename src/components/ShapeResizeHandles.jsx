@@ -17,8 +17,6 @@ const ShapeResizeHandles = (props) => {
   if (!element || !["rect", "ellipse", "line"].includes(element.type)) {
     return null;
   }
-  let elementNode = null;
-  let frameNode = null;
 
   const onDragStart = (e) => {
     e.target
@@ -27,6 +25,10 @@ const ShapeResizeHandles = (props) => {
       .forEach((node) => node.visible(false));
   };
 
+  let elementNode = null;
+  let frameNode = null;
+  let circles = null;
+
   const onDragMove = (e) => {
     if (!elementNode) {
       elementNode = findOne(element.id);
@@ -34,8 +36,11 @@ const ShapeResizeHandles = (props) => {
     if (!frameNode) {
       frameNode = findOne("selected-frame");
     }
+    if (!circles) {
+      circles = ["resize-handle-0", "resize-handle-1", "resize-handle-2", "resize-handle-3"].map(findOne);
+    }
 
-    const { x1, x2, y1, y2 } = getPositions(e, findOne);
+    const { x1, x2, y1, y2 } = getPositions(e, circles);
     const x = Math.min(x1, x2) / scale + offset.x + 9;
     const y = Math.min(y1, y2) / scale + offset.y + 9;
     const width = Math.abs(x1 - x2) / scale - 18;
@@ -73,7 +78,7 @@ const ShapeResizeHandles = (props) => {
       .getStage()
       .find(".popup-menu")
       .forEach((node) => node.visible(false));
-    const { x1, x2, y1, y2 } = getPositions(e, findOne);
+    const { x1, x2, y1, y2 } = getPositions(e, circles);
     const x = Math.min(x1, x2) / scale + offset.x + 9;
     const y = Math.min(y1, y2) / scale + offset.y + 9;
     const width = Math.abs(x1 - x2) / scale - 18;
@@ -159,8 +164,7 @@ const ShapeResizeHandles = (props) => {
   );
 };
 
-function getPositions(e, findOne) {
-  const circles = ["resize-handle-0", "resize-handle-1", "resize-handle-2", "resize-handle-3"].map(findOne);
+function getPositions(e, circles) {
   const target = e.target;
 
   let x1, x2, y1, y2;
