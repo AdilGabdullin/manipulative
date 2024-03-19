@@ -294,6 +294,7 @@ export const useAppStore = create((set) => ({
         for (const key in attrs) {
           state.elements[id][key] = attrs[key];
         }
+        pushHistory(state);
       })
     ),
 

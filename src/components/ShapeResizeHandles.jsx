@@ -18,6 +18,7 @@ const ShapeResizeHandles = (props) => {
     return null;
   }
   let elementNode = null;
+  let frameNode = null;
 
   const onDragStart = (e) => {
     e.target
@@ -29,6 +30,9 @@ const ShapeResizeHandles = (props) => {
   const onDragMove = (e) => {
     if (!elementNode) {
       elementNode = findOne(element.id);
+    }
+    if (!frameNode) {
+      frameNode = findOne("selected-frame");
     }
 
     const { x1, x2, y1, y2 } = getPositions(e, findOne);
@@ -50,13 +54,13 @@ const ShapeResizeHandles = (props) => {
         break;
       case "line":
         elementNode.setAttrs({
-          x: (x1 + 8 * Math.sign(x2 - x1)) / scale + offset.x,
-          y: (y1 + 8 * Math.sign(y2 - y1)) / scale + offset.y,
-          points: [0, 0, (x2 - x1 - 16 * Math.sign(x2 - x1)) / scale, (y2 - y1 - 16 * Math.sign(y2 - y1)) / scale],
+          x: x1 / scale + offset.x + 9 * Math.sign(x2 - x1),
+          y: y1 / scale + offset.y + 9 * Math.sign(y2 - y1),
+          points: [0, 0, (x2 - x1) / scale - 18 * Math.sign(x2 - x1), (y2 - y1) / scale - 18 * Math.sign(y2 - y1)],
         });
         break;
     }
-    findOne("selected-frame").setAttrs({
+    frameNode.setAttrs({
       x: Math.min(x1, x2),
       y: Math.min(y1, y2),
       width: Math.abs(x1 - x2),
@@ -88,10 +92,10 @@ const ShapeResizeHandles = (props) => {
         break;
       case "line":
         state.updateElement(element.id, {
-          x: (x1 + 8 * Math.sign(x2 - x1)) / scale + offset.x - origin.x,
-          y: (y1 + 8 * Math.sign(y2 - y1)) / scale + offset.y - origin.y,
-          x2: (x2 - x1 - 16 * Math.sign(x2 - x1)) / scale,
-          y2: (y2 - y1 - 16 * Math.sign(y2 - y1)) / scale,
+          x: x1 / scale + offset.x + 9 * Math.sign(x2 - x1) - origin.x,
+          y: y1 / scale + offset.y + 9 * Math.sign(y2 - y1) - origin.y,
+          x2: (x2 - x1) / scale - 18 * Math.sign(x2 - x1),
+          y2: (y2 - y1) / scale - 18 * Math.sign(y2 - y1),
         });
         break;
     }
