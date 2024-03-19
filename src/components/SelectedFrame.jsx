@@ -133,7 +133,7 @@ const SelectedFrame = (props) => {
     {
       text: "Rotate",
       active: !lockSelect,
-      hide: ["geoboard", "linking-cubes", "fractions"],
+      show: mode == "rods" && selected.some((id) => elements[id].type == "rod"),
       onPointerClick: (e) => {
         state.rotateSelected();
       },
@@ -141,7 +141,7 @@ const SelectedFrame = (props) => {
     {
       text: "Fill On/Off",
       active: !lockSelect,
-      hide: ["linking-cubes"],
+      show: mode == "linking-cubes",
       onPointerClick: (e) => {
         state.toggleValueSelected("fill");
       },
@@ -149,7 +149,7 @@ const SelectedFrame = (props) => {
     {
       text: "Angle On/Off",
       active: !lockSelect,
-      hide: ["linking-cubes", "rods", "fractions"],
+      show: mode == "geoboard" && selected.some((id) => elements[id] == undefined),
       onPointerClick: (e) => {
         state.toggleValueSelected("measures");
       },
@@ -157,7 +157,7 @@ const SelectedFrame = (props) => {
     {
       text: "Copy",
       active: !lockSelect,
-      hide: [],
+      show: true,
       onPointerClick: (e) => {
         state.copySelected();
       },
@@ -165,7 +165,7 @@ const SelectedFrame = (props) => {
     {
       text: "Delete",
       active: !lockSelect,
-      hide: [],
+      show: true,
       onPointerClick: (e) => {
         state.deleteSelected();
       },
@@ -173,7 +173,7 @@ const SelectedFrame = (props) => {
     {
       text: lockSelect ? "Unlock" : "Lock",
       active: true,
-      hide: [],
+      show: true,
       onPointerClick: (e) => {
         e.cancelBubble = true;
         state.lockSelected(!lockSelect);
@@ -181,7 +181,7 @@ const SelectedFrame = (props) => {
     },
   ];
 
-  menuButtons = menuButtons.filter((button) => !button.hide.includes(mode));
+  menuButtons = menuButtons.filter((button) => button.show);
 
   const buttonHeight = 20;
   const buttonWidth = 110;
