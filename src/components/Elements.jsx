@@ -1,4 +1,4 @@
-import { Arc, Circle, Image, Rect } from "react-konva";
+import { Arc, Circle, Ellipse, Image, Line, Rect, Text } from "react-konva";
 import { cubeSize, useAppStore } from "../state/store";
 import Cube from "./Cube";
 import CubeGroups, { createGroups } from "./CubeGroups";
@@ -51,21 +51,18 @@ const Elements = () => {
             return <Rod key={id} {...element} />;
             break;
           case "fraction":
-            return (
-              <Fraction
-                key={id}
-                {...element}
-                onPointerClick={() => state.selectIds([id], element.locked)}
-              />
-            );
+            return <Fraction key={id} {...element} onPointerClick={() => state.selectIds([id], element.locked)} />;
             break;
         }
       })}
       {showGroups && <CubeGroups groups={groups} />}
-      <Image id="shadow-image" x={-100} y={-100} width={cubeSize} height={cubeSize} />
-      <Rect id="shadow-rect" x={-100} y={-100} />
-      <Arc id="shadow-arc" x={-100} y={-100} />
-      <Circle id="shadow-circle" x={-100} y={-100} />
+      <Image id="shadow-image" visible={false} width={cubeSize} height={cubeSize} />
+      <Rect id="shadow-rect" visible={false} />
+      <Ellipse id="shadow-ellipse" visible={false} />
+      <Arc id="shadow-arc" visible={false} />
+      <Circle id="shadow-circle" visible={false} />
+      <Line id="shadow-line" visible={false} />
+      <Text id="shadow-text" visible={false} fill={"black"} fontSize={36} text="Text"/>
     </>
   );
 };
