@@ -244,3 +244,10 @@ export function cos(rotation) {
 export function sin(rotation) {
   return Math.sin((rotation / 180) * Math.PI);
 }
+
+export function gcd(a, b) {
+  if (!b) {
+    return a;
+  }
+  return gcd(b, a % b);
+}

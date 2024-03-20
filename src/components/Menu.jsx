@@ -64,16 +64,16 @@ const DefaultMenu = (props) => {
       shift: 0,
     },
     {
-      text: "Labels",
+      text: "Whole Numbers",
       visible: ["rods"],
-      field: "labels",
+      field: "labelMode",
       image: null,
-      width: 47,
+      width: 120,
       shift: -40,
     },
     {
       text: "Fractions",
-      visible: ["fractions"],
+      visible: ["fractions", "rods"],
       field: "labelMode",
       image: null,
       width: 65,
@@ -81,10 +81,10 @@ const DefaultMenu = (props) => {
     },
     {
       text: "Decimals",
-      visible: ["fractions"],
+      visible: ["fractions", "rods"],
       field: "labelMode",
       image: null,
-      width: 68,
+      width: 63,
       shift: -25,
     },
     {
@@ -97,7 +97,7 @@ const DefaultMenu = (props) => {
     },
     {
       text: "Blank",
-      visible: ["fractions"],
+      visible: ["fractions", "rods"],
       field: "labelMode",
       image: null,
       width: 42,
@@ -120,42 +120,44 @@ const DefaultMenu = (props) => {
 
   return (
     <>
-      {buttons.map(({ text, field, image, width, shift }, i) => (
-        <Fragment key={text}>
-          <Rect
-            x={x + padding + buttonWidth * i + shift}
-            y={y + padding}
-            width={width + padding * 2}
-            height={buttonHeight + padding * 2}
-            cornerRadius={5}
-            fill={
-              (field == "labelMode" && state.labelMode == text) || (field != "labelMode" && state[field])
-                ? "#e8f4fe"
-                : "#ffffff"
-            }
-            onPointerClick={onPointerClick(field, text)}
-          />
-          {image && (
-            <Image
-              image={image}
-              x={x + padding + buttonWidth * i + 4 + shift}
-              y={y + padding + 4}
-              width={30}
-              height={(image.height / image.width) * 30}
+      {buttons.map(({ text, field, image, width, shift }, i) => {
+        return (
+          <Fragment key={text}>
+            <Rect
+              x={x + padding + buttonWidth * i + shift}
+              y={y + padding}
+              width={width + padding * 2}
+              height={buttonHeight + padding * 2}
+              cornerRadius={5}
+              fill={
+                (field == "labelMode" && state.labelMode == text) || (field != "labelMode" && state[field])
+                  ? "#e8f4fe"
+                  : "#ffffff"
+              }
               onPointerClick={onPointerClick(field, text)}
             />
-          )}
-          <Text
-            x={x + padding * 2 + buttonWidth * i + (image ? 33 : 0) + shift}
-            y={y + padding * 2}
-            text={text}
-            fill={"black"}
-            fontSize={18}
-            fontFamily="Calibri"
-            onPointerClick={onPointerClick(field, text)}
-          />
-        </Fragment>
-      ))}
+            {image && (
+              <Image
+                image={image}
+                x={x + padding + buttonWidth * i + 4 + shift}
+                y={y + padding + 4}
+                width={30}
+                height={(image.height / image.width) * 30}
+                onPointerClick={onPointerClick(field, text)}
+              />
+            )}
+            <Text
+              x={x + padding * 2 + buttonWidth * i + (image ? 33 : 0) + shift}
+              y={y + padding * 2}
+              text={text}
+              fill={"black"}
+              fontSize={18}
+              fontFamily="Calibri"
+              onPointerClick={onPointerClick(field, text)}
+            />
+          </Fragment>
+        );
+      })}
       <ShapesMenu {...props} />
     </>
   );

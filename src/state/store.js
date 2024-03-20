@@ -45,8 +45,7 @@ export const useAppStore = create((set) => ({
   measures: false,
   showLineGrid: mode == "rods",
   showGroups: true,
-  labels: true,
-  labelMode: "Fractions",
+  labelMode: mode == "rods" ? "Whole Numbers" : "Fractions",
   toggleGlobal: (field) =>
     set(
       produce((state) => {
