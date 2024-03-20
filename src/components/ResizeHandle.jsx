@@ -18,19 +18,19 @@ const ResizeHandle = ({ frameProps, element }) => {
   };
   const onDragMove = (e) => {
     const handle = e.target;
-    const step = (gridStep / 2) * scale;
+    const step = gridStep * scale;
     if (isHorizontal) {
       let dx = handle.x() - handleX;
       dx = Math.round(dx / step) * step;
-      dx = Math.max(dx, ((step * 2) / scale - element.width) * scale);
+      dx = Math.max(dx, (step / scale - element.width) * scale);
       handle.setAttrs({ x: handleX + dx, y: handleY });
       findOne(e, "selected-frame").setAttr("width", width + dx);
       findOne(e, element.id).setAttr("width", element.width + dx / scale);
     } else {
       let dy = handle.y() - handleY;
       dy = Math.round(dy / step) * step;
-      if (element.height - dy / scale < (step * 2) / scale) {
-        dy = (element.height - (step * 2) / scale) * scale;
+      if (element.height - dy / scale < step / scale) {
+        dy = (element.height - step / scale) * scale;
       }
       handle.setAttrs({ x: handleX, y: handleY + dy });
       findOne(e, "selected-frame").setAttrs({

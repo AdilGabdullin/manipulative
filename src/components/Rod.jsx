@@ -80,6 +80,9 @@ const WholeLabel = ({ x, y, text }) => {
 };
 
 const DecimalLabel = ({ x, y, text }) => {
+  if (text == 1) {
+    text = "1.0";
+  }
   return (
     <Text
       name="drag-hidden"
