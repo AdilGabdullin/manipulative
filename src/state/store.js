@@ -299,13 +299,13 @@ export const useAppStore = create((set) => ({
       })
     ),
 
-  updateElement: (id, attrs) =>
+  updateElement: (id, attrs, doPush = true) =>
     set(
       produce((state) => {
         for (const key in attrs) {
           state.elements[id][key] = attrs[key];
         }
-        pushHistory(state);
+        if (doPush) pushHistory(state);
       })
     ),
 

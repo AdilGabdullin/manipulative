@@ -62,7 +62,7 @@ const Elements = () => {
       <Arc id="shadow-arc" visible={false} />
       <Circle id="shadow-circle" visible={false} />
       <Line id="shadow-line" visible={false} />
-      <Text id="shadow-text" visible={false} fill={"black"} fontSize={36} text="Text"/>
+      <Text id="shadow-text" visible={false} fill={"black"} fontSize={36} text="Text" fontFamily="Calibri"/>
     </>
   );
 };

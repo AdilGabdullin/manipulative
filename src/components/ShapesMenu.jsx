@@ -33,7 +33,16 @@ const TextButton = (props) => {
   const { origin } = state;
 
   const onPointerClick = () => {
-    state.addElement({ type: "text", x: -40, y: -20, text: "Text", fontSize: 36 });
+    state.addElement({
+      type: "text",
+      x: -40,
+      y: -20,
+      text: "Text",
+      fontSize: 36,
+      width: 100,
+      height: 36,
+      newText: true,
+    });
   };
 
   const onDragStart = (e) => {
@@ -55,7 +64,16 @@ const TextButton = (props) => {
       visible: false,
     });
     const { x, y } = getStageXY(e.target.getStage(), state);
-    state.addElement({ type: "text", x: x - 40, y: y - 20, text: "Text", fontSize: 36 });
+    state.addElement({
+      type: "text",
+      x: x - 40,
+      y: y - 20,
+      text: "Text",
+      fontSize: 36,
+      width: 100,
+      height: 36,
+      newText: true,
+    });
   };
 
   return (

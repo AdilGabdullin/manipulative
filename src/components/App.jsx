@@ -20,6 +20,7 @@ import SelectedFrame from "./SelectedFrame";
 import Elements from "./Elements";
 import FreeDrawing from "./FreeDrawing";
 import ImagePreloader from "./ImagePreloader";
+import { appSaveText } from "./TextElement";
 
 const App = () => {
   const state = useAppStore();
@@ -59,6 +60,7 @@ const App = () => {
 
   const onMouseDown = (e) => {
     // console.log("stage down", e.target);
+    appSaveText(state, findOne);
     if (state.fdMode) {
       const { x, y } = getStageXY(stageRef.current, state);
       const pos = stageRef.current.getPointerPosition();

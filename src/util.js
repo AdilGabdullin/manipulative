@@ -220,8 +220,7 @@ function fractionBox(element) {
 }
 
 function textBox(element) {
-  const { x, y, fontSize } = element;
-  return { x: x, y: y, width: 100, height: fontSize };
+  return element;
 }
 
 function ellipseBox(element) {
