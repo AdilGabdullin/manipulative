@@ -102,11 +102,12 @@ export function appSaveText(state, findOne) {
 function saveText(textNode, area, state) {
   textNode.setAttr("text", area.value);
   setTimeout(() => {
+    const { width, height } = textNode.getClientRect();
     state.updateElement(area.dataset.nodeId, {
       text: area.value,
       newText: false,
-      width: textNode.getClientRect().width / state.scale,
-      height: textNode.getClientRect().height / state.scale,
+      width: width / state.scale,
+      height: height / state.scale,
     });
   }, 500);
   area.remove();

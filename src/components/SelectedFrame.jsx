@@ -6,6 +6,7 @@ import ResizeHandle from "./ResizeHandle";
 import { elementBox, fractionMagnet, getStageXY, setVisibility, setVisibilityFrame } from "../util";
 import RotateHandle from "./RotateHandle";
 import ShapeResizeHandles from "./ShapeResizeHandles";
+import { createTextArea } from "./TextElement";
 
 const SelectedFrame = (props) => {
   const state = useAppStore();
@@ -130,6 +131,14 @@ const SelectedFrame = (props) => {
   };
 
   let menuButtons = [
+    {
+      text: "Edit",
+      active: !lockSelect,
+      show: selected.length == 1 && elements[selected[0]].type == "text",
+      onPointerClick: (e) => {
+        createTextArea(e.target.getStage().findOne("#" + selected[0]), state);
+      },
+    },
     {
       text: "Rotate",
       active: !lockSelect,
