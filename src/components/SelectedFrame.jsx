@@ -101,7 +101,7 @@ const SelectedFrame = (props) => {
       e.target.setAttrs({ x: x + dx * scale, y: y + dy * scale });
     }
 
-    if (mode == "fractions" && selectedTargets.length == 1 && elements[id].type == "fraction") {
+    if (mode == "fractions" && selectedTargets.length == 1 && elements[selected[0]].type == "fraction") {
       const node = selectedTargets[0].node;
       let { x, y } = getStageXY(e.target.getStage(), state);
       let magnet = null;
@@ -150,7 +150,7 @@ const SelectedFrame = (props) => {
     {
       text: "Fill On/Off",
       active: !lockSelect,
-      show: mode == "linking-cubes",
+      show: selected.some((id) => elements[id] == undefined || elements[id].fill != undefined),
       onPointerClick: (e) => {
         state.toggleValueSelected("fill");
       },

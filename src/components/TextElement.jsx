@@ -85,6 +85,7 @@ export function createTextArea(textNode, state) {
   area.style.fontSize = textNode.getAttr("fontSize") * state.scale + "px";
   area.style.fontFamily = "Calibri";
   area.focus();
+  setTimeout(() => area.focus(), 200);
   area.addEventListener("keydown", function (e) {
     if (e.code == "Escape") {
       saveText(textNode, area, state);
