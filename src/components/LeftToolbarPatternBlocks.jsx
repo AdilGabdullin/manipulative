@@ -238,10 +238,13 @@ const Pattern = (props) => {
     getShadow().setAttrs({ visible: false });
     state.addElement({
       type: "pattern",
-      x: x + origin.x - (width / 2) * step,
-      y: y + origin.y - (height / 2) * step,
+      x: x - (width / 2) * step,
+      y: y - (height / 2) * step,
       points: points.map((x) => x * step),
-      fill,
+      width: width * step,
+      height: height * step,
+      fill: true,
+      fillColor: fill,
       stroke,
     });
   };
