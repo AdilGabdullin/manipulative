@@ -3,6 +3,7 @@ import { cubeShift, cubeSize, gridStep, useAppStore } from "../state/store";
 import { distance2, fractionMagnet, getStageXY, numberBetween } from "../util";
 import { Fragment, useState } from "react";
 import ResizableIcon from "./ResizableIcon";
+import LeftToolbarPatternBlocks from "./LeftToolbarPatternBlocks";
 
 export const leftToolbarWidth = 180;
 const ids = {
@@ -531,20 +532,23 @@ const LeftToolbarFractions = ({ findOne }) => {
   );
 };
 
-const LeftToolbar = (props) => {
+const LeftToolbar = ({ findOne }) => {
   const state = useAppStore();
   switch (state.mode) {
     case "geoboard":
-      return <LeftToolbarGeoboard {...props} />;
+      return <LeftToolbarGeoboard findOne={findOne} />;
       break;
     case "linking-cubes":
-      return <LeftToolbarCubes {...props} />;
+      return <LeftToolbarCubes findOne={findOne} />;
       break;
     case "rods":
-      return <LeftToolbarRods {...props} />;
+      return <LeftToolbarRods findOne={findOne} />;
       break;
     case "fractions":
-      return <LeftToolbarFractions {...props} />;
+      return <LeftToolbarFractions findOne={findOne} />;
+      break;
+    case "pattern-blocks":
+      return <LeftToolbarPatternBlocks findOne={findOne} />;
       break;
   }
 };
