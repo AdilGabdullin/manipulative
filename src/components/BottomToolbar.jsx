@@ -1,6 +1,12 @@
 import { useAppStore } from "../state/store";
+import { capitalizeFirstLetter } from "../util";
 
 export const bottomToolbarHeight = 60;
+
+const workspaceOptions = {
+  geoboard: ["square", "isometric", "circular"],
+  "pattern-blocks": ["basic", "fractions", "deci"],
+};
 
 const BottomToolbar = () => {
   const state = useAppStore();
@@ -14,16 +20,28 @@ const BottomToolbar = () => {
         <Button text="zoom out" imageSrc="buttons/zoom-out-min.png" onClick={() => state.setScale(state.scale - 0.1)} />
         <Button text="fullscreen" imageSrc="buttons/full-screen-min.png" onClick={state.toggleFullscreen} />
 
-        <Button text="brush" imageSrc="buttons/pencil-min.png" onClick={state.toggleBrush}  active={state.fdMode == "brush"}/>
-        <Button text="eraser" imageSrc="buttons/eraser-min.png" onClick={state.toggleEraser} active={state.fdMode == "eraser"} />
+        <Button
+          text="brush"
+          imageSrc="buttons/pencil-min.png"
+          onClick={state.toggleBrush}
+          active={state.fdMode == "brush"}
+        />
+        <Button
+          text="eraser"
+          imageSrc="buttons/eraser-min.png"
+          onClick={state.toggleEraser}
+          active={state.fdMode == "eraser"}
+        />
       </div>
-      {state.mode == "geoboard" && (
+      {workspaceOptions[state.mode] != undefined && (
         <div className="workspace-selector">
           <label className="workspace-selector-label">Workspace</label>
           <select onChange={(e) => state.setWorkspace(e.target.value)} value={state.workspace}>
-            <option value="square">Square</option>
-            <option value="isometric">Isometric</option>
-            <option value="circular">Circular</option>
+            {workspaceOptions[state.mode].map((option) => (
+              <option key={option} value={option}>
+                {capitalizeFirstLetter(option)}
+              </option>
+            ))}
           </select>
         </div>
       )}
@@ -34,7 +52,7 @@ const BottomToolbar = () => {
 const Button = ({ onClick, imageSrc, text, active }) => {
   return (
     <div className={"toolbar-button-wrap" + (active ? " active" : "")}>
-      <img src={"./img/" + imageSrc} height={32} onClick={onClick} title={text}/>
+      <img src={"./img/" + imageSrc} height={32} onClick={onClick} title={text} />
     </div>
   );
 };

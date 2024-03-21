@@ -251,3 +251,7 @@ export function gcd(a, b) {
   }
   return gcd(b, a % b);
 }
+
+export function capitalizeFirstLetter(string) {
+  return string.charAt(0).toUpperCase() + string.slice(1);
+}
