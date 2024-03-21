@@ -63,9 +63,9 @@ const Elements = () => {
       <Image id="shadow-image" visible={false} width={cubeSize} height={cubeSize} />
       <Rect id="shadow-rect" visible={false} />
       <Ellipse id="shadow-ellipse" visible={false} />
-      <Arc id="shadow-arc" visible={false} />
+      <Arc id="shadow-arc" visible={false} lineJoin="round" lineCap="round" />
       <Circle id="shadow-circle" visible={false} />
-      <Line id="shadow-line" visible={false} />
+      <Line id="shadow-line" visible={false} lineCap={"round"} lineJoin={"round"} />
       <Text id="shadow-text" visible={false} fill={"black"} fontSize={36} text="Text" fontFamily="Calibri" />
     </>
   );

@@ -509,6 +509,8 @@ const LeftToolbarFractions = ({ findOne }) => {
                 fill={color[0]}
                 stroke={color[1]}
                 strokeWidth={2}
+                lineJoin="round"
+                lineCap="round"
               />
               <Arc
                 x={imageX(i)}
@@ -520,6 +522,8 @@ const LeftToolbarFractions = ({ findOne }) => {
                 fill={color[0]}
                 stroke={color[1]}
                 strokeWidth={2}
+                lineJoin="round"
+                lineCap="round"
                 draggable
                 onDragStart={(e) => onDragStart(e, i)}
                 onDragMove={(e) => onDragMove(e, i)}

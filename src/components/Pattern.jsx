@@ -38,6 +38,8 @@ const Pattern = (props) => {
       fill={fill ? fillColor : null}
       stroke={stroke}
       closed
+      lineCap={"round"}
+      lineJoin={"round"}
       draggable={!locked && !fdMode}
       onDragStart={onDragStart}
       onDragMove={onDragMove}

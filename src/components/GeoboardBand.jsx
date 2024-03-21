@@ -70,6 +70,8 @@ export const Angles = ({ id, points, color, measures }) => {
               stroke={color}
               fill={color}
               strokeWidth={2}
+              lineJoin="round"
+              lineCap="round"
             />
             <AngleValue x={x + labelVector.x * 70} y={y + labelVector.y * 70} angle={angle < 0 ? 360 + angle : angle} />
           </Fragment>

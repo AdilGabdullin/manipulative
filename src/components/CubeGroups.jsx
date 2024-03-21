@@ -102,7 +102,7 @@ const CubeGroupSum = ({ group }) => {
   points = addOrigin(points, origin);
   return (
     <>
-      <Line name="cube-group" points={points} stroke={"#56544d"} strokeWidth={2} />
+      <Line name="cube-group" points={points} stroke={"#56544d"} strokeWidth={2} lineJoin="round" lineCap="round" />
       <Text
         name="cube-group"
         text={group.length}

@@ -285,6 +285,8 @@ const LineButton = (props) => {
           onDragMove(e);
         }}
         onDragEnd={onDragEnd}
+        lineJoin="round"
+        lineCap="round"
       />
     </>
   );

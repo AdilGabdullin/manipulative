@@ -58,6 +58,8 @@ const FractionLabel = (props) => {
             y0 + sin(alpha + 10) * r2,
           ]}
           stroke={color}
+          lineJoin="round"
+          lineCap="round"
         />
         <Text
           x={x0 + c * r2}

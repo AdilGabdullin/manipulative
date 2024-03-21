@@ -4,7 +4,7 @@ import { useAppStore } from "../state/store";
 const LineElement = (props) => {
   const state = useAppStore();
   const { origin, elements, fdMode } = state;
-  const { id, x, y, x2, y2, fill,locked } = props;
+  const { id, x, y, x2, y2, fill, locked } = props;
 
   const onPointerClick = (e) => {
     if (fdMode) return;
@@ -15,8 +15,7 @@ const LineElement = (props) => {
     state.clearSelect();
   };
 
-  const onDragMove = (e) => {
-  };
+  const onDragMove = (e) => {};
 
   const onDragEnd = (e) => {
     let dx = e.target.x() - x - origin.x;
@@ -38,6 +37,8 @@ const LineElement = (props) => {
       onDragStart={onDragStart}
       onDragMove={onDragMove}
       onDragEnd={onDragEnd}
+      lineJoin="round"
+      lineCap="round"
     />
   );
 };

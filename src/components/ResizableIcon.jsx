@@ -27,6 +27,8 @@ const ResizableIcon = ({ x, y, width, height }) => {
           y + height / 2,
         ]}
         closed
+        lineJoin="round"
+        lineCap="round"
       />
       <Line
         stroke={color}
@@ -40,6 +42,8 @@ const ResizableIcon = ({ x, y, width, height }) => {
           y + height / 2,
         ]}
         closed
+        lineJoin="round"
+        lineCap="round"
       />
     </>
   );
