@@ -8,6 +8,7 @@ import LineElement from "./LineElement";
 import TextElement from "./TextElement";
 import RectElement from "./RectElement";
 import EllipseElement from "./EllipseElement";
+import Pattern from "./Pattern";
 
 const Elements = () => {
   const state = useAppStore();
@@ -53,6 +54,9 @@ const Elements = () => {
           case "fraction":
             return <Fraction key={id} {...element} onPointerClick={() => state.selectIds([id], element.locked)} />;
             break;
+          case "pattern":
+            return <Pattern key={id} {...element} />;
+            break;
         }
       })}
       {showGroups && <CubeGroups groups={groups} />}
@@ -62,7 +66,7 @@ const Elements = () => {
       <Arc id="shadow-arc" visible={false} />
       <Circle id="shadow-circle" visible={false} />
       <Line id="shadow-line" visible={false} />
-      <Text id="shadow-text" visible={false} fill={"black"} fontSize={36} text="Text" fontFamily="Calibri"/>
+      <Text id="shadow-text" visible={false} fill={"black"} fontSize={36} text="Text" fontFamily="Calibri" />
     </>
   );
 };

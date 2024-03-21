@@ -1,6 +1,6 @@
 import { Line, Rect } from "react-konva";
-import { useAppStore } from "../state/store";
-import { cos, sin } from "../util";
+import { gridStep, useAppStore } from "../state/store";
+import { cos, getStageXY, sin } from "../util";
 import { leftToolbarWidth } from "./LeftToolbar";
 
 const h = sin(60) * 2;
@@ -177,38 +177,87 @@ const blocks = {
 
 const LeftToolbarPatternBlocks = ({ findOne }) => {
   const state = useAppStore();
-  const { workspace, fullscreen } = state;
+  const { height, workspace, fullscreen } = state;
   const patterns = blocks[workspace];
-
   const sumHeight = patterns.reduce((sum, block) => sum + block.height, 0);
   const maxWidth = Math.max(...patterns.map((b) => b.width));
   const leftMargin = workspace == "deci" && !fullscreen ? 60 : 20;
   const scale = (leftToolbarWidth - leftMargin) / maxWidth;
-  const topMargin = (state.height - sumHeight * scale) / (patterns.length + 1);
+  const topMargin = (height - sumHeight * scale) / (patterns.length + 1);
   let top = topMargin;
   return (
     <>
-      <Rect fill="#f3f9ff" x={0} y={0} width={leftToolbarWidth} height={state.height} />
+      <Rect fill="#f3f9ff" x={0} y={0} width={leftToolbarWidth} height={height} />
 
-      {patterns.map((block, i) => {
-        const result = <Block key={i} y={top} {...block} scale={scale} />;
-        top += block.height * scale + topMargin;
+      {patterns.map((pattern, i) => {
+        const result = <Pattern key={i} y={top} {...pattern} scale={scale} findOne={findOne} />;
+        top += pattern.height * scale + topMargin;
         return result;
       })}
     </>
   );
 };
 
-const Block = ({ y, width, fill, stroke, points, scale }) => {
+const Pattern = (props) => {
+  const state = useAppStore();
+  const { origin } = state;
+  const { y, width, height, fill, stroke, points, scale, findOne } = props;
+  const left = (leftToolbarWidth - width * scale) / 2;
+
+  const step = gridStep / 2;
+
+  let shadow = null;
+  const getShadow = () => shadow || (shadow = findOne("shadow-line"));
+
+  const onDragStart = (e) => {
+    state.clearSelect();
+    getShadow().setAttrs({
+      visible: true,
+      points: points.map((x) => x * step),
+      fill,
+      stroke,
+      closed: true,
+    });
+  };
+
+  const magnet = ({ x, y }) => {
+    return { x, y };
+  };
+
+  const onDragMove = (e) => {
+    const { x, y } = magnet(getStageXY(e.target.getStage(), state));
+    e.target.setAttrs({ x: left, y: props.y });
+    getShadow().setAttrs({
+      x: x + origin.x - (width / 2) * step,
+      y: y + origin.y - (height / 2) * step,
+    });
+  };
+
+  const onDragEnd = (e) => {
+    const { x, y } = magnet(getStageXY(e.target.getStage(), state));
+    getShadow().setAttrs({ visible: false });
+    state.addElement({
+      type: "pattern",
+      x: x + origin.x - (width / 2) * step,
+      y: y + origin.y - (height / 2) * step,
+      points: points.map((x) => x * step),
+      fill,
+      stroke,
+    });
+  };
+
   return (
     <Line
-      x={(leftToolbarWidth - width * scale) / 2}
+      x={left}
       y={y}
       points={points.map((x) => x * scale)}
       fill={fill}
       stroke={stroke}
       closed
       draggable
+      onDragStart={onDragStart}
+      onDragMove={onDragMove}
+      onDragEnd={onDragEnd}
     />
   );
 };

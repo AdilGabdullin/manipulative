@@ -397,7 +397,7 @@ const LeftToolbarGeoboard = ({ findOne }) => {
 
 const LeftToolbarFractions = ({ findOne }) => {
   const state = useAppStore();
-  const { mode, origin } = state;
+  const { origin } = state;
   const margin = 20;
   const height = (i) => (state.height - margin * 12) / 10;
   const imageX = (i) => leftToolbarWidth / 2;
