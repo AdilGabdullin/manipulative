@@ -32,7 +32,7 @@ export const useAppStore = create((set) => ({
   offset: { x: 0, y: 0 },
   scale: 1.0,
   fullscreen: true,
-  workspace: "square",
+  workspace: mode == "geoboard" ? "square" : "basic",
   grid: mode == "geoboard" ? initGrid("square") : [],
   lineGrid: initLineGrid(mode),
   width: 0,
