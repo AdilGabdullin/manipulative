@@ -234,18 +234,10 @@ const App = () => {
           scaleX={state.scale}
           scaleY={state.scale}
         >
-          {state.mode == "geoboard" && (
-            <>
-              {state.geoboardBands.map((band) => (
-                <GeoboardBand key={band.id} {...band} findOne={findOne} />
-              ))}
-              <Grid />
-              {state.geoboardBands.map((band) => (
-                <Angles key={band.id} {...band} />
-              ))}
-            </>
-          )}
-          {state.mode != "geoboard" && <Grid />}
+          {state.mode == "geoboard" &&
+            state.geoboardBands.map((band) => <GeoboardBand key={band.id} {...band} findOne={findOne} />)}
+          <Grid />
+          {state.mode == "geoboard" && state.geoboardBands.map((band) => <Angles key={band.id} {...band} />)}
           <Elements />
           <SelectRect />
         </Layer>

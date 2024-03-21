@@ -1,7 +1,7 @@
 import { create } from "zustand";
 import { current, produce } from "immer";
 import { leftToolbarWidth } from "../components/LeftToolbar";
-import { clearSelected, elementBox, newId, numberBetween } from "../util";
+import { clearSelected, cos, elementBox, newId, numberBetween, sin } from "../util";
 import { bottomToolbarHeight } from "../components/BottomToolbar";
 import { maxOffset } from "../components/Scrolls";
 import { freeDrawingSlice } from "./freeDrawingSlice";
@@ -26,15 +26,15 @@ export const useAppStore = create((set) => ({
   mode,
   imagesReady: false,
   loadedImagesCount: 0,
+  // offset: { x: 0, y: 0 },
+  // scale: 1.0,
+  // fullscreen: false,
   offset: { x: 0, y: 0 },
   scale: 1.0,
-  fullscreen: false,
-  // offset: { x: 50, y: 100 },
-  // scale: 0.5,
-  // fullscreen: true,
+  fullscreen: true,
   workspace: "square",
   grid: mode == "geoboard" ? initGrid("square") : [],
-  lineGrid: mode == "rods" ? initLineGrid() : [],
+  lineGrid: initLineGrid(mode),
   width: 0,
   height: 0,
   origin: { x: 0, y: 0 },
@@ -43,7 +43,7 @@ export const useAppStore = create((set) => ({
 
   fill: mode != "geoboard",
   measures: false,
-  showLineGrid: mode == "rods",
+  showGrid: mode == "rods" || mode == "pattern-blocks",
   showGroups: true,
   labelMode: mode == "rods" ? "Whole Numbers" : "Fractions",
   toggleGlobal: (field) =>
@@ -504,22 +504,59 @@ function initGrid(workspace) {
   return grid;
 }
 
-function initLineGrid() {
-  const grid = [];
-  const { width, height } = boardSize;
-  const stepX = gridStep;
-  const stepY = gridStep;
-  const xStop = Math.ceil(width / 2 / stepX) * stepX + gridStep;
-  const xStart = -xStop;
-  const yStop = Math.ceil(height / 2 / stepX) * stepX;
-  const yStart = -yStop - gridStep;
-  for (let y = yStart, i = 0; y <= yStop; y += stepY, i += 1) {
-    for (let x = xStart; x <= xStop; x += stepX) {
-      grid.push([x, yStart, x, yStop]);
-      grid.push([xStart, y, xStop, y]);
+function initLineGrid(mode) {
+  if (mode == "rods") {
+    const grid = [];
+    const { width, height } = boardSize;
+    const stepX = gridStep;
+    const stepY = gridStep;
+    const xStop = Math.ceil(width / 2 / stepX) * stepX + gridStep;
+    const xStart = -xStop;
+    const yStop = Math.ceil(height / 2 / stepX) * stepX;
+    const yStart = -yStop - gridStep;
+    for (let y = yStart, i = 0; y <= yStop; y += stepY, i += 1) {
+      for (let x = xStart; x <= xStop; x += stepX) {
+        grid.push([x, yStart, x, yStop]);
+        grid.push([xStart, y, xStop, y]);
+      }
     }
+    return grid;
   }
-  return grid;
+
+  if (mode == "pattern-blocks") {
+    const grid = [];
+    const { width, height } = boardSize;
+    const stepX = gridStep;
+    const stepY = gridStep * sin(60);
+    const xStop = Math.ceil(width / 2 / stepX) * stepX + stepX;
+    const xStart = -xStop;
+    const yStop = Math.ceil(height / 2 / stepY) * stepY;
+    const yStart = -yStop - 2 * stepY;
+    for (let i = 0; i < 18; i += 1) {
+      grid.push([xStart, yStart + i * 2 * stepY, xStart + i * stepX, yStart]);
+    }
+    for (let i = 0; i < 27; i += 1) {
+      grid.push([xStart + (i + 1) * stepX, yStart + 34 * stepY, xStart + (18 + i) * stepX, yStart]);
+    }
+    for (let i = 0; i < 17; i += 1) {
+      grid.push([xStart + (28 + i) * stepX, yStart + 34 * stepY, xStart + 44 * stepX, yStart + (i + 1) * 2 * stepY]);
+    }
+    for (let i = 0; i < 18; i += 1) {
+      grid.push([xStop, yStart + i * 2 * stepY, xStop - i * stepX, yStart]);
+    }
+    for (let i = 0; i < 27; i += 1) {
+      grid.push([xStop - (i + 1) * stepX, yStart + 34 * stepY, xStop - (18 + i) * stepX, yStart]);
+    }
+    for (let i = 0; i < 17; i += 1) {
+      grid.push([xStop - (28 + i) * stepX, yStart + 34 * stepY, xStop - 44 * stepX, yStart + (i + 1) * 2 * stepY]);
+    }
+    for (let i = 0; i < 35; i += 1) {
+      grid.push([xStart, yStart + stepY * i, xStop, yStart + stepY * i]);
+    }
+    return grid;
+  }
+
+  return [];
 }
 
 function getNextElementPosition(state, element) {

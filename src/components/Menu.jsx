@@ -49,8 +49,8 @@ const DefaultMenu = (props) => {
     },
     {
       text: "Grid",
-      visible: ["rods"],
-      field: "showLineGrid",
+      visible: ["rods", "pattern-blocks"],
+      field: "showGrid",
       image: null,
       width: 35,
       shift: 0,

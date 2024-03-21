@@ -3,39 +3,48 @@ import { useAppStore } from "../state/store";
 
 const Grid = () => {
   const state = useAppStore();
-  const { mode, origin, lineGrid, showLineGrid } = state;
+  const { mode, showGrid } = state;
 
-  if (mode == "geoboard") {
-    return (
-      <>
-        {state.grid.map(({ x, y }, i) => {
-          let color = "#78909c";
-          // if ((x == 0 && y == 0) || i == 0 || i == state.grid.length - 1) {
-          //   color = "red";
-          // }
-          return (
-            <Circle
-              key={`grid-${x}-${y}`}
-              x={state.origin.x + x}
-              y={state.origin.y + y}
-              stroke={color}
-              radius={3}
-              fill={color}
-            />
-          );
-        })}
-      </>
-    );
+  if ((mode == "pattern-blocks" || mode == "rods") && showGrid) {
+    return <LineGrid />;
+  } else if (mode == "geoboard") {
+    return <GeoboardGrid />;
   }
+  return null;
+};
 
+const GeoboardGrid = () => {
+  const state = useAppStore();
+  return (
+    <>
+      {state.grid.map(({ x, y }, i) => {
+        let color = "#78909c";
+        return (
+          <Circle
+            key={`grid-${x}-${y}`}
+            x={state.origin.x + x}
+            y={state.origin.y + y}
+            stroke={color}
+            radius={3}
+            fill={color}
+          />
+        );
+      })}
+    </>
+  );
+};
+
+const LineGrid = () => {
+  const state = useAppStore();
+  const { origin, lineGrid } = state;
   const { x, y } = origin;
   return (
     <>
-      {showLineGrid &&
-        lineGrid.map((points, i) => {
-          const [x1, y1, x2, y2] = points;
-          return <Line key={i} points={[x1 + x, y1 + y, x2 + x, y2 + y]} stroke={"#dddddb"} strokeWidth={1} />;
-        })}
+      {lineGrid.map((points, i) => {
+        const [x1, y1, x2, y2] = points;
+        return <Line key={i} points={[x1 + x, y1 + y, x2 + x, y2 + y]} stroke={"#dddddb"} strokeWidth={1} />;
+      })}
+      <Circle x={origin.x} y={origin.y} radius={6} fill="red" />
     </>
   );
 };
