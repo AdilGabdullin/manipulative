@@ -446,6 +446,7 @@ const LeftToolbarFractions = ({ findOne }) => {
 
   const onDragMove = (e, i) => {
     const { x, y, rotation } = magnet(i, getStageXY(e.target.getStage(), state));
+    
     findOne(i > 0 ? "shadow-arc" : "shadow-circle").setAttrs({
       x: x,
       y: y,

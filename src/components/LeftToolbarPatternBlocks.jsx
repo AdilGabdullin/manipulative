@@ -2,6 +2,7 @@ import { Line, Rect } from "react-konva";
 import { gridStep, useAppStore } from "../state/store";
 import { cos, getStageXY, sin } from "../util";
 import { leftToolbarWidth } from "./LeftToolbar";
+import { patternMagnet } from "./Pattern";
 
 const h = sin(60) * 2;
 
@@ -200,11 +201,12 @@ const LeftToolbarPatternBlocks = ({ findOne }) => {
 
 const Pattern = (props) => {
   const state = useAppStore();
-  const { origin } = state;
+  const { origin, elements } = state;
   const { y, width, height, fill, stroke, points, scale, findOne } = props;
   const left = (leftToolbarWidth - width * scale) / 2;
 
   const step = gridStep / 2;
+  const shadowPoints = points.map((x) => x * step);
 
   let shadow = null;
   const getShadow = () => shadow || (shadow = findOne("shadow-line"));
@@ -213,7 +215,7 @@ const Pattern = (props) => {
     state.clearSelect();
     getShadow().setAttrs({
       visible: true,
-      points: points.map((x) => x * step),
+      points: shadowPoints,
       fill,
       stroke,
       closed: true,
@@ -221,15 +223,15 @@ const Pattern = (props) => {
   };
 
   const magnet = ({ x, y }) => {
-    return { x, y };
+    return patternMagnet(null, x - (width / 2) * step, y - (height / 2) * step, shadowPoints, elements);
   };
 
   const onDragMove = (e) => {
     const { x, y } = magnet(getStageXY(e.target.getStage(), state));
     e.target.setAttrs({ x: left, y: props.y });
     getShadow().setAttrs({
-      x: x + origin.x - (width / 2) * step,
-      y: y + origin.y - (height / 2) * step,
+      x: x + origin.x,
+      y: y + origin.y,
     });
   };
 
@@ -238,8 +240,8 @@ const Pattern = (props) => {
     getShadow().setAttrs({ visible: false });
     state.addElement({
       type: "pattern",
-      x: x - (width / 2) * step,
-      y: y - (height / 2) * step,
+      x: x,
+      y: y,
       points: points.map((x) => x * step),
       width: width * step,
       height: height * step,
