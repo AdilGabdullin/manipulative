@@ -267,11 +267,17 @@ export const useAppStore = create((set) => ({
         }
         for (const id of state.selected) {
           const element = state.elements[id];
-          if (element) {
-            element.x += dx;
-            element.y += dy;
-            state.lastActiveElement = id;
+          if (!element) continue;
+          element.x += dx;
+          element.y += dy;
+          if (element.type == "template") {
+            for (const i in current(state).elements[id].patterns) {
+              const pattern = element.patterns[i];
+              pattern.x += dx;
+              pattern.y += dy;
+            }
           }
+          state.lastActiveElement = id;
         }
         pushHistory(state);
       })
@@ -281,6 +287,7 @@ export const useAppStore = create((set) => ({
     set(
       produce((state) => {
         const element = state.elements[id];
+        if (!element) return;
         element.x += dx;
         element.y += dy;
         if (element.type == "template") {
