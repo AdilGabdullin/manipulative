@@ -105,6 +105,14 @@ function sortedElements(elements, mode) {
       }
     });
   }
+  if (mode == "pattern-blocks") {
+    return Object.values(elements).toSorted((a, b) => {
+      if (a.type == "pattern" && b.type == "template") return 1;
+      if (a.type == "template" && b.type == "pattern") return -1;
+      return 0;
+    });
+  }
+
   return Object.values(elements);
 }
 
