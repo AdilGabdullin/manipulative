@@ -5,7 +5,7 @@ import { distance2, sin } from "../util";
 const Pattern = (props) => {
   const state = useAppStore();
   const { origin, elements, fdMode, showGrid } = state;
-  const { id, x, y, points, fill, fillColor, stroke, locked } = props;
+  const { id, x, y, points, fill, fillColor, stroke, locked, template } = props;
 
   const onDragStart = (e) => {
     state.clearSelect();
@@ -31,12 +31,12 @@ const Pattern = (props) => {
 
   return (
     <Line
-      id={id}
+      id={template ? template + id : id}
       x={origin.x + x}
       y={origin.y + y}
       points={points}
-      fill={fill ? fillColor : null}
-      stroke={"#dddddb"}
+      fill={template ? "#dddddb" : fill ? fillColor : null}
+      stroke={fill || template ? "#dddddb" : stroke}
       closed
       lineCap={"round"}
       lineJoin={"round"}

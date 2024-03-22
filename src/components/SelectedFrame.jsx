@@ -132,6 +132,14 @@ const SelectedFrame = (props) => {
 
   let menuButtons = [
     {
+      text: "Template",
+      active: !lockSelect,
+      show: selected.some((id) => elements[id].type == "pattern"),
+      onPointerClick: (e) => {
+        state.convertPatternsToTemplate();
+      },
+    },
+    {
       text: "Edit",
       active: !lockSelect,
       show: selected.length == 1 && elements[selected[0]].type == "text",

@@ -9,6 +9,7 @@ import TextElement from "./TextElement";
 import RectElement from "./RectElement";
 import EllipseElement from "./EllipseElement";
 import Pattern from "./Pattern";
+import Template from "./Template";
 
 const Elements = () => {
   const state = useAppStore();
@@ -56,6 +57,9 @@ const Elements = () => {
             break;
           case "pattern":
             return <Pattern key={id} {...element} />;
+            break;
+          case "template":
+            return <Template key={id} {...element} />;
             break;
         }
       })}

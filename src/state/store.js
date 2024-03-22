@@ -432,8 +432,24 @@ export const useAppStore = create((set) => ({
       })
     ),
 
-  // elements
-
+  convertPatternsToTemplate: () =>
+    set(
+      produce((state) => {
+        const curr = current(state);
+        const patterns = [];
+        for (const id of curr.selected) {
+          const element = state.elements[id];
+          if (element.type == "pattern") {
+            patterns.push({ ...curr.elements[id] });
+            delete state.elements[id];
+          }
+        }
+        const id = newId();
+        state.elements[id] = { id, type: "template", locked: false, patterns };
+        clearSelected(state);
+        pushHistory(state);
+      })
+    ),
   addElement: (element) =>
     set(
       produce((state) => {
