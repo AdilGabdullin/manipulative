@@ -1,11 +1,12 @@
 import { create } from "zustand";
 import { current, produce } from "immer";
 import { leftToolbarWidth } from "../components/LeftToolbar";
-import { clearSelected, combineBoxList, elementBox, newId, numberBetween, sin } from "../util";
+import { clearSelected, combineBoxList, elementBox, newId, numberBetween, rotateVector, sin } from "../util";
 import { bottomToolbarHeight } from "../components/BottomToolbar";
 import { maxOffset } from "../components/Scrolls";
 import { freeDrawingSlice } from "./freeDrawingSlice";
 import { historySlice, pushHistory } from "./historySlice";
+import { unflattenPoints } from "../components/Pattern";
 
 export const gridStep = 60;
 export const cubeSize = 80;
@@ -356,7 +357,7 @@ export const useAppStore = create((set) => ({
         }
         for (const id of current(state).selected) {
           const element = state.elements[id];
-          if (element && element[field]) {
+          if (element && element[field] !== undefined) {
             element[field] = !element[field];
           }
         }
@@ -491,6 +492,36 @@ export const useAppStore = create((set) => ({
           points[i] = height - value;
         });
         pushHistory(state);
+      })
+    ),
+  rotatePattern: (id, rotation) =>
+    set(
+      produce((state) => {
+        const element = state.elements[id];
+        const { width, height, points } = element;
+        const cx = width / 2;
+        const cy = height / 2;
+        let minX = Infinity;
+        let maxX = -Infinity;
+        let minY = Infinity;
+        let maxY = -Infinity;
+        const vectors = unflattenPoints(current(points), -cx, -cy).map((v) =>
+          rotateVector(v, rotation - (rotation % 15))
+        );
+        vectors.forEach((v, i) => {
+          if (minX > v.x + cx) minX = v.x + cx;
+          if (minY > v.y + cy) minY = v.y + cy;
+          if (maxX < v.x + cx) maxX = v.x + cx;
+          if (maxY < v.y + cy) maxY = v.y + cy;
+        });
+        vectors.forEach((v, i) => {
+          points[i * 2] = v.x + cx - minX;
+          points[i * 2 + 1] = v.y + cy - minY;
+        });
+        element.x += minX;
+        element.y += minY;
+        element.width = maxX - minX;
+        element.height = maxY - minY;
       })
     ),
 

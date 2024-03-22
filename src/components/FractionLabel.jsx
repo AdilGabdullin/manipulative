@@ -3,7 +3,7 @@ import { gridStep, useAppStore } from "../state/store";
 import { cos, sin } from "../util";
 
 const FractionLabel = (props) => {
-  const { x, y, angle, rotation, onPointerClick } = props;
+  const { x, y, angle, rotation, onPointerClick, fill } = props;
   const state = useAppStore();
   const { labelMode, origin } = state;
 
@@ -13,7 +13,7 @@ const FractionLabel = (props) => {
   const x0 = origin.x + x;
   const y0 = origin.y + y;
 
-  const color = angle == 90 ? "#666560" : "white";
+  const color = angle == 90 || !fill ? "#666560" : "white";
   const commonProps = {
     name: "drag-hidden",
     fill: color,

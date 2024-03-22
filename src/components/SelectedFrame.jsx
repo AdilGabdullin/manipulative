@@ -140,11 +140,13 @@ const SelectedFrame = (props) => {
     setVisibilityFrame(e, true);
   };
 
+  const showFlips = selected.length == 1 && selected.some((id) => elements[id]?.type == "pattern");
+
   let menuButtons = [
     {
       text: "Flip Vertical",
       active: !lockSelect,
-      show: selected.length == 1 && selected.some((id) => elements[id]?.type == "pattern"),
+      show: showFlips,
       onPointerClick: (e) => {
         state.flipVertical(selected[0]);
       },
@@ -152,7 +154,7 @@ const SelectedFrame = (props) => {
     {
       text: "Flip Horizontal",
       active: !lockSelect,
-      show: selected.length == 1 && selected.some((id) => elements[id]?.type == "pattern"),
+      show: showFlips,
       onPointerClick: (e) => {
         state.flipHorizontal(selected[0]);
       },
@@ -229,7 +231,7 @@ const SelectedFrame = (props) => {
   menuButtons = menuButtons.filter((button) => button.show);
 
   const buttonHeight = 20;
-  const buttonWidth = 110;
+  const buttonWidth = 110 + (showFlips ? 10 : 0);
   const padding = 8;
 
   const onMouseEnter = (e, i) => {

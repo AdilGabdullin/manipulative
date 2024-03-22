@@ -60,7 +60,7 @@ const Fraction = (props) => {
         lineJoin="round"
         lineCap="round"
       />
-      <FractionLabel {...props} onPointerClick={onPointerClick} />
+      <FractionLabel {...props} onPointerClick={onPointerClick} fill={fill}/>
     </>
   ) : (
     <>

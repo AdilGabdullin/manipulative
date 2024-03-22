@@ -108,7 +108,7 @@ export function patternMagnet(id, x, y, points, elements, isGridOn) {
   return { x, y };
 }
 
-function unflattenPoints(points, x, y) {
+export function unflattenPoints(points, x, y) {
   const result = [];
   for (let i = 0; i < points.length; i += 2) {
     result.push({ x: points[i] + x, y: points[i + 1] + y });

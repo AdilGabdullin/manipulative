@@ -245,6 +245,14 @@ export function sin(rotation) {
   return Math.sin((rotation / 180) * Math.PI);
 }
 
+export function atan2(y, x) {
+  return (Math.atan2(y, x) / Math.PI) * 180;
+}
+
+export function rotateVector({ x, y }, rotation) {
+  return { x: x * cos(rotation) - y * sin(rotation), y: x * sin(rotation) + y * cos(rotation) };
+}
+
 export function gcd(a, b) {
   if (!b) {
     return a;

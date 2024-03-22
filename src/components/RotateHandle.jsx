@@ -1,39 +1,65 @@
 import { Circle } from "react-konva";
 import { useAppStore } from "../state/store";
 import { useRef } from "react";
-import { getStageXY, setVisibilityFrame } from "../util";
+import { atan2, getStageXY, rotateVector, setVisibilityFrame } from "../util";
+import { unflattenPoints } from "./Pattern";
 
-const RotateHandle = ({ x, y }) => {
+const RotateHandle = (props) => {
   const state = useAppStore();
-  const { selected, mode, elements } = state;
+  const { selected, elements } = state;
+  const { x, y } = props;
   const ref = useRef(null);
-  if (
-    selected.length != 1 ||
-    mode != "fractions" ||
-    elements[selected[0]].angle == 360 ||
-    elements[selected[0]].type != "fraction"
-  ) {
+
+  if (selected.length != 1) return null;
+  const element = selected.length == 1 && elements[selected[0]];
+  const { angle, type } = element;
+  if (!(angle != 360 && type == "fraction") && !(type == "pattern")) {
     return null;
   }
+
+  let target = null;
+  const getTarget = (e) => {
+    return target || (target = e.target.getStage().findOne("#" + selected[0]));
+  };
+
+  const getRotation = (e) => {
+    const { x, y } = getStageXY(e.target.getStage(), state);
+    switch (element.type) {
+      case "fraction":
+        return atan2(y - element.y, x - element.x) - element.angle / 2;
+        break;
+      case "pattern":
+        return atan2(y - element.y - element.height / 2, x - element.x - element.width / 2) - 90;
+        break;
+    }
+  };
 
   const onDragStart = (e) => {
     setVisibilityFrame(e, false);
   };
+
   const onDragMove = (e) => {
-    const stage = e.target.getStage();
-    const { x, y } = getStageXY(e.target.getStage(), state);
-    const element = selected.length == 1 && elements[selected[0]];
-    const rotation = (Math.atan2(y - element.y, x - element.x) / Math.PI) * 180 - element.angle / 2;
-    const node = stage.findOne("#" + selected[0]);
-    node.setAttrs({ rotation: rotation });
+    switch (element.type) {
+      case "fraction":
+        getTarget(e).setAttrs({ rotation: getRotation(e) });
+        break;
+      case "pattern":
+        rotatePattern(getTarget(e), element, getRotation(e));
+        break;
+    }
   };
+
   const onDragEnd = (e) => {
     setVisibilityFrame(e, true);
-    const { x, y } = getStageXY(e.target.getStage(), state);
-    const element = selected.length == 1 && elements[selected[0]];
-    const rotation = (Math.atan2(y - element.y, x - element.x) / Math.PI) * 180 - element.angle / 2;
-    ref.current.setAttrs({ x, y });
-    state.updateElement(element.id, { rotation });
+    ref.current.setAttrs(props);
+    switch (element.type) {
+      case "fraction":
+        state.updateElement(element.id, { rotation: getRotation(e) });
+        break;
+      case "pattern":
+        state.rotatePattern(element.id, getRotation(e));
+        break;
+    }
   };
 
   return (
@@ -51,5 +77,19 @@ const RotateHandle = ({ x, y }) => {
     />
   );
 };
+
+function rotatePattern(target, element, rotation) {
+  const { width, height } = element;
+  const cx = width / 2;
+  const cy = height / 2;
+  const points = [];
+  unflattenPoints(element.points, -cx, -cy)
+    .map((v) => rotateVector(v, rotation - (rotation % 15)))
+    .forEach((v) => {
+      points.push(v.x + cx);
+      points.push(v.y + cy);
+    });
+  target.setAttr("points", points);
+}
 
 export default RotateHandle;
