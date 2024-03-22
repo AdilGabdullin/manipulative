@@ -142,9 +142,27 @@ const SelectedFrame = (props) => {
 
   let menuButtons = [
     {
+      text: "Flip Vertical",
+      active: !lockSelect,
+      show: selected.length == 1 && selected.some((id) => elements[id]?.type == "pattern"),
+      onPointerClick: (e) => {
+        state.flipVertical(selected[0]);
+      },
+    },
+    {
+      text: "Flip Horizontal",
+      active: !lockSelect,
+      show: selected.length == 1 && selected.some((id) => elements[id]?.type == "pattern"),
+      onPointerClick: (e) => {
+        state.flipHorizontal(selected[0]);
+      },
+    },
+    {
       text: "Template",
       active: !lockSelect,
-      show: selected.some((id) => elements[id]?.type == "pattern") && !selected.some((id) => elements[id]?.type == "template"),
+      show:
+        selected.some((id) => elements[id]?.type == "pattern") &&
+        !selected.some((id) => elements[id]?.type == "template"),
       onPointerClick: (e) => {
         state.convertPatternsToTemplate();
       },

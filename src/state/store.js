@@ -356,7 +356,7 @@ export const useAppStore = create((set) => ({
         }
         for (const id of current(state).selected) {
           const element = state.elements[id];
-          if (element) {
+          if (element && element[field]) {
             element[field] = !element[field];
           }
         }
@@ -463,13 +463,37 @@ export const useAppStore = create((set) => ({
           ...box,
           id,
           type: "template",
-          locked: false,
+          locked: true,
           patterns,
         };
         clearSelected(state);
         pushHistory(state);
       })
     ),
+
+  flipHorizontal: () =>
+    set(
+      produce((state) => {
+        const { width, points } = state.elements[state.selected[0]];
+        current(points).forEach((value, i) => {
+          if (i % 2 == 1) return;
+          points[i] = width - value;
+        });
+        pushHistory(state);
+      })
+    ),
+  flipVertical: () =>
+    set(
+      produce((state) => {
+        const { height, points } = state.elements[state.selected[0]];
+        current(points).forEach((value, i) => {
+          if (i % 2 == 0) return;
+          points[i] = height - value;
+        });
+        pushHistory(state);
+      })
+    ),
+
   addElement: (element) =>
     set(
       produce((state) => {
