@@ -2,7 +2,6 @@ import Pattern from "./Pattern";
 
 const Template = (props) => {
   const { id, patterns, locked } = props;
-  console.log(props);
   return (
     <>
       {patterns.map((p) => (

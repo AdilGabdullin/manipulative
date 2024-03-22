@@ -25,6 +25,7 @@ const Pattern = (props) => {
   };
 
   const onPointerClick = (e) => {
+    if (template) return;
     if (fdMode) return;
     state.selectIds([id], elements[id].locked);
   };
@@ -40,7 +41,7 @@ const Pattern = (props) => {
       closed
       lineCap={"round"}
       lineJoin={"round"}
-      draggable={!locked && !fdMode}
+      draggable={!locked && !fdMode && !template}
       onDragStart={onDragStart}
       onDragMove={onDragMove}
       onDragEnd={onDragEnd}
@@ -52,10 +53,21 @@ const Pattern = (props) => {
 export function patternMagnet(id, x, y, points, elements, isGridOn) {
   for (const point1 of unflattenPoints(points, x, y)) {
     for (const element of Object.values(elements)) {
-      if (element.id == id || element.type != "pattern") continue;
-      for (const point2 of unflattenPoints(element.points, element.x, element.y)) {
-        if (distance2(point1, point2) < 15 ** 2) {
-          return { x: x + point2.x - point1.x, y: y + point2.y - point1.y };
+      if (element.id == id) continue;
+      if (element.type == "pattern") {
+        for (const point2 of unflattenPoints(element.points, element.x, element.y)) {
+          if (distance2(point1, point2) < 15 ** 2) {
+            return { x: x + point2.x - point1.x, y: y + point2.y - point1.y };
+          }
+        }
+      }
+      if (element.type == "template") {
+        for (const tElement of element.patterns) {
+          for (const point2 of unflattenPoints(tElement.points, tElement.x, tElement.y)) {
+            if (distance2(point1, point2) < 15 ** 2) {
+              return { x: x + point2.x - point1.x, y: y + point2.y - point1.y };
+            }
+          }
         }
       }
     }
