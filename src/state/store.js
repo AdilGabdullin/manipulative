@@ -522,6 +522,7 @@ export const useAppStore = create((set) => ({
         element.y += minY;
         element.width = maxX - minX;
         element.height = maxY - minY;
+        pushHistory(state);
       })
     ),
 
