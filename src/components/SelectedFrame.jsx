@@ -31,16 +31,15 @@ const SelectedFrame = (props) => {
             }
           }
         }
-      } else {
-        for (const id of selected) {
-          const node = props.findOne(id);
-          if (node) {
-            selectedTargets.push({
-              node,
-              x: node.x(),
-              y: node.y(),
-            });
-          }
+      }
+      for (const id of selected) {
+        const node = props.findOne(id);
+        if (node) {
+          selectedTargets.push({
+            node,
+            x: node.x(),
+            y: node.y(),
+          });
         }
       }
     }
@@ -88,18 +87,19 @@ const SelectedFrame = (props) => {
     }
     if (mode == "geoboard") {
       selectedTargets.forEach(({ point, sides, x, y, pointIndex }) => {
+        if (!point) return;
         point.setAttrs({ x: x + dx, y: y + dy });
         const points = sides.points();
         points[pointIndex * 2] = x + dx;
         points[pointIndex * 2 + 1] = y + dy;
         sides.setAttrs({ points });
       });
-    } else {
-      selectedTargets.forEach(({ node, x, y }) => {
-        node.setAttrs({ x: x + dx, y: y + dy });
-      });
-      e.target.setAttrs({ x: x + dx * scale, y: y + dy * scale });
     }
+    selectedTargets.forEach(({ point, node, x, y }) => {
+      if (point) return;
+      node.setAttrs({ x: x + dx, y: y + dy });
+    });
+    e.target.setAttrs({ x: x + dx * scale, y: y + dy * scale });
 
     if (mode == "fractions" && selectedTargets.length == 1 && elements[selected[0]].type == "fraction") {
       const node = selectedTargets[0].node;
@@ -134,7 +134,7 @@ const SelectedFrame = (props) => {
     {
       text: "Template",
       active: !lockSelect,
-      show: selected.some((id) => elements[id].type == "pattern"),
+      show: selected.some((id) => elements[id]?.type == "pattern"),
       onPointerClick: (e) => {
         state.convertPatternsToTemplate();
       },
@@ -142,7 +142,7 @@ const SelectedFrame = (props) => {
     {
       text: "Edit",
       active: !lockSelect,
-      show: selected.length == 1 && elements[selected[0]].type == "text",
+      show: selected.length == 1 && elements[selected[0]]?.type == "text",
       onPointerClick: (e) => {
         createTextArea(e.target.getStage().findOne("#" + selected[0]), state);
       },

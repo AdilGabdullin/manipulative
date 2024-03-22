@@ -9,7 +9,7 @@ const ShapeResizeHandles = (props) => {
   const { selected, elements, origin, scale, offset } = state;
   const { x, y, width, height, findOne } = props;
 
-  if (selected.length != 1 || !["text", "rect", "ellipse", "line"].includes(elements[selected[0]].type)) {
+  if (selected.length != 1 || !["text", "rect", "ellipse", "line"].includes(elements[selected[0]]?.type)) {
     return null;
   }
 
