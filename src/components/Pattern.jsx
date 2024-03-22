@@ -67,7 +67,7 @@ const Pattern = (props) => {
       closed
       lineCap={"round"}
       lineJoin={"round"}
-      draggable={!locked && !fdMode}
+      draggable={!(template ? template.locked : locked) && !fdMode}
       onDragStart={onDragStart}
       onDragMove={onDragMove}
       onDragEnd={onDragEnd}

@@ -144,7 +144,7 @@ const SelectedFrame = (props) => {
     {
       text: "Template",
       active: !lockSelect,
-      show: selected.some((id) => elements[id]?.type == "pattern"),
+      show: selected.some((id) => elements[id]?.type == "pattern") && !selected.some((id) => elements[id]?.type == "template"),
       onPointerClick: (e) => {
         state.convertPatternsToTemplate();
       },
@@ -184,7 +184,7 @@ const SelectedFrame = (props) => {
     {
       text: "Copy",
       active: !lockSelect,
-      show: true,
+      show: !selected.some((id) => elements[id]?.type == "template"),
       onPointerClick: (e) => {
         state.copySelected();
       },
