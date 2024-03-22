@@ -25,14 +25,17 @@ const Pattern = (props) => {
   };
 
   const onPointerClick = (e) => {
-    if (template) return;
     if (fdMode) return;
-    state.selectIds([id], elements[id].locked);
+    if (template) {
+      state.selectIds([template.id], template.locked);
+    } else {
+      state.selectIds([id], elements[id].locked);
+    }
   };
 
   return (
     <Line
-      id={template ? template + id : id}
+      id={template ? template.id + id : id}
       x={origin.x + x}
       y={origin.y + y}
       points={points}

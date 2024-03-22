@@ -9,7 +9,7 @@ import TextElement from "./TextElement";
 import RectElement from "./RectElement";
 import EllipseElement from "./EllipseElement";
 import Pattern from "./Pattern";
-import Template from "./Template";
+import { Fragment } from "react";
 
 const Elements = () => {
   const state = useAppStore();
@@ -59,7 +59,13 @@ const Elements = () => {
             return <Pattern key={id} {...element} />;
             break;
           case "template":
-            return <Template key={id} {...element} />;
+            return (
+              <Fragment key={id}>
+                {element.patterns.map((p) => (
+                  <Pattern key={p.id} {...p} template={element} />
+                ))}
+              </Fragment>
+            );
             break;
         }
       })}

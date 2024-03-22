@@ -436,16 +436,25 @@ export const useAppStore = create((set) => ({
     set(
       produce((state) => {
         const curr = current(state);
+        const selectedPatterns = Object.values(curr.elements).filter(
+          (e) => curr.selected.includes(e.id) && e.type == "pattern"
+        );
         const patterns = [];
-        for (const id of curr.selected) {
-          const element = state.elements[id];
-          if (element.type == "pattern") {
-            patterns.push({ ...curr.elements[id] });
-            delete state.elements[id];
-          }
+        for (const element of selectedPatterns) {
+          patterns.push({ ...element });
+          delete state.elements[element.id];
         }
         const id = newId();
-        state.elements[id] = { id, type: "template", locked: false, patterns };
+        state.elements[id] = {
+          id,
+          type: "template",
+          x: Math.min(...selectedPatterns.map((p) => p.x)),
+          y: Math.min(...selectedPatterns.map((p) => p.x)),
+          width: 100,
+          height: 100,
+          locked: false,
+          patterns,
+        };
         clearSelected(state);
         pushHistory(state);
       })

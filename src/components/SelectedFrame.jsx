@@ -14,6 +14,17 @@ const SelectedFrame = (props) => {
 
   const selectedTargets = [];
 
+  const pushTarget = (id) => {
+    const node = props.findOne(id);
+    if (node) {
+      selectedTargets.push({
+        node,
+        x: node.x(),
+        y: node.y(),
+      });
+    }
+  };
+
   useEffect(() => {
     if (selected) {
       if (mode == "geoboard") {
@@ -33,13 +44,12 @@ const SelectedFrame = (props) => {
         }
       }
       for (const id of selected) {
-        const node = props.findOne(id);
-        if (node) {
-          selectedTargets.push({
-            node,
-            x: node.x(),
-            y: node.y(),
-          });
+        const el = elements[id];
+        if (!el) continue;
+        if (el.type == "template") {
+          el.patterns.forEach((pattern) => pushTarget(el.id + pattern.id));
+        } else {
+          pushTarget(id);
         }
       }
     }
