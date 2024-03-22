@@ -12,7 +12,8 @@ const RotateHandle = (props) => {
 
   if (selected.length != 1) return null;
   const element = selected.length == 1 && elements[selected[0]];
-  const { angle, type } = element;
+  const angle = element?.angle;
+  const type = element?.type;
   if (!(angle != 360 && type == "fraction") && !(type == "pattern")) {
     return null;
   }
@@ -84,7 +85,7 @@ function rotatePattern(target, element, rotation) {
   const cy = height / 2;
   const points = [];
   unflattenPoints(element.points, -cx, -cy)
-    .map((v) => rotateVector(v, rotation - (rotation % 15)))
+    .map((v) => rotateVector(v, rotation - ((rotation + 360) % 15)))
     .forEach((v) => {
       points.push(v.x + cx);
       points.push(v.y + cy);

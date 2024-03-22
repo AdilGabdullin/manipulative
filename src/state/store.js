@@ -506,7 +506,7 @@ export const useAppStore = create((set) => ({
         let minY = Infinity;
         let maxY = -Infinity;
         const vectors = unflattenPoints(current(points), -cx, -cy).map((v) =>
-          rotateVector(v, rotation - (rotation % 15))
+          rotateVector(v, rotation - ((rotation + 360) % 15))
         );
         vectors.forEach((v, i) => {
           if (minX > v.x + cx) minX = v.x + cx;

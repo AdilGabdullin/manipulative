@@ -119,7 +119,7 @@ const RectButton = (props) => {
   const { origin } = state;
 
   const onPointerClick = () => {
-    state.addElement({ type: "rect", x: -60, y: -60, width: 120, height: 120 });
+    state.addElement({ type: "rect", x: -60, y: -60, width: 120, height: 120, fill: false });
   };
 
   const onDragStart = (e) => {
@@ -146,7 +146,7 @@ const RectButton = (props) => {
       visible: false,
     });
     const { x, y } = getStageXY(e.target.getStage(), state);
-    state.addElement({ type: "rect", x: x - 60, y: y - 60, width: 120, height: 120 });
+    state.addElement({ type: "rect", x: x - 60, y: y - 60, width: 120, height: 120 , fill: false});
   };
 
   return (
@@ -173,7 +173,7 @@ const EllipseButton = (props) => {
   const { origin } = state;
 
   const onPointerClick = () => {
-    state.addElement({ type: "ellipse", x: 0, y: 0, radiusX: 60, radiusY: 60 });
+    state.addElement({ type: "ellipse", x: 0, y: 0, radiusX: 60, radiusY: 60, fill: false });
   };
 
   const onDragStart = (e) => {
@@ -200,7 +200,7 @@ const EllipseButton = (props) => {
       visible: false,
     });
     const { x, y } = getStageXY(e.target.getStage(), state);
-    state.addElement({ type: "ellipse", x: x, y: y, radiusX: 60, radiusY: 60 });
+    state.addElement({ type: "ellipse", x: x, y: y, radiusX: 60, radiusY: 60, fill: false });
   };
 
   return (
