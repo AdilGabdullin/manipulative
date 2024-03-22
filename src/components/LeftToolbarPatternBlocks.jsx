@@ -201,7 +201,7 @@ const LeftToolbarPatternBlocks = ({ findOne }) => {
 
 const Pattern = (props) => {
   const state = useAppStore();
-  const { origin, elements } = state;
+  const { origin, elements, showGrid } = state;
   const { y, width, height, fill, stroke, points, scale, findOne } = props;
   const left = (leftToolbarWidth - width * scale) / 2;
 
@@ -217,13 +217,13 @@ const Pattern = (props) => {
       visible: true,
       points: shadowPoints,
       fill,
-      stroke,
+      stroke: "#dddddb",
       closed: true,
     });
   };
 
   const magnet = ({ x, y }) => {
-    return patternMagnet(null, x - (width / 2) * step, y - (height / 2) * step, shadowPoints, elements);
+    return patternMagnet(null, x - (width / 2) * step, y - (height / 2) * step, shadowPoints, elements, showGrid);
   };
 
   const onDragMove = (e) => {

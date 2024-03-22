@@ -1,10 +1,10 @@
 import { Line } from "react-konva";
-import { useAppStore } from "../state/store";
-import { distance2 } from "../util";
+import { gridStep, useAppStore } from "../state/store";
+import { distance2, sin } from "../util";
 
 const Pattern = (props) => {
   const state = useAppStore();
-  const { origin, elements, fdMode } = state;
+  const { origin, elements, fdMode, showGrid } = state;
   const { id, x, y, points, fill, fillColor, stroke, locked } = props;
 
   const onDragStart = (e) => {
@@ -14,7 +14,7 @@ const Pattern = (props) => {
   const onDragMove = (e) => {
     let dx = e.target.x() - props.x - origin.x;
     let dy = e.target.y() - props.y - origin.y;
-    const { x, y } = patternMagnet(id, props.x + dx, props.y + dy, points, elements);
+    const { x, y } = patternMagnet(id, props.x + dx, props.y + dy, points, elements, showGrid);
     e.target.setAttrs({ x: x + origin.x, y: y + origin.y });
   };
 
@@ -36,7 +36,7 @@ const Pattern = (props) => {
       y={origin.y + y}
       points={points}
       fill={fill ? fillColor : null}
-      stroke={stroke}
+      stroke={"#dddddb"}
       closed
       lineCap={"round"}
       lineJoin={"round"}
@@ -49,12 +49,19 @@ const Pattern = (props) => {
   );
 };
 
-export function patternMagnet(id, x, y, points, elements) {
-  for (const element of Object.values(elements)) {
-    if (element.id == id || element.type != "pattern") continue;
-    for (const point1 of unflattenPoints(points, x, y)) {
+export function patternMagnet(id, x, y, points, elements, isGridOn) {
+  for (const point1 of unflattenPoints(points, x, y)) {
+    for (const element of Object.values(elements)) {
+      if (element.id == id || element.type != "pattern") continue;
       for (const point2 of unflattenPoints(element.points, element.x, element.y)) {
-        if (distance2(point1, point2) < 20 ** 2) {
+        if (distance2(point1, point2) < 15 ** 2) {
+          return { x: x + point2.x - point1.x, y: y + point2.y - point1.y };
+        }
+      }
+    }
+    if (isGridOn) {
+      for (const point2 of gridPointsGenerator()) {
+        if (distance2(point1, point2) < 15 ** 2) {
           return { x: x + point2.x - point1.x, y: y + point2.y - point1.y };
         }
       }
@@ -69,6 +76,18 @@ function unflattenPoints(points, x, y) {
     result.push({ x: points[i] + x, y: points[i + 1] + y });
   }
   return result;
+}
+
+function* gridPointsGenerator() {
+  const xStep = gridStep;
+  const yStep = gridStep * sin(60);
+  let shift = false;
+  for (let y = -50 * yStep; y < 50 * yStep; y += yStep) {
+    for (let x = -50 * gridStep; x < 50 * gridStep; x += xStep) {
+      yield { x: x + (shift ? xStep / 2 : 0), y };
+    }
+    shift = !shift;
+  }
 }
 
 export default Pattern;

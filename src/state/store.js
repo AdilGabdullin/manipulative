@@ -43,7 +43,7 @@ export const useAppStore = create((set) => ({
 
   fill: mode != "geoboard",
   measures: false,
-  showGrid: mode == "rods" || mode == "pattern-blocks",
+  showGrid: mode == "rods",
   showGroups: true,
   labelMode: mode == "rods" ? "Whole Numbers" : "Fractions",
   toggleGlobal: (field) =>
