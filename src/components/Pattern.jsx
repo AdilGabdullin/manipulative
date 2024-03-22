@@ -7,21 +7,44 @@ const Pattern = (props) => {
   const { origin, elements, fdMode, showGrid } = state;
   const { id, x, y, points, fill, fillColor, stroke, locked, template } = props;
 
+  let dragTargets = null;
+  const getDragTargets = (e) => {
+    if (dragTargets) return dragTargets;
+    const stage = e.target.getStage();
+    dragTargets = [];
+    for (const pattern of template.patterns) {
+      const node = stage.findOne("#" + template.id + pattern.id);
+      dragTargets.push({
+        node: node,
+        x: pattern.x + origin.x,
+        y: pattern.y + origin.y,
+      });
+    }
+    return dragTargets;
+  };
+
   const onDragStart = (e) => {
     state.clearSelect();
   };
 
   const onDragMove = (e) => {
-    let dx = e.target.x() - props.x - origin.x;
-    let dy = e.target.y() - props.y - origin.y;
-    const { x, y } = patternMagnet(id, props.x + dx, props.y + dy, points, elements, showGrid);
-    e.target.setAttrs({ x: x + origin.x, y: y + origin.y });
+    const dx = e.target.x() - props.x - origin.x;
+    const dy = e.target.y() - props.y - origin.y;
+    if (template) {
+      for (const { node, x, y } of getDragTargets(e)) {
+        node.setAttrs({ x: x + dx, y: y + dy });
+      }
+    } else {
+      const { x, y } = patternMagnet(id, props.x + dx, props.y + dy, points, elements, showGrid);
+      e.target.setAttrs({ x: x + origin.x, y: y + origin.y });
+    }
   };
 
   const onDragEnd = (e) => {
-    let dx = e.target.x() - x - origin.x;
-    let dy = e.target.y() - y - origin.y;
-    state.relocateElement(id, dx, dy);
+    dragTargets = null;
+    const dx = e.target.x() - x - origin.x;
+    const dy = e.target.y() - y - origin.y;
+    state.relocateElement(template ? template.id : id, dx, dy);
   };
 
   const onPointerClick = (e) => {
@@ -44,7 +67,7 @@ const Pattern = (props) => {
       closed
       lineCap={"round"}
       lineJoin={"round"}
-      draggable={!locked && !fdMode && !template}
+      draggable={!locked && !fdMode}
       onDragStart={onDragStart}
       onDragMove={onDragMove}
       onDragEnd={onDragEnd}

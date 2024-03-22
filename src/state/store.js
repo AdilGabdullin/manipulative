@@ -280,8 +280,16 @@ export const useAppStore = create((set) => ({
   relocateElement: (id, dx, dy) =>
     set(
       produce((state) => {
-        state.elements[id].x += dx;
-        state.elements[id].y += dy;
+        const element = state.elements[id];
+        element.x += dx;
+        element.y += dy;
+        if (element.type == "template") {
+          for (const i in current(state).elements[id].patterns) {
+            const pattern = element.patterns[i];
+            pattern.x += dx;
+            pattern.y += dy;
+          }
+        }
         state.lastActiveElement = id;
         pushHistory(state);
       })
