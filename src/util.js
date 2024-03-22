@@ -255,3 +255,18 @@ export function gcd(a, b) {
 export function capitalizeFirstLetter(string) {
   return string.charAt(0).toUpperCase() + string.slice(1);
 }
+
+function combineBoxes(box1, box2) {
+  const x = Math.min(box1.x, box2.x);
+  const y = Math.min(box1.y, box2.y);
+  return {
+    x,
+    y,
+    width: Math.max(box1.x + box1.width, box2.x + box2.width) - x,
+    height: Math.max(box1.y + box1.height, box2.y + box2.height) - y,
+  };
+}
+
+export function combineBoxList(boxes) {
+  return boxes.reduce(combineBoxes, boxes[0]);
+}

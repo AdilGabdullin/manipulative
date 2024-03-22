@@ -1,7 +1,7 @@
 import { create } from "zustand";
 import { current, produce } from "immer";
 import { leftToolbarWidth } from "../components/LeftToolbar";
-import { clearSelected, cos, elementBox, newId, numberBetween, sin } from "../util";
+import { clearSelected, combineBoxList, elementBox, newId, numberBetween, sin } from "../util";
 import { bottomToolbarHeight } from "../components/BottomToolbar";
 import { maxOffset } from "../components/Scrolls";
 import { freeDrawingSlice } from "./freeDrawingSlice";
@@ -436,22 +436,18 @@ export const useAppStore = create((set) => ({
     set(
       produce((state) => {
         const curr = current(state);
-        const selectedPatterns = Object.values(curr.elements).filter(
-          (e) => curr.selected.includes(e.id) && e.type == "pattern"
-        );
-        const patterns = [];
-        for (const element of selectedPatterns) {
-          patterns.push({ ...element });
+        const patterns = Object.values(curr.elements)
+          .filter((e) => curr.selected.includes(e.id) && e.type == "pattern")
+          .map((p) => ({ ...p }));
+        for (const element of patterns) {
           delete state.elements[element.id];
         }
         const id = newId();
+        const box = combineBoxList(patterns);
         state.elements[id] = {
+          ...box,
           id,
           type: "template",
-          x: Math.min(...selectedPatterns.map((p) => p.x)),
-          y: Math.min(...selectedPatterns.map((p) => p.x)),
-          width: 100,
-          height: 100,
           locked: false,
           patterns,
         };
