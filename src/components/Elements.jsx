@@ -10,6 +10,7 @@ import RectElement from "./RectElement";
 import EllipseElement from "./EllipseElement";
 import Pattern from "./Pattern";
 import { Fragment } from "react";
+import Rekenrek from "./Rekenrek";
 
 const Elements = () => {
   const state = useAppStore();
@@ -66,6 +67,8 @@ const Elements = () => {
                 ))}
               </Fragment>
             );
+          case "rekenrek":
+            return <Rekenrek key={id} {...element} />;
             break;
         }
       })}

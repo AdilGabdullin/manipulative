@@ -1,9 +1,10 @@
 import { Arc, Circle, Image, Rect } from "react-konva";
 import { cubeShift, cubeSize, gridStep, useAppStore } from "../state/store";
 import { distance2, fractionMagnet, getStageXY, numberBetween } from "../util";
-import { Fragment, useState } from "react";
+import { Fragment, useEffect, useState } from "react";
 import ResizableIcon from "./ResizableIcon";
 import LeftToolbarPatternBlocks from "./LeftToolbarPatternBlocks";
+import { rekenrekHeight, rekenrekWidth } from "./Rekenrek";
 
 export const leftToolbarWidth = 180;
 const ids = {
@@ -446,7 +447,7 @@ const LeftToolbarFractions = ({ findOne }) => {
 
   const onDragMove = (e, i) => {
     const { x, y, rotation } = magnet(i, getStageXY(e.target.getStage(), state));
-    
+
     findOne(i > 0 ? "shadow-arc" : "shadow-circle").setAttrs({
       x: x,
       y: y,
@@ -537,6 +538,28 @@ const LeftToolbarFractions = ({ findOne }) => {
   );
 };
 
+const LeftToolbarRekenreks = ({ findOne }) => {
+  const state = useAppStore();
+
+  useEffect(() => onPointerClick(), []);
+
+  const onPointerClick = (e) => {
+    state.addElement({
+      type: "rekenrek",
+      x: 0 - rekenrekWidth / 2,
+      y: 0 - rekenrekHeight / 2,
+      width: rekenrekWidth,
+      height: rekenrekHeight,
+    });
+  };
+
+  return (
+    <>
+      <Rect fill="#f3f9ff" x={0} y={0} width={leftToolbarWidth} height={state.height} onPointerClick={onPointerClick} />
+    </>
+  );
+};
+
 const LeftToolbar = ({ findOne }) => {
   const state = useAppStore();
   switch (state.mode) {
@@ -554,6 +577,9 @@ const LeftToolbar = ({ findOne }) => {
       break;
     case "pattern-blocks":
       return <LeftToolbarPatternBlocks findOne={findOne} />;
+      break;
+    case "rekenreks":
+      return <LeftToolbarRekenreks findOne={findOne} />;
       break;
   }
 };
