@@ -92,6 +92,10 @@ const Beads = (props) => {
     return nodes;
   };
 
+  const setAttrs = (nodes, attrs) => {
+    nodes.forEach((node) => node.setAttrs(attrs));
+  };
+
   const start = (i) => xMin + i * d;
   const stop = (i) => xMax - (beadNumber - 1 - i) * d;
 
@@ -99,19 +103,12 @@ const Beads = (props) => {
   const onDragMove = (i) => (e) => {
     const nodes = getNodes(e);
     const x = Math.min(Math.max(nodes[i][1].x(), start(i)), stop(i));
-    nodes[i].map((node) =>
-      node.setAttrs({
-        x: x,
-        y: y,
-      })
-    );
-    for (let k = i - 1; k >= 0; k -= 1) {
-      nodes[k][0].x(Math.min(nodes[k][1].x(), nodes[k + 1][1].x() - d));
-      nodes[k][1].x(Math.min(nodes[k][1].x(), nodes[k + 1][1].x() - d));
+    setAttrs(nodes[i], { x, y });
+    for (let k = 0; k < i; k += 1) {
+      setAttrs(nodes[k], { x: Math.min(nodes[k][1].x(), x - d * (i - k)) });
     }
     for (let k = i + 1; k < beadNumber; k += 1) {
-      nodes[k][0].x(Math.max(nodes[k][1].x(), nodes[k - 1][1].x() + d));
-      nodes[k][1].x(Math.max(nodes[k][1].x(), nodes[k - 1][1].x() + d));
+      setAttrs(nodes[k], { x: Math.max(nodes[k][1].x(), x - d * (i - k)) });
     }
     for (let k = 0; k < beadNumber; k += 1) {
       nodes[k][0].visible(nodes[k][0].x() < stop(k));
