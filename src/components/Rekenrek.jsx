@@ -3,9 +3,9 @@ import { useAppStore } from "../state/store";
 
 export const rekenrekWidth = 900;
 export const rekenrekHeight = 80;
-const strokeWidth1 = 8;
-const strokeWidth2 = 4;
-const ballRadius = 20;
+export const strokeWidth1 = 8;
+export const strokeWidth2 = 4;
+export const ballRadius = 20;
 
 const colors = {
   line: "#54575a",
@@ -17,7 +17,7 @@ const colors = {
 const Rekenrek = (props) => {
   const state = useAppStore();
   const { origin, fdMode } = state;
-  const { id, width, height, locked } = props;
+  const { id, width, height, locked, positions } = props;
 
   const x = props.x + origin.x;
   const y = props.y + origin.y;
@@ -26,9 +26,7 @@ const Rekenrek = (props) => {
     <>
       {/* <Rect id={id} x={origin.x + x} y={origin.y + y} width={width} height={height} stroke={lineColor} /> */}
       <Lines {...props} />
-      <Ball x={x + ballRadius + strokeWidth1} y={y + height / 2} color={colors.red} />
-      <Ball x={x + width / 2} y={y + height / 2} color={colors.red} />
-      <Ball x={x + width - ballRadius - strokeWidth1} y={y + height / 2} color={colors.white} />
+      <Beads xMin={xMin(x)} xMax={xMax(x)} y={y + height / 2} positions={positions.map((x) => x)} />
     </>
   );
 };
@@ -75,11 +73,36 @@ const Lines = (props) => {
   );
 };
 
-const Ball = (props) => {
-  const { x, y, color } = props;
+const Beads = (props) => {
+  const state = useAppStore();
+  const { origin, fdMode } = state;
+  const { xMin, xMax, y, positions } = props;
+  return (
+    <>
+      {positions.map((x, i) => (
+        <Bead
+          x={origin.x + x}
+          y={y}
+          color={i < 5 ? colors.red : colors.white}
+          xMin={xMin}
+          xMax={xMax - (9 - i) * ballRadius * 2}
+        />
+      ))}
+    </>
+  );
+};
+
+const Bead = (props) => {
+  const { x, y, xMin, xMax, color } = props;
 
   const onDragStart = (e) => {};
-  const onDragMove = (e) => {};
+  const onDragMove = (e) => {
+    const node = e.target;
+    node.setAttrs({
+      x: Math.min(Math.max(node.x(), xMin), xMax),
+      y: y,
+    });
+  };
   const onDragEnd = (e) => {};
 
   return (
@@ -99,4 +122,15 @@ const Ball = (props) => {
   );
 };
 
+function xMin(x) {
+  return x + ballRadius + strokeWidth1;
+}
+
+function xMax(x) {
+  return x + rekenrekWidth - ballRadius - strokeWidth1;
+}
+
+export function initialPositions(x) {
+  return [-9, -8, -7, -6, -5, -4, -3, -2, -1, 0].map((shift) => xMax(x) + shift * ballRadius * 2);
+}
 export default Rekenrek;
