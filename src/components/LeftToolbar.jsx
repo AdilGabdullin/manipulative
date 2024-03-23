@@ -4,7 +4,7 @@ import { distance2, fractionMagnet, getStageXY, numberBetween } from "../util";
 import { Fragment, useEffect, useState } from "react";
 import ResizableIcon from "./ResizableIcon";
 import LeftToolbarPatternBlocks from "./LeftToolbarPatternBlocks";
-import { ballRadius, initialPositions, rekenrekHeight, rekenrekWidth, strokeWidth1 } from "./Rekenrek";
+import { ballRadius, initialBeads, rekenrekHeight, rekenrekWidth, strokeWidth1 } from "./Rekenrek";
 
 export const leftToolbarWidth = 180;
 const ids = {
@@ -552,7 +552,7 @@ const LeftToolbarRekenreks = ({ findOne }) => {
       y: y,
       width: rekenrekWidth,
       height: rekenrekHeight,
-      positions: initialPositions(x),
+      beads: initialBeads(x),
     });
   };
 

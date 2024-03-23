@@ -18,16 +18,15 @@ const colors = {
 const Rekenrek = (props) => {
   const state = useAppStore();
   const { origin, fdMode } = state;
-  const { id, width, height, locked, positions } = props;
+  const { id, width, height, locked, beads } = props;
 
   const x = props.x + origin.x;
   const y = props.y + origin.y;
 
   return (
     <>
-      {/* <Rect id={id} x={origin.x + x} y={origin.y + y} width={width} height={height} stroke={lineColor} /> */}
       <Lines id={id} {...props} />
-      <Beads id={id} xMin={xMin(x)} xMax={xMax(x)} y={y + height / 2} positions={positions.map((x) => x)} />
+      <Beads id={id} xMin={xMin(x)} xMax={xMax(x)} y={y + height / 2} beads={beads} />
     </>
   );
 };
@@ -77,7 +76,7 @@ const Lines = (props) => {
 const Beads = (props) => {
   const state = useAppStore();
   const { origin, fdMode } = state;
-  const { id, xMin, xMax, y, positions } = props;
+  const { id, xMin, xMax, y, beads } = props;
 
   const d = ballRadius * 2;
 
@@ -87,37 +86,49 @@ const Beads = (props) => {
       const stage = e.target.getStage();
       nodes = [];
       for (let i = 0; i < beadNumber; i += 1) {
-        nodes.push(stage.findOne(`#${id}-bead-${i}`));
+        nodes.push(stage.find(`.${id}-bead-${i}`));
       }
     }
     return nodes;
   };
 
-  const detectCollisions = (nodes, i) => {
-    nodes[i].setAttrs({
-      x: Math.min(Math.max(nodes[i].x(), xMin + i * d), xMax - (beadNumber - 1 - i) * d),
-      y: y,
-    });
-    for (let k = i - 1; k >= 0; k -= 1) {
-      nodes[k].x(Math.min(nodes[k].x(), nodes[k + 1].x() - d));
-    }
-    for (let k = i + 1; k < beadNumber; k += 1) {
-      nodes[k].x(Math.max(nodes[k].x(), nodes[k - 1].x() + d));
-    }
-  };
+  const start = (i) => xMin + i * d;
+  const stop = (i) => xMax - (beadNumber - 1 - i) * d;
 
   const onDragStart = (i) => (e) => {};
   const onDragMove = (i) => (e) => {
     const nodes = getNodes(e);
-    detectCollisions(nodes, i);
+    const x = Math.min(Math.max(nodes[i][1].x(), start(i)), stop(i));
+    nodes[i].map((node) =>
+      node.setAttrs({
+        x: x,
+        y: y,
+      })
+    );
+    for (let k = i - 1; k >= 0; k -= 1) {
+      nodes[k][0].x(Math.min(nodes[k][1].x(), nodes[k + 1][1].x() - d));
+      nodes[k][1].x(Math.min(nodes[k][1].x(), nodes[k + 1][1].x() - d));
+    }
+    for (let k = i + 1; k < beadNumber; k += 1) {
+      nodes[k][0].x(Math.max(nodes[k][1].x(), nodes[k - 1][1].x() + d));
+      nodes[k][1].x(Math.max(nodes[k][1].x(), nodes[k - 1][1].x() + d));
+    }
+    for (let k = 0; k < beadNumber; k += 1) {
+      nodes[k][0].visible(nodes[k][0].x() < stop(k));
+    }
   };
-  const onDragEnd = (i) => (e) => {};
+  const onDragEnd = (i) => (e) => {
+    state.updateBeads(
+      id,
+      getNodes(e).map((node) => node[0].x() - origin.x)
+    );
+  };
 
   return (
     <>
-      {positions.map((x, i) => (
+      {beads.map((x, i) => (
         <Bead
-          id={`${id}-bead-${i}`}
+          name={`${id}-bead-${i}`}
           key={i}
           x={origin.x + x}
           y={y}
@@ -125,6 +136,7 @@ const Beads = (props) => {
           onDragStart={onDragStart(i)}
           onDragMove={onDragMove(i)}
           onDragEnd={onDragEnd(i)}
+          stop={stop(i)}
         />
       ))}
     </>
@@ -132,11 +144,26 @@ const Beads = (props) => {
 };
 
 const Bead = (props) => {
-  const { id, x, y, color, onDragStart, onDragMove, onDragEnd } = props;
+  const { name, x, y, color, onDragStart, onDragMove, onDragEnd, stop } = props;
   return (
     <>
+      {
+        <Circle
+          name={name}
+          x={x}
+          y={y}
+          fill={colors.blue}
+          stroke={colors.blue}
+          radius={ballRadius + 2}
+          draggable
+          onDragStart={onDragStart}
+          onDragMove={onDragMove}
+          onDragEnd={onDragEnd}
+          visible={x < stop}
+        />
+      }
       <Circle
-        id={id}
+        name={name}
         x={x}
         y={y}
         fill={color.main}
@@ -159,7 +186,7 @@ function xMax(x) {
   return x + rekenrekWidth - ballRadius - strokeWidth1;
 }
 
-export function initialPositions(x) {
+export function initialBeads(x) {
   if (beadNumber == 10) return [-9, -8, -7, -6, -5, -4, -3, -2, -1, 0].map((shift) => xMax(x) + shift * ballRadius * 2);
 }
 export default Rekenrek;

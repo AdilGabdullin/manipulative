@@ -324,6 +324,16 @@ export const useAppStore = create((set) => ({
       })
     ),
 
+  updateBeads: (id, beads) =>
+    set(
+      produce((state) => {
+        const stateBeads = state.elements[id].beads;
+        for (const i in beads) {
+          stateBeads[i] = beads[i];
+        }
+      })
+    ),
+
   deleteSelected: () =>
     set(
       produce((state) => {
