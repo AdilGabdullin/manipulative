@@ -2,7 +2,7 @@ import { create } from "zustand";
 import { current, produce } from "immer";
 import { leftToolbarWidth } from "../components/LeftToolbar";
 import { clearSelected, combineBoxList, elementBox, newId, numberBetween, rotateVector, sin } from "../util";
-import { bottomToolbarHeight } from "../components/BottomToolbar";
+import { topToolbarHeight } from "../components/TopToolbar";
 import { maxOffset } from "../components/Scrolls";
 import { freeDrawingSlice } from "./freeDrawingSlice";
 import { historySlice, pushHistory } from "./historySlice";
@@ -75,11 +75,11 @@ export const useAppStore = create((set) => ({
       produce((state) => {
         if (state.fullscreen) {
           state.width = window.innerWidth;
-          state.height = window.innerHeight - bottomToolbarHeight;
+          state.height = window.innerHeight - topToolbarHeight;
         } else {
           const root = document.querySelector("#manipulative-canvas-root");
           state.width = root.offsetWidth;
-          state.height = root.offsetHeight - bottomToolbarHeight;
+          state.height = root.offsetHeight - topToolbarHeight;
         }
         keepOrigin(state);
       })
@@ -104,11 +104,11 @@ export const useAppStore = create((set) => ({
         if (state.fullscreen) {
           const root = document.querySelector("#manipulative-canvas-root");
           state.width = root.offsetWidth;
-          state.height = root.offsetHeight - bottomToolbarHeight;
+          state.height = root.offsetHeight - topToolbarHeight;
           state.fullscreen = false;
         } else {
           state.width = window.innerWidth;
-          state.height = window.innerHeight - bottomToolbarHeight;
+          state.height = window.innerHeight - topToolbarHeight;
           state.fullscreen = true;
         }
         keepOrigin(state);

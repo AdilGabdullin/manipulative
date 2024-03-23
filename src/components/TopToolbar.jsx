@@ -1,17 +1,17 @@
 import { useAppStore } from "../state/store";
 import { capitalizeFirstLetter } from "../util";
 
-export const bottomToolbarHeight = 60;
+export const topToolbarHeight = 48;
 
 const workspaceOptions = {
   geoboard: ["square", "isometric", "circular"],
   "pattern-blocks": ["basic", "fractions", "deci"],
 };
 
-const BottomToolbar = () => {
+const TopToolbar = () => {
   const state = useAppStore();
   return (
-    <div className="bottom-toolbar" style={{ height: bottomToolbarHeight }}>
+    <div className="bottom-toolbar" style={{ height: topToolbarHeight }}>
       <div className="bottom-toolbar-buttons">
         <Button text="undo" imageSrc="buttons/undo-min.png" onClick={state.undo} />
         <Button text="redo" imageSrc="buttons/redo-min.png" onClick={state.redo} />
@@ -57,4 +57,4 @@ const Button = ({ onClick, imageSrc, text, active }) => {
   );
 };
 
-export default BottomToolbar;
+export default TopToolbar;

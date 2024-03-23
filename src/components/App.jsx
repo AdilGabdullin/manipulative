@@ -3,17 +3,10 @@ import { useEffect, useLayoutEffect, useRef } from "react";
 import Grid from "./Grid";
 import SelectRect, { selectRectMove, selectRectStop } from "./SelectRect";
 import { useAppStore } from "../state/store";
-import GeoboardBand, {
-  Angles,
-  bandPointMove,
-  bandPointRadius,
-  bandPointSearch,
-  bandSideMove,
-  bandSideSearch,
-} from "./GeoboardBand";
+import GeoboardBand, { Angles, bandPointMove, bandPointRadius, bandPointSearch, bandSideMove, bandSideSearch } from "./GeoboardBand";
 import LeftToolbar, { leftToolbarWidth } from "./LeftToolbar";
 import { SEARCH_THRESHOLD, getStageXY, pointsIsClose } from "../util";
-import BottomToolbar, { bottomToolbarHeight } from "./BottomToolbar";
+import TopToolbar, { topToolbarHeight } from "./TopToolbar";
 import Menu from "./Menu";
 import Scrolls from "./Scrolls";
 import SelectedFrame from "./SelectedFrame";
@@ -64,7 +57,7 @@ const App = () => {
     if (state.fdMode) {
       const { x, y } = getStageXY(stageRef.current, state);
       const pos = stageRef.current.getPointerPosition();
-      if (pos.x > leftToolbarWidth && pos.y < state.height - bottomToolbarHeight) {
+      if (pos.x > leftToolbarWidth && pos.y < state.height - topToolbarHeight) {
         downPos = { x, y };
         findOne("fd-last-line").setAttrs({
           points: [x, y, x, y],
@@ -200,11 +193,8 @@ const App = () => {
   }
 
   return (
-    <div
-      ref={containerRef}
-      tabIndex={1}
-      className={"stage-wrap " + (state.fullscreen ? "stage-wrap-fullscreen" : "stage-wrap-default")}
-    >
+    <div ref={containerRef} tabIndex={1} className={"stage-wrap " + (state.fullscreen ? "stage-wrap-fullscreen" : "stage-wrap-default")}>
+      <TopToolbar />
       <Stage
         ref={stageRef}
         width={state.width}
@@ -227,27 +217,14 @@ const App = () => {
         onMouseLeave={onMouseLeave}
         onWheel={onWheel}
       >
-        <Layer
-          id="board-layer"
-          offsetX={state.offset.x}
-          offsetY={state.offset.y}
-          scaleX={state.scale}
-          scaleY={state.scale}
-        >
-          {state.mode == "geoboard" &&
-            state.geoboardBands.map((band) => <GeoboardBand key={band.id} {...band} findOne={findOne} />)}
+        <Layer id="board-layer" offsetX={state.offset.x} offsetY={state.offset.y} scaleX={state.scale} scaleY={state.scale}>
+          {state.mode == "geoboard" && state.geoboardBands.map((band) => <GeoboardBand key={band.id} {...band} findOne={findOne} />)}
           <Grid />
           {state.mode == "geoboard" && state.geoboardBands.map((band) => <Angles key={band.id} {...band} />)}
           <Elements />
           <SelectRect />
         </Layer>
-        <Layer
-          id="free-drawing-layer"
-          offsetX={state.offset.x}
-          offsetY={state.offset.y}
-          scaleX={state.scale}
-          scaleY={state.scale}
-        >
+        <Layer id="free-drawing-layer" offsetX={state.offset.x} offsetY={state.offset.y} scaleX={state.scale} scaleY={state.scale}>
           <FreeDrawing />
         </Layer>
         {state.imagesReady && (
@@ -259,7 +236,6 @@ const App = () => {
           </Layer>
         )}
       </Stage>
-      <BottomToolbar />
       <ImagePreloader />
     </div>
   );
