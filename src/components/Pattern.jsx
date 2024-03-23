@@ -63,7 +63,7 @@ const Pattern = (props) => {
       y={origin.y + y}
       points={points}
       fill={template ? "#dddddb" : fill ? fillColor : null}
-      stroke={fill || template ? "#dddddb" : stroke}
+      stroke={template ? "#dddddb" : stroke}
       closed
       lineCap={"round"}
       lineJoin={"round"}

@@ -278,3 +278,15 @@ function combineBoxes(box1, box2) {
 export function combineBoxList(boxes) {
   return boxes.reduce(combineBoxes, boxes[0]);
 }
+
+export function arrayChunk(inputArray, perChunk) {
+  return inputArray.reduce((all, one, i) => {
+    const ch = Math.floor(i / perChunk);
+    all[ch] = [].concat(all[ch] || [], one);
+    return all;
+  }, []);
+}
+
+export function sum(xs) {
+  return xs.reduce((sum, x) => sum + x, 0);
+}
