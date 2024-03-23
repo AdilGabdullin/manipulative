@@ -102,9 +102,8 @@ const FractionLabel = ({ x, y, text }) => {
     return <WholeLabel x={x} y={y} text={1} />;
   }
 
-  const devisor = gcd(text * 2, 20);
-  const nominator = (text * 2) / devisor;
-  const denominator = 20 / devisor;
+  const nominator = text;
+  const denominator = 10;
 
   return (
     <>
