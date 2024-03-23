@@ -103,15 +103,7 @@ const CubeGroupSum = ({ group }) => {
   return (
     <>
       <Line name="cube-group" points={points} stroke={"#56544d"} strokeWidth={2} lineJoin="round" lineCap="round" />
-      <Text
-        name="cube-group"
-        text={group.length}
-        {...textPos}
-        stroke={"#56544d"}
-        fill={"#56544d"}
-        fontSize={30}
-        fontFamily="Calibri"
-      />
+      <Text name="cube-group" text={group.length} {...textPos} stroke={"#56544d"} fill={"#56544d"} fontSize={30} fontFamily="Calibri" />
     </>
   );
 };
@@ -150,11 +142,13 @@ function reverseIfVertical(group) {
 }
 
 function cubeIsStartOfGroup(cube, group) {
-  return cube.rotation == 0 ? cube.y == group[0].y - 47 : cube.x == group[0].x - 47;
+  const { x, y, rotation } = group[0];
+  return cube.rotation == rotation && (cube.rotation == 0 ? cube.y == y - 47 && cube.x == x : cube.x == x - 47 && cube.y == y);
 }
 
 function cubeIsEndOfGroup(cube, group) {
-  return cube.rotation == 0 ? cube.y == group[group.length - 1].y + 47 : cube.x == group[group.length - 1].x + 47;
+  const { x, y, rotation } = group[group.length - 1];
+  return cube.rotation == rotation && (cube.rotation == 0 ? cube.y == y + 47 && cube.x == x : cube.x == x + 47 && cube.y == y);
 }
 
 export default CubeGroups;
