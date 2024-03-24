@@ -428,7 +428,7 @@ export const useAppStore = create((set) => ({
           if (element) {
             const copy = { ...elements[id], id: newId() };
             state.elements[copy.id] = copy;
-            if (element.type == "text") {
+            if (element.type == "text" && state.selected.length == 1) {
               state.elements[id].y += element.height;
             } else {
               state.elements[id].x += shift;

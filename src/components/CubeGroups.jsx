@@ -91,19 +91,33 @@ const CubeGroupSum = ({ group }) => {
     y1 += 75;
     points = [x1, y1 - 8, x1, y1, x2, y1, x2, y1 - 8];
     textPos = { x: (x1 + x2) / 2 + origin.x - 7, y: y1 + origin.y + 4 };
+    if (group.length >= 10) {
+      textPos.x -= 10;
+    }
   } else {
     x1 -= 18;
     y1 += 11 + 47;
     y2 += 56 - 47;
     points = [x1 + 8, y1, x1, y1, x1, y2, x1 + 8, y2];
     textPos = { x: x1 + origin.x - 20, y: (y1 + y2) / 2 + origin.y - 10 };
+    if (group.length >= 10) {
+      textPos.x -= 16;
+    }
   }
 
   points = addOrigin(points, origin);
   return (
     <>
       <Line name="cube-group" points={points} stroke={"#56544d"} strokeWidth={2} lineJoin="round" lineCap="round" />
-      <Text name="cube-group" text={group.length} {...textPos} stroke={"#56544d"} fill={"#56544d"} fontSize={30} fontFamily="Calibri" />
+      <Text
+        name="cube-group"
+        text={group.length}
+        {...textPos}
+        stroke={"#56544d"}
+        fill={"#56544d"}
+        fontSize={30}
+        fontFamily="Calibri"
+      />
     </>
   );
 };
@@ -143,12 +157,18 @@ function reverseIfVertical(group) {
 
 function cubeIsStartOfGroup(cube, group) {
   const { x, y, rotation } = group[0];
-  return cube.rotation == rotation && (cube.rotation == 0 ? cube.y == y - 47 && cube.x == x : cube.x == x - 47 && cube.y == y);
+  return (
+    cube.rotation == rotation &&
+    (cube.rotation == 0 ? cube.y == y - 47 && cube.x == x : cube.x == x - 47 && cube.y == y)
+  );
 }
 
 function cubeIsEndOfGroup(cube, group) {
   const { x, y, rotation } = group[group.length - 1];
-  return cube.rotation == rotation && (cube.rotation == 0 ? cube.y == y + 47 && cube.x == x : cube.x == x + 47 && cube.y == y);
+  return (
+    cube.rotation == rotation &&
+    (cube.rotation == 0 ? cube.y == y + 47 && cube.x == x : cube.x == x + 47 && cube.y == y)
+  );
 }
 
 export default CubeGroups;
