@@ -7,7 +7,7 @@ let doubleClick;
 const TextElement = (props) => {
   const state = useAppStore();
   const { origin, fdMode } = state;
-  const { id, x, y, text, fontSize, locked, newText } = props;
+  const { id, x, y, text, fontSize, locked, newText, scale } = props;
 
   useEffect(() => {
     if (newText && ref.current) {
@@ -22,7 +22,7 @@ const TextElement = (props) => {
       if (!doubleClick) {
         state.selectIds([id], locked);
       }
-    }, 200);
+    }, 300);
   };
 
   const onPointerDblClick = (e) => {
@@ -50,6 +50,8 @@ const TextElement = (props) => {
       id={id}
       x={origin.x + x}
       y={origin.y + y}
+      scaleX={scale}
+      scaleY={scale}
       text={text}
       fontSize={fontSize}
       fill={"black"}

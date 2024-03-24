@@ -347,7 +347,6 @@ export const useAppStore = create((set) => ({
               };
             })
             .filter((band) => band.points.length > 1);
-          clearSelected(state);
         }
         let id;
         while ((id = state.selected.pop())) {

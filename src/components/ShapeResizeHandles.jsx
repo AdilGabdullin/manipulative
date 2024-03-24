@@ -61,9 +61,9 @@ const ShapeResizeHandles = (props) => {
         break;
       case "line":
         elementNode.setAttrs({
-          x: x1 / s + offset.x + 8 * Math.sign(x2 - x1),
-          y: y1 / s + offset.y + 8 * Math.sign(y2 - y1),
-          points: [0, 0, (x2 - x1) / s - 16 * Math.sign(x2 - x1), (y2 - y1) / s - 18 * Math.sign(y2 - y1)],
+          x: x1 / scale + offset.x + 8 * Math.sign(x2 - x1),
+          y: y1 / scale + offset.y + 8 * Math.sign(y2 - y1),
+          points: [0, 0, (x2 - x1) / scale - 16 * Math.sign(x2 - x1), (y2 - y1) / scale - 18 * Math.sign(y2 - y1)],
         });
         break;
     }
@@ -88,7 +88,6 @@ const ShapeResizeHandles = (props) => {
     switch (element.type) {
       case "text":
         const s = Math.abs(x1 - x2) / props.width;
-        elementNode.setAttrs({ scaleX: s, scaleY: s });
         const clientRect = elementNode.getClientRect();
         state.updateElement(element.id, {
           scale: element.scale * s,
