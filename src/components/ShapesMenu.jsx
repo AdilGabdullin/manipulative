@@ -146,7 +146,7 @@ const RectButton = (props) => {
       visible: false,
     });
     const { x, y } = getStageXY(e.target.getStage(), state);
-    state.addElement({ type: "rect", x: x - 60, y: y - 60, width: 120, height: 120 , fill: false});
+    state.addElement({ type: "rect", x: x - 60, y: y - 60, width: 120, height: 120, fill: false });
   };
 
   return (
@@ -289,6 +289,33 @@ const LineButton = (props) => {
         lineCap="round"
       />
     </>
+  );
+};
+
+const buttotStyle = {
+  width: buttonSize,
+  height: buttonSize,
+  border: "1px solid black",
+};
+
+export const ShapesMenu2 = (props) => {
+  const onDragStart = (shape) => (e) => {
+    e.dataTransfer.setData(shape, shape);
+  };
+
+  return (
+    <div style={{ display: "flex" }}>
+      <div style={buttotStyle} draggable="true" onDragStart={onDragStart("editable-text")}>
+        Text
+      </div>
+      <div style={buttotStyle} draggable="true" onDragStart={onDragStart("rect")}>
+        Rect
+      </div>
+      <div style={buttotStyle} draggable="true" onDragStart={onDragStart("ellipse")}>
+        Ellipse
+      </div>
+      <div style={buttotStyle} draggable="true" onDragStart={onDragStart("line")}>Line</div>
+    </div>
   );
 };
 

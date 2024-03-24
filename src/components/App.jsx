@@ -3,7 +3,14 @@ import { useEffect, useLayoutEffect, useRef } from "react";
 import Grid from "./Grid";
 import SelectRect, { selectRectMove, selectRectStop } from "./SelectRect";
 import { useAppStore } from "../state/store";
-import GeoboardBand, { Angles, bandPointMove, bandPointRadius, bandPointSearch, bandSideMove, bandSideSearch } from "./GeoboardBand";
+import GeoboardBand, {
+  Angles,
+  bandPointMove,
+  bandPointRadius,
+  bandPointSearch,
+  bandSideMove,
+  bandSideSearch,
+} from "./GeoboardBand";
 import LeftToolbar, { leftToolbarWidth } from "./LeftToolbar";
 import { SEARCH_THRESHOLD, getStageXY, pointsIsClose } from "../util";
 import TopToolbar, { topToolbarHeight } from "./TopToolbar";
@@ -188,12 +195,78 @@ const App = () => {
     onMouseUp();
   };
 
+  const shadow = null;
+  const getShadow = (id) => {
+    return shadow || findOne(id);
+  };
+  const dragShape = (e) => {
+    return e.dataTransfer.types[0].replace("editable-text", "text");
+  };
+  const onDragOver = (e) => {
+    e.preventDefault();
+    const stage = stageRef.current;
+    stage.setPointersPositions(e);
+    const { x, y } = stage.getPointerPosition();
+    const shape = dragShape(e);
+    switch (shape) {
+      case "text":
+        getShadow("shadow-text").setAttrs({ visible: true, x, y });
+        break;
+      case "rect":
+      case "ellipse":
+        getShadow("shadow-" + shape).setAttrs({
+          visible: true,
+          fill: null,
+          stroke: "black",
+          width: 120,
+          height: 120,
+          x,
+          y,
+        });
+        break;
+      case "line":
+        getShadow("shadow-line").setAttrs({
+          visible: true,
+          fill: null,
+          stroke: "black",
+          points: [-60, 0, 60, 0],
+          x,
+          y,
+        });
+        break;
+    }
+  };
+
+  const onDrop = (e) => {
+    const stage = stageRef.current;
+    stage.setPointersPositions(e);
+    const { x, y } = stage.getPointerPosition();
+    const shape = dragShape(e);
+    switch (shape) {
+      case "text":
+        break;
+      case "rect":
+        break;
+      case "ellipse":
+        break;
+      case "line":
+        break;
+    }
+    console.log(shape);
+  };
+
   if (state.width == 0) {
     return <div ref={containerRef} />;
   }
 
   return (
-    <div ref={containerRef} tabIndex={1} className={"stage-wrap " + (state.fullscreen ? "stage-wrap-fullscreen" : "stage-wrap-default")}>
+    <div
+      ref={containerRef}
+      onDragOver={onDragOver}
+      onDrop={onDrop}
+      tabIndex={1}
+      className={"stage-wrap " + (state.fullscreen ? "stage-wrap-fullscreen" : "stage-wrap-default")}
+    >
       <TopToolbar />
       <Stage
         ref={stageRef}
@@ -217,14 +290,27 @@ const App = () => {
         onMouseLeave={onMouseLeave}
         onWheel={onWheel}
       >
-        <Layer id="board-layer" offsetX={state.offset.x} offsetY={state.offset.y} scaleX={state.scale} scaleY={state.scale}>
-          {state.mode == "geoboard" && state.geoboardBands.map((band) => <GeoboardBand key={band.id} {...band} findOne={findOne} />)}
+        <Layer
+          id="board-layer"
+          offsetX={state.offset.x}
+          offsetY={state.offset.y}
+          scaleX={state.scale}
+          scaleY={state.scale}
+        >
+          {state.mode == "geoboard" &&
+            state.geoboardBands.map((band) => <GeoboardBand key={band.id} {...band} findOne={findOne} />)}
           <Grid />
           {state.mode == "geoboard" && state.geoboardBands.map((band) => <Angles key={band.id} {...band} />)}
           <Elements />
           <SelectRect />
         </Layer>
-        <Layer id="free-drawing-layer" offsetX={state.offset.x} offsetY={state.offset.y} scaleX={state.scale} scaleY={state.scale}>
+        <Layer
+          id="free-drawing-layer"
+          offsetX={state.offset.x}
+          offsetY={state.offset.y}
+          scaleX={state.scale}
+          scaleY={state.scale}
+        >
           <FreeDrawing />
         </Layer>
         {state.imagesReady && (

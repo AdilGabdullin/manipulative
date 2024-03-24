@@ -22,6 +22,6 @@
     "vite": "^2.9.15"
   },
   "prettier": {
-    "printWidth": 140
+    "printWidth": 120
   }
 }
