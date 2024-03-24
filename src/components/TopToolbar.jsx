@@ -1,8 +1,8 @@
 import { useAppStore } from "../state/store";
 import { capitalizeFirstLetter } from "../util";
-import { ShapesMenu2 } from "./ShapesMenu";
+import ShapesMenu from "./ShapesMenu";
 
-export const topToolbarHeight = 48;
+export const topToolbarHeight = 42;
 
 const workspaceOptions = {
   geoboard: ["square", "isometric", "circular"],
@@ -14,7 +14,7 @@ const TopToolbar = () => {
     <div className="bottom-toolbar" style={{ height: topToolbarHeight }}>
       <Buttons />
       <div style={{ display: "flex" }}>
-        <ShapesMenu2 />
+        <ShapesMenu />
         <WorkspaceSelector />
       </div>
     </div>
@@ -31,8 +31,18 @@ const Buttons = () => {
       <Button text="zoom in" imageSrc="buttons/zoom-in-min.png" onClick={() => state.setScale(state.scale + 0.1)} />
       <Button text="zoom out" imageSrc="buttons/zoom-out-min.png" onClick={() => state.setScale(state.scale - 0.1)} />
       <Button text="fullscreen" imageSrc="buttons/full-screen-min.png" onClick={state.toggleFullscreen} />
-      <Button text="brush" imageSrc="buttons/pencil-min.png" onClick={state.toggleBrush} active={state.fdMode == "brush"} />
-      <Button text="eraser" imageSrc="buttons/eraser-min.png" onClick={state.toggleEraser} active={state.fdMode == "eraser"} />
+      <Button
+        text="brush"
+        imageSrc="buttons/pencil-min.png"
+        onClick={state.toggleBrush}
+        active={state.fdMode == "brush"}
+      />
+      <Button
+        text="eraser"
+        imageSrc="buttons/eraser-min.png"
+        onClick={state.toggleEraser}
+        active={state.fdMode == "eraser"}
+      />
     </div>
   );
 };

@@ -1,307 +1,30 @@
-import { Ellipse, Line, Rect, Text } from "react-konva";
 import { useAppStore } from "../state/store";
-import { getStageXY } from "../util";
 
 const color = "purple";
 const buttonSize = 30;
-const margin = 15;
-let shadowNode = null;
-function getShadowNode(e, id) {
-  if (!shadowNode || shadowNode.id() != id) {
-    shadowNode = e.target.getStage().findOne("#" + id);
-  }
-  return shadowNode;
-}
 
-const ShapesMenu = (props) => {
-  const left = props.x + props.width - (buttonSize + margin) * 4;
-  const y = props.y + (props.height - 30) / 2;
-
-  return (
-    <>
-      <TextButton x={left + (buttonSize + margin) * 0} y={y} />
-      <RectButton x={left + (buttonSize + margin) * 1} y={y} />
-      <EllipseButton x={left + (buttonSize + margin) * 2} y={y} />
-      <LineButton x={left + (buttonSize + margin) * 3} y={y} />
-    </>
-  );
-};
-
-const TextButton = (props) => {
-  const { x, y } = props;
-  const state = useAppStore();
-  const { origin } = state;
-
-  const onPointerClick = () => {
-    state.addElement({
-      type: "text",
-      x: -40,
-      y: -20,
-      text: "Text",
-      fontSize: 36,
-      width: 100,
-      height: 36,
-      newText: true,
-    });
-  };
-
-  const onDragStart = (e) => {
-    getShadowNode(e, "shadow-text").setAttrs({
-      visible: true,
-    });
-  };
-
-  const onDragMove = (e) => {
-    const { x, y } = getStageXY(e.target.getStage(), state);
-    getShadowNode(e, "shadow-text").setAttrs({
-      x: x + origin.x - 40,
-      y: y + origin.y - 20,
-    });
-  };
-
-  const onDragEnd = (e) => {
-    getShadowNode(e, "shadow-text").setAttrs({
-      visible: false,
-    });
-    const { x, y } = getStageXY(e.target.getStage(), state);
-    state.addElement({
-      type: "text",
-      x: x - 40,
-      y: y - 20,
-      text: "Text",
-      fontSize: 36,
-      width: 100,
-      height: 36,
-      newText: true,
-    });
-  };
-
-  return (
-    <>
-      <Rect
-        x={x}
-        y={y}
-        width={buttonSize}
-        height={buttonSize}
-        onPointerClick={onPointerClick}
-        draggable
-        onDragStart={onDragStart}
-        onDragMove={(e) => {
-          e.target.setAttrs({ x, y });
-          onDragMove(e);
-        }}
-        onDragEnd={onDragEnd}
-      />
-      <Text
-        text="T"
-        fontSize={40}
-        x={x + 6}
-        y={y - 2}
-        fill={color}
-        stroke={color}
-        fontFamily="Calibri"
-        onPointerClick={onPointerClick}
-        draggable
-        onDragStart={onDragStart}
-        onDragMove={(e) => {
-          e.target.setAttrs({ x: x + 6, y: y - 2 });
-          onDragMove(e);
-        }}
-        onDragEnd={onDragEnd}
-      />
-    </>
-  );
-};
-
-const RectButton = (props) => {
-  const { x, y } = props;
-  const state = useAppStore();
-  const { origin } = state;
-
-  const onPointerClick = () => {
-    state.addElement({ type: "rect", x: -60, y: -60, width: 120, height: 120, fill: false });
-  };
-
-  const onDragStart = (e) => {
-    getShadowNode(e, "shadow-rect").setAttrs({
-      visible: true,
-      fill: null,
-      stroke: "black",
-      width: 120,
-      height: 120,
-    });
-  };
-
-  const onDragMove = (e) => {
-    e.target.setAttrs({ x: props.x, y: props.y });
-    const { x, y } = getStageXY(e.target.getStage(), state);
-    getShadowNode(e, "shadow-rect").setAttrs({
-      x: x + origin.x - 60,
-      y: y + origin.y - 60,
-    });
-  };
-
-  const onDragEnd = (e) => {
-    getShadowNode(e, "shadow-rect").setAttrs({
-      visible: false,
-    });
-    const { x, y } = getStageXY(e.target.getStage(), state);
-    state.addElement({ type: "rect", x: x - 60, y: y - 60, width: 120, height: 120, fill: false });
-  };
-
-  return (
-    <>
-      <Rect
-        x={x}
-        y={y}
-        width={buttonSize}
-        height={buttonSize}
-        stroke={color}
-        onPointerClick={onPointerClick}
-        draggable
-        onDragStart={onDragStart}
-        onDragMove={onDragMove}
-        onDragEnd={onDragEnd}
-      />
-    </>
-  );
-};
-
-const EllipseButton = (props) => {
-  const { x, y } = props;
-  const state = useAppStore();
-  const { origin } = state;
-
-  const onPointerClick = () => {
-    state.addElement({ type: "ellipse", x: 0, y: 0, radiusX: 60, radiusY: 60, fill: false });
-  };
-
-  const onDragStart = (e) => {
-    getShadowNode(e, "shadow-ellipse").setAttrs({
-      visible: true,
-      fill: null,
-      stroke: "black",
-      width: 120,
-      height: 120,
-    });
-  };
-
-  const onDragMove = (e) => {
-    e.target.setAttrs({ x: props.x + buttonSize / 2, y: props.y + buttonSize / 2 });
-    const { x, y } = getStageXY(e.target.getStage(), state);
-    getShadowNode(e, "shadow-ellipse").setAttrs({
-      x: x + origin.x,
-      y: y + origin.y,
-    });
-  };
-
-  const onDragEnd = (e) => {
-    getShadowNode(e, "shadow-ellipse").setAttrs({
-      visible: false,
-    });
-    const { x, y } = getStageXY(e.target.getStage(), state);
-    state.addElement({ type: "ellipse", x: x, y: y, radiusX: 60, radiusY: 60, fill: false });
-  };
-
-  return (
-    <>
-      <Rect x={x} y={y} width={buttonSize} height={buttonSize} onPointerClick={onPointerClick} />
-      <Ellipse
-        x={x + buttonSize / 2}
-        y={y + buttonSize / 2}
-        radiusX={buttonSize / 2}
-        radiusY={buttonSize / 2}
-        stroke={color}
-        onPointerClick={onPointerClick}
-        draggable
-        onDragStart={onDragStart}
-        onDragMove={onDragMove}
-        onDragEnd={onDragEnd}
-      />
-    </>
-  );
-};
-
-const LineButton = (props) => {
-  const { x, y } = props;
-  const state = useAppStore();
-  const { origin } = state;
-
-  const onPointerClick = () => {
-    state.addElement({ type: "line", x: -60, y: 0, x2: 120, y2: 0 });
-  };
-
-  const onDragStart = (e) => {
-    getShadowNode(e, "shadow-line").setAttrs({
-      visible: true,
-      fill: null,
-      stroke: "black",
-      points: [-60, 0, 60, 0],
-    });
-  };
-
-  const onDragMove = (e) => {
-    const { x, y } = getStageXY(e.target.getStage(), state);
-    getShadowNode(e, "shadow-line").setAttrs({
-      x: x + origin.x,
-      y: y + origin.y,
-    });
-  };
-
-  const onDragEnd = (e) => {
-    getShadowNode(e, "shadow-line").setAttrs({
-      visible: false,
-    });
-    const { x, y } = getStageXY(e.target.getStage(), state);
-    state.addElement({ type: "line", x: x - 60, y: y, x2: 120, y2: 0 });
-  };
-
-  return (
-    <>
-      <Rect
-        x={x}
-        y={y}
-        width={buttonSize}
-        height={buttonSize}
-        onPointerClick={onPointerClick}
-        draggable
-        onDragStart={onDragStart}
-        onDragMove={(e) => {
-          e.target.setAttrs({ x, y });
-          onDragMove(e);
-        }}
-        onDragEnd={onDragEnd}
-      />
-      <Line
-        x={x}
-        y={y + buttonSize / 2}
-        points={[0, 0, buttonSize, 0]}
-        stroke={color}
-        onPointerClick={onPointerClick}
-        draggable
-        onDragStart={onDragStart}
-        onDragMove={(e) => {
-          e.target.setAttrs({ x, y: y + buttonSize / 2 });
-          onDragMove(e);
-        }}
-        onDragEnd={onDragEnd}
-        lineJoin="round"
-        lineCap="round"
-      />
-    </>
-  );
+const containerStyle = {
+  display: "flex",
+  gap: 8,
+  marginRight: 16,
 };
 
 const buttonStyle = {
   width: buttonSize,
   height: buttonSize,
-  border: "1px solid black",
+  color: color,
+  fontSize: 40,
+  fontFamily: "Calibri",
+};
+
+const svgStyle = {
+  display: "block",
 };
 
 const emptyImage = new Image();
 emptyImage.src = "data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs=";
 
-export const ShapesMenu2 = (props) => {
+export const ShapesMenu = () => {
   const state = useAppStore();
   const onDragStart = (shape) => (e) => {
     const { dataTransfer } = e;
@@ -310,7 +33,7 @@ export const ShapesMenu2 = (props) => {
   };
 
   return (
-    <div style={{ display: "flex" }}>
+    <div style={containerStyle}>
       <div
         style={buttonStyle}
         draggable="true"
@@ -328,7 +51,11 @@ export const ShapesMenu2 = (props) => {
           });
         }}
       >
-        Text
+        <svg style={svgStyle} viewBox={`0 0 ${buttonSize} ${buttonSize}`}>
+          <text x="6" y="28" style={{ fontSize: 40, fontFamily: "Calibri", stroke: color, fill: color }}>
+            T
+          </text>
+        </svg>
       </div>
       <div
         style={buttonStyle}
@@ -338,7 +65,15 @@ export const ShapesMenu2 = (props) => {
           state.addElement({ type: "rect", x: -60, y: -60, width: 120, height: 120, fill: false });
         }}
       >
-        Rect
+        <svg style={svgStyle} viewBox={`0 0 ${buttonSize} ${buttonSize}`}>
+          <rect
+            x={0 + 1}
+            y={0 + 1}
+            width={buttonSize - 2}
+            height={buttonSize - 2}
+            style={{ fill: "rgb(0,0,0,0)", strokeWidth: 2, stroke: color }}
+          />
+        </svg>
       </div>
       <div
         style={buttonStyle}
@@ -348,7 +83,15 @@ export const ShapesMenu2 = (props) => {
           state.addElement({ type: "ellipse", x: 0, y: 0, radiusX: 60, radiusY: 60, fill: false });
         }}
       >
-        Ellipse
+        <svg style={svgStyle} viewBox={`0 0 ${buttonSize} ${buttonSize}`}>
+          <ellipse
+            cx={buttonSize / 2}
+            cy={buttonSize / 2}
+            rx={buttonSize / 2 - 2}
+            ry={buttonSize / 2 - 2}
+            style={{ fill: "rgb(0,0,0,0)", strokeWidth: 2, stroke: color }}
+          />
+        </svg>
       </div>
       <div
         style={buttonStyle}
@@ -358,7 +101,15 @@ export const ShapesMenu2 = (props) => {
           state.addElement({ type: "line", x: -60, y: 0, x2: 120, y2: 0 });
         }}
       >
-        Line
+        <svg style={svgStyle} viewBox={`0 0 ${buttonSize} ${buttonSize}`}>
+          <line
+            x1={0}
+            y1={buttonSize / 2}
+            x2={buttonSize}
+            y2={buttonSize / 2}
+            style={{ fill: "rgb(0,0,0,0)", strokeWidth: 2, stroke: color }}
+          />
+        </svg>
       </div>
     </div>
   );

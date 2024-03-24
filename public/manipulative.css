@@ -53,10 +53,10 @@
 .toolbar-button-wrap {
   width: 34px;
   height: 34px;
-  padding: 4px;
+  padding: 2px;
+  border-radius: 4px;
 }
 
 .toolbar-button-wrap.active {
   outline: 2px solid blue;
-
 }
