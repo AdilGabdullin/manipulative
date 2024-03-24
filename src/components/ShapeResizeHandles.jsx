@@ -45,8 +45,8 @@ const ShapeResizeHandles = (props) => {
     const height = Math.abs(y1 - y2) / scale - 16;
     switch (element.type) {
       case "text":
-        const s = Math.abs(x1 - x2) / props.width;
-        elementNode.setAttrs({ scaleX: element.scale * s, scaleY: element.scale * s });
+        const scaleX = (element.scale * (Math.abs(x1 - x2) / scale - 16)) / (props.width / scale - 16);
+        elementNode.setAttrs({ x, y, scaleX: scaleX, scaleY: scaleX });
         break;
       case "rect":
         elementNode.setAttrs({ x, y, width, height });
@@ -87,12 +87,14 @@ const ShapeResizeHandles = (props) => {
     const height = Math.abs(y1 - y2) / scale - 16;
     switch (element.type) {
       case "text":
-        const s = Math.abs(x1 - x2) / props.width;
+        const scaleX = (element.scale * (Math.abs(x1 - x2) / scale - 16)) / (props.width / scale - 16);
         const clientRect = elementNode.getClientRect();
         state.updateElement(element.id, {
-          scale: element.scale * s,
-          width: clientRect.width,
-          height: clientRect.height,
+          x: x - origin.x,
+          y: y - origin.y,
+          scale: scaleX,
+          width: clientRect.width / scale,
+          height: clientRect.height / scale,
         });
         break;
       case "rect":

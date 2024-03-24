@@ -269,7 +269,7 @@ const App = () => {
           y: y - 20,
           text: "Text",
           fontSize: 36,
-          width: 100,
+          width: 60,
           height: 36,
           newText: true,
           scale: 1.0,

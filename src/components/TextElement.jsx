@@ -1,4 +1,4 @@
-import { Text } from "react-konva";
+import { Rect, Text } from "react-konva";
 import { useAppStore } from "../state/store";
 import { useEffect, useRef } from "react";
 
@@ -45,24 +45,27 @@ const TextElement = (props) => {
   const ref = useRef(null);
 
   return (
-    <Text
-      ref={ref}
-      id={id}
-      x={origin.x + x}
-      y={origin.y + y}
-      scaleX={scale}
-      scaleY={scale}
-      text={text}
-      fontSize={fontSize}
-      fill={"black"}
-      fontFamily="Calibri"
-      onPointerClick={onPointerClick}
-      onPointerDblClick={onPointerDblClick}
-      draggable={!locked && !fdMode}
-      onDragStart={onDragStart}
-      onDragMove={onDragMove}
-      onDragEnd={onDragEnd}
-    />
+    <>
+      {/* <Rect x={origin.x + x} y={origin.y + y} width={props.width} height={props.height} stroke={"black"}/> */}
+      <Text
+        ref={ref}
+        id={id}
+        x={origin.x + x}
+        y={origin.y + y}
+        scaleX={scale}
+        scaleY={scale}
+        text={text}
+        fontSize={fontSize}
+        fill={"black"}
+        fontFamily="Calibri"
+        onPointerClick={onPointerClick}
+        onPointerDblClick={onPointerDblClick}
+        draggable={!locked && !fdMode}
+        onDragStart={onDragStart}
+        onDragMove={onDragMove}
+        onDragEnd={onDragEnd}
+      />
+    </>
   );
 };
 
