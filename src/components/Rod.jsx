@@ -1,14 +1,22 @@
 import { Line, Rect, Text } from "react-konva";
 import { gridStep, useAppStore } from "../state/store";
-import { gcd, setVisibility } from "../util";
 
 const Rod = ({ id, x, y, width, height, fill, fillColor, stroke, locked }) => {
   const state = useAppStore();
   const { origin, elements, fdMode, labelMode } = state;
 
+  let dragNodes = null;
+  const getNodes = (e) => {
+    if (dragNodes) return dragNodes;
+    dragNodes = [];
+    const ids = `#${id},#${id}-label-0,#${id}-label-1,#${id}-label-2`;
+    for (const node of e.target.getStage().find(ids)) {
+      dragNodes.push({ node, x: node.x(), y: node.y() });
+    }
+    return dragNodes;
+  };
   const onDragStart = (e) => {
     state.clearSelect();
-    setVisibility(e, false);
   };
 
   const onDragMove = (e) => {
@@ -16,7 +24,9 @@ const Rod = ({ id, x, y, width, height, fill, fillColor, stroke, locked }) => {
     let dy = e.target.y() - y - origin.y;
     dx -= dx % (gridStep / 2);
     dy -= dy % (gridStep / 2);
-    e.target.setAttrs({ x: origin.x + x + dx, y: origin.y + y + dy });
+    for (const { node, x, y } of getNodes(e)) {
+      node.setAttrs({ x: x + dx, y: y + dy });
+    }
   };
 
   const onDragEnd = (e) => {
@@ -24,7 +34,7 @@ const Rod = ({ id, x, y, width, height, fill, fillColor, stroke, locked }) => {
     let dy = e.target.y() - y - origin.y;
     dx -= dx % (gridStep / 2);
     dy -= dy % (gridStep / 2);
-    setVisibility(e, true);
+    // setVisibility(e, true);
     state.relocateElement(id, dx, dy);
   };
 
@@ -52,21 +62,33 @@ const Rod = ({ id, x, y, width, height, fill, fillColor, stroke, locked }) => {
         onPointerClick={onPointerClick}
       />
       {labelMode == "Whole Numbers" && (
-        <WholeLabel x={origin.x + x + width / 2} y={origin.y + y + height / 2} text={text} />
+        <WholeLabel id={id} x={origin.x + x + width / 2} y={origin.y + y + height / 2} text={text} />
       )}
       {labelMode == "Fractions" && (
-        <FractionLabel x={origin.x + x + width / 2} y={origin.y + y + height / 2} text={text} />
+        <FractionLabel id={id} x={origin.x + x + width / 2} y={origin.y + y + height / 2} text={text} />
       )}
       {labelMode == "Decimals" && (
-        <DecimalLabel x={origin.x + x + width / 2} y={origin.y + y + height / 2} text={text / 10} />
+        <DecimalLabel id={id} x={origin.x + x + width / 2} y={origin.y + y + height / 2} text={text / 10} />
       )}
+      <Rect
+        x={origin.x + x}
+        y={origin.y + y}
+        width={width}
+        height={height}
+        draggable={!locked && !fdMode}
+        onDragStart={onDragStart}
+        onDragMove={onDragMove}
+        onDragEnd={onDragEnd}
+        onPointerClick={onPointerClick}
+      />
     </>
   );
 };
 
-const WholeLabel = ({ x, y, text }) => {
+const WholeLabel = ({ id, x, y, text }) => {
   return (
     <Text
+      id={`${id}-label-0`}
       name="drag-hidden"
       text={text}
       x={x - 7 - (text % 1 !== 0 ? 10 : 0)}
@@ -79,12 +101,13 @@ const WholeLabel = ({ x, y, text }) => {
   );
 };
 
-const DecimalLabel = ({ x, y, text }) => {
+const DecimalLabel = ({ id, x, y, text }) => {
   if (text == 1) {
     text = "1.0";
   }
   return (
     <Text
+      id={`${id}-label-0`}
       name="drag-hidden"
       text={text}
       x={x - 17 - ((text * 10) % 1 !== 0 ? 9 : 0)}
@@ -97,7 +120,7 @@ const DecimalLabel = ({ x, y, text }) => {
   );
 };
 
-const FractionLabel = ({ x, y, text }) => {
+const FractionLabel = ({ id, x, y, text }) => {
   if (text == 10) {
     return <WholeLabel x={x} y={y} text={1} />;
   }
@@ -108,6 +131,7 @@ const FractionLabel = ({ x, y, text }) => {
   return (
     <>
       <Text
+        id={`${id}-label-0`}
         name="drag-hidden"
         text={nominator}
         x={x - 7 - (nominator > 9 ? 6 : 0)}
@@ -117,8 +141,17 @@ const FractionLabel = ({ x, y, text }) => {
         fontSize={26}
         fontFamily="Calibri"
       />
-      <Line name="drag-hidden" points={[x - 13, y, x + 13, y]} stroke={"black"} strokeWidth={2} />
+      <Line
+        id={`${id}-label-1`}
+        name="drag-hidden"
+        x={x}
+        y={y}
+        points={[-13, 0, 13, 0]}
+        stroke={"black"}
+        strokeWidth={2}
+      />
       <Text
+        id={`${id}-label-2`}
         name="drag-hidden"
         text={denominator}
         x={x - 7 - (denominator > 9 ? 6 : 0)}

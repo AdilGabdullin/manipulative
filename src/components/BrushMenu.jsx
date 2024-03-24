@@ -38,27 +38,23 @@ const BrushMenu = (props) => {
   return (
     <>
       <EraseAll x={x + 10} y={y + height / 2 - circleRadius} />
-      {fdMode == "brush" && (
-        <>
-          <Circle
-            color={fdBrushColor}
-            x={x + 120}
-            y={circleY}
-            radius={circleRadius}
-            fill={fdBrushColor}
-            stroke={strokeColor}
-            strokeWidth={2}
-            onPointerClick={openDrawer}
-          />
-          <WidthSelector x={x + 150} y={y + height / 2 - circleRadius} />
-          <Drawer
-            x={x + 120 - (circleRadius * 8 + padding * 5) / 2}
-            y={y + height + padding}
-            width={circleRadius * 8 + padding * 5}
-            height={circleRadius * 6 + padding * 4}
-          />
-        </>
-      )}
+      <Circle
+        color={fdBrushColor}
+        x={x + 120}
+        y={circleY}
+        radius={circleRadius}
+        fill={fdBrushColor}
+        stroke={strokeColor}
+        strokeWidth={2}
+        onPointerClick={openDrawer}
+      />
+      <WidthSelector x={x + 150} y={y + height / 2 - circleRadius} />
+      <Drawer
+        x={x + 120 - (circleRadius * 8 + padding * 5) / 2}
+        y={y + height + padding}
+        width={circleRadius * 8 + padding * 5}
+        height={circleRadius * 6 + padding * 4}
+      />
     </>
   );
 };

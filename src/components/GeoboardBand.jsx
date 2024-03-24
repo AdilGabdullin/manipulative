@@ -102,7 +102,7 @@ const AngleValue = ({ x, y, angle }) => {
         height={height}
         fill={"#4a4a4a"}
         cornerRadius={8}
-        visible={size[0]}
+        visible={size[0] > 0}
       />
       <Text
         ref={ref}
@@ -112,7 +112,7 @@ const AngleValue = ({ x, y, angle }) => {
         y={y - size[1] / 2}
         fill={"#ffffff"}
         fontSize={18}
-        visible={size[0]}
+        visible={size[0] > 0}
       />
     </>
   );
