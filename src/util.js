@@ -290,3 +290,7 @@ export function arrayChunk(inputArray, perChunk) {
 export function sum(xs) {
   return xs.reduce((sum, x) => sum + x, 0);
 }
+
+export function avg(xs) {
+  return sum(xs) / xs.length;
+}

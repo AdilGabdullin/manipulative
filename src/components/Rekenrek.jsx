@@ -1,6 +1,7 @@
 import { Line } from "react-konva";
 import { useAppStore } from "../state/store";
 import Beads from "./Beads";
+import BeadGroups from "./BeadGroups";
 
 export const rekenrekWidth = 900;
 export const rekenrekHeight = 80;
@@ -16,10 +17,9 @@ export const colors = {
   white: { main: "#fafafa", highlight: "#bdbdbd", shadow: "#cdd4da" },
 };
 
-
 const Rekenrek = (props) => {
   const state = useAppStore();
-  const { origin, fdMode } = state;
+  const { origin } = state;
   const { id, width, height, locked, beads } = props;
 
   const x = props.x + origin.x;
@@ -27,8 +27,9 @@ const Rekenrek = (props) => {
 
   return (
     <>
-      <Lines id={id} {...props} />
-      <Beads id={id} xMin={xMin(x)} xMax={xMax(x)} y={y + height / 2} beads={beads} />
+      <Lines {...props} />
+      <Beads {...props} xMin={xMin(x)} xMax={xMax(x)} x={x} y={y + height / 2} />
+      <BeadGroups {...props} x={x} y={y-8}/>
     </>
   );
 };
@@ -86,4 +87,5 @@ function xMax(x) {
 export function initialBeads(x) {
   if (beadNumber == 10) return [-9, -8, -7, -6, -5, -4, -3, -2, -1, 0].map((shift) => xMax(x) + shift * beadRadius * 2);
 }
+
 export default Rekenrek;
