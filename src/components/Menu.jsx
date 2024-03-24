@@ -32,7 +32,7 @@ const DefaultMenu = (props) => {
   let buttons = [
     {
       text: "Fills",
-      visible: ["geoboard", "rods", "fractions"],
+      visible: ["geoboard", "rods", "fractions", "pattern-blocks"],
       field: "fill",
       image: document.getElementById("fill-button"),
       width: 70,

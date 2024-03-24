@@ -65,6 +65,7 @@ const App = () => {
   const onMouseDown = (e) => {
     // console.log("stage down", e.target);
     appSaveText(state, findOne);
+    if (e.target.name() == "color-drawer") return;
     if (state.fdMode) {
       const { x, y } = getStageXY(stageRef.current, state);
       const pos = stageRef.current.getPointerPosition();
