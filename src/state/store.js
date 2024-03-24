@@ -41,7 +41,7 @@ export const useAppStore = create((set) => ({
 
   // offset: { x: 80, y: -200 },
   // scale: 0.5,
-  // fullscreen: true,
+  fullscreen: true,
 
   fill: mode != "geoboard",
   measures: false,
