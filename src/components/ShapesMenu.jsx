@@ -292,29 +292,74 @@ const LineButton = (props) => {
   );
 };
 
-const buttotStyle = {
+const buttonStyle = {
   width: buttonSize,
   height: buttonSize,
   border: "1px solid black",
 };
 
+const emptyImage = new Image();
+emptyImage.src = "data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs=";
+
 export const ShapesMenu2 = (props) => {
+  const state = useAppStore();
   const onDragStart = (shape) => (e) => {
-    e.dataTransfer.setData(shape, shape);
+    const { dataTransfer } = e;
+    dataTransfer.setData(shape, shape);
+    dataTransfer.setDragImage(emptyImage, 0, 0);
   };
 
   return (
     <div style={{ display: "flex" }}>
-      <div style={buttotStyle} draggable="true" onDragStart={onDragStart("editable-text")}>
+      <div
+        style={buttonStyle}
+        draggable="true"
+        onDragStart={onDragStart("editable-text")}
+        onClick={() => {
+          state.addElement({
+            type: "text",
+            x: -40,
+            y: -20,
+            text: "Text",
+            fontSize: 36,
+            width: 100,
+            height: 36,
+            newText: true,
+          });
+        }}
+      >
         Text
       </div>
-      <div style={buttotStyle} draggable="true" onDragStart={onDragStart("rect")}>
+      <div
+        style={buttonStyle}
+        draggable="true"
+        onDragStart={onDragStart("rect")}
+        onClick={() => {
+          state.addElement({ type: "rect", x: -60, y: -60, width: 120, height: 120, fill: false });
+        }}
+      >
         Rect
       </div>
-      <div style={buttotStyle} draggable="true" onDragStart={onDragStart("ellipse")}>
+      <div
+        style={buttonStyle}
+        draggable="true"
+        onDragStart={onDragStart("ellipse")}
+        onClick={() => {
+          state.addElement({ type: "ellipse", x: 0, y: 0, radiusX: 60, radiusY: 60, fill: false });
+        }}
+      >
         Ellipse
       </div>
-      <div style={buttotStyle} draggable="true" onDragStart={onDragStart("line")}>Line</div>
+      <div
+        style={buttonStyle}
+        draggable="true"
+        onDragStart={onDragStart("line")}
+        onClick={() => {
+          state.addElement({ type: "line", x: -60, y: 0, x2: 120, y2: 0 });
+        }}
+      >
+        Line
+      </div>
     </div>
   );
 };

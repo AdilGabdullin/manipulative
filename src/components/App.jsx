@@ -44,6 +44,10 @@ const App = () => {
     containerRef.current.focus();
   });
 
+  if (state.width == 0) {
+    return <div ref={containerRef} />;
+  }
+
   const magnetSearch = (movePos) => {
     return state.grid.find((gridItem) => pointsIsClose(movePos, gridItem)) || movePos;
   };
@@ -195,6 +199,7 @@ const App = () => {
     onMouseUp();
   };
 
+  // shapes menu events
   const shadow = null;
   const getShadow = (id) => {
     return shadow || findOne(id);
@@ -206,13 +211,25 @@ const App = () => {
     e.preventDefault();
     const stage = stageRef.current;
     stage.setPointersPositions(e);
-    const { x, y } = stage.getPointerPosition();
+    const pos = getStageXY(stageRef.current, state);
+    const x = pos.x + state.origin.x;
+    const y = pos.y + state.origin.y;
     const shape = dragShape(e);
     switch (shape) {
       case "text":
-        getShadow("shadow-text").setAttrs({ visible: true, x, y });
+        getShadow("shadow-text").setAttrs({ visible: true, x: x - 40, y: y - 20 });
         break;
       case "rect":
+        getShadow("shadow-" + shape).setAttrs({
+          visible: true,
+          fill: null,
+          stroke: "black",
+          width: 120,
+          height: 120,
+          x: x - 60,
+          y: y - 60,
+        });
+        break;
       case "ellipse":
         getShadow("shadow-" + shape).setAttrs({
           visible: true,
@@ -220,8 +237,8 @@ const App = () => {
           stroke: "black",
           width: 120,
           height: 120,
-          x,
-          y,
+          x: x,
+          y: y,
         });
         break;
       case "line":
@@ -240,24 +257,38 @@ const App = () => {
   const onDrop = (e) => {
     const stage = stageRef.current;
     stage.setPointersPositions(e);
-    const { x, y } = stage.getPointerPosition();
+    const pos = getStageXY(stageRef.current, state);
+    const x = pos.x;
+    const y = pos.y;
     const shape = dragShape(e);
     switch (shape) {
       case "text":
+        state.addElement({
+          type: "text",
+          x: x - 40,
+          y: y - 20,
+          text: "Text",
+          fontSize: 36,
+          width: 100,
+          height: 36,
+          newText: true,
+        });
+        getShadow("shadow-" + shape).visible(false);
         break;
       case "rect":
+        state.addElement({ type: "rect", x: x - 60, y: y - 60, width: 120, height: 120, fill: false });
+        getShadow("shadow-" + shape).visible(false);
         break;
       case "ellipse":
+        state.addElement({ type: "ellipse", x: x, y: y, radiusX: 60, radiusY: 60, fill: false });
+        getShadow("shadow-" + shape).visible(false);
         break;
       case "line":
+        state.addElement({ type: "line", x: x - 60, y: y, x2: 120, y2: 0 });
+        getShadow("shadow-" + shape).visible(false);
         break;
     }
-    console.log(shape);
   };
-
-  if (state.width == 0) {
-    return <div ref={containerRef} />;
-  }
 
   return (
     <div

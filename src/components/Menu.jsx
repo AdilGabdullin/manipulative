@@ -3,7 +3,6 @@ import { useAppStore } from "../state/store";
 import { leftToolbarWidth } from "./LeftToolbar";
 import BrushMenu from "./BrushMenu";
 import { Fragment } from "react";
-import ShapesMenu from "./ShapesMenu";
 
 export const menuHeight = 50;
 
@@ -154,7 +153,6 @@ const DefaultMenu = (props) => {
           </Fragment>
         );
       })}
-      <ShapesMenu {...props} />
     </>
   );
 };

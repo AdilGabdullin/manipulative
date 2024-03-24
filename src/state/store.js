@@ -39,8 +39,8 @@ export const useAppStore = create((set) => ({
   selected: [],
   lockSelect: false,
 
-  // offset: { x: 0, y: 0 },
-  // scale: 1.0,
+  offset: { x: 80, y: -200 },
+  scale: 0.8,
   fullscreen: true,
 
   fill: mode != "geoboard",
