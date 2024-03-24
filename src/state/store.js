@@ -39,8 +39,8 @@ export const useAppStore = create((set) => ({
   selected: [],
   lockSelect: false,
 
-  offset: { x: 80, y: -200 },
-  scale: 0.5,
+  // offset: { x: 80, y: -200 },
+  // scale: 0.5,
   fullscreen: true,
 
   fill: mode != "geoboard",
@@ -180,6 +180,7 @@ export const useAppStore = create((set) => ({
         }
         clearSelected(state);
         state.lastActiveElement = null;
+        document.getElementById("editable-text")?.remove();
         pushHistory(state);
       })
     ),
@@ -427,8 +428,12 @@ export const useAppStore = create((set) => ({
           if (element) {
             const copy = { ...elements[id], id: newId() };
             state.elements[copy.id] = copy;
-            state.elements[id].x += shift;
-            state.elements[id].y += shift;
+            if (element.type == "text") {
+              state.elements[id].y += element.height;
+            } else {
+              state.elements[id].x += shift;
+              state.elements[id].y += shift;
+            }
           }
         }
 

@@ -46,7 +46,7 @@ const TextElement = (props) => {
 
   return (
     <>
-      {/* <Rect x={origin.x + x} y={origin.y + y} width={props.width} height={props.height} stroke={"black"}/> */}
+      {/* <Rect x={origin.x + x} y={origin.y + y} width={props.width} height={props.height} stroke={"black"} /> */}
       <Text
         ref={ref}
         id={id}
@@ -77,6 +77,7 @@ export function createTextArea(textNode, state) {
     x: stageBox.left + textPosition.x,
     y: stageBox.top + textPosition.y,
   };
+  const nodeClientRect = textNode.getClientRect();
   const area = document.createElement("textarea");
   area.id = "editable-text";
   document.body.appendChild(area);
@@ -85,9 +86,9 @@ export function createTextArea(textNode, state) {
   area.style.position = "absolute";
   area.style.top = areaPosition.y + "px";
   area.style.left = areaPosition.x + "px";
-  area.style.width = 200 + "px";
-  area.style.height = 100 + "px";
-  area.style.fontSize = textNode.getAttr("fontSize") * state.scale + "px";
+  area.style.width = Math.max(nodeClientRect.width * 2, 100) + "px";
+  area.style.height = Math.max(nodeClientRect.height * 1.4, 60) + "px";
+  area.style.fontSize = textNode.getAttr("fontSize") * state.scale * textNode.scaleX() + "px";
   area.style.fontFamily = "Calibri";
   area.focus();
   setTimeout(() => area.focus(), 200);
