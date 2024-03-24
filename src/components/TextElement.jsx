@@ -22,7 +22,7 @@ const TextElement = (props) => {
       if (!doubleClick) {
         state.selectIds([id], locked);
       }
-    }, 600);
+    }, 200);
   };
 
   const onPointerDblClick = (e) => {

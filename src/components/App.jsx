@@ -272,6 +272,7 @@ const App = () => {
           width: 100,
           height: 36,
           newText: true,
+          scale: 1.0,
         });
         getShadow("shadow-" + shape).visible(false);
         break;

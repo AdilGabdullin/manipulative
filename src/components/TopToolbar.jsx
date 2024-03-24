@@ -13,7 +13,7 @@ const TopToolbar = () => {
   return (
     <div className="bottom-toolbar" style={{ height: topToolbarHeight }}>
       <Buttons />
-      <div style={{ display: "flex" }}>
+      <div style={{ display: "flex", gap: 16 }}>
         <ShapesMenu />
         <WorkspaceSelector />
       </div>

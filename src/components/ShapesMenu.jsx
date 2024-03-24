@@ -6,7 +6,6 @@ const buttonSize = 30;
 const containerStyle = {
   display: "flex",
   gap: 8,
-  marginRight: 16,
 };
 
 const buttonStyle = {
@@ -45,9 +44,10 @@ export const ShapesMenu = () => {
             y: -20,
             text: "Text",
             fontSize: 36,
-            width: 100,
+            width: 60,
             height: 36,
             newText: true,
+            scale: 1.0,
           });
         }}
       >

@@ -9,12 +9,8 @@ const ShapeResizeHandles = (props) => {
   const { selected, elements, origin, scale, offset } = state;
   const { x, y, width, height, findOne } = props;
 
-  if (selected.length != 1 || !["text", "rect", "ellipse", "line"].includes(elements[selected[0]]?.type)) {
-    return null;
-  }
-
   const element = elements[selected[0]];
-  if (!element || !["rect", "ellipse", "line"].includes(element.type)) {
+  if (!element || !["text", "rect", "ellipse", "line"].includes(element.type)) {
     return null;
   }
 
@@ -29,6 +25,8 @@ const ShapeResizeHandles = (props) => {
   let frameNode = null;
   let circles = null;
 
+  const ratio = element.type == "text" ? width / height : null;
+
   const onDragMove = (e) => {
     if (!elementNode) {
       elementNode = findOne(element.id);
@@ -40,12 +38,16 @@ const ShapeResizeHandles = (props) => {
       circles = ["resize-handle-0", "resize-handle-1", "resize-handle-2", "resize-handle-3"].map(findOne);
     }
 
-    const { x1, x2, y1, y2 } = getPositions(e, circles);
+    const { x1, x2, y1, y2 } = getPositions(e, circles, ratio);
     const x = Math.min(x1, x2) / scale + offset.x + 8;
     const y = Math.min(y1, y2) / scale + offset.y + 8;
     const width = Math.abs(x1 - x2) / scale - 16;
     const height = Math.abs(y1 - y2) / scale - 16;
     switch (element.type) {
+      case "text":
+        const s = Math.abs(x1 - x2) / props.width;
+        elementNode.setAttrs({ scaleX: element.scale * s, scaleY: element.scale * s });
+        break;
       case "rect":
         elementNode.setAttrs({ x, y, width, height });
         break;
@@ -59,9 +61,9 @@ const ShapeResizeHandles = (props) => {
         break;
       case "line":
         elementNode.setAttrs({
-          x: x1 / scale + offset.x + 8 * Math.sign(x2 - x1),
-          y: y1 / scale + offset.y + 8 * Math.sign(y2 - y1),
-          points: [0, 0, (x2 - x1) / scale - 16 * Math.sign(x2 - x1), (y2 - y1) / scale - 18 * Math.sign(y2 - y1)],
+          x: x1 / s + offset.x + 8 * Math.sign(x2 - x1),
+          y: y1 / s + offset.y + 8 * Math.sign(y2 - y1),
+          points: [0, 0, (x2 - x1) / s - 16 * Math.sign(x2 - x1), (y2 - y1) / s - 18 * Math.sign(y2 - y1)],
         });
         break;
     }
@@ -78,12 +80,22 @@ const ShapeResizeHandles = (props) => {
       .getStage()
       .find(".popup-menu")
       .forEach((node) => node.visible(true));
-    const { x1, x2, y1, y2 } = getPositions(e, circles);
-    const x = Math.min(x1, x2) / scale + offset.x + 8 ;
-    const y = Math.min(y1, y2) / scale + offset.y + 8 ;
-    const width = Math.abs(x1 - x2) / scale - 16 ;
-    const height = Math.abs(y1 - y2) / scale - 16 ;
+    const { x1, x2, y1, y2 } = getPositions(e, circles, ratio);
+    const x = Math.min(x1, x2) / scale + offset.x + 8;
+    const y = Math.min(y1, y2) / scale + offset.y + 8;
+    const width = Math.abs(x1 - x2) / scale - 16;
+    const height = Math.abs(y1 - y2) / scale - 16;
     switch (element.type) {
+      case "text":
+        const s = Math.abs(x1 - x2) / props.width;
+        elementNode.setAttrs({ scaleX: s, scaleY: s });
+        const clientRect = elementNode.getClientRect();
+        state.updateElement(element.id, {
+          scale: element.scale * s,
+          width: clientRect.width,
+          height: clientRect.height,
+        });
+        break;
       case "rect":
         state.updateElement(element.id, { x: x - origin.x, y: y - origin.y, width, height });
         break;
@@ -164,7 +176,7 @@ const ShapeResizeHandles = (props) => {
   );
 };
 
-function getPositions(e, circles) {
+function getPositions(e, circles, ratio) {
   const target = e.target;
 
   let x1, x2, y1, y2;
@@ -183,6 +195,19 @@ function getPositions(e, circles) {
       x1 = circles[2].x();
       y2 = circles[2].y();
       break;
+  }
+
+  if (ratio) {
+    switch (target.id()) {
+      case "resize-handle-0":
+      case "resize-handle-1":
+        y1 = y2 - (x2 - x1) / ratio;
+        break;
+      case "resize-handle-2":
+      case "resize-handle-3":
+        y2 = y1 + (x2 - x1) / ratio;
+        break;
+    }
   }
 
   circles[0].x(x1);
