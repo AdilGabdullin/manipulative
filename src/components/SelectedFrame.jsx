@@ -7,6 +7,7 @@ import { elementBox, fractionMagnet, getStageXY, setVisibility, setVisibilityFra
 import RotateHandle from "./RotateHandle";
 import ShapeResizeHandles from "./ShapeResizeHandles";
 import { createTextArea } from "./TextElement";
+import { rekenrekTargets } from "./Rekenrek";
 
 const SelectedFrame = (props) => {
   const state = useAppStore();
@@ -46,10 +47,15 @@ const SelectedFrame = (props) => {
       for (const id of selected) {
         const el = elements[id];
         if (!el) continue;
-        if (el.type == "template") {
-          el.patterns.forEach((pattern) => pushTarget(el.id + pattern.id));
-        } else {
-          pushTarget(id);
+        switch (el.type) {
+          case "template":
+            el.patterns.forEach((pattern) => pushTarget(el.id + pattern.id));
+            break;
+          case "rekenrek":
+            rekenrekTargets(id).forEach(pushTarget)
+            break;
+          default:
+            pushTarget(id);
         }
       }
     }

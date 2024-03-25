@@ -29,7 +29,7 @@ const Rekenrek = (props) => {
     <>
       <Lines {...props} />
       <Beads {...props} xMin={xMin(x)} xMax={xMax(x)} x={x} y={y + height / 2} />
-      <BeadGroups {...props} x={x} y={y-8}/>
+      <BeadGroups {...props} x={x} y={y - 8} />
     </>
   );
 };
@@ -86,6 +86,10 @@ function xMax(x) {
 
 export function initialBeads(x) {
   if (beadNumber == 10) return [-9, -8, -7, -6, -5, -4, -3, -2, -1, 0].map((shift) => xMax(x) + shift * beadRadius * 2);
+}
+
+export function rekenrekTargets(id) {
+  return [`${id}-left-line`, `${id}-mid-line`, `${id}-right-line`];
 }
 
 export default Rekenrek;

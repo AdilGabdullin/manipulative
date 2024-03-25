@@ -11,7 +11,6 @@ const BeadGroups = (props) => {
   return (
     <>
       {groups.map((xs, i) => {
-        console.log(xs.length, avg(xs), y);
         return (
           <Text
             key={i}
