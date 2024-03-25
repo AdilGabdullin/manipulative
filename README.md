@@ -10,7 +10,13 @@
 ```
 <script type="module" id="manipulative-js" crossorigin src="./assets/..."></script>
 ```
-4. JS code
+
+4. add root div
+```
+<div id="manipulative-canvas-root"></div>
+```
+
+5. JS code
 ```
 if (window.runManipulative) {
   window.runManipulative();

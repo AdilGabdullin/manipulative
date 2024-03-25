@@ -29,7 +29,7 @@ const Rekenrek = (props) => {
     <>
       <Lines {...props} />
       <Beads {...props} xMin={xMin(x)} xMax={xMax(x)} x={x} y={y + height / 2} />
-      <BeadGroups {...props} x={x} y={y - 8} />
+      <BeadGroups {...props} xMin={xMin(x)} xMax={xMax(x)} x={x} y={y - 8} />
     </>
   );
 };

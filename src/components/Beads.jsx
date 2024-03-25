@@ -1,5 +1,6 @@
 import { useAppStore } from "../state/store";
 import Bead from "./Bead";
+import { createBeadLabels } from "./BeadGroups";
 import { beadNumber, beadRadius, colors } from "./Rekenrek";
 
 const Beads = (props) => {
@@ -19,6 +20,16 @@ const Beads = (props) => {
       nodes.push(stage.find(ids));
     }
     return nodes;
+  };
+  let labelNodes = null;
+  const getLabelNodes = (e) => {
+    if (labelNodes) return labelNodes;
+    const stage = e.target.getStage();
+    labelNodes = [];
+    for (let i = 0; i < beadNumber; i += 1) {
+      labelNodes.push(stage.findOne(`#${id}-label-${i}`));
+    }
+    return labelNodes;
   };
 
   const setAttrs = (nodes, attrs) => {
@@ -42,6 +53,10 @@ const Beads = (props) => {
     for (let k = 0; k < beadNumber; k += 1) {
       nodes[k][0].visible(nodes[k][0].x() < stop(k));
     }
+    const labels = createBeadLabels(xMax, nodes.map((node) => node[0].x()));
+    getLabelNodes(e).forEach((labelNode, i) => {
+      labelNode.setAttrs(labels[i]);
+    })
   };
   const onDragEnd = (i) => (e) => {
     state.updateBeads(

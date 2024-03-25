@@ -6,16 +6,16 @@ import { useAppStore } from "../state/store";
 const BeadGroups = (props) => {
   const state = useAppStore();
   const { origin } = state;
-  const { id, x, y, beads } = props;
-  const groups = createGroups(beads);
+  const { id, xMax, y, beads } = props;
+  const labels = createBeadLabels(xMax, beads, origin.x);
   return (
     <>
-      {groups.map((xs, i) => {
+      {labels.map((label, i) => {
         return (
           <Text
+            {...label}
+            id={`${id}-label-${i}`}
             key={i}
-            text={xs.length}
-            x={origin.x + avg(xs) - 8}
             y={y}
             stroke={blue}
             fill={blue}
@@ -28,23 +28,36 @@ const BeadGroups = (props) => {
   );
 };
 
-function createGroups(beads) {
-  const result = [];
+export function createBeadLabels(xMax, xs, baseX = 0) {
+  const groups = [];
   let group = [];
   for (let i = 0; i < beadNumber; i += 1) {
     if (group.length == 0) {
-      group.push(beads[i]);
+      group.push(xs[i]);
       continue;
     }
     const current = group[group.length - 1];
-    if (beads[i] - beadRadius * 2 == current) {
-      group.push(beads[i]);
+    if (xs[i] - beadRadius * 2 == current) {
+      group.push(xs[i]);
     } else {
-      result.push(group);
-      group = [beads[i]];
+      groups.push(group);
+      group = [xs[i]];
     }
   }
-  return result;
+
+  if (group[group.length - 1] - xMax + baseX + (beadNumber - 10) * beadRadius * 2) {
+    groups.push(group);
+  }
+  const labels = [];
+  for (let i = 0; i < 10; i += 1) {
+    const group = groups[i];
+    if (group != undefined) {
+      labels.push({ text: group.length, x: baseX + avg(group) - 8, visible: true });
+    } else {
+      labels.push({ visible: false });
+    }
+  }
+  return labels;
 }
 
 export default BeadGroups;
