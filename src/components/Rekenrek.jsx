@@ -2,6 +2,7 @@ import { Line } from "react-konva";
 import { useAppStore } from "../state/store";
 import Beads from "./Beads";
 import BeadGroups from "./BeadGroups";
+import {  numbersClose } from "../util";
 
 export const rekenrekWidth = 900;
 export const rekenrekHeight = 80;
@@ -54,18 +55,48 @@ const Lines = (props) => {
     });
     return dragTargets;
   };
+
+  const getDelta = (e) => {
+    let dx = e.target.x() - x;
+    let dy = e.target.y() - y;
+    const shift = rekenrekHeight - 4;
+    for (const element of Object.values(state.elements)) {
+      if (element.type != "rekenrek" || element.id == id) continue;
+      if (numbersClose(element.x, x + dx - origin.x) && numbersClose(element.y - shift, y + dy - origin.y)) {
+        dx = element.x - x + origin.x;
+        dy = element.y - y + origin.y - shift;
+      }
+      if (numbersClose(element.x, x + dx - origin.x) && numbersClose(element.y + shift, y + dy - origin.y)) {
+        dx = element.x - x + origin.x;
+        dy = element.y - y + origin.y + shift;
+      }
+    }
+    return { dx, dy };
+  };
   const onDragMove = (e) => {
-    const dx = e.target.x() - x;
-    const dy = e.target.y() - y;
+    const { dx, dy } = getDelta(e);
     for (const { node, x, y } of getDragTargets(e)) {
       if (node !== e.target) node.setAttrs({ x: x + dx, y: y + dy });
     }
   };
 
   const onDragEnd = (e) => {
-    const dx = e.target.x() - x;
-    const dy = e.target.y() - y;
+    const { dx, dy } = getDelta(e);
     state.relocateElement(id, dx, dy);
+  };
+
+  const setLineStroke = (e, color) => {
+    getDragTargets(e)
+      .slice(0, 3)
+      .forEach((target) => target.node.setAttr("stroke", color));
+  };
+
+  const onMouseEnter = (e) => {
+    setLineStroke(e, blue);
+  };
+
+  const onMouseLeave = (e) => {
+    setLineStroke(e, colors.line);
   };
 
   return (
@@ -79,9 +110,6 @@ const Lines = (props) => {
         lineJoin="round"
         stroke={colors.line}
         strokeWidth={strokeWidth1}
-        draggable
-        onDragMove={onDragMove}
-        onDragEnd={onDragEnd}
       />
       <Line
         id={id + "-mid-line"}
@@ -92,9 +120,6 @@ const Lines = (props) => {
         lineJoin="round"
         stroke={colors.line}
         strokeWidth={strokeWidth1}
-        draggable
-        onDragMove={onDragMove}
-        onDragEnd={onDragEnd}
       />
       <Line
         id={id + "-right-line"}
@@ -103,9 +128,43 @@ const Lines = (props) => {
         points={[strokeWidth1 / 2, height / 2, width - strokeWidth1 / 2, height / 2]}
         stroke={colors.line}
         strokeWidth={strokeWidth2}
+      />
+
+      <Line
+        x={x}
+        y={y}
+        points={[strokeWidth1 / 2, strokeWidth1 / 2, strokeWidth1 / 2, height - strokeWidth1 / 2]}
+        strokeWidth={strokeWidth1 * 3}
+        stroke={"#00000000"}
         draggable
         onDragMove={onDragMove}
         onDragEnd={onDragEnd}
+        onMouseEnter={onMouseEnter}
+        onMouseLeave={onMouseLeave}
+      />
+      <Line
+        x={x}
+        y={y}
+        points={[width - strokeWidth1 / 2, strokeWidth1 / 2, width - strokeWidth1 / 2, height - strokeWidth1 / 2]}
+        strokeWidth={strokeWidth1 * 3}
+        stroke={"#00000000"}
+        draggable
+        onDragMove={onDragMove}
+        onDragEnd={onDragEnd}
+        onMouseEnter={onMouseEnter}
+        onMouseLeave={onMouseLeave}
+      />
+      <Line
+        x={x}
+        y={y}
+        points={[strokeWidth1 / 2, height / 2, width - strokeWidth1 / 2, height / 2]}
+        strokeWidth={strokeWidth2 * 3}
+        stroke={"#00000000"}
+        draggable
+        onDragMove={onDragMove}
+        onDragEnd={onDragEnd}
+        onMouseEnter={onMouseEnter}
+        onMouseLeave={onMouseLeave}
       />
     </>
   );

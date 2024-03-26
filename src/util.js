@@ -105,6 +105,10 @@ export function numberBetween(x, a, b) {
   return (x >= a && x <= b) || (x <= a && x >= b);
 }
 
+export function numbersClose(a, b, sens = 12) {
+  return Math.abs(a - b) < sens;
+}
+
 function vectorMagnitude(vector) {
   return Math.sqrt(vector[0] ** 2 + vector[1] ** 2);
 }
