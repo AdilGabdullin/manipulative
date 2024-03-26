@@ -3,7 +3,7 @@ import { useAppStore } from "../state/store";
 import { beadNumber, beadRadius, colors, initialBeads, rekenrekHeight, rekenrekWidth } from "./Rekenrek";
 import Bead from "./Bead";
 import { leftToolbarWidth } from "./LeftToolbar";
-import { useEffect } from "react";
+import { menuHeight } from "./Menu";
 
 const LeftToolbarRekenreks = () => {
   const state = useAppStore();
@@ -24,6 +24,7 @@ const LeftToolbarRekenreks = () => {
 };
 
 const BeadRect = ({ id, x, y, rows, scale }) => {
+  const state = useAppStore();
   const r = beadRadius * scale;
   const propss = [];
   for (let i = 0; i < rows; i += 1) {
@@ -32,13 +33,37 @@ const BeadRect = ({ id, x, y, rows, scale }) => {
       swapColors: i > 4,
     });
   }
+  const onPointerClick = () => {
+    let x, y;
+    const { elements, lastActiveElement, offset, scale, height } = state;
+    const el = elements[lastActiveElement];
+    if (el) {
+      x = el.x;
+      y = el.y + rekenrekHeight - 4;
+    } else {
+      x = -rekenrekWidth / 2 + offset.x;
+      y = (-height / 2 + menuHeight) / scale + offset.y;
+    }
+    const toAdd = [];
+    for (let i = 0; i < rows; i += 1) {
+      toAdd.push({
+        type: "rekenrek",
+        x,
+        y: y + (rekenrekHeight - 4) * i,
+        width: rekenrekWidth,
+        height: rekenrekHeight,
+        beads: initialBeads(x),
+      });
+    }
+    state.addElements(toAdd);
+  };
 
   return (
     <>
       {propss.map(({ y, swapColors }, i) => (
         <BeadRow id={id + i} key={i} x={x} y={y} scale={scale} swapColors={swapColors} />
       ))}
-      <Rect x={x} y={y} width={20 * r} height={2 * rows * r} stroke={"black"} />
+      <Rect x={x} y={y} width={20 * r} height={2 * rows * r} stroke={"black"} onPointerClick={onPointerClick} />
     </>
   );
 };

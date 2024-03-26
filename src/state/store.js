@@ -566,6 +566,20 @@ export const useAppStore = create((set) => ({
         pushHistory(state);
       })
     ),
+
+  addElements: (elements) =>
+    set(
+      produce((state) => {
+        for (const element of elements) {
+          const id = newId();
+          state.elements[id] = { ...element, id, locked: false };
+          state.lastActiveElement = id;
+        }
+        state.fdMode = null;
+        clearSelected(state);
+        pushHistory(state);
+      })
+    ),
   action: () => set(produce((state) => {})),
 }));
 
