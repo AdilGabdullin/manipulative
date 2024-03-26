@@ -1,10 +1,10 @@
 import { Arc, Circle, Image, Rect } from "react-konva";
 import { cubeShift, cubeSize, gridStep, useAppStore } from "../state/store";
 import { distance2, fractionMagnet, getStageXY, numberBetween } from "../util";
-import { Fragment, useEffect, useState } from "react";
+import { Fragment } from "react";
 import ResizableIcon from "./ResizableIcon";
 import LeftToolbarPatternBlocks from "./LeftToolbarPatternBlocks";
-import { beadRadius, initialBeads, rekenrekHeight, rekenrekWidth, strokeWidth1 } from "./Rekenrek";
+import LeftToolbarRekenreks from "./LeftToolbarRekenrek";
 
 export const leftToolbarWidth = 180;
 const ids = {
@@ -534,55 +534,6 @@ const LeftToolbarFractions = ({ findOne }) => {
             </Fragment>
           )
       )}
-    </>
-  );
-};
-
-const LeftToolbarRekenreks = ({ findOne }) => {
-  const state = useAppStore();
-
-  useEffect(() => {
-        const x = -rekenrekWidth / 2;
-    const y = -rekenrekHeight / 2;
-    state.addElement({
-      type: "rekenrek",
-      x: x,
-      y: y,
-      width: rekenrekWidth,
-      height: rekenrekHeight,
-      beads: initialBeads(x),
-    });
-  }, []);
-
-  useEffect(() => {
-        const x = -rekenrekWidth / 2;
-    const y = -rekenrekHeight / 2;
-    state.addElement({
-      type: "rekenrek",
-      x: x,
-      y: y+120,
-      width: rekenrekWidth,
-      height: rekenrekHeight,
-      beads: initialBeads(x),
-    });
-  }, []);
-
-  const onPointerClick = (e) => {
-    const x = -rekenrekWidth / 2;
-    const y = -rekenrekHeight / 2;
-    state.addElement({
-      type: "rekenrek",
-      x: x,
-      y: y,
-      width: rekenrekWidth,
-      height: rekenrekHeight,
-      beads: initialBeads(x),
-    });
-  };
-
-  return (
-    <>
-      <Rect fill="#f3f9ff" x={0} y={0} width={leftToolbarWidth} height={state.height} onPointerClick={onPointerClick} />
     </>
   );
 };
