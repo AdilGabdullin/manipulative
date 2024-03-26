@@ -305,6 +305,11 @@ export const useAppStore = create((set) => ({
             pattern.y += dy;
           }
         }
+        if (element.type == "rekenrek") {
+          for (const i in current(state).elements[id].beads) {
+            element.beads[i] += dx;
+          }
+        }
         state.lastActiveElement = id;
         pushHistory(state);
       })

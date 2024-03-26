@@ -541,7 +541,31 @@ const LeftToolbarFractions = ({ findOne }) => {
 const LeftToolbarRekenreks = ({ findOne }) => {
   const state = useAppStore();
 
-  useEffect(() => onPointerClick(), []);
+  useEffect(() => {
+        const x = -rekenrekWidth / 2;
+    const y = -rekenrekHeight / 2;
+    state.addElement({
+      type: "rekenrek",
+      x: x,
+      y: y,
+      width: rekenrekWidth,
+      height: rekenrekHeight,
+      beads: initialBeads(x),
+    });
+  }, []);
+
+  useEffect(() => {
+        const x = -rekenrekWidth / 2;
+    const y = -rekenrekHeight / 2;
+    state.addElement({
+      type: "rekenrek",
+      x: x,
+      y: y+120,
+      width: rekenrekWidth,
+      height: rekenrekHeight,
+      beads: initialBeads(x),
+    });
+  }, []);
 
   const onPointerClick = (e) => {
     const x = -rekenrekWidth / 2;

@@ -40,6 +40,34 @@ const Lines = (props) => {
   const x = props.x + origin.x;
   const y = props.y + origin.y;
 
+  let dragTargets = null;
+  const getDragTargets = (e) => {
+    if (dragTargets) return dragTargets;
+    const stage = e.target.getStage();
+    dragTargets = rekenrekTargets(id).map((id) => {
+      const node = stage.findOne("#" + id);
+      return {
+        node,
+        x: node.x(),
+        y: node.y(),
+      };
+    });
+    return dragTargets;
+  };
+  const onDragMove = (e) => {
+    const dx = e.target.x() - x;
+    const dy = e.target.y() - y;
+    for (const { node, x, y } of getDragTargets(e)) {
+      if (node !== e.target) node.setAttrs({ x: x + dx, y: y + dy });
+    }
+  };
+
+  const onDragEnd = (e) => {
+    const dx = e.target.x() - x;
+    const dy = e.target.y() - y;
+    state.relocateElement(id, dx, dy);
+  };
+
   return (
     <>
       <Line
@@ -51,6 +79,9 @@ const Lines = (props) => {
         lineJoin="round"
         stroke={colors.line}
         strokeWidth={strokeWidth1}
+        draggable
+        onDragMove={onDragMove}
+        onDragEnd={onDragEnd}
       />
       <Line
         id={id + "-mid-line"}
@@ -61,6 +92,9 @@ const Lines = (props) => {
         lineJoin="round"
         stroke={colors.line}
         strokeWidth={strokeWidth1}
+        draggable
+        onDragMove={onDragMove}
+        onDragEnd={onDragEnd}
       />
       <Line
         id={id + "-right-line"}
@@ -69,6 +103,9 @@ const Lines = (props) => {
         points={[strokeWidth1 / 2, height / 2, width - strokeWidth1 / 2, height / 2]}
         stroke={colors.line}
         strokeWidth={strokeWidth2}
+        draggable
+        onDragMove={onDragMove}
+        onDragEnd={onDragEnd}
       />
     </>
   );
