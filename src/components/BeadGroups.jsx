@@ -6,8 +6,8 @@ import { useAppStore } from "../state/store";
 const BeadGroups = (props) => {
   const state = useAppStore();
   const { origin } = state;
-  const { id, xMax, y, beads } = props;
-  const labels = createBeadLabels(xMax, beads, origin.x);
+  const { id, x, xMax, y, beads } = props;
+  const labels = createBeadLabels(xMax - origin.x - x, beads, origin.x);
   return (
     <>
       {labels.map((label, i) => {
@@ -45,7 +45,7 @@ export function createBeadLabels(xMax, xs, baseX = 0) {
     }
   }
 
-  if (group[group.length - 1] - xMax + baseX + (beadNumber - 10) * beadRadius * 2) {
+  if (group[group.length - 1] - xMax + baseX + (beadNumber - 10) * beadRadius * 2 < 0) {
     groups.push(group);
   }
   const labels = [];

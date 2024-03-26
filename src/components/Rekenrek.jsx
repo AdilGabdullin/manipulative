@@ -20,15 +20,13 @@ export const colors = {
 const Rekenrek = (props) => {
   const state = useAppStore();
   const { origin } = state;
-  const { id, width, height, locked, beads } = props;
-
   const x = props.x + origin.x;
   const y = props.y + origin.y;
 
   return (
     <>
       <Lines {...props} />
-      <Beads {...props} xMin={xMin(x)} xMax={xMax(x)} x={x} y={y + height / 2} />
+      <Beads {...props} xMin={xMin(x)} xMax={xMax(x)} x={x} y={y + props.height / 2} />
       <BeadGroups {...props} xMin={xMin(x)} xMax={xMax(x)} x={x} y={y - 8} />
     </>
   );
@@ -89,7 +87,14 @@ export function initialBeads(x) {
 }
 
 export function rekenrekTargets(id) {
-  return [`${id}-left-line`, `${id}-mid-line`, `${id}-right-line`];
+  const ids = [`${id}-left-line`, `${id}-mid-line`, `${id}-right-line`];
+  for (let i = 0; i < beadNumber; i += 1) {
+    ids.push(`${id}-label-${i}`);
+    for (let k = 0; k < 4; k += 1) {
+      ids.push(`${id}-${i}-${k}`);
+    }
+  }
+  return ids;
 }
 
 export default Rekenrek;

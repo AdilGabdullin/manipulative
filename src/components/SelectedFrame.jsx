@@ -52,7 +52,7 @@ const SelectedFrame = (props) => {
             el.patterns.forEach((pattern) => pushTarget(el.id + pattern.id));
             break;
           case "rekenrek":
-            rekenrekTargets(id).forEach(pushTarget)
+            rekenrekTargets(id).forEach(pushTarget);
             break;
           default:
             pushTarget(id);
