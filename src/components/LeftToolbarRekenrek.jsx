@@ -1,9 +1,11 @@
-import { Rect } from "react-konva";
+import { Group, Rect } from "react-konva";
 import { useAppStore } from "../state/store";
 import { beadNumber, beadRadius, colors, initialBeads, rekenrekHeight, rekenrekWidth } from "./Rekenrek";
 import Bead from "./Bead";
 import { leftToolbarWidth } from "./LeftToolbar";
 import { menuHeight } from "./Menu";
+import { useRef } from "react";
+import { getStageXY } from "../util";
 
 const LeftToolbarRekenreks = () => {
   const state = useAppStore();
@@ -33,17 +35,11 @@ const BeadRect = ({ id, x, y, rows, scale }) => {
       swapColors: i > 4,
     });
   }
-  const onPointerClick = () => {
-    let x, y;
-    const { elements, lastActiveElement, offset, scale, height } = state;
-    const el = elements[lastActiveElement];
-    if (el) {
-      x = el.x;
-      y = el.y + rekenrekHeight - 4;
-    } else {
-      x = -rekenrekWidth / 2 + offset.x;
-      y = (-height / 2 + menuHeight) / scale + offset.y;
-    }
+
+  const groupRef = useRef(null);
+  const rectRef = useRef(null);
+
+  const place = (x, y) => {
     const toAdd = [];
     for (let i = 0; i < rows; i += 1) {
       toAdd.push({
@@ -58,12 +54,61 @@ const BeadRect = ({ id, x, y, rows, scale }) => {
     state.addElements(toAdd);
   };
 
+  const onPointerClick = () => {
+    let x, y;
+    const { elements, lastActiveElement, offset, scale, height } = state;
+    const el = elements[lastActiveElement];
+    if (el) {
+      x = el.x;
+      y = el.y + rekenrekHeight - 4;
+    } else {
+      x = -rekenrekWidth / 2 + offset.x;
+      y = (-height / 2 + menuHeight) / scale + offset.y;
+    }
+    place(x, y);
+  };
+
+  const onDragMove = (e) => {
+    const group = groupRef.current;
+    const dx = e.target.x() - x;
+    const dy = e.target.y() - y;
+    group.setAttrs({
+      x: dx,
+      y: dy,
+      scaleX: 1.0,
+      scaleY: 1.0,
+    });
+  };
+
+  const onDragEnd = (e) => {
+    const stage = e.target.getStage();
+    groupRef.current.setAttrs({ x: 0, y: 0 });
+    rectRef.current.setAttrs({ x, y });
+    const pos = getStageXY(stage, state);
+    place(pos.x - rekenrekWidth / 2, pos.y - (rekenrekHeight * rows) / 2);
+  };
+
   return (
     <>
       {propss.map(({ y, swapColors }, i) => (
         <BeadRow id={id + i} key={i} x={x} y={y} scale={scale} swapColors={swapColors} />
       ))}
-      <Rect x={x} y={y} width={20 * r} height={2 * rows * r} stroke={"black"} onPointerClick={onPointerClick} />
+      <Group ref={groupRef}>
+        {propss.map(({ y, swapColors }, i) => (
+          <BeadRow id={"shadow" + id + i} key={i} x={x} y={y} scale={scale} swapColors={swapColors} />
+        ))}
+      </Group>
+      <Rect
+        ref={rectRef}
+        x={x}
+        y={y}
+        width={20 * r}
+        height={2 * rows * r}
+        draggable
+        onPointerClick={onPointerClick}
+        onDragMove={onDragMove}
+        onDragEnd={onDragEnd}
+      />
     </>
   );
 };
