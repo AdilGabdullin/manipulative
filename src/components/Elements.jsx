@@ -5,6 +5,7 @@ import TextElement from "./TextElement";
 import RectElement from "./RectElement";
 import EllipseElement from "./EllipseElement";
 import Rekenrek from "./Rekenrek";
+import RackLabels from "./RackLabels";
 
 const Elements = () => {
   const state = useAppStore();
@@ -37,6 +38,7 @@ const Elements = () => {
       <Ellipse id="shadow-ellipse" visible={false} />
       <Line id="shadow-line" visible={false} lineCap={"round"} lineJoin={"round"} />
       <Text id="shadow-text" visible={false} fill={"black"} fontSize={36} text="Text" fontFamily="Calibri" />
+      <RackLabels />
     </>
   );
 };
