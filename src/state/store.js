@@ -73,6 +73,12 @@ export const useAppStore = create((set) => ({
       produce((state) => {
         state.workspace = workspace;
         state.beadNumber = workspace == "10 Bead" ? 10 : 20;
+        for (const id in current(state.elements)) {
+          if (state.elements[id].type == "rekenrek") {
+            delete state.elements[id];
+          }
+        }
+        pushHistory(state);
       })
     ),
   toggle: (field) =>

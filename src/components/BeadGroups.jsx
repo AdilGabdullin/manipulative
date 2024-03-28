@@ -3,13 +3,12 @@ import { avg } from "../util";
 import { blue } from "./Rekenrek";
 import { useAppStore } from "../state/store";
 
-const beadRadius = 20;
-
 const BeadGroups = (props) => {
   const state = useAppStore();
   const { origin, beadNumber } = state;
+  const beadRadius = 200 / beadNumber;
   const { id, x, xMax, y, beads } = props;
-  const labels = createBeadLabels(beadNumber, xMax - origin.x - x, beads, origin.x);
+  const labels = createBeadLabels(beadNumber, beadRadius, xMax - origin.x - x, beads, origin.x);
   return (
     <>
       {labels.map((label, i) => {
@@ -30,7 +29,7 @@ const BeadGroups = (props) => {
   );
 };
 
-export function createBeadLabels(beadNumber, xMax, xs, baseX = 0) {
+export function createBeadLabels(beadNumber, beadRadius, xMax, xs, baseX = 0) {
   const groups = [];
   let group = [];
   for (let i = 0; i < beadNumber; i += 1) {
@@ -47,7 +46,7 @@ export function createBeadLabels(beadNumber, xMax, xs, baseX = 0) {
     }
   }
 
-  if (group[group.length - 1] - xMax + baseX + (beadNumber - 10) * beadRadius * 2 < 0) {
+  if (group[group.length - 1] - xMax + baseX < 0) {
     groups.push(group);
   }
   const labels = [];

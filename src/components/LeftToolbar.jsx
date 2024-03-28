@@ -77,7 +77,7 @@ const BeadRect = ({ id, x, y, rows, scale }) => {
       y = el.y + rekenrekHeight - 4;
     } else {
       x = -rekenrekWidth / 2 + offset.x;
-      y = (-height / 2 + menuHeight) / scale + offset.y;
+      y = (-height / 2 + menuHeight + 20) / scale + offset.y;
     }
     place(x, y);
   };

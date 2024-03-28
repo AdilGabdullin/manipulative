@@ -55,6 +55,7 @@ const Beads = (props) => {
     }
     const labels = createBeadLabels(
       beadNumber,
+      beadRadius,
       xMax,
       nodes.map((node) => node[0].x())
     );
