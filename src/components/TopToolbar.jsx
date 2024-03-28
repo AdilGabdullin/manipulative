@@ -5,7 +5,6 @@ import ShapesMenu from "./ShapesMenu";
 export const topToolbarHeight = 42;
 
 const workspaceOptions = {
-  geoboard: ["square", "isometric", "circular"],
   "pattern-blocks": ["basic", "fractions", "deci"],
 };
 
@@ -57,8 +56,7 @@ const Button = ({ onClick, imageSrc, text, active }) => {
 
 const WorkspaceSelector = () => {
   const state = useAppStore();
-  const { mode } = state;
-  const options = workspaceOptions[mode];
+  const options = workspaceOptions["pattern-blocks"];
   if (!options) return null;
   return (
     <div className="workspace-selector">

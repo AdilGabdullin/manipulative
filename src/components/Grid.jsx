@@ -1,37 +1,14 @@
-import { Circle, Line } from "react-konva";
+import {  Line } from "react-konva";
 import { useAppStore } from "../state/store";
 
 const Grid = () => {
   const state = useAppStore();
-  const { mode, showGrid } = state;
+  const {  showGrid } = state;
 
-  if ((mode == "pattern-blocks" || mode == "rods") && showGrid) {
+  if ( showGrid) {
     return <LineGrid />;
-  } else if (mode == "geoboard") {
-    return <GeoboardGrid />;
   }
   return null;
-};
-
-const GeoboardGrid = () => {
-  const state = useAppStore();
-  return (
-    <>
-      {state.grid.map(({ x, y }, i) => {
-        let color = "#78909c";
-        return (
-          <Circle
-            key={`grid-${x}-${y}`}
-            x={state.origin.x + x}
-            y={state.origin.y + y}
-            stroke={color}
-            radius={3}
-            fill={color}
-          />
-        );
-      })}
-    </>
-  );
 };
 
 const LineGrid = () => {

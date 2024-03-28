@@ -1,7 +1,7 @@
 import { Line } from "react-konva";
 import { boardSize, useAppStore } from "../state/store";
 import { menuHeight } from "./Menu";
-import { leftToolbarWidth } from "./LeftToolbar";
+import { leftToolbarWidth } from "./LeftToolbarPatternBlocks";
 
 export const maxOffset = 500;
 

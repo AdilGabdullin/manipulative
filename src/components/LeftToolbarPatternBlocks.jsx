@@ -1,9 +1,10 @@
 import { Line, Rect } from "react-konva";
 import { gridStep, useAppStore } from "../state/store";
 import { arrayChunk, cos, getStageXY, sin, sum } from "../util";
-import { leftToolbarWidth } from "./LeftToolbar";
 import { patternMagnet } from "./Pattern";
 import { Fragment } from "react";
+
+export const leftToolbarWidth = 180;
 
 const h = sin(60) * 2;
 

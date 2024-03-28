@@ -16,23 +16,17 @@ export const boardSize = {
   height: 1660,
 };
 
-const queryString = window.location.search;
-const urlParams = new URLSearchParams(queryString);
-const mode =
-  urlParams.get("mode").replace("cuisenaire-rods", "rods").replace("fraction-circle", "fractions") ?? "geoboard";
-
 export const useAppStore = create((set) => ({
   ...freeDrawingSlice(set),
   ...historySlice(set),
-  mode,
   imagesReady: false,
   loadedImagesCount: 0,
   offset: { x: 0, y: 0 },
   scale: 1.0,
   fullscreen: false,
-  workspace: mode == "geoboard" ? "square" : "basic",
-  grid: mode == "geoboard" ? initGrid("square") : [],
-  lineGrid: initLineGrid(mode),
+  workspace: "basic",
+  grid: [],
+  lineGrid: initLineGrid(),
   width: 0,
   height: 0,
   origin: { x: 0, y: 0 },
@@ -43,25 +37,20 @@ export const useAppStore = create((set) => ({
   // scale: 0.5,
   // fullscreen: true,
 
-  fill: mode != "geoboard",
+  fill: true,
   measures: false,
-  showGrid: mode == "rods",
+  showGrid:false,
   showGroups: true,
-  labelMode: mode == "rods" ? "Whole Numbers" : "Fractions",
   toggleGlobal: (field) =>
     set(
       produce((state) => {
         const value = !state[field];
         state[field] = value;
-        state.geoboardBands.forEach((band) => {
-          band[field] = value;
-        });
         for (const id in current(state).elements) {
           state.elements[id][field] = value;
         }
       })
     ),
-  geoboardBands: [],
   elements: {},
   lastActiveElement: null,
   setValue: (field, value) =>
@@ -114,67 +103,10 @@ export const useAppStore = create((set) => ({
         keepOrigin(state);
       })
     ),
-
-  relocateBandPoint: (dragTarget, upPos) =>
-    set(
-      produce((state) => {
-        state.geoboardBands = state.geoboardBands.map((band) => {
-          if (band.id != dragTarget.band.id) return band;
-          return {
-            ...band,
-            points: band.points.map((p) => {
-              if (p.id != dragTarget.band.points[dragTarget.pointIndex].id) return p;
-              return { ...p, ...upPos };
-            }),
-          };
-        });
-        pushHistory(state);
-      })
-    ),
-
-  relocateBandSide: (dragTarget, upPos) =>
-    set(
-      produce((state) => {
-        const { x, y } = upPos;
-        const { band, sideIndex } = dragTarget;
-        const points = band.points;
-        const before = points.slice(0, sideIndex + 1);
-        const after = points.slice(sideIndex + 1);
-        state.geoboardBands = state.geoboardBands.map((band) => {
-          if (band.id != dragTarget.band.id) return band;
-          return {
-            ...band,
-            points: [...before, { id: newId(), x, y }, ...after],
-          };
-        });
-        pushHistory(state);
-      })
-    ),
-
-  addBand: (x, y, color) =>
-    set(
-      produce((state) => {
-        const id = newId();
-        state.geoboardBands.push({
-          id,
-          color,
-          fill: state.fill,
-          measures: state.measures,
-          points: [
-            { id: newId(), x: x, y: y, locked: false },
-            { id: newId(), x: x + gridStep, y: y, locked: false },
-          ],
-        });
-        state.fdMode = null;
-        pushHistory(state);
-      })
-    ),
-
   clear: () =>
     set(
       produce((state) => {
         const curr = current(state);
-        state.geoboardBands = [];
         for (const id in curr.elements) {
           delete state.elements[id];
         }
@@ -213,20 +145,7 @@ export const useAppStore = create((set) => ({
 
   select: (downPos, upPos) =>
     set((state) => {
-      const inRect = (x, y) => numberBetween(x, downPos.x, upPos.x) && numberBetween(y, downPos.y, upPos.y);
-
       const selected = [];
-      if (state.mode == "geoboard") {
-        for (const band of state.geoboardBands) {
-          for (const point of band.points) {
-            const { id, x, y, locked } = point;
-            if (!locked && inRect(x, y)) {
-              selected.push(id);
-            }
-          }
-        }
-      }
-
       const boxInRect = ({ x, y, width, height }) => {
         return (
           (numberBetween(x, downPos.x, upPos.x) ||
@@ -257,17 +176,6 @@ export const useAppStore = create((set) => ({
   relocateSelected: (dx, dy) =>
     set(
       produce((state) => {
-        if (state.mode == "geoboard") {
-          state.geoboardBands = state.geoboardBands.map((band) => {
-            return {
-              ...band,
-              points: band.points.map((p) => {
-                if (!state.selected.includes(p.id)) return p;
-                return { ...p, x: p.x + dx, y: p.y + dy };
-              }),
-            };
-          });
-        }
         for (const id of state.selected) {
           const element = state.elements[id];
           if (!element) continue;
@@ -349,16 +257,6 @@ export const useAppStore = create((set) => ({
   deleteSelected: () =>
     set(
       produce((state) => {
-        if (state.mode == "geoboard") {
-          state.geoboardBands = state.geoboardBands
-            .map((band) => {
-              return {
-                ...band,
-                points: band.points.filter((p) => !state.selected.includes(p.id)),
-              };
-            })
-            .filter((band) => band.points.length > 1);
-        }
         let id;
         while ((id = state.selected.pop())) {
           delete state.elements[id];
@@ -370,12 +268,6 @@ export const useAppStore = create((set) => ({
   toggleValueSelected: (field) =>
     set(
       produce((state) => {
-        if (state.mode == "geoboard") {
-          const bands = searchSelectedBands(state);
-          for (const i in bands) {
-            state.geoboardBands[i][field] = !state.geoboardBands[i][field];
-          }
-        }
         for (const id of current(state).selected) {
           const element = state.elements[id];
           if (element && element[field] !== undefined) {
@@ -405,33 +297,7 @@ export const useAppStore = create((set) => ({
   copySelected: () =>
     set(
       produce((state) => {
-        const shift = state.mode == "rods" ? gridStep * 0.5 : 20;
-        if (state.mode == "geoboard") {
-          const bands = searchSelectedBands(state);
-          // select all points
-          for (const i in bands) {
-            bands[i].points.forEach((p) => {
-              if (!state.selected.includes(p.id)) {
-                state.selected.push(p.id);
-              }
-            });
-          }
-          // add copy
-          for (let band of Object.values(bands)) {
-            const copy = { ...band, id: newId() };
-            copy.points = copy.points.map((point) => {
-              return { ...point, id: newId() };
-            });
-            state.geoboardBands.push(copy);
-          }
-          // shift original
-          for (const i in bands) {
-            state.geoboardBands[i].points.forEach((point) => {
-              point.x += shift;
-              point.y += shift;
-            });
-          }
-        }
+        const shift = 20;
         const { elements } = current(state);
         for (const id of state.selected) {
           const element = elements[id];
@@ -453,15 +319,6 @@ export const useAppStore = create((set) => ({
   lockSelected: (value) =>
     set(
       produce((state) => {
-        if (state.mode == "geoboard") {
-          for (const band of state.geoboardBands) {
-            for (const point of band.points) {
-              if (state.selected.includes(point.id)) {
-                point.locked = value;
-              }
-            }
-          }
-        }
         let id;
         while ((id = state.selected.pop())) {
           const element = state.elements[id];
@@ -588,19 +445,6 @@ function keepOrigin(state) {
   state.origin.y = state.height / 2 / state.scale;
 }
 
-function searchSelectedBands(state) {
-  const bands = {};
-  // search selected
-  current(state).geoboardBands.forEach((band, i) => {
-    for (const point of band.points) {
-      if (state.selected.includes(point.id)) {
-        bands[i] = band;
-      }
-    }
-  });
-  return bands;
-}
-
 function initGrid(workspace) {
   const grid = [];
   if (workspace == "circular") {
@@ -635,59 +479,37 @@ function initGrid(workspace) {
   return grid;
 }
 
-function initLineGrid(mode) {
-  if (mode == "rods") {
-    const grid = [];
-    const { width, height } = boardSize;
-    const stepX = gridStep;
-    const stepY = gridStep;
-    const xStop = Math.ceil(width / 2 / stepX) * stepX + gridStep;
-    const xStart = -xStop;
-    const yStop = Math.ceil(height / 2 / stepX) * stepX;
-    const yStart = -yStop - gridStep;
-    for (let y = yStart, i = 0; y <= yStop; y += stepY, i += 1) {
-      for (let x = xStart; x <= xStop; x += stepX) {
-        grid.push([x, yStart, x, yStop]);
-        grid.push([xStart, y, xStop, y]);
-      }
-    }
-    return grid;
+function initLineGrid() {
+  const grid = [];
+  const { width, height } = boardSize;
+  const stepX = gridStep;
+  const stepY = gridStep * sin(60);
+  const xStop = Math.ceil(width / 2 / stepX) * stepX + stepX;
+  const xStart = -xStop;
+  const yStop = Math.ceil(height / 2 / stepY) * stepY;
+  const yStart = -yStop - 2 * stepY;
+  for (let i = 0; i < 18; i += 1) {
+    grid.push([xStart, yStart + i * 2 * stepY, xStart + i * stepX, yStart]);
   }
-
-  if (mode == "pattern-blocks") {
-    const grid = [];
-    const { width, height } = boardSize;
-    const stepX = gridStep;
-    const stepY = gridStep * sin(60);
-    const xStop = Math.ceil(width / 2 / stepX) * stepX + stepX;
-    const xStart = -xStop;
-    const yStop = Math.ceil(height / 2 / stepY) * stepY;
-    const yStart = -yStop - 2 * stepY;
-    for (let i = 0; i < 18; i += 1) {
-      grid.push([xStart, yStart + i * 2 * stepY, xStart + i * stepX, yStart]);
-    }
-    for (let i = 0; i < 27; i += 1) {
-      grid.push([xStart + (i + 1) * stepX, yStart + 34 * stepY, xStart + (18 + i) * stepX, yStart]);
-    }
-    for (let i = 0; i < 17; i += 1) {
-      grid.push([xStart + (28 + i) * stepX, yStart + 34 * stepY, xStart + 44 * stepX, yStart + (i + 1) * 2 * stepY]);
-    }
-    for (let i = 0; i < 18; i += 1) {
-      grid.push([xStop, yStart + i * 2 * stepY, xStop - i * stepX, yStart]);
-    }
-    for (let i = 0; i < 27; i += 1) {
-      grid.push([xStop - (i + 1) * stepX, yStart + 34 * stepY, xStop - (18 + i) * stepX, yStart]);
-    }
-    for (let i = 0; i < 17; i += 1) {
-      grid.push([xStop - (28 + i) * stepX, yStart + 34 * stepY, xStop - 44 * stepX, yStart + (i + 1) * 2 * stepY]);
-    }
-    for (let i = 0; i < 35; i += 1) {
-      grid.push([xStart, yStart + stepY * i, xStop, yStart + stepY * i]);
-    }
-    return grid;
+  for (let i = 0; i < 27; i += 1) {
+    grid.push([xStart + (i + 1) * stepX, yStart + 34 * stepY, xStart + (18 + i) * stepX, yStart]);
   }
-
-  return [];
+  for (let i = 0; i < 17; i += 1) {
+    grid.push([xStart + (28 + i) * stepX, yStart + 34 * stepY, xStart + 44 * stepX, yStart + (i + 1) * 2 * stepY]);
+  }
+  for (let i = 0; i < 18; i += 1) {
+    grid.push([xStop, yStart + i * 2 * stepY, xStop - i * stepX, yStart]);
+  }
+  for (let i = 0; i < 27; i += 1) {
+    grid.push([xStop - (i + 1) * stepX, yStart + 34 * stepY, xStop - (18 + i) * stepX, yStart]);
+  }
+  for (let i = 0; i < 17; i += 1) {
+    grid.push([xStop - (28 + i) * stepX, yStart + 34 * stepY, xStop - 44 * stepX, yStart + (i + 1) * 2 * stepY]);
+  }
+  for (let i = 0; i < 35; i += 1) {
+    grid.push([xStart, yStart + stepY * i, xStop, yStart + stepY * i]);
+  }
+  return grid;
 }
 
 function getNextElementPosition(state, element) {
