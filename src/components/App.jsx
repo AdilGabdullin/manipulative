@@ -3,14 +3,6 @@ import { useEffect, useLayoutEffect, useRef } from "react";
 import Grid from "./Grid";
 import SelectRect, { selectRectMove, selectRectStop } from "./SelectRect";
 import { useAppStore } from "../state/store";
-import GeoboardBand, {
-  Angles,
-  bandPointMove,
-  bandPointRadius,
-  bandPointSearch,
-  bandSideMove,
-  bandSideSearch,
-} from "./GeoboardBand";
 import LeftToolbar, { leftToolbarWidth } from "./LeftToolbar";
 import { SEARCH_THRESHOLD, getStageXY, pointsIsClose } from "../util";
 import TopToolbar, { topToolbarHeight } from "./TopToolbar";
@@ -82,12 +74,11 @@ const App = () => {
       return;
     }
     downPos = getStageXY(stageRef.current, state);
-    dragTarget = bandPointSearch(state, downPos) ||
-      bandSideSearch(state, downPos) || {
-        type: "select-rect",
-        nodes: ["select-rect"],
-        downPos,
-      };
+    dragTarget = {
+      type: "select-rect",
+      nodes: ["select-rect"],
+      downPos,
+    };
     dragTarget.nodes = dragTarget.nodes.map((id) => stageRef.current.findOne("#" + id));
     if (dragTarget.type != "select-rect") {
       findAll("angle-measure").forEach((node) => node.visible(false));
@@ -330,10 +321,7 @@ const App = () => {
           scaleX={state.scale}
           scaleY={state.scale}
         >
-          {state.mode == "geoboard" &&
-            state.geoboardBands.map((band) => <GeoboardBand key={band.id} {...band} findOne={findOne} />)}
           <Grid />
-          {state.mode == "geoboard" && state.geoboardBands.map((band) => <Angles key={band.id} {...band} />)}
           <Elements />
           <SelectRect />
         </Layer>
