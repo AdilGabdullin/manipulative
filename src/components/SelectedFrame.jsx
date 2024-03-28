@@ -8,7 +8,7 @@ import { rekenrekTargets } from "./Rekenrek";
 
 const SelectedFrame = (props) => {
   const state = useAppStore();
-  const { selected, lockSelect, origin, offset, scale, elements } = state;
+  const { selected, lockSelect, origin, offset, scale, elements, beadNumber } = state;
 
   const selectedTargets = [];
 
@@ -30,7 +30,7 @@ const SelectedFrame = (props) => {
         if (!el) continue;
         switch (el.type) {
           case "rekenrek":
-            rekenrekTargets(id).forEach(pushTarget);
+            rekenrekTargets(id, beadNumber).forEach(pushTarget);
             break;
           default:
             pushTarget(id);

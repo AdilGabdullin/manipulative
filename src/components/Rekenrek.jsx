@@ -2,15 +2,12 @@ import { Line } from "react-konva";
 import { useAppStore } from "../state/store";
 import Beads from "./Beads";
 import BeadGroups from "./BeadGroups";
-import { numbersClose } from "../util";
+import { numbersClose, setVisibility } from "../util";
 
 export const rekenrekWidth = 900;
 export const rekenrekHeight = 80;
 export const strokeWidth1 = 8;
 export const strokeWidth2 = 4;
-export const beadRadius = 20;
-export const beadNumber = 10;
-
 export const blue = "#3296f3";
 export const colors = {
   line: "#54575a",
@@ -38,7 +35,7 @@ const Rekenrek = (props) => {
 
 const Lines = (props) => {
   const state = useAppStore();
-  const { origin, fdMode } = state;
+  const { origin, beadNumber } = state;
   const { id, width, height, locked } = props;
 
   const x = props.x + origin.x;
@@ -48,7 +45,7 @@ const Lines = (props) => {
   const getDragTargets = (e) => {
     if (dragTargets) return dragTargets;
     const stage = e.target.getStage();
-    dragTargets = rekenrekTargets(id).map((id) => {
+    dragTargets = rekenrekTargets(id, beadNumber).map((id) => {
       const node = stage.findOne("#" + id);
       return {
         node,
@@ -76,6 +73,11 @@ const Lines = (props) => {
     }
     return { dx, dy };
   };
+
+  const onDragStart = (e) => {
+    setVisibility(e, false);
+  };
+
   const onDragMove = (e) => {
     const { dx, dy } = getDelta(e);
     for (const { node, x, y } of getDragTargets(e)) {
@@ -85,6 +87,7 @@ const Lines = (props) => {
 
   const onDragEnd = (e) => {
     const { dx, dy } = getDelta(e);
+    setVisibility(e, true);
     state.relocateElement(id, dx, dy);
   };
 
@@ -144,6 +147,7 @@ const Lines = (props) => {
         strokeWidth={strokeWidth1 * 3}
         stroke={"#00000000"}
         draggable
+        onDragStart={onDragStart}
         onDragMove={onDragMove}
         onDragEnd={onDragEnd}
         onMouseEnter={onMouseEnter}
@@ -157,6 +161,7 @@ const Lines = (props) => {
         strokeWidth={strokeWidth1 * 3}
         stroke={"#00000000"}
         draggable
+        onDragStart={onDragStart}
         onDragMove={onDragMove}
         onDragEnd={onDragEnd}
         onMouseEnter={onMouseEnter}
@@ -170,6 +175,7 @@ const Lines = (props) => {
         strokeWidth={strokeWidth2 * 3}
         stroke={"#00000000"}
         draggable
+        onDragStart={onDragStart}
         onDragMove={onDragMove}
         onDragEnd={onDragEnd}
         onMouseEnter={onMouseEnter}
@@ -180,7 +186,7 @@ const Lines = (props) => {
   );
 };
 
-export function rekenrekTargets(id) {
+export function rekenrekTargets(id, beadNumber) {
   const ids = [`${id}-left-line`, `${id}-mid-line`, `${id}-right-line`];
   for (let i = 0; i < beadNumber; i += 1) {
     ids.push(`${id}-label-${i}`);

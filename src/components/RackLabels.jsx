@@ -1,6 +1,6 @@
 import { Line, Rect, Text } from "react-konva";
 import { useAppStore } from "../state/store";
-import { beadNumber, blue, rekenrekHeight, strokeWidth1 } from "./Rekenrek";
+import { blue, rekenrekHeight, strokeWidth1 } from "./Rekenrek";
 import { Fragment } from "react";
 import { sum } from "../util";
 
@@ -23,6 +23,7 @@ const RackLabels = () => {
           <Fragment key={i}>
             {showLine && (
               <Line
+                name="drag-hidden"
                 x={origin.x + x}
                 y={origin.y + start}
                 points={[width, 0, 0, 0, 0, end - start, width, end - start]}
@@ -30,6 +31,7 @@ const RackLabels = () => {
               />
             )}
             <Rect
+              name="drag-hidden"
               x={origin.x + x - fontSize / (text > 9 ? 2 : 4)}
               y={origin.y + (start + end - fontSize) / 2 - 5}
               width={fontSize}
@@ -37,6 +39,7 @@ const RackLabels = () => {
               fill={"white"}
             />
             <Text
+              name="drag-hidden"
               x={origin.x + x - fontSize / (text > 9 ? 2 : 4)}
               y={origin.y + (start + end - fontSize) / 2}
               text={text}
