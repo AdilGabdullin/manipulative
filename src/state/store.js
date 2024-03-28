@@ -298,6 +298,11 @@ export const useAppStore = create((set) => ({
               state.elements[id].x += shift;
               state.elements[id].y += shift;
             }
+            if (element.type == "rekenrek") {
+              for (const i in element.beads) {
+                state.elements[id].beads[i] += shift;
+              }
+            }
           }
         }
 
