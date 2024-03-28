@@ -1,8 +1,7 @@
 import { Circle } from "react-konva";
 import { useAppStore } from "../state/store";
 import { useRef } from "react";
-import { atan2, getStageXY, rotateVector, setVisibilityFrame } from "../util";
-import { unflattenPoints } from "./Pattern";
+import { atan2, getStageXY, setVisibilityFrame } from "../util";
 
 const RotateHandle = (props) => {
   const state = useAppStore();
@@ -44,9 +43,6 @@ const RotateHandle = (props) => {
       case "fraction":
         getTarget(e).setAttrs({ rotation: getRotation(e) });
         break;
-      case "pattern":
-        rotatePattern(getTarget(e), element, getRotation(e));
-        break;
     }
   };
 
@@ -56,9 +52,6 @@ const RotateHandle = (props) => {
     switch (element.type) {
       case "fraction":
         state.updateElement(element.id, { rotation: getRotation(e) });
-        break;
-      case "pattern":
-        state.rotatePattern(element.id, getRotation(e));
         break;
     }
   };
@@ -78,19 +71,5 @@ const RotateHandle = (props) => {
     />
   );
 };
-
-function rotatePattern(target, element, rotation) {
-  const { width, height } = element;
-  const cx = width / 2;
-  const cy = height / 2;
-  const points = [];
-  unflattenPoints(element.points, -cx, -cy)
-    .map((v) => rotateVector(v, rotation - ((rotation + 360) % 15)))
-    .forEach((v) => {
-      points.push(v.x + cx);
-      points.push(v.y + cy);
-    });
-  target.setAttr("points", points);
-}
 
 export default RotateHandle;

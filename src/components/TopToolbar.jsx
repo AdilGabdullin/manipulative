@@ -1,13 +1,7 @@
 import { useAppStore } from "../state/store";
-import { capitalizeFirstLetter } from "../util";
 import ShapesMenu from "./ShapesMenu";
 
 export const topToolbarHeight = 42;
-
-const workspaceOptions = {
-  geoboard: ["square", "isometric", "circular"],
-  "pattern-blocks": ["basic", "fractions", "deci"],
-};
 
 const TopToolbar = () => {
   return (
@@ -56,22 +50,7 @@ const Button = ({ onClick, imageSrc, text, active }) => {
 };
 
 const WorkspaceSelector = () => {
-  const state = useAppStore();
-  const { mode } = state;
-  const options = workspaceOptions[mode];
-  if (!options) return null;
-  return (
-    <div className="workspace-selector">
-      <label className="workspace-selector-label">Workspace</label>
-      <select onChange={(e) => state.setWorkspace(e.target.value)} value={state.workspace}>
-        {options.map((option) => (
-          <option key={option} value={option}>
-            {capitalizeFirstLetter(option)}
-          </option>
-        ))}
-      </select>
-    </div>
-  );
+  return null;
 };
 
 export default TopToolbar;

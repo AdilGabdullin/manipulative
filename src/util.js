@@ -155,14 +155,14 @@ export function checkClockwise(points) {
 export function setVisibility(e, value) {
   e.target
     .getStage()
-    .find(".popup-menu,.angle-measure,.cube-group,.drag-hidden")
+    .find(".popup-menu,.angle-measure,.drag-hidden")
     .forEach((node) => node.visible(value));
 }
 
 export function setVisibilityFrame(e, value) {
   e.target
     .getStage()
-    .find(".popup-menu,.cube-group,.drag-hidden,#selected-frame")
+    .find(".popup-menu,.drag-hidden,#selected-frame")
     .forEach((node) => node.visible(value));
 }
 
