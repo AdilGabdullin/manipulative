@@ -2,16 +2,13 @@ import { Rect, Text } from "react-konva";
 import { gridStep, useAppStore } from "../state/store";
 import { bandPointRadius } from "./GeoboardBand";
 import { Fragment, useEffect } from "react";
-import ResizeHandle from "./ResizeHandle";
-import { elementBox, fractionMagnet, getStageXY, setVisibility, setVisibilityFrame } from "../util";
-import RotateHandle from "./RotateHandle";
+import { elementBox, setVisibility, setVisibilityFrame } from "../util";
 import ShapeResizeHandles from "./ShapeResizeHandles";
 import { createTextArea } from "./TextElement";
-import { rekenrekTargets } from "./Rekenrek";
 
 const SelectedFrame = (props) => {
   const state = useAppStore();
-  const { selected, lockSelect, geoboardBands, origin, offset, scale, mode, elements } = state;
+  const { selected, lockSelect, geoboardBands, origin, offset, scale, elements } = state;
 
   const selectedTargets = [];
 
@@ -28,35 +25,24 @@ const SelectedFrame = (props) => {
 
   useEffect(() => {
     if (selected) {
-      if (mode == "geoboard") {
-        for (const band of geoboardBands) {
-          for (const [pointIndex, point] of band.points.entries()) {
-            if (selected.includes(point.id)) {
-              const node = props.findOne(point.id);
-              selectedTargets.push({
-                point: node,
-                sides: props.findOne(`${band.id}-sides`),
-                x: node.x(),
-                y: node.y(),
-                pointIndex,
-              });
-            }
+      for (const band of geoboardBands) {
+        for (const [pointIndex, point] of band.points.entries()) {
+          if (selected.includes(point.id)) {
+            const node = props.findOne(point.id);
+            selectedTargets.push({
+              point: node,
+              sides: props.findOne(`${band.id}-sides`),
+              x: node.x(),
+              y: node.y(),
+              pointIndex,
+            });
           }
         }
       }
       for (const id of selected) {
         const el = elements[id];
         if (!el) continue;
-        switch (el.type) {
-          case "template":
-            el.patterns.forEach((pattern) => pushTarget(el.id + pattern.id));
-            break;
-          case "rekenrek":
-            rekenrekTargets(id).forEach(pushTarget);
-            break;
-          default:
-            pushTarget(id);
-        }
+        pushTarget(id);
       }
     }
   });
@@ -71,23 +57,8 @@ const SelectedFrame = (props) => {
   const width = (xMax - xMin + bandPointRadius * 2) * scale + 2;
   const height = (yMax - yMin + bandPointRadius * 2) * scale + 2;
 
-  const showResizeHandle = mode == "rods" && selected.length == 1 && elements[selected[0]].resizable;
-  const rhShift = showResizeHandle ? 10 : 0;
-
-  let rhNode, rhX, rhY;
-  const onPointerDown = (e) => {
-    if (showResizeHandle) {
-      rhNode = props.findOne("resize-handle");
-      rhX = rhNode.x();
-      rhY = rhNode.y();
-    }
-  };
-
   const onDragStart = (e) => {
     setVisibility(e, false);
-    if (mode == "fractions" && selectedTargets.length == 1) {
-      setVisibilityFrame(e, false);
-    }
   };
 
   const onDragMove = (e) => {
@@ -97,52 +68,25 @@ const SelectedFrame = (props) => {
       dx -= dx % (gridStep / 2);
       dy -= dy % (gridStep / 2);
     }
-    if (showResizeHandle) {
-      if (!rhNode) rhNode = props.findOne("resize-handle");
-      rhNode.setAttrs({ x: rhX + dx * state.scale, y: rhY + dy * state.scale });
-    }
-    if (mode == "geoboard") {
-      selectedTargets.forEach(({ point, sides, x, y, pointIndex }) => {
-        if (!point) return;
-        point.setAttrs({ x: x + dx, y: y + dy });
-        const points = sides.points();
-        points[pointIndex * 2] = x + dx;
-        points[pointIndex * 2 + 1] = y + dy;
-        sides.setAttrs({ points });
-      });
-    }
+    selectedTargets.forEach(({ point, sides, x, y, pointIndex }) => {
+      if (!point) return;
+      point.setAttrs({ x: x + dx, y: y + dy });
+      const points = sides.points();
+      points[pointIndex * 2] = x + dx;
+      points[pointIndex * 2 + 1] = y + dy;
+      sides.setAttrs({ points });
+    });
     selectedTargets.forEach(({ point, node, x, y }) => {
       if (point) return;
       node.setAttrs({ x: x + dx, y: y + dy });
     });
     e.target.setAttrs({ x: x + dx * scale, y: y + dy * scale });
-
-    if (mode == "fractions" && selectedTargets.length == 1 && elements[selected[0]].type == "fraction") {
-      const node = selectedTargets[0].node;
-      let { x, y } = getStageXY(e.target.getStage(), state);
-      let magnet = null;
-      for (const id in state.elements) {
-        const el = state.elements[id];
-        if (el.id == node.id()) continue;
-        magnet = fractionMagnet({ x, y }, el, node.angle ? node.angle() : 360, origin) || magnet;
-      }
-      node.setAttrs(magnet || { rotation: elements[selected[0]].rotation });
-    }
   };
 
   const onDragEnd = (e) => {
-    if (mode == "fractions" && selectedTargets.length == 1) {
-      const node = selectedTargets[0].node;
-      state.updateElement(selected[0], {
-        x: node.x() - origin.x,
-        y: node.y() - origin.y,
-        rotation: node.rotation(),
-      });
-    } else {
-      const dx = (e.target.x() - x) / state.scale;
-      const dy = (e.target.y() - y) / state.scale;
-      state.relocateSelected(dx, dy);
-    }
+    const dx = (e.target.x() - x) / state.scale;
+    const dy = (e.target.y() - y) / state.scale;
+    state.relocateSelected(dx, dy);
     setVisibilityFrame(e, true);
   };
 
@@ -184,14 +128,6 @@ const SelectedFrame = (props) => {
       },
     },
     {
-      text: "Rotate",
-      active: !lockSelect,
-      show: mode == "rods" && selected.some((id) => elements[id].type == "rod"),
-      onPointerClick: (e) => {
-        state.rotateSelected();
-      },
-    },
-    {
       text: "Fill On/Off",
       active: !lockSelect,
       show: selected.some((id) => elements[id] == undefined || elements[id].fill != undefined),
@@ -202,7 +138,7 @@ const SelectedFrame = (props) => {
     {
       text: "Angle On/Off",
       active: !lockSelect,
-      show: mode == "geoboard" && selected.some((id) => elements[id] == undefined),
+      show: selected.some((id) => elements[id] == undefined),
       onPointerClick: (e) => {
         state.toggleValueSelected("measures");
       },
@@ -275,16 +211,14 @@ const SelectedFrame = (props) => {
         stroke="#2196f3"
         strokeWidth={2}
         draggable={!lockSelect}
-        onPointerDown={onPointerDown}
         onDragStart={onDragStart}
         onDragMove={onDragMove}
         onDragEnd={onDragEnd}
       />
-      {showResizeHandle && <ResizeHandle frameProps={{ x, y, width, height }} element={elements[selected[0]]} />}
       <Rect
         id="popup-menu"
         name={"popup-menu"}
-        x={x + width + padding + rhShift}
+        x={x + width + padding}
         y={y}
         width={buttonWidth + padding * 2}
         height={padding * 3 * menuButtons.length + padding + buttonHeight * menuButtons.length}
@@ -297,14 +231,13 @@ const SelectedFrame = (props) => {
         shadowOffset={{ x: 3, y: 3 }}
         shadowOpacity={0.5}
       />
-      <RotateHandle x={x + width / 2} y={y + height + 20} />
       <ShapeResizeHandles x={x} y={y} width={width} height={height} findOne={props.findOne} />
       {menuButtons.map(({ text, active, onPointerClick }, i) => (
         <Fragment key={text}>
           <Rect
             id={"menu-item-" + i}
             name={"popup-menu"}
-            x={x + width + padding * 2 + rhShift}
+            x={x + width + padding * 2}
             y={y + padding + (padding * 3 + buttonHeight) * i}
             width={buttonWidth}
             height={buttonHeight + padding * 2}
@@ -322,7 +255,7 @@ const SelectedFrame = (props) => {
           <Text
             id={"menu-item-text" + i}
             name={"popup-menu"}
-            x={x + width + padding * 3 + rhShift}
+            x={x + width + padding * 3}
             y={y + padding * 2 + (padding * 3 + buttonHeight) * i}
             text={text}
             fill={active ? "black" : "#aaaaaa"}
@@ -345,21 +278,19 @@ const SelectedFrame = (props) => {
 };
 
 function getBounds(state) {
-  const { selected, geoboardBands, mode, elements } = state;
+  const { selected, geoboardBands, elements } = state;
   let xMin = Infinity;
   let yMin = Infinity;
   let xMax = -Infinity;
   let yMax = -Infinity;
-  if (mode == "geoboard") {
-    for (const band of geoboardBands) {
-      for (const point of band.points) {
-        const { id, x, y } = point;
-        if (selected.includes(id)) {
-          if (x < xMin) xMin = x;
-          if (x > xMax) xMax = x;
-          if (y < yMin) yMin = y;
-          if (y > yMax) yMax = y;
-        }
+  for (const band of geoboardBands) {
+    for (const point of band.points) {
+      const { id, x, y } = point;
+      if (selected.includes(id)) {
+        if (x < xMin) xMin = x;
+        if (x > xMax) xMax = x;
+        if (y < yMin) yMin = y;
+        if (y > yMax) yMax = y;
       }
     }
   }
