@@ -62,6 +62,7 @@ const BeadRect = ({ id, x, y, rows, scale }) => {
         width: rekenrekWidth,
         height: rekenrekHeight,
         beads: initialBeads(x),
+        swap: i < 5,
       });
     }
     state.addElements(toAdd);
@@ -121,7 +122,6 @@ const BeadRect = ({ id, x, y, rows, scale }) => {
         onPointerClick={onPointerClick}
         onDragMove={onDragMove}
         onDragEnd={onDragEnd}
-        stroke={"black"}
       />
     </>
   );

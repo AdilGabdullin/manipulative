@@ -8,7 +8,7 @@ const beadRadius = 20;
 const Beads = (props) => {
   const state = useAppStore();
   const { origin, beadNumber } = state;
-  const { id, xMin, xMax, y, beads } = props;
+  const { id, xMin, xMax, y, beads, swap } = props;
 
   const d = beadRadius * 2;
 
@@ -73,21 +73,25 @@ const Beads = (props) => {
 
   return (
     <>
-      {beads.map((x, i) => (
-        <Bead
-          id={`${id}-${i}`}
-          beadRadius={200 / beadNumber}
-          name={`${id}-bead-${i}`}
-          key={i}
-          x={origin.x + x}
-          y={y}
-          color={i < 5 || (i >= 10 && i < 15) ? colors.red : colors.white}
-          onDragStart={onDragStart(i)}
-          onDragMove={onDragMove(i)}
-          onDragEnd={onDragEnd(i)}
-          stop={stop(i)}
-        />
-      ))}
+      {beads.map((x, i) => {
+        const isRed = i < 5 || (i >= 10 && i < 15);
+        const color = (isRed && swap) || (!isRed && !swap) ? colors.red : colors.white;
+        return (
+          <Bead
+            id={`${id}-${i}`}
+            beadRadius={200 / beadNumber}
+            name={`${id}-bead-${i}`}
+            key={i}
+            x={origin.x + x}
+            y={y}
+            color={color}
+            onDragStart={onDragStart(i)}
+            onDragMove={onDragMove(i)}
+            onDragEnd={onDragEnd(i)}
+            stop={stop(i)}
+          />
+        );
+      })}
     </>
   );
 };
