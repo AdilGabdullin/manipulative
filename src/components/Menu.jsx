@@ -27,33 +27,8 @@ const Menu = () => {
 const DefaultMenu = (props) => {
   const state = useAppStore();
   const { x, y } = props;
-  const { mode } = state;
 
   let buttons = [
-    {
-      text: "Fills",
-      visible: ["geoboard", "rods", "fractions", "pattern-blocks"],
-      field: "fill",
-      image: document.getElementById("fill-button"),
-      width: 70,
-      shift: 0,
-    },
-    {
-      text: "Angle Measure",
-      visible: ["geoboard"],
-      field: "measures",
-      image: document.getElementById("angle-button"),
-      width: 150,
-      shift: 0,
-    },
-    {
-      text: "Grid",
-      visible: ["rods", "pattern-blocks"],
-      field: "showGrid",
-      image: null,
-      width: 35,
-      shift: 0,
-    },
     {
       text: "Groups",
       visible: ["linking-cubes"],
@@ -62,48 +37,7 @@ const DefaultMenu = (props) => {
       width: 50,
       shift: 0,
     },
-    {
-      text: "Whole Numbers",
-      visible: ["rods"],
-      field: "labelMode",
-      image: null,
-      width: 120,
-      shift: -40,
-    },
-    {
-      text: "Fractions",
-      visible: ["fractions", "rods"],
-      field: "labelMode",
-      image: null,
-      width: 65,
-      shift: -10,
-    },
-    {
-      text: "Decimals",
-      visible: ["fractions", "rods"],
-      field: "labelMode",
-      image: null,
-      width: 63,
-      shift: -25,
-    },
-    {
-      text: "Percents",
-      visible: ["fractions"],
-      field: "labelMode",
-      image: null,
-      width: 62,
-      shift: -35,
-    },
-    {
-      text: "Blank",
-      visible: ["fractions", "rods"],
-      field: "labelMode",
-      image: null,
-      width: 42,
-      shift: -54,
-    },
   ];
-  buttons = buttons.filter((b) => b.visible.includes(mode));
   const padding = 8;
   const buttonHeight = 20;
   const buttonWidth = 110;

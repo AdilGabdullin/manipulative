@@ -4,18 +4,12 @@ import ShapesMenu from "./ShapesMenu";
 
 export const topToolbarHeight = 42;
 
-const workspaceOptions = {
-  geoboard: ["square", "isometric", "circular"],
-  "pattern-blocks": ["basic", "fractions", "deci"],
-};
-
 const TopToolbar = () => {
   return (
     <div className="bottom-toolbar" style={{ height: topToolbarHeight }}>
       <Buttons />
       <div style={{ display: "flex", gap: 16 }}>
         <ShapesMenu />
-        <WorkspaceSelector />
       </div>
     </div>
   );
@@ -51,25 +45,6 @@ const Button = ({ onClick, imageSrc, text, active }) => {
   return (
     <div className={"toolbar-button-wrap" + (active ? " active" : "")}>
       <img src={"./img/" + imageSrc} height={32} onClick={onClick} title={text} />
-    </div>
-  );
-};
-
-const WorkspaceSelector = () => {
-  const state = useAppStore();
-  const { mode } = state;
-  const options = workspaceOptions[mode];
-  if (!options) return null;
-  return (
-    <div className="workspace-selector">
-      <label className="workspace-selector-label">Workspace</label>
-      <select onChange={(e) => state.setWorkspace(e.target.value)} value={state.workspace}>
-        {options.map((option) => (
-          <option key={option} value={option}>
-            {capitalizeFirstLetter(option)}
-          </option>
-        ))}
-      </select>
     </div>
   );
 };

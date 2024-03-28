@@ -1,16 +1,7 @@
 import { Stage, Layer, Line } from "react-konva";
 import { useEffect, useLayoutEffect, useRef } from "react";
-import Grid from "./Grid";
 import SelectRect, { selectRectMove, selectRectStop } from "./SelectRect";
 import { useAppStore } from "../state/store";
-import GeoboardBand, {
-  Angles,
-  bandPointMove,
-  bandPointRadius,
-  bandPointSearch,
-  bandSideMove,
-  bandSideSearch,
-} from "./GeoboardBand";
 import LeftToolbar, { leftToolbarWidth } from "./LeftToolbar";
 import { SEARCH_THRESHOLD, getStageXY, pointsIsClose } from "../util";
 import TopToolbar, { topToolbarHeight } from "./TopToolbar";
@@ -82,8 +73,7 @@ const App = () => {
       return;
     }
     downPos = getStageXY(stageRef.current, state);
-    dragTarget = bandPointSearch(state, downPos) ||
-      bandSideSearch(state, downPos) || {
+    dragTarget = {
         type: "select-rect",
         nodes: ["select-rect"],
         downPos,
@@ -112,12 +102,6 @@ const App = () => {
       return;
     }
     switch (dragTarget.type) {
-      case "band-point":
-        bandPointMove(dragTarget, movePos, state.origin.x, state.origin.y);
-        break;
-      case "band-side":
-        bandSideMove(dragTarget, movePos, state.origin);
-        break;
       case "select-rect":
         selectRectMove(dragTarget, downPos, movePos, state.origin.x, state.origin.y);
         findAll("popup-menu").forEach((node) => node.visible(false));
@@ -149,12 +133,6 @@ const App = () => {
       return;
     }
     switch (dragTarget.type) {
-      case "band-point":
-        state.relocateBandPoint(dragTarget, magnetSearch(upPos));
-        break;
-      case "band-side":
-        state.relocateBandSide(dragTarget, magnetSearch(upPos));
-        break;
       case "select-rect":
         selectRectStop(dragTarget, upPos);
         findAll("popup-menu").forEach((node) => node.visible(true));
@@ -170,15 +148,6 @@ const App = () => {
 
   const onMouseClick = (e) => {
     // console.log("stage click");
-    const pos = getStageXY(stageRef.current, state);
-    for (const band of state.geoboardBands) {
-      for (const point of band.points) {
-        if (pointsIsClose(point, pos, bandPointRadius + SEARCH_THRESHOLD)) {
-          state.selectIds([point.id], point.locked);
-          return;
-        }
-      }
-    }
     if (state.selected.length > 0) state.clearSelect();
   };
 
@@ -330,10 +299,6 @@ const App = () => {
           scaleX={state.scale}
           scaleY={state.scale}
         >
-          {state.mode == "geoboard" &&
-            state.geoboardBands.map((band) => <GeoboardBand key={band.id} {...band} findOne={findOne} />)}
-          <Grid />
-          {state.mode == "geoboard" && state.geoboardBands.map((band) => <Angles key={band.id} {...band} />)}
           <Elements />
           <SelectRect />
         </Layer>

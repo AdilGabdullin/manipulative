@@ -12,15 +12,6 @@ const config = {
     { id: "eraser-button", src: "buttons/eraser-min.png" },
     { id: "fill-button", src: "buttons/fill-min.png" },
   ],
-  geoboard: [
-    { id: "angle-button", src: "buttons/angle-min.png" },
-    { id: "band-0", src: "bands/band-0.svg" },
-    { id: "band-1", src: "bands/band-1.svg" },
-    { id: "band-2", src: "bands/band-2.svg" },
-    { id: "band-3", src: "bands/band-3.svg" },
-    { id: "band-4", src: "bands/band-4.svg" },
-    { id: "band-5", src: "bands/band-5.svg" },
-  ],
   "linking-cubes": [
     { id: "cube-0-up", src: "cubes/01-01.svg" },
     { id: "cube-1-up", src: "cubes/01-02.svg" },
@@ -47,8 +38,8 @@ const config = {
 
 const ImagePreloader = () => {
   const state = useAppStore();
-  const { mode, loadedImagesCount } = state;
-  const special = config[mode] || [];
+  const { loadedImagesCount } = state;
+  const special = config["linking-cubes"] || [];
   const onLoad = (e) => {
     if (loadedImagesCount + 1 == special.length + config.common.length) {
       state.setValue("imagesReady", true);
