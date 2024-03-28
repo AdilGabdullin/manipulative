@@ -39,10 +39,6 @@ const App = () => {
     return <div ref={containerRef} />;
   }
 
-  const magnetSearch = (movePos) => {
-    return state.grid.find((gridItem) => pointsIsClose(movePos, gridItem)) || movePos;
-  };
-
   const findOne = (id) => {
     const node = stageRef.current.findOne("#" + id);
     if (node) return node;
@@ -96,7 +92,7 @@ const App = () => {
     if (!dragTarget) {
       return;
     }
-    const movePos = { ...magnetSearch(getStageXY(stageRef.current, state)) };
+    const movePos = getStageXY(stageRef.current, state);
 
     if ((downPos.x - movePos.x) ** 2 + (downPos.y - movePos.y) ** 2 < 25) {
       return;

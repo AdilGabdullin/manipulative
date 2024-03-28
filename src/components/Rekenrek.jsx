@@ -2,7 +2,7 @@ import { Line } from "react-konva";
 import { useAppStore } from "../state/store";
 import Beads from "./Beads";
 import BeadGroups from "./BeadGroups";
-import {  numbersClose } from "../util";
+import { numbersClose } from "../util";
 
 export const rekenrekWidth = 900;
 export const rekenrekHeight = 80;
@@ -20,15 +20,18 @@ export const colors = {
 
 const Rekenrek = (props) => {
   const state = useAppStore();
-  const { origin } = state;
+  const { origin, beadNumber } = state;
+  const beadRadius = 200 / beadNumber;
   const x = props.x + origin.x;
   const y = props.y + origin.y;
+  const xMin = x + beadRadius + strokeWidth1;
+  const xMax = x + rekenrekWidth - beadRadius - strokeWidth1;
 
   return (
     <>
       <Lines {...props} />
-      <Beads {...props} xMin={xMin(x)} xMax={xMax(x)} x={x} y={y + props.height / 2} />
-      <BeadGroups {...props} xMin={xMin(x)} xMax={xMax(x)} x={x} y={y - 8} />
+      <Beads {...props} xMin={xMin} xMax={xMax} x={x} y={y + props.height / 2} />
+      <BeadGroups {...props} xMin={xMin} xMax={xMax} x={x} y={y - 8} />
     </>
   );
 };
@@ -169,14 +172,6 @@ const Lines = (props) => {
     </>
   );
 };
-
-function xMin(x) {
-  return x + beadRadius + strokeWidth1;
-}
-
-function xMax(x) {
-  return x + rekenrekWidth - beadRadius - strokeWidth1;
-}
 
 export function rekenrekTargets(id) {
   const ids = [`${id}-left-line`, `${id}-mid-line`, `${id}-right-line`];

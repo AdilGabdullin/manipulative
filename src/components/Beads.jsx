@@ -3,13 +3,11 @@ import Bead from "./Bead";
 import { createBeadLabels } from "./BeadGroups";
 import { colors } from "./Rekenrek";
 
-const beadRadius = 20;
-
 const Beads = (props) => {
   const state = useAppStore();
   const { origin, beadNumber } = state;
+  const beadRadius = 200 / beadNumber;
   const { id, xMin, xMax, y, beads, swap } = props;
-
   const d = beadRadius * 2;
 
   let nodes = null;

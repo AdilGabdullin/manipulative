@@ -51,7 +51,7 @@ export function createBeadLabels(beadNumber, xMax, xs, baseX = 0) {
     groups.push(group);
   }
   const labels = [];
-  for (let i = 0; i < 10; i += 1) {
+  for (let i = 0; i < beadNumber; i += 1) {
     const group = groups[i];
     if (group != undefined) {
       labels.push({ text: group.length, x: baseX + avg(group) - 8, visible: true });
