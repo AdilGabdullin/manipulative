@@ -102,6 +102,10 @@ const Lines = (props) => {
     setLineStroke(e, colors.line);
   };
 
+  const onPointerClick = (e) => {
+    state.selectIds([id], locked);
+  };
+
   return (
     <>
       <Line
@@ -144,6 +148,7 @@ const Lines = (props) => {
         onDragEnd={onDragEnd}
         onMouseEnter={onMouseEnter}
         onMouseLeave={onMouseLeave}
+        onPointerClick={onPointerClick}
       />
       <Line
         x={x}
@@ -156,6 +161,7 @@ const Lines = (props) => {
         onDragEnd={onDragEnd}
         onMouseEnter={onMouseEnter}
         onMouseLeave={onMouseLeave}
+        onPointerClick={onPointerClick}
       />
       <Line
         x={x}
@@ -168,6 +174,7 @@ const Lines = (props) => {
         onDragEnd={onDragEnd}
         onMouseEnter={onMouseEnter}
         onMouseLeave={onMouseLeave}
+        onPointerClick={onPointerClick}
       />
     </>
   );
