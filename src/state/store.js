@@ -21,7 +21,8 @@ export const useAppStore = create((set) => ({
   offset: { x: 0, y: 0 },
   scale: 1.0,
   fullscreen: false,
-  workspace: "???",
+  workspace: "10 Bead",
+  beadNumber: 10,
   width: 0,
   height: 0,
   origin: { x: 0, y: 0 },
@@ -30,7 +31,7 @@ export const useAppStore = create((set) => ({
 
   // offset: { x: 80, y: -200 },
   // scale: 0.5,
-  // fullscreen: true,
+  fullscreen: true,
 
   showGroups: true,
   toggleGlobal: (field) =>
@@ -69,6 +70,7 @@ export const useAppStore = create((set) => ({
     set(
       produce((state) => {
         state.workspace = workspace;
+        state.beadNumber = workspace == "10 Bead" ? 10 : 20;
       })
     ),
   toggle: (field) =>
@@ -173,13 +175,6 @@ export const useAppStore = create((set) => ({
           if (!element) continue;
           element.x += dx;
           element.y += dy;
-          if (element.type == "template") {
-            for (const i in current(state).elements[id].patterns) {
-              const pattern = element.patterns[i];
-              pattern.x += dx;
-              pattern.y += dy;
-            }
-          }
           if (element.type == "rekenrek") {
             for (const i in current(state).elements[id].beads) {
               element.beads[i] += dx;
@@ -198,13 +193,6 @@ export const useAppStore = create((set) => ({
         if (!element) return;
         element.x += dx;
         element.y += dy;
-        if (element.type == "template") {
-          for (const i in current(state).elements[id].patterns) {
-            const pattern = element.patterns[i];
-            pattern.x += dx;
-            pattern.y += dy;
-          }
-        }
         if (element.type == "rekenrek") {
           for (const i in current(state).elements[id].beads) {
             element.beads[i] += dx;
@@ -353,38 +341,4 @@ export const useAppStore = create((set) => ({
 function keepOrigin(state) {
   state.origin.x = ((state.width - leftToolbarWidth) / 2 + leftToolbarWidth) / state.scale;
   state.origin.y = state.height / 2 / state.scale;
-}
-
-function initGrid(workspace) {
-  const grid = [];
-  if (workspace == "circular") {
-    const rings = [1, 4, 12, 24, 36];
-    let r = 0;
-    for (const n of rings) {
-      let theta = 0;
-      for (let i = 0; i < n; i += 1) {
-        theta += (Math.PI * 2) / n;
-        grid.push({ x: Math.cos(theta) * r, y: Math.sin(theta) * r });
-      }
-      r += gridStep * 1.3;
-    }
-    return grid;
-  }
-  const { width, height } = boardSize;
-  const stepX = gridStep;
-  const stepY = workspace == "square" ? gridStep : gridStep * Math.sin(Math.PI / 3);
-  const xStop = Math.ceil(width / 2 / stepX) * stepX + gridStep;
-  const xStart = -xStop;
-  const yStop = Math.ceil(height / 2 / stepX) * stepX;
-  const yStart = -yStop - gridStep;
-  for (let y = yStart, i = 0; y <= yStop; y += stepY, i += 1) {
-    for (let x = xStart; x <= xStop; x += stepX) {
-      if (workspace == "square") {
-        grid.push({ x, y });
-      } else {
-        grid.push({ x: x + Math.cos(Math.PI / 3) * gridStep * (i % 2), y: y });
-      }
-    }
-  }
-  return grid;
 }

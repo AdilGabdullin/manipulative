@@ -1,6 +1,6 @@
 import { Group, Rect } from "react-konva";
 import { useAppStore } from "../state/store";
-import { beadNumber, beadRadius, colors, initialBeads, rekenrekHeight, rekenrekWidth } from "./Rekenrek";
+import { beadRadius, colors, initialBeads, rekenrekHeight, rekenrekWidth } from "./Rekenrek";
 import Bead from "./Bead";
 import { leftToolbarWidth } from "./LeftToolbar";
 import { menuHeight } from "./Menu";
@@ -114,6 +114,7 @@ const BeadRect = ({ id, x, y, rows, scale }) => {
 };
 
 const BeadRow = ({ id, x, y, scale, swapColors }) => {
+  const { beadNumber } = useAppStore();
   const propss = [];
   const r = beadRadius * scale;
   for (let i = 0; i < beadNumber; i += 1) {

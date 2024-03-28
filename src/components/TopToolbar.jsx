@@ -4,8 +4,7 @@ import ShapesMenu from "./ShapesMenu";
 
 export const topToolbarHeight = 42;
 
-const workspaceOptions = {
-};
+const workspaceOptions = ["10 Bead", "20 Bead"];
 
 const TopToolbar = () => {
   return (
@@ -55,13 +54,12 @@ const Button = ({ onClick, imageSrc, text, active }) => {
 
 const WorkspaceSelector = () => {
   const state = useAppStore();
-  const options = workspaceOptions["rekenreks"];
-  if (!options) return null;
+  if (!workspaceOptions) return null;
   return (
     <div className="workspace-selector">
       <label className="workspace-selector-label">Workspace</label>
       <select onChange={(e) => state.setWorkspace(e.target.value)} value={state.workspace}>
-        {options.map((option) => (
+        {workspaceOptions.map((option) => (
           <option key={option} value={option}>
             {capitalizeFirstLetter(option)}
           </option>

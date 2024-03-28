@@ -1,13 +1,13 @@
 import { Text } from "react-konva";
 import { avg } from "../util";
-import { beadNumber, beadRadius, blue } from "./Rekenrek";
+import { beadRadius, blue } from "./Rekenrek";
 import { useAppStore } from "../state/store";
 
 const BeadGroups = (props) => {
   const state = useAppStore();
-  const { origin } = state;
+  const { origin, beadNumber } = state;
   const { id, x, xMax, y, beads } = props;
-  const labels = createBeadLabels(xMax - origin.x - x, beads, origin.x);
+  const labels = createBeadLabels(beadNumber, xMax - origin.x - x, beads, origin.x);
   return (
     <>
       {labels.map((label, i) => {
@@ -28,7 +28,7 @@ const BeadGroups = (props) => {
   );
 };
 
-export function createBeadLabels(xMax, xs, baseX = 0) {
+export function createBeadLabels(beadNumber, xMax, xs, baseX = 0) {
   const groups = [];
   let group = [];
   for (let i = 0; i < beadNumber; i += 1) {

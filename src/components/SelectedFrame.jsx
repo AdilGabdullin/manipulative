@@ -88,7 +88,7 @@ const SelectedFrame = (props) => {
     {
       text: "Copy",
       active: !lockSelect,
-      show: !selected.some((id) => elements[id]?.type == "template"),
+      show: true,
       onPointerClick: (e) => {
         state.copySelected();
       },
