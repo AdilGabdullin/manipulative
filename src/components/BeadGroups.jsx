@@ -1,7 +1,9 @@
 import { Text } from "react-konva";
 import { avg } from "../util";
-import { beadRadius, blue } from "./Rekenrek";
+import { blue } from "./Rekenrek";
 import { useAppStore } from "../state/store";
+
+const beadRadius = 20;
 
 const BeadGroups = (props) => {
   const state = useAppStore();

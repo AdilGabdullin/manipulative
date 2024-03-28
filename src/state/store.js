@@ -32,6 +32,8 @@ export const useAppStore = create((set) => ({
   // offset: { x: 80, y: -200 },
   // scale: 0.5,
   fullscreen: true,
+  workspace: "20 Bead",
+  beadNumber: 20,
 
   showGroups: true,
   toggleGlobal: (field) =>

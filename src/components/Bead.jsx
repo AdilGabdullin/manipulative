@@ -1,9 +1,9 @@
 import { Circle, Path } from "react-konva";
 import { cos, sin } from "../util";
-import { beadRadius, blue } from "./Rekenrek";
+import { blue } from "./Rekenrek";
 
 const Bead = (props) => {
-  const { id, x, y, color, onDragStart, onDragMove, onDragEnd, stop, scale } = props;
+  const { id, beadRadius, x, y, color, onDragStart, onDragMove, onDragEnd, stop, scale } = props;
   const d = (beadRadius / Math.SQRT2) * 2;
   const r1 = beadRadius;
   const r2 = beadRadius * 1.15;
@@ -22,14 +22,7 @@ const Bead = (props) => {
   };
   return (
     <>
-      <Circle
-        id={`${id}-0`}
-        fill={blue}
-        stroke={blue}
-        radius={beadRadius + 2}
-        visible={x < stop}
-        {...commonProps}
-      />
+      <Circle id={`${id}-0`} fill={blue} stroke={blue} radius={beadRadius + 2} visible={x < stop} {...commonProps} />
       <Circle
         id={`${id}-1`}
         fill={color.main}

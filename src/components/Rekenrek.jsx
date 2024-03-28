@@ -178,10 +178,6 @@ function xMax(x) {
   return x + rekenrekWidth - beadRadius - strokeWidth1;
 }
 
-export function initialBeads(x) {
-  if (beadNumber == 10) return [-9, -8, -7, -6, -5, -4, -3, -2, -1, 0].map((shift) => xMax(x) + shift * beadRadius * 2);
-}
-
 export function rekenrekTargets(id) {
   const ids = [`${id}-left-line`, `${id}-mid-line`, `${id}-right-line`];
   for (let i = 0; i < beadNumber; i += 1) {
