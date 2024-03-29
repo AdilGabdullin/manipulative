@@ -4,6 +4,7 @@ import LineElement from "./LineElement";
 import TextElement from "./TextElement";
 import RectElement from "./RectElement";
 import EllipseElement from "./EllipseElement";
+import Disk from "./Disk";
 
 const Elements = () => {
   const state = useAppStore();

@@ -137,6 +137,9 @@ export function elementBox(element) {
     case "line":
       return lineBox(element);
       break;
+    case "disk":
+      return diskBox(element);
+      break;
   }
   return element;
 }
@@ -157,6 +160,11 @@ function lineBox(element) {
   const minY = Math.min(y, y + y2);
   const maxY = Math.max(y, y + y2);
   return { x: minX, y: minY, width: maxX - minX, height: maxY - minY };
+}
+
+function diskBox(element) {
+  const { x, y, radius } = element;
+  return { x: x - radius, y: y - radius, width: radius * 2, height: radius * 2 };
 }
 
 export function cos(rotation) {

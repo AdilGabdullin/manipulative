@@ -1,7 +1,32 @@
+import { Circle, Text } from "react-konva";
+import { useAppStore } from "../state/store";
+
 export const radius = 32;
 
 const Disk = (props) => {
-  return <></>;
+  const state = useAppStore();
+  const { origin } = state;
+  const { value, color } = props;
+  const x = origin.x + props.x;
+  const y = origin.y + props.y;
+  return (
+    <>
+      <Circle x={x} y={y} fill={color} radius={radius} />
+      <Text
+        x={x - radius}
+        y={y - fontSize(value) / 2}
+        width={radius * 2}
+        text={format(value)}
+        fontFamily={"Calibri"}
+        fontSize={fontSize(value)}
+        wrap="char"
+        align="center"
+        verticalAlign="center"
+        fill={"white"}
+        color={"white"}
+      />
+    </>
+  );
 };
 
 const intl = new Intl.NumberFormat("en-US");

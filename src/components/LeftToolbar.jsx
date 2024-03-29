@@ -1,4 +1,4 @@
-import { Circle, Group, Label, Rect, Text } from "react-konva";
+import { Circle, Group, Rect, Text } from "react-konva";
 import { useAppStore } from "../state/store";
 import { fontSize, format, radius } from "./Disk";
 import { Fragment } from "react";
@@ -20,34 +20,44 @@ const allOptions = [
 
 const LeftToolbar = () => {
   const state = useAppStore();
-  const { mode } = state;
+  const { mode, origin, offset, scale } = state;
   const [min, max] = mode == "Whole Numbers" ? [1, 1000000] : [0.001, 10];
   const options = allOptions.filter(({ value }) => value >= min && value <= max);
   const top = (state.height - radius * 2 * options.length) / (options.length + 1);
   const left = (leftToolbarWidth - 2 * radius) / 2;
 
+  const onDragMove = (e) => {
+    const s = e.target.x() > leftToolbarWidth ? scale : 1.0;
+    e.target.setAttrs({ scaleX: s, scaleY: s });
+  };
+
+  const onDragEnd = (value, color, pos) => (e) => {
+    const element = {
+      type: "disk",
+      x: e.target.x() / scale + offset.x - origin.x,
+      y: e.target.y() / scale + offset.y - origin.y,
+      color,
+      value,
+    };
+    e.target.setAttrs({ ...pos, scaleX: 1.0, scaleY: 1.0 });
+    state.addElement(element);
+  };
+
   return (
     <>
       <Rect fill="#f3f9ff" x={0} y={0} width={leftToolbarWidth} height={state.height} />
-      {options.map(({ value, color }, i) => (
-        <Fragment key={value}>
-          <Disk
-            value={value}
-            x={left + radius}
-            y={top + i * (top + radius * 2) + radius}
-            color={color}
-          />
-          <Group draggable>
-            <Disk
-              key={value}
-              value={value}
-              x={left + radius}
-              y={top + i * (top + radius * 2) + radius}
-              color={color}
-            />
-          </Group>
-        </Fragment>
-      ))}
+      {options.map(({ value, color }, i) => {
+        const x = left + radius;
+        const y = top + i * (top + radius * 2) + radius;
+        return (
+          <Fragment key={value}>
+            <Disk value={value} x={x} y={y} color={color} />
+            <Group x={x} y={y} draggable onDragMove={onDragMove} onDragEnd={onDragEnd(value, color, { x, y })}>
+              <Disk value={value} x={0} y={0} color={color} />
+            </Group>
+          </Fragment>
+        );
+      })}
     </>
   );
 };
