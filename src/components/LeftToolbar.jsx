@@ -1,7 +1,8 @@
 import { Circle, Group, Rect, Text } from "react-konva";
 import { useAppStore } from "../state/store";
-import { fontSize, format, radius } from "./Disk";
+import { fontSize, format, magnet, radius } from "./Disk";
 import { Fragment } from "react";
+import { fromStageXY, toStageXY } from "../util";
 
 export const leftToolbarWidth = 180;
 
@@ -19,7 +20,8 @@ const allOptions = [
 ];
 
 const LeftToolbar = () => {
-  const { mode, origin, offset, scale, addElement, height, lastActiveElement, elements } = useAppStore();
+  const state = useAppStore();
+  const { mode, origin, offset, scale, addElement, height, lastActiveElement, elements } = state;
   const [min, max] = mode == "Whole Numbers" ? [1, 1_000_000] : [0.001, 10];
   const options = allOptions.filter(({ value }) => value >= min && value <= max);
   const top = (height - radius * 2 * options.length) / (options.length + 1);
@@ -27,7 +29,9 @@ const LeftToolbar = () => {
 
   const onDragMove = (e) => {
     const s = e.target.x() > leftToolbarWidth ? scale : 1.0;
-    e.target.setAttrs({ scaleX: s, scaleY: s });
+    const targetPos = { x: e.target.x(), y: e.target.y() };
+    const pos = magnet(null, toStageXY(targetPos, state), elements);
+    e.target.setAttrs({ scaleX: s, scaleY: s, ...(pos ? fromStageXY(pos, state) : {}) });
   };
 
   const onDragEnd = (value, color, pos) => (e) => {

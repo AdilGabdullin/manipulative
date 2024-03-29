@@ -23,6 +23,34 @@ export function getStageXY(stage, state) {
   return { x: x / scale + offset.x - origin.x, y: y / scale + offset.y - origin.y };
 }
 
+export function toStageXY({ x, y }, state) {
+  return { x: toStageX(x, state), y: toStageY(y, state) };
+}
+
+export function toStageX(x, state) {
+  const { scale, offset, origin } = state;
+  return x / scale + offset.x - origin.x;
+}
+
+export function toStageY(y, state) {
+  const { scale, offset, origin } = state;
+  return y / scale + offset.y - origin.y;
+}
+
+export function fromStageXY({ x, y }, state) {
+  return { x: fromStageX(x, state), y: fromStageY(y, state) };
+}
+
+export function fromStageX(x, state) {
+  const { scale, offset, origin } = state;
+  return (x - offset.x + origin.x) * scale;
+}
+
+export function fromStageY(y, state) {
+  const { scale, offset, origin } = state;
+  return (y - offset.y + origin.y) * scale;
+}
+
 export function isPointCloseToLine(point, line1, line2, dist = SEARCH_THRESHOLD) {
   const { x, y } = point;
   const x1 = line1.x;

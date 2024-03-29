@@ -1,10 +1,12 @@
 import { Circle, Group, Text } from "react-konva";
 import { useAppStore } from "../state/store";
+import { fromStageXY, pointsIsClose, toStageXY } from "../util";
 
 export const radius = 32;
 
 const Disk = (props) => {
-  const { origin, selectIds, relocateElement } = useAppStore();
+  const state = useAppStore();
+  const { origin, selectIds, elements, relocateElement, scale, offset } = state;
   const { id, value, color, locked } = props;
   const x = origin.x + props.x;
   const y = origin.y + props.y;
@@ -13,7 +15,13 @@ const Disk = (props) => {
     selectIds([id], locked);
   };
 
-  const onDragMove = (e) => {};
+  const onDragMove = (e) => {
+    const targetPos = { x: e.target.x(), y: e.target.y() };
+    const pos = magnet(id, toStageXY(targetPos, state), elements);
+    if (pos) {
+      e.target.setAttrs(fromStageXY(pos, state));
+    }
+  };
   const onDragEnd = (e) => {
     const group = e.target;
     relocateElement(id, group.x() - x, group.y() - y);
@@ -43,6 +51,32 @@ const intl = new Intl.NumberFormat("en-US");
 
 export function format(value) {
   return intl.format(value);
+}
+
+export function magnet(id, pos, elements) {
+  for (const [elementId, element] of Object.entries(elements)) {
+    if (elementId == id || element.type != "disk") continue;
+    for (const [dx, dy] of [
+      [-radius, -radius],
+      [-radius, 0],
+      [-radius, radius],
+      [0, -radius],
+      [0, radius],
+      [radius, -radius],
+      [radius, 0],
+      [radius, radius],
+      [0, -radius * 2],
+      [0, radius * 2],
+      [-radius * 2, 0],
+      [radius * 2, 0],
+    ]) {
+      const point = { x: element.x + dx, y: element.y + dy };
+      if (pointsIsClose(pos, point, 16)) {
+        return point;
+      }
+    }
+  }
+  return null;
 }
 
 export function fontSize(value) {
