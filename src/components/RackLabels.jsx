@@ -57,15 +57,19 @@ const RackLabels = () => {
   );
 };
 
+function close(a, b) {
+  return Math.abs(a - b) < 1;
+}
+
 function createGroups(racks, beadRadius) {
   racks = racks.toSorted((a, b) => a.y - b.y);
   const isStartOfGroup = (rack, group) => {
     const { x, y } = group[0];
-    return rack.x == x && rack.y == y - (rekenrekHeight - 4);
+    return close(rack.x, x) && close(rack.y, y - (rekenrekHeight - 4));
   };
   const isEndOfGroup = (rack, group) => {
     const { x, y } = group[group.length - 1];
-    return rack.x == x && rack.y == y + (rekenrekHeight - 4);
+    return close(rack.x, x) && close(rack.y, y + (rekenrekHeight - 4));
   };
   const groups = [];
   for (const rack of racks) {
