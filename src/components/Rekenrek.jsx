@@ -19,8 +19,8 @@ const Rekenrek = (props) => {
   const state = useAppStore();
   const { origin, beadNumber } = state;
   const beadRadius = 200 / beadNumber;
-  const x = props.x + origin.x;
-  const y = props.y + origin.y;
+  const x = Math.round(props.x + origin.x);
+  const y = Math.round(props.y + origin.y);
   const xMin = x + beadRadius + strokeWidth1;
   const xMax = x + rekenrekWidth - beadRadius - strokeWidth1;
 

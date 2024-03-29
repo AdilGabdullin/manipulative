@@ -98,7 +98,7 @@ function countLeftBeads(rack, beadRadius) {
   const xMin = rack.x + beadRadius + strokeWidth1;
   let result = 0;
   for (const i in rack.beads) {
-    if (xMin + i * beadRadius * 2 == rack.beads[i]) {
+    if (Math.abs(xMin + i * beadRadius * 2 - rack.beads[i]) < 1) {
       result += 1;
     }
   }

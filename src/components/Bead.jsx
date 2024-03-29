@@ -29,7 +29,7 @@ const Bead = (props) => {
         fill={blue}
         stroke={blue}
         radius={beadRadius + 2}
-        visible={x < stop && showBeadGroups}
+        visible={x < stop - 1 && showBeadGroups}
         {...commonProps}
       />
       <Circle
