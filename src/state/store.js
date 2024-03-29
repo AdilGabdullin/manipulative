@@ -28,14 +28,8 @@ export const useAppStore = create((set) => ({
   origin: { x: 0, y: 0 },
   selected: [],
   lockSelect: false,
-
-  // offset: { x: 80, y: -200 },
-  // scale: 0.5,
-  fullscreen: true,
-  workspace: "20 Bead",
-  beadNumber: 20,
-
-  showGroups: true,
+  showBeadGroups: false,
+  showRackGroups: false,
   toggleGlobal: (field) =>
     set(
       produce((state) => {

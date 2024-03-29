@@ -30,11 +30,18 @@ const DefaultMenu = (props) => {
 
   let buttons = [
     {
-      text: "Groups",
-      field: "showGroups",
+      text: "Group Labels",
+      field: "showBeadGroups",
       image: null,
-      width: 50,
+      width: 95,
       shift: 0,
+    },
+    {
+      text: "Rack Labels",
+      field: "showRackGroups",
+      image: null,
+      width: 85,
+      shift: 10,
     },
   ];
   const padding = 8;

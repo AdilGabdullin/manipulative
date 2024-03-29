@@ -1,8 +1,10 @@
 import { Circle, Path } from "react-konva";
 import { cos, sin } from "../util";
 import { blue } from "./Rekenrek";
+import { useAppStore } from "../state/store";
 
 const Bead = (props) => {
+  const { showBeadGroups } = useAppStore();
   const { id, beadRadius, x, y, color, onDragStart, onDragMove, onDragEnd, stop, scale } = props;
   const d = (beadRadius / Math.SQRT2) * 2;
   const r1 = beadRadius;
@@ -22,7 +24,14 @@ const Bead = (props) => {
   };
   return (
     <>
-      <Circle id={`${id}-0`} fill={blue} stroke={blue} radius={beadRadius + 2} visible={x < stop} {...commonProps} />
+      <Circle
+        id={`${id}-0`}
+        fill={blue}
+        stroke={blue}
+        radius={beadRadius + 2}
+        visible={x < stop && showBeadGroups}
+        {...commonProps}
+      />
       <Circle
         id={`${id}-1`}
         fill={color.main}

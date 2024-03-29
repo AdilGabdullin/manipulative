@@ -5,7 +5,8 @@ import { useAppStore } from "../state/store";
 
 const BeadGroups = (props) => {
   const state = useAppStore();
-  const { origin, beadNumber } = state;
+  const { origin, beadNumber, showBeadGroups } = state;
+  if (!showBeadGroups) return null;
   const beadRadius = 200 / beadNumber;
   const { id, x, xMax, y, beads } = props;
   const labels = createBeadLabels(

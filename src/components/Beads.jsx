@@ -5,7 +5,7 @@ import { colors } from "./Rekenrek";
 
 const Beads = (props) => {
   const state = useAppStore();
-  const { origin, beadNumber } = state;
+  const { origin, beadNumber, showBeadGroups } = state;
   const beadRadius = 200 / beadNumber;
   const { id, xMin, xMax, y, beads, swap } = props;
   const d = beadRadius * 2;
@@ -50,18 +50,20 @@ const Beads = (props) => {
     for (let k = i + 1; k < beadNumber; k += 1) {
       setAttrs(nodes[k], { x: Math.max(nodes[k][1].x(), x - d * (i - k)) });
     }
-    for (let k = 0; k < beadNumber; k += 1) {
-      nodes[k][0].visible(nodes[k][0].x() < stop(k));
+    if (showBeadGroups) {
+      for (let k = 0; k < beadNumber; k += 1) {
+        nodes[k][0].visible(nodes[k][0].x() < stop(k));
+      }
+      const labels = createBeadLabels(
+        beadNumber,
+        beadRadius,
+        xMax,
+        nodes.map((node) => node[0].x())
+      );
+      getLabelNodes(e).forEach((labelNode, i) => {
+        labelNode.setAttrs(labels[i]);
+      });
     }
-    const labels = createBeadLabels(
-      beadNumber,
-      beadRadius,
-      xMax,
-      nodes.map((node) => node[0].x())
-    );
-    getLabelNodes(e).forEach((labelNode, i) => {
-      labelNode.setAttrs(labels[i]);
-    });
   };
   const onDragEnd = (i) => (e) => {
     state.updateBeads(

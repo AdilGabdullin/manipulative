@@ -45,14 +45,17 @@ const Lines = (props) => {
   const getDragTargets = (e) => {
     if (dragTargets) return dragTargets;
     const stage = e.target.getStage();
-    dragTargets = rekenrekTargets(id, beadNumber).map((id) => {
-      const node = stage.findOne("#" + id);
-      return {
-        node,
-        x: node.x(),
-        y: node.y(),
-      };
-    });
+    dragTargets = rekenrekTargets(id, beadNumber)
+      .map((id) => {
+        const node = stage.findOne("#" + id);
+        if (!node) return null;
+        return {
+          node,
+          x: node.x(),
+          y: node.y(),
+        };
+      })
+      .filter((t) => t !== null);
     return dragTargets;
   };
 

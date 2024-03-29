@@ -10,7 +10,9 @@ const shift = 5;
 const fontSize = 26;
 
 const RackLabels = () => {
-  const { elements, origin, beadNumber } = useAppStore();
+  const { elements, origin, beadNumber, showRackGroups } = useAppStore();
+  if (!showRackGroups) return null;
+
   const beadRadius = 200 / beadNumber;
   const racks = Object.values(elements).filter((e) => e.type == "rekenrek");
   const groups = createGroups(racks, beadRadius);

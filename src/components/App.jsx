@@ -42,7 +42,7 @@ const App = () => {
   const findOne = (id) => {
     const node = stageRef.current.findOne("#" + id);
     if (node) return node;
-    console.error(`id (${id}) not found`);
+    // console.error(`id (${id}) not found`);
   };
 
   const findAll = (name) => {
