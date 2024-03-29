@@ -1,11 +1,10 @@
-import { Circle, Text } from "react-konva";
+import { Circle, Group, Text } from "react-konva";
 import { useAppStore } from "../state/store";
 
 export const radius = 32;
 
 const Disk = (props) => {
-  const state = useAppStore();
-  const { origin, selectIds } = state;
+  const { origin, selectIds, relocateElement } = useAppStore();
   const { id, value, color, locked } = props;
   const x = origin.x + props.x;
   const y = origin.y + props.y;
@@ -13,12 +12,19 @@ const Disk = (props) => {
   const onPointerClick = (e) => {
     selectIds([id], locked);
   };
+
+  const onDragMove = (e) => {};
+  const onDragEnd = (e) => {
+    const group = e.target;
+    relocateElement(id, group.x() - x, group.y() - y);
+  };
+
   return (
-    <>
-      <Circle x={x} y={y} fill={color} radius={radius} onPointerClick={onPointerClick} />
+    <Group x={x} y={y} onPointerClick={onPointerClick} draggable onDragMove={onDragMove} onDragEnd={onDragEnd}>
+      <Circle x={0} y={0} fill={color} radius={radius} />
       <Text
-        x={x - radius}
-        y={y - fontSize(value) / 2}
+        x={-radius}
+        y={-fontSize(value) / 2}
         width={radius * 2}
         text={format(value)}
         fontFamily={"Calibri"}
@@ -28,9 +34,8 @@ const Disk = (props) => {
         verticalAlign="center"
         fill={"white"}
         color={"white"}
-        onPointerClick={onPointerClick}
       />
-    </>
+    </Group>
   );
 };
 
