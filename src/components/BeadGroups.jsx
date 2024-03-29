@@ -8,7 +8,14 @@ const BeadGroups = (props) => {
   const { origin, beadNumber } = state;
   const beadRadius = 200 / beadNumber;
   const { id, x, xMax, y, beads } = props;
-  const labels = createBeadLabels(beadNumber, beadRadius, xMax - origin.x - x, beads, origin.x);
+  const labels = createBeadLabels(
+    beadNumber,
+    beadRadius,
+    xMax - origin.x - x,
+    beads,
+    origin.x,
+    beads[beadNumber - 1] + origin.x < xMax
+  );
   return (
     <>
       {labels.map((label, i) => {
@@ -29,7 +36,7 @@ const BeadGroups = (props) => {
   );
 };
 
-export function createBeadLabels(beadNumber, beadRadius, xMax, xs, baseX = 0) {
+export function createBeadLabels(beadNumber, beadRadius, xMax, xs, baseX = 0, showLast = false) {
   const groups = [];
   let group = [];
   for (let i = 0; i < beadNumber; i += 1) {
@@ -46,7 +53,7 @@ export function createBeadLabels(beadNumber, beadRadius, xMax, xs, baseX = 0) {
     }
   }
 
-  if (group[group.length - 1] - xMax + baseX < 0) {
+  if (showLast || group[group.length - 1] - xMax + baseX < 0) {
     groups.push(group);
   }
   const labels = [];

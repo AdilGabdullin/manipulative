@@ -86,6 +86,14 @@ const SelectedFrame = (props) => {
       },
     },
     {
+      text: "Fill On/Off",
+      active: !lockSelect,
+      show: selected.some((id) => elements[id].fill != undefined),
+      onPointerClick: (e) => {
+        state.toggleValueSelected("fill");
+      },
+    },
+    {
       text: "Copy",
       active: !lockSelect,
       show: true,
