@@ -4,7 +4,7 @@ import ShapesMenu from "./ShapesMenu";
 
 export const topToolbarHeight = 42;
 
-const workspaceOptions = ["10 Bead", "20 Bead"];
+const workspaceOptions = ["option 1", "option 2"];
 
 const TopToolbar = () => {
   return (

@@ -4,11 +4,10 @@ import { Fragment, useEffect } from "react";
 import { elementBox, setVisibility, setVisibilityFrame } from "../util";
 import ShapeResizeHandles from "./ShapeResizeHandles";
 import { createTextArea } from "./TextElement";
-import { rekenrekTargets } from "./Rekenrek";
 
 const SelectedFrame = (props) => {
   const state = useAppStore();
-  const { selected, lockSelect, origin, offset, scale, elements, beadNumber } = state;
+  const { selected, lockSelect, origin, offset, scale, elements } = state;
 
   const selectedTargets = [];
 
@@ -29,9 +28,6 @@ const SelectedFrame = (props) => {
         const el = elements[id];
         if (!el) continue;
         switch (el.type) {
-          case "rekenrek":
-            rekenrekTargets(id, beadNumber).forEach(pushTarget);
-            break;
           default:
             pushTarget(id);
         }

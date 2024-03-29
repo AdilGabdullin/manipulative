@@ -70,13 +70,6 @@ export const useAppStore = create((set) => ({
     set(
       produce((state) => {
         state.workspace = workspace;
-        state.beadNumber = workspace == "10 Bead" ? 10 : 20;
-        for (const id in current(state.elements)) {
-          if (state.elements[id].type == "rekenrek") {
-            delete state.elements[id];
-          }
-        }
-        pushHistory(state);
       })
     ),
   toggle: (field) =>
@@ -181,11 +174,6 @@ export const useAppStore = create((set) => ({
           if (!element) continue;
           element.x += dx;
           element.y += dy;
-          if (element.type == "rekenrek") {
-            for (const i in current(state).elements[id].beads) {
-              element.beads[i] += dx;
-            }
-          }
           state.lastActiveElement = id;
         }
         pushHistory(state);
@@ -199,11 +187,6 @@ export const useAppStore = create((set) => ({
         if (!element) return;
         element.x += dx;
         element.y += dy;
-        if (element.type == "rekenrek") {
-          for (const i in current(state).elements[id].beads) {
-            element.beads[i] += dx;
-          }
-        }
         state.lastActiveElement = id;
         pushHistory(state);
       })
@@ -268,11 +251,6 @@ export const useAppStore = create((set) => ({
             } else {
               state.elements[id].x += shift;
               state.elements[id].y += shift;
-            }
-            if (element.type == "rekenrek") {
-              for (const i in element.beads) {
-                state.elements[id].beads[i] += shift;
-              }
             }
           }
         }

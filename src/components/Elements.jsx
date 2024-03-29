@@ -4,8 +4,6 @@ import LineElement from "./LineElement";
 import TextElement from "./TextElement";
 import RectElement from "./RectElement";
 import EllipseElement from "./EllipseElement";
-import Rekenrek from "./Rekenrek";
-import RackLabels from "./RackLabels";
 
 const Elements = () => {
   const state = useAppStore();
@@ -29,8 +27,8 @@ const Elements = () => {
           case "line":
             return <LineElement key={id} {...element} />;
             break;
-          case "rekenrek":
-            return <Rekenrek key={id} {...element} />;
+          case "disk":
+            return <Disk key={id} {...element} />;
             break;
         }
       })}
@@ -38,7 +36,6 @@ const Elements = () => {
       <Ellipse id="shadow-ellipse" visible={false} />
       <Line id="shadow-line" visible={false} lineCap={"round"} lineJoin={"round"} />
       <Text id="shadow-text" visible={false} fill={"black"} fontSize={36} text="Text" fontFamily="Calibri" />
-      <RackLabels />
     </>
   );
 };
