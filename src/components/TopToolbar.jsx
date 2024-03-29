@@ -4,7 +4,9 @@ import ShapesMenu from "./ShapesMenu";
 
 export const topToolbarHeight = 42;
 
-const workspaceOptions = ["option 1", "option 2"];
+const workspaceOptions = ["Basic", 
+// "Place Value", "Comparing", "Subtraction"
+];
 
 const TopToolbar = () => {
   return (

@@ -28,7 +28,7 @@ const Disk = (props) => {
   };
 
   return (
-    <Group x={x} y={y} onPointerClick={onPointerClick} draggable onDragMove={onDragMove} onDragEnd={onDragEnd}>
+    <Group id={id} x={x} y={y} onPointerClick={onPointerClick} draggable onDragMove={onDragMove} onDragEnd={onDragEnd}>
       <Circle x={0} y={0} fill={color} radius={radius} />
       <Text
         x={-radius}

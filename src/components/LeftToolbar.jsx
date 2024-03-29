@@ -19,6 +19,10 @@ const allOptions = [
   { value: 0.001, color: "#ffa000" },
 ];
 
+export function getColor(value) {
+  return allOptions.find((option) => option.value == value)?.color;
+}
+
 const LeftToolbar = () => {
   const state = useAppStore();
   const { mode, origin, offset, scale, addElement, height, lastActiveElement, elements } = state;

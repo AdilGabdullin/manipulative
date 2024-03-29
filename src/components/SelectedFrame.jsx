@@ -90,6 +90,14 @@ const SelectedFrame = (props) => {
       },
     },
     {
+      text: "Break",
+      active: !lockSelect,
+      show: selected.length == 1 && elements[selected[0]].type == "disk", // TODO ensure it is breakable
+      onPointerClick: (e) => {
+        state.breakDisk(selected[0]);
+      },
+    },
+    {
       text: "Copy",
       active: !lockSelect,
       show: true,

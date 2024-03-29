@@ -1,11 +1,12 @@
 import { create } from "zustand";
 import { current, produce } from "immer";
-import { leftToolbarWidth } from "../components/LeftToolbar";
+import { getColor, leftToolbarWidth } from "../components/LeftToolbar";
 import { clearSelected, elementBox, newId, numberBetween } from "../util";
 import { topToolbarHeight } from "../components/TopToolbar";
 import { maxOffset } from "../components/Scrolls";
 import { freeDrawingSlice } from "./freeDrawingSlice";
 import { historySlice, pushHistory } from "./historySlice";
+import { radius } from "../components/Disk";
 
 export const gridStep = 60;
 export const boardSize = {
@@ -295,6 +296,34 @@ export const useAppStore = create((set) => ({
         state.fdMode = null;
         clearSelected(state);
         pushHistory(state);
+      })
+    ),
+
+  breakDisk: (id) =>
+    set(
+      produce((state) => {
+        const disk = current(state.elements[id]);
+        const value = disk.value / 10;
+        const color = getColor(value);
+        for (let y = disk.y - radius * 4; y < disk.y + radius * 5; y += 2 * radius) {
+          for (let x = disk.x - radius; x <= disk.x + radius; x += 2 * radius) {
+            const id = newId();
+            state.elements[id] = {
+              id,
+              type: "disk",
+              x: disk.x,
+              y: disk.y,
+              color,
+              value,
+              moveTo: { x, y },
+              locked: false,
+            };
+            state.lastActiveElement = id;
+          }
+        }
+        clearSelected(state);
+        pushHistory(state);
+        delete state.elements[id];
       })
     ),
   action: () => set(produce((state) => {})),
