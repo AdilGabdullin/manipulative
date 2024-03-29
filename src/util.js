@@ -1,3 +1,5 @@
+import { radius } from "./components/Disk";
+
 export const SEARCH_THRESHOLD = 6;
 let id = 0;
 
@@ -163,7 +165,7 @@ function lineBox(element) {
 }
 
 function diskBox(element) {
-  const { x, y, radius } = element;
+  const { x, y } = element;
   return { x: x - radius, y: y - radius, width: radius * 2, height: radius * 2 };
 }
 

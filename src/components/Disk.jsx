@@ -5,13 +5,17 @@ export const radius = 32;
 
 const Disk = (props) => {
   const state = useAppStore();
-  const { origin } = state;
-  const { value, color } = props;
+  const { origin, selectIds } = state;
+  const { id, value, color, locked } = props;
   const x = origin.x + props.x;
   const y = origin.y + props.y;
+
+  const onPointerClick = (e) => {
+    selectIds([id], locked);
+  };
   return (
     <>
-      <Circle x={x} y={y} fill={color} radius={radius} />
+      <Circle x={x} y={y} fill={color} radius={radius} onPointerClick={onPointerClick} />
       <Text
         x={x - radius}
         y={y - fontSize(value) / 2}
@@ -24,6 +28,7 @@ const Disk = (props) => {
         verticalAlign="center"
         fill={"white"}
         color={"white"}
+        onPointerClick={onPointerClick}
       />
     </>
   );
