@@ -30,18 +30,20 @@ const DefaultMenu = (props) => {
 
   let buttons = [
     {
-      text: "Group Labels",
-      field: "showBeadGroups",
+      text: "Whole Numbers",
+      field: "mode",
+      fill: state.mode == "Whole Numbers",
       image: null,
-      width: 95,
+      width: 118,
       shift: 0,
     },
     {
-      text: "Rack Labels",
-      field: "showRackGroups",
+      text: "Decimals",
+      field: "mode",
+      fill: state.mode == "Decimals",
       image: null,
-      width: 85,
-      shift: 10,
+      width: 65,
+      shift: 35,
     },
   ];
   const padding = 8;
@@ -50,12 +52,16 @@ const DefaultMenu = (props) => {
 
   const onPointerClick = (field, text) => (e) => {
     e.cancelBubble = true;
-    state.toggleGlobal(field);
+    if (field == "mode") {
+      state.setMode(text);
+    } else {
+      state.toggleGlobal(field);
+    }
   };
 
   return (
     <>
-      {buttons.map(({ text, field, image, width, shift }, i) => {
+      {buttons.map(({ text, field, image, width, shift, fill }, i) => {
         return (
           <Fragment key={text}>
             <Rect
@@ -64,7 +70,7 @@ const DefaultMenu = (props) => {
               width={width + padding * 2}
               height={buttonHeight + padding * 2}
               cornerRadius={5}
-              fill={state[field] ? "#e8f4fe" : "#ffffff"}
+              fill={fill ? "#e8f4fe" : "#ffffff"}
               onPointerClick={onPointerClick(field, text)}
             />
             {image && (

@@ -16,20 +16,24 @@ export const boardSize = {
 export const useAppStore = create((set) => ({
   ...freeDrawingSlice(set),
   ...historySlice(set),
+  mode: "Whole Numbers",
   imagesReady: false,
   loadedImagesCount: 0,
   offset: { x: 0, y: 0 },
   scale: 1.0,
-  fullscreen: false,
-  workspace: "10 Bead",
-  beadNumber: 10,
+  fullscreen: true,
+  workspace: "basic",
   width: 0,
   height: 0,
   origin: { x: 0, y: 0 },
   selected: [],
   lockSelect: false,
-  showBeadGroups: false,
-  showRackGroups: false,
+  setMode: (value) =>
+    set(
+      produce((state) => {
+        state.mode = value;
+      })
+    ),
   toggleGlobal: (field) =>
     set(
       produce((state) => {
@@ -226,16 +230,6 @@ export const useAppStore = create((set) => ({
       })
     ),
 
-  updateBeads: (id, beads) =>
-    set(
-      produce((state) => {
-        const stateBeads = state.elements[id].beads;
-        for (const i in beads) {
-          stateBeads[i] = beads[i];
-        }
-      })
-    ),
-
   deleteSelected: () =>
     set(
       produce((state) => {
@@ -255,23 +249,6 @@ export const useAppStore = create((set) => ({
           if (element && element[field] !== undefined) {
             element[field] = !element[field];
           }
-        }
-        pushHistory(state);
-      })
-    ),
-  rotateSelected: () =>
-    set(
-      produce((state) => {
-        for (const id of current(state).selected) {
-          const el = state.elements[id];
-          if (!el || el.type != "rod") {
-            continue;
-          }
-          const { x, y, width, height } = el;
-          el.width = height;
-          el.height = width;
-          el.x += width / 2 - height / 2;
-          el.y += height / 2 - width / 2;
         }
         pushHistory(state);
       })
