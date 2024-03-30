@@ -24,10 +24,10 @@ const Disk = (props) => {
   };
 
   const onDragMove = (e) => {
-    const targetPos = { x: e.target.x(), y: e.target.y() };
-    const pos = magnet(id, toStageXY(targetPos, state), elements);
+    const targetPos = { x: e.target.x() - origin.x, y: e.target.y() - origin.y };
+    const pos = magnet(id, targetPos, elements);
     if (pos) {
-      e.target.setAttrs(fromStageXY(pos, state));
+      e.target.setAttrs({ x: origin.x + pos.x, y: origin.y + pos.y });
     }
   };
   const onDragEnd = (e) => {
