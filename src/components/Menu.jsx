@@ -1,14 +1,16 @@
-import { Image, Line, Rect, Text } from "react-konva";
+import { Line, Rect, Text } from "react-konva";
 import { useAppStore } from "../state/store";
 import { leftToolbarWidth } from "./LeftToolbar";
 import BrushMenu from "./BrushMenu";
 import { Fragment } from "react";
+import MaxValueDropdown from "./MaxValueDropdown";
+import MinValueDropdown from "./MinValueDropdown";
 
 export const menuHeight = 50;
 
 const Menu = () => {
   const state = useAppStore();
-  const { width, height, fdMode } = state;
+  const { width, fdMode } = state;
   const x = leftToolbarWidth;
   const y = 0;
   return (
@@ -18,7 +20,11 @@ const Menu = () => {
       {fdMode ? (
         <BrushMenu x={x} y={y} height={menuHeight} />
       ) : (
-        <DefaultMenu x={x} y={y} height={menuHeight} width={width - leftToolbarWidth} />
+        <>
+          <DefaultMenu x={x} y={y} height={menuHeight} width={width - leftToolbarWidth} />
+          <MaxValueDropdown />
+          <MinValueDropdown />
+        </>
       )}
     </>
   );
@@ -31,68 +37,70 @@ const DefaultMenu = (props) => {
   let buttons = [
     {
       text: "Whole Numbers",
-      field: "mode",
       fill: state.mode == "Whole Numbers",
-      image: null,
       width: 118,
       shift: 0,
+      show: true,
+      onPointerClick: () => state.setMode("Whole Numbers"),
     },
     {
       text: "Decimals",
-      field: "mode",
       fill: state.mode == "Decimals",
-      image: null,
       width: 65,
       shift: 35,
+      show: true,
+      onPointerClick: () => state.setMode("Decimals"),
+    },
+    {
+      text: "Maximum",
+      fill: false,
+      width: 60,
+      shift: 10,
+      show: state.mode == "Whole Numbers",
+      onPointerClick: (e) => {
+        console.log(e.target.getStage().getPointerPosition());
+        state.toggle("maxValueDropdown");
+      },
+    },
+    {
+      text: "Minimum",
+      fill: false,
+      width: 65,
+      shift: -100,
+      show: state.mode == "Decimals",
+      onPointerClick: () => state.toggle("minValueDropdown"),
     },
   ];
   const padding = 8;
   const buttonHeight = 20;
   const buttonWidth = 110;
 
-  const onPointerClick = (field, text) => (e) => {
-    e.cancelBubble = true;
-    if (field == "mode") {
-      state.setMode(text);
-    } else {
-      state.toggleGlobal(field);
-    }
-  };
-
   return (
     <>
-      {buttons.map(({ text, field, image, width, shift, fill }, i) => {
+      {buttons.map(({ text, show, width, shift, fill, onPointerClick }, i) => {
         return (
-          <Fragment key={text}>
-            <Rect
-              x={x + padding + buttonWidth * i + shift}
-              y={y + padding}
-              width={width + padding * 2}
-              height={buttonHeight + padding * 2}
-              cornerRadius={5}
-              fill={fill ? "#e8f4fe" : "#ffffff"}
-              onPointerClick={onPointerClick(field, text)}
-            />
-            {image && (
-              <Image
-                image={image}
-                x={x + padding + buttonWidth * i + 4 + shift}
-                y={y + padding + 4}
-                width={30}
-                height={(image.height / image.width) * 30}
-                onPointerClick={onPointerClick(field, text)}
+          show && (
+            <Fragment key={text}>
+              <Rect
+                x={x + padding + buttonWidth * i + shift}
+                y={y + padding}
+                width={width + padding * 2}
+                height={buttonHeight + padding * 2}
+                cornerRadius={5}
+                fill={fill ? "#e8f4fe" : "#ffffff"}
+                onPointerClick={onPointerClick}
               />
-            )}
-            <Text
-              x={x + padding * 2 + buttonWidth * i + (image ? 33 : 0) + shift}
-              y={y + padding * 2}
-              text={text}
-              fill={"black"}
-              fontSize={18}
-              fontFamily="Calibri"
-              onPointerClick={onPointerClick(field, text)}
-            />
-          </Fragment>
+              <Text
+                x={x + padding * 2 + buttonWidth * i + shift}
+                y={y + padding * 2}
+                text={text}
+                fill={"black"}
+                fontSize={18}
+                fontFamily="Calibri"
+                onPointerClick={onPointerClick}
+              />
+            </Fragment>
+          )
         );
       })}
     </>

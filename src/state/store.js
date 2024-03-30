@@ -30,12 +30,16 @@ export const useAppStore = create((set) => ({
   origin: { x: 0, y: 0 },
   selected: [],
   lockSelect: false,
+  minValueDropdown: true,
+  maxValueDropdown: false,
   minValue: 0.001,
   maxValue: 1_000_000,
   setMode: (value) =>
     set(
       produce((state) => {
         state.mode = value;
+        state.minValueDropdown = false;
+        state.maxValueDropdown = false;
       })
     ),
   toggleGlobal: (field) =>
@@ -79,7 +83,7 @@ export const useAppStore = create((set) => ({
   toggle: (field) =>
     set(
       produce((state) => {
-        state.field = !state.field;
+        state[field] = !state[field];
       })
     ),
 
