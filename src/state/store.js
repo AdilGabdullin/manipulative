@@ -30,7 +30,7 @@ export const useAppStore = create((set) => ({
   origin: { x: 0, y: 0 },
   selected: [],
   lockSelect: false,
-  minValueDropdown: true,
+  minValueDropdown: false,
   maxValueDropdown: false,
   minValue: 0.001,
   maxValue: 1_000_000,
@@ -58,6 +58,14 @@ export const useAppStore = create((set) => ({
     set(
       produce((state) => {
         state[field] = value;
+      })
+    ),
+  selectMinMax: (field, value) =>
+    set(
+      produce((state) => {
+        state[field] = value;
+        state.minValueDropdown = false;
+        state.maxValueDropdown = false;
       })
     ),
   setSize: () =>
@@ -169,7 +177,7 @@ export const useAppStore = create((set) => ({
           }
         }
       });
-      return { ...state, selected, lockSelect: false };
+      return { ...state, selected, minValueDropdown: false, maxValueDropdown: false, lockSelect: false };
     }),
 
   selectIds: (ids, lockSelect) => set((state) => ({ ...state, selected: ids, lockSelect })),

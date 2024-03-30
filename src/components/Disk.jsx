@@ -57,7 +57,6 @@ const Disk = (props) => {
         fontSize={fontSize(value)}
         wrap="char"
         align="center"
-        verticalAlign="center"
         fill={"white"}
         color={"white"}
       />

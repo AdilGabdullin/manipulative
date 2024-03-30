@@ -3,14 +3,13 @@ import { useAppStore } from "../state/store";
 import { leftToolbarWidth } from "./LeftToolbar";
 import BrushMenu from "./BrushMenu";
 import { Fragment } from "react";
-import MaxValueDropdown from "./MaxValueDropdown";
-import MinValueDropdown from "./MinValueDropdown";
+import MinMaxDropdown from "./MinMaxDropdown";
 
 export const menuHeight = 50;
 
 const Menu = () => {
   const state = useAppStore();
-  const { width, fdMode } = state;
+  const { width, fdMode, minValue, maxValue, maxValueDropdown, minValueDropdown } = state;
   const x = leftToolbarWidth;
   const y = 0;
   return (
@@ -22,8 +21,22 @@ const Menu = () => {
       ) : (
         <>
           <DefaultMenu x={x} y={y} height={menuHeight} width={width - leftToolbarWidth} />
-          <MaxValueDropdown />
-          <MinValueDropdown />
+          <MinMaxDropdown
+            options={[1_000_000, 100_000, 10_000, 1000, 100, 10]}
+            active={maxValue}
+            visible={maxValueDropdown}
+            onSelect={(value) => {
+              state.selectMinMax("maxValue", value);
+            }}
+          />
+          <MinMaxDropdown
+            options={[0.1, 0.01, 0.001]}
+            active={minValue}
+            visible={minValueDropdown}
+            onSelect={(value) => {
+              state.selectMinMax("minValue", value);
+            }}
+          />
         </>
       )}
     </>
@@ -57,10 +70,7 @@ const DefaultMenu = (props) => {
       width: 60,
       shift: 10,
       show: state.mode == "Whole Numbers",
-      onPointerClick: (e) => {
-        console.log(e.target.getStage().getPointerPosition());
-        state.toggle("maxValueDropdown");
-      },
+      onPointerClick: (e) => state.toggle("maxValueDropdown"),
     },
     {
       text: "Minimum",

@@ -144,6 +144,12 @@ const App = () => {
 
   const onMouseClick = (e) => {
     // console.log("stage click");
+    if (state.minValueDropdown) {
+      state.toggle("minValueDropdown")
+    }
+    if (state.maxValueDropdown) {
+      state.toggle("maxValueDropdown")
+    }
     if (state.selected.length > 0) state.clearSelect();
   };
 
