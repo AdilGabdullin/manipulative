@@ -21,9 +21,9 @@ export const useAppStore = create((set) => ({
   mode: "Whole Numbers",
   imagesReady: false,
   loadedImagesCount: 0,
-  offset: { x: 150, y: 50 },
-  scale: 1.3,
-  fullscreen: true,
+  offset: { x: 0, y: 0 },
+  scale: 1.0,
+  fullscreen: false,
   workspace: "basic",
   width: 0,
   height: 0,
@@ -48,6 +48,7 @@ export const useAppStore = create((set) => ({
         }
         state.minValueDropdown = false;
         state.maxValueDropdown = false;
+        removeOutrangeDisks(state);
       })
     ),
   toggleGlobal: (field) =>
@@ -74,16 +75,7 @@ export const useAppStore = create((set) => ({
         state[field] = value;
         state.minValueDropdown = false;
         state.maxValueDropdown = false;
-
-        for (const [id, element] of Object.entries(current(state.elements))) {
-          if (element.type != "disk") continue;
-          if (element.value > state.maxValue) {
-            delete state.elements[id];
-          }
-          if (element.value < state.minValue) {
-            delete state.elements[id];
-          }
-        }
+        removeOutrangeDisks(state);
       })
     ),
   setSize: () =>
@@ -337,4 +329,16 @@ export const useAppStore = create((set) => ({
 function keepOrigin(state) {
   state.origin.x = ((state.width - leftToolbarWidth) / 2 + leftToolbarWidth) / state.scale;
   state.origin.y = state.height / 2 / state.scale;
+}
+
+function removeOutrangeDisks(state) {
+  for (const [id, element] of Object.entries(current(state.elements))) {
+    if (element.type != "disk") continue;
+    if (element.value > state.maxValue) {
+      delete state.elements[id];
+    }
+    if (element.value < state.minValue) {
+      delete state.elements[id];
+    }
+  }
 }
