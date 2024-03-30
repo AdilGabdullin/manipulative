@@ -104,18 +104,20 @@ export function fontSize(value) {
 }
 
 function animateMove(node, moveTo, state) {
+  const { offset } = state;
   const duration = 400;
   const x0 = node.x();
   const y0 = node.y();
-  const { x, y } = fromStageXY(moveTo, state);
+  let { x, y } = fromStageXY(moveTo, state);
+  x = x + offset.x;
+  y = y + offset.y;
   const animation = new Animation(({ time }) => {
     if (time > duration) {
       animation.stop();
       node.setAttrs({ x, y });
     } else {
-    //   const n = InOutQuadBlend(time / duration);
-    //   const n = BezierBlend(time / duration);
-      const n = ParametricBlend(time / duration);
+      const t = time / duration;
+      const n = (t * t) / (2 * (t * t - t) + 1);
       node.setAttrs({
         x: x0 * (1 - n) + x * n,
         y: y0 * (1 - n) + y * n,
@@ -125,19 +127,5 @@ function animateMove(node, moveTo, state) {
   animation.start();
 }
 
-function InOutQuadBlend(t) {
-  if (t <= 0.5) return 2.0 * t * t;
-  t -= 0.5;
-  return 2.0 * t * (1.0 - t) + 0.5;
-}
-
-function BezierBlend(t) {
-  return t * t * (3.0 - 2.0 * t);
-}
-
-function ParametricBlend(t) {
-  const sqr = t * t;
-  return sqr / (2.0 * (sqr - t) + 1.0);
-}
 
 export default Disk;
