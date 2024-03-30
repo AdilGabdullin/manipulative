@@ -4,10 +4,11 @@ import { Fragment, useEffect } from "react";
 import { elementBox, setVisibility, setVisibilityFrame } from "../util";
 import ShapeResizeHandles from "./ShapeResizeHandles";
 import { createTextArea } from "./TextElement";
+import { breakPossible, regroupPossible } from "../state/breakRegroup";
 
 const SelectedFrame = (props) => {
   const state = useAppStore();
-  const { selected, lockSelect, origin, offset, scale, elements } = state;
+  const { selected, lockSelect, origin, offset, scale, elements, maxValue, minValue } = state;
 
   const selectedTargets = [];
 
@@ -44,8 +45,6 @@ const SelectedFrame = (props) => {
   const y = (origin.y + yMin - 7 - offset.y) * scale - 1;
   const width = (xMax - xMin + 7 * 2) * scale + 2;
   const height = (yMax - yMin + 7 * 2) * scale + 2;
-
-  const onPointerDown = (e) => {};
 
   const onDragStart = (e) => {
     setVisibility(e, false);
@@ -91,10 +90,18 @@ const SelectedFrame = (props) => {
     },
     {
       text: "Break",
-      active: !lockSelect,
-      show: selected.length == 1 && elements[selected[0]].type == "disk", // TODO ensure it is breakable
+      active: !lockSelect && breakPossible(state),
+      show: true,
       onPointerClick: (e) => {
         state.breakDisk(selected[0]);
+      },
+    },
+    {
+      text: "Regroup",
+      active: !lockSelect && regroupPossible(state),
+      show: true,
+      onPointerClick: (e) => {
+        state.regroupSelected();
       },
     },
     {
@@ -165,7 +172,6 @@ const SelectedFrame = (props) => {
         stroke="#2196f3"
         strokeWidth={2}
         draggable={!lockSelect}
-        onPointerDown={onPointerDown}
         onDragStart={onDragStart}
         onDragMove={onDragMove}
         onDragEnd={onDragEnd}

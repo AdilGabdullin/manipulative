@@ -1,12 +1,12 @@
 import { create } from "zustand";
 import { current, produce } from "immer";
-import { getColor, leftToolbarWidth } from "../components/LeftToolbar";
+import { leftToolbarWidth } from "../components/LeftToolbar";
 import { clearSelected, elementBox, newId, numberBetween } from "../util";
 import { topToolbarHeight } from "../components/TopToolbar";
 import { maxOffset } from "../components/Scrolls";
 import { freeDrawingSlice } from "./freeDrawingSlice";
 import { historySlice, pushHistory } from "./historySlice";
-import { radius } from "../components/Disk";
+import { breakRegroupSlice } from "./breakRegroup";
 
 export const gridStep = 60;
 export const boardSize = {
@@ -17,8 +17,8 @@ export const boardSize = {
 export const useAppStore = create((set) => ({
   ...freeDrawingSlice(set),
   ...historySlice(set),
+  ...breakRegroupSlice(set),
   mode: "Whole Numbers",
-  animation: false,
   imagesReady: false,
   loadedImagesCount: 0,
   offset: { x: 150, y: 50 },
@@ -30,6 +30,8 @@ export const useAppStore = create((set) => ({
   origin: { x: 0, y: 0 },
   selected: [],
   lockSelect: false,
+  minValue: 0.001,
+  maxValue: 1_000_000,
   setMode: (value) =>
     set(
       produce((state) => {
@@ -296,46 +298,6 @@ export const useAppStore = create((set) => ({
         }
         state.fdMode = null;
         clearSelected(state);
-        pushHistory(state);
-      })
-    ),
-
-  breakDisk: (id) =>
-    set(
-      produce((state) => {
-        const disk = current(state.elements[id]);
-        const value = disk.value / 10;
-        const color = getColor(value);
-        for (let y = disk.y - radius * 4; y < disk.y + radius * 5; y += 2 * radius) {
-          for (let x = disk.x - radius; x <= disk.x + radius; x += 2 * radius) {
-            const id = newId();
-            state.elements[id] = {
-              id,
-              type: "disk",
-              x: x,
-              y: y,
-              color,
-              value,
-              moveFrom: { x: disk.x, y: disk.y },
-              locked: false,
-            };
-            state.animation = true;
-            state.lastActiveElement = id;
-          }
-        }
-        clearSelected(state);
-        delete state.elements[id];
-      })
-    ),
-
-  stopAnimations: () =>
-    set(
-      produce((state) => {
-        for (const id in current(state.elements)) {
-          const element = state.elements[id];
-          if (element.moveFrom) delete element.moveFrom;
-        }
-        state.animation = false;
         pushHistory(state);
       })
     ),
