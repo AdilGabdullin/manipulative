@@ -18,10 +18,11 @@ export const useAppStore = create((set) => ({
   ...freeDrawingSlice(set),
   ...historySlice(set),
   mode: "Whole Numbers",
+  animation: false,
   imagesReady: false,
   loadedImagesCount: 0,
-  offset: { x: 0, y: 0 },
-  scale: 1.0,
+  offset: { x: 150, y: 50 },
+  scale: 1.3,
   fullscreen: true,
   workspace: "basic",
   width: 0,
@@ -311,19 +312,31 @@ export const useAppStore = create((set) => ({
             state.elements[id] = {
               id,
               type: "disk",
-              x: disk.x,
-              y: disk.y,
+              x: x,
+              y: y,
               color,
               value,
-              moveTo: { x, y },
+              moveFrom: { x: disk.x, y: disk.y },
               locked: false,
             };
+            state.animation = true;
             state.lastActiveElement = id;
           }
         }
         clearSelected(state);
-        pushHistory(state);
         delete state.elements[id];
+      })
+    ),
+
+  stopAnimations: () =>
+    set(
+      produce((state) => {
+        for (const id in current(state.elements)) {
+          const element = state.elements[id];
+          if (element.moveFrom) delete element.moveFrom;
+        }
+        state.animation = false;
+        pushHistory(state);
       })
     ),
   action: () => set(produce((state) => {})),

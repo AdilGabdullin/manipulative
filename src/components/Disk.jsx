@@ -5,18 +5,19 @@ import { useEffect, useRef } from "react";
 import { Animation } from "konva/lib/Animation";
 
 export const radius = 32;
+export const duration = 400;
 
 const Disk = (props) => {
   const state = useAppStore();
   const { origin, selectIds, elements, relocateElement, scale, offset } = state;
-  const { id, value, color, locked, moveTo } = props;
+  const { id, value, color, locked, moveFrom } = props;
   const x = origin.x + props.x;
   const y = origin.y + props.y;
   const diskRef = useRef(null);
 
   useEffect(() => {
-    if (moveTo) {
-      animateMove(diskRef.current, moveTo, state);
+    if (moveFrom) {
+      animateMove(diskRef.current, moveFrom, state);
     }
   }, []);
 
@@ -42,6 +43,7 @@ const Disk = (props) => {
       ref={diskRef}
       x={x}
       y={y}
+      visible={!moveFrom}
       onPointerClick={onPointerClick}
       draggable
       onDragMove={onDragMove}
@@ -103,29 +105,27 @@ export function fontSize(value) {
   return 22;
 }
 
-function animateMove(node, moveTo, state) {
-  const { offset } = state;
-  const duration = 400;
-  const x0 = node.x();
-  const y0 = node.y();
-  let { x, y } = fromStageXY(moveTo, state);
-  x = x + offset.x;
-  y = y + offset.y;
+function animateMove(node, moveFrom, state) {
+  const { origin } = state;
+  const xFrom = moveFrom.x + origin.x;
+  const yFrom = moveFrom.y + origin.y;
+  const xTo = node.x();
+  const yTo = node.y();
+  node.setAttrs({ x: xFrom, y: yFrom, visible: true });
   const animation = new Animation(({ time }) => {
     if (time > duration) {
       animation.stop();
-      node.setAttrs({ x, y });
-    } else {
-      const t = time / duration;
-      const n = (t * t) / (2 * (t * t - t) + 1);
-      node.setAttrs({
-        x: x0 * (1 - n) + x * n,
-        y: y0 * (1 - n) + y * n,
-      });
+      node.setAttrs({ x: xTo, y: yTo });
+      return;
     }
+    const t = time / duration;
+    const k = (t * t) / (2 * (t * t - t) + 1);
+    node.setAttrs({
+      x: xFrom * (1 - k) + xTo * k,
+      y: yFrom * (1 - k) + yTo * k,
+    });
   }, node.getLayer());
   animation.start();
 }
-
 
 export default Disk;

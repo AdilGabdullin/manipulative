@@ -4,11 +4,15 @@ import LineElement from "./LineElement";
 import TextElement from "./TextElement";
 import RectElement from "./RectElement";
 import EllipseElement from "./EllipseElement";
-import Disk from "./Disk";
+import Disk, { duration } from "./Disk";
 
 const Elements = () => {
   const state = useAppStore();
-  const { elements } = state;
+  const { elements, animation } = state;
+
+  if (animation) {
+    setTimeout(() => state.stopAnimations(), duration + 50);
+  }
 
   const list = sortedElements(elements);
   return (
