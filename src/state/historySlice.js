@@ -2,7 +2,7 @@ import { current, original, produce } from "immer";
 import { clearSelected } from "../util";
 
 export const historySlice = (set) => ({
-  history: [{ elements: {}, fdLines: {} }],
+  history: [{ elements: {}, fdLines: {}, minValue: 1, maxValue: 1_000_000 }],
   historyIndex: 0,
 
   undo: () =>
@@ -16,6 +16,8 @@ export const historySlice = (set) => ({
           state.elements = historyState.elements;
           state.fdLines = historyState.fdLines;
           state.lastActiveElement = historyState.lastActiveElement;
+          state.minValue = historyState.minValue;
+          state.maxValue = historyState.maxValue;
           clearSelected(state);
         }
       })
@@ -31,6 +33,8 @@ export const historySlice = (set) => ({
           state.elements = historyState.elements;
           state.fdLines = historyState.fdLines;
           state.lastActiveElement = historyState.lastActiveElement;
+          state.minValue = historyState.minValue;
+          state.maxValue = historyState.maxValue;
           clearSelected(state);
         }
       })
@@ -49,6 +53,8 @@ export function pushHistory(state) {
     elements: currentState.elements,
     fdLines: currentState.fdLines,
     lastActiveElement: currentState.lastActiveElement,
+    minValue: currentState.minValue,
+    maxValue: currentState.maxValue,
   });
   state.historyIndex += 1;
 }

@@ -34,6 +34,11 @@ export const useAppStore = create((set) => ({
   maxValueDropdown: false,
   minValue: 1,
   maxValue: 1_000_000,
+
+  offset: { x: 50, y: 150 },
+  scale: 1.2,
+  fullscreen: true,
+
   setMode: (value) =>
     set(
       produce((state) => {
@@ -49,6 +54,7 @@ export const useAppStore = create((set) => ({
         state.minValueDropdown = false;
         state.maxValueDropdown = false;
         removeOutrangeDisks(state);
+        pushHistory(state);
       })
     ),
   toggleGlobal: (field) =>
@@ -76,6 +82,7 @@ export const useAppStore = create((set) => ({
         state.minValueDropdown = false;
         state.maxValueDropdown = false;
         removeOutrangeDisks(state);
+        pushHistory(state);
       })
     ),
   setSize: () =>
