@@ -25,9 +25,8 @@ export function getColor(value) {
 
 const LeftToolbar = () => {
   const state = useAppStore();
-  const { mode, origin, offset, scale, addElement, height, lastActiveElement, elements } = state;
-  const [min, max] = mode == "Whole Numbers" ? [1, 1_000_000] : [0.001, 10];
-  const options = allOptions.filter(({ value }) => value >= min && value <= max);
+  const { origin, offset, scale, addElement, height, lastActiveElement, elements, minValue, maxValue } = state;
+  const options = allOptions.filter(({ value }) => value >= minValue && value <= maxValue);
   const top = (height - radius * 2 * options.length) / (options.length + 1);
   const left = (leftToolbarWidth - 2 * radius) / 2;
 

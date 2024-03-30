@@ -1,6 +1,7 @@
 import { Group, Rect, Text } from "react-konva";
 import { menuHeight } from "./Menu";
 import { useRef } from "react";
+import { format } from "./Disk";
 
 const width = 120;
 const fontSize = 22;
@@ -68,8 +69,8 @@ const Option = ({ x, y, text, active, onSelect }) => {
       <Text
         x={x}
         y={y + padding}
-        width={width}
-        text={text}
+        width={width - 2 * margin}
+        text={format(text)}
         align="center"
         fill={"black"}
         fontSize={fontSize}

@@ -32,12 +32,20 @@ export const useAppStore = create((set) => ({
   lockSelect: false,
   minValueDropdown: false,
   maxValueDropdown: false,
-  minValue: 0.001,
+  minValue: 1,
   maxValue: 1_000_000,
   setMode: (value) =>
     set(
       produce((state) => {
         state.mode = value;
+        if (value == "Whole Numbers") {
+          state.minValue = 1;
+          state.maxValue = 1_000_000;
+        }
+        if (value == "Decimals") {
+          state.minValue = 0.001;
+          state.maxValue = 10;
+        }
         state.minValueDropdown = false;
         state.maxValueDropdown = false;
       })
@@ -66,6 +74,16 @@ export const useAppStore = create((set) => ({
         state[field] = value;
         state.minValueDropdown = false;
         state.maxValueDropdown = false;
+
+        for (const [id, element] of Object.entries(current(state.elements))) {
+          if (element.type != "disk") continue;
+          if (element.value > state.maxValue) {
+            delete state.elements[id];
+          }
+          if (element.value < state.minValue) {
+            delete state.elements[id];
+          }
+        }
       })
     ),
   setSize: () =>
