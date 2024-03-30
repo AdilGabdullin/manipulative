@@ -25,6 +25,7 @@ export const breakRegroupSlice = (set) => ({
                 value,
                 moveFrom: { x: disk.x, y: disk.y },
                 visible: false,
+                visibleAfterMove: true,
                 locked: false,
               };
               state.animation = true;
@@ -40,18 +41,23 @@ export const breakRegroupSlice = (set) => ({
   stopAnimations: () =>
     set(
       produce((state) => {
-        for (const id in current(state.elements)) {
-          const element = state.elements[id];
-          if (element.visibleAfterMove) {
-            element.visible = true;
+        if (state.animation) {
+          for (const id in current(state.elements)) {
+            const element = state.elements[id];
+            if (element.moveFrom) {
+              delete element.moveFrom;
+            }
+            if (element.visibleAfterMove) {
+              element.visible = true;
+            }
+            if (element.deleteAfterMove) {
+              delete state.elements[id];
+            }
           }
-          if (element.deleteAfterMove) {
-            delete state.elements[id];
-          }
+          state.animation = false;
+          clearSelected(state);
+          pushHistory(state);
         }
-        state.animation = false;
-        clearSelected(state);
-        pushHistory(state);
       })
     ),
 
@@ -101,7 +107,7 @@ export function disksByValue(state) {
 
 export function breakPossible(state) {
   const { elements, minValue, selected } = state;
-  return selected.some(id => elements[id].type == "disk" && elements[id].value > minValue);
+  return selected.some((id) => elements[id].type == "disk" && elements[id].value > minValue);
 }
 
 export function regroupPossible(state) {
