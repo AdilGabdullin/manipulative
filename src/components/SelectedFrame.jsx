@@ -93,7 +93,7 @@ const SelectedFrame = (props) => {
       active: !lockSelect && breakPossible(state),
       show: true,
       onPointerClick: (e) => {
-        state.breakDisk(selected[0]);
+        state.breakDisks();
       },
     },
     {

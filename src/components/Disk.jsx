@@ -9,17 +9,15 @@ export const duration = 400;
 
 const Disk = (props) => {
   const state = useAppStore();
-  const { origin, selectIds, elements, relocateElement, scale, offset } = state;
-  const { id, value, color, locked, moveFrom } = props;
+  const { origin, selectIds, elements, relocateElement } = state;
+  const { id, value, color, locked, moveFrom, visible } = props;
   const x = origin.x + props.x;
   const y = origin.y + props.y;
   const diskRef = useRef(null);
 
   useEffect(() => {
-    if (moveFrom) {
-      animateMove(diskRef.current, moveFrom, state);
-    }
-  }, []);
+    animateMove(diskRef.current, moveFrom, state);
+  }, [moveFrom]);
 
   const onPointerClick = (e) => {
     selectIds([id], locked);
@@ -43,7 +41,7 @@ const Disk = (props) => {
       ref={diskRef}
       x={x}
       y={y}
-      visible={!moveFrom}
+      visible={visible}
       onPointerClick={onPointerClick}
       draggable
       onDragMove={onDragMove}
@@ -106,6 +104,7 @@ export function fontSize(value) {
 }
 
 function animateMove(node, moveFrom, state) {
+  if (!moveFrom) return;
   const { origin } = state;
   const xFrom = moveFrom.x + origin.x;
   const yFrom = moveFrom.y + origin.y;
