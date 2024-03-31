@@ -17,17 +17,13 @@ const PlaceValue = () => {
   const x = origin.x - (totalWidth + scrollSize) / 2;
   const y = origin.y - (totalHeight + scrollSize) / 2;
 
-  const columns = 7;
+  const columns = Math.log10(maxValue / minValue) + 1;
   const columnWidth = totalWidth / columns;
-  const lines = [];
-  for (let x = columnWidth; x < columns * columnWidth; x += columnWidth) {
-    lines.push(x);
-  }
-
   const heads = [];
-
+  const lines = [];
   for (let x = 0, value = maxValue; value >= minValue; x += columnWidth, value /= 10) {
     heads.push({ x, ...allOptions[value] });
+    if (x > 0) lines.push(x);
   }
 
   return (
@@ -56,12 +52,12 @@ const Head = ({ x, width, height, color, text }) => {
   return (
     <Group x={x} y={0}>
       <Rect {...commonProps} x={0} y={0} width={width} height={height} fill={color} cornerRadius={0} />
-      <Rect {...commonProps} x={margin} y={margin} width={buttonWidth} height={buttonHeight} fill="white" />
+      <Rect {...commonProps} x={margin} y={margin} width={width - margin * 2} height={buttonHeight} fill="white" />
       <Text
         {...textProps}
         x={margin}
         y={margin + buttonHeight / 2 - shift}
-        width={buttonWidth}
+        width={width - margin * 2}
         text={text}
         fontSize={fontSize}
         fill={"#333"}
