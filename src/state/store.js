@@ -25,7 +25,7 @@ export const useAppStore = create((set) => ({
   offset: { x: 0, y: 0 },
   scale: 1.0,
   fullscreen: false,
-  workspace: "Comparing",
+  workspace: "Place Value",
   width: 0,
   height: 0,
   origin: { x: 0, y: 0 },

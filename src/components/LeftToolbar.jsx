@@ -6,27 +6,29 @@ import { fromStageXY, toStageXY } from "../util";
 
 export const leftToolbarWidth = 180;
 
-const allOptions = [
-  { value: 1_000_000, color: "#c2185b" },
-  { value: 100_000, color: "#afb42b" },
-  { value: 10_000, color: "#3f51b5" },
-  { value: 1000, color: "#9c27b0" },
-  { value: 100, color: "#8bc34a" },
-  { value: 10, color: "#e91e63" },
-  { value: 1, color: "#2196f3" },
-  { value: 0.1, color: "#795548" },
-  { value: 0.01, color: "#009688" },
-  { value: 0.001, color: "#ffa000" },
-];
+export const allOptions = {
+  1_000_000: { value: 1_000_000, color: "#c2185b", text: "Millions" },
+  100_000: { value: 100_000, color: "#afb42b", text: "Hundred\nThousands" },
+  10_000: { value: 10_000, color: "#3f51b5", text: "Ten\nThousands" },
+  1000: { value: 1000, color: "#9c27b0", text: "Thousands" },
+  100: { value: 100, color: "#8bc34a", text: "Hundreds" },
+  10: { value: 10, color: "#e91e63", text: "Tens" },
+  1: { value: 1, color: "#2196f3", text: "Ones" },
+  0.1: { value: 0.1, color: "#795548", text: "Tenths" },
+  0.01: { value: 0.01, color: "#009688", text: "Hundredths" },
+  0.001: { value: 0.001, color: "#ffa000", text: "Thousandths" },
+};
 
 export function getColor(value) {
-  return allOptions.find((option) => option.value == value)?.color;
+  return allOptions[value]?.color;
 }
 
 const LeftToolbar = () => {
   const state = useAppStore();
   const { origin, offset, scale, addElement, height, lastActiveElement, elements, minValue, maxValue } = state;
-  const options = allOptions.filter(({ value }) => value >= minValue && value <= maxValue);
+  const options = Object.values(allOptions)
+    .toSorted((a, b) => b.value - a.value)
+    .filter(({ value }) => value >= minValue && value <= maxValue);
   const top = (height - radius * 2 * options.length) / (options.length + 1);
   const left = (leftToolbarWidth - 2 * radius) / 2;
 

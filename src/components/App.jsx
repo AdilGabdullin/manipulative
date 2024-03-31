@@ -13,6 +13,7 @@ import FreeDrawing from "./FreeDrawing";
 import ImagePreloader from "./ImagePreloader";
 import { appSaveText } from "./TextElement";
 import Comparing from "./Comparing";
+import PlaceValue from "./PlaceValue";
 
 const App = () => {
   const state = useAppStore();
@@ -303,6 +304,7 @@ const App = () => {
           scaleY={state.scale}
         >
           {state.workspace == "Comparing" && <Comparing />}
+          {state.workspace == "Place Value" && <PlaceValue />}
           <Elements />
           <SelectRect />
         </Layer>

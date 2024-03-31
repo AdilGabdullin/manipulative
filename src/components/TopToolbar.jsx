@@ -1,12 +1,11 @@
 import { useAppStore } from "../state/store";
-import { capitalizeFirstLetter } from "../util";
 import ShapesMenu from "./ShapesMenu";
 
 export const topToolbarHeight = 42;
 
 const workspaceOptions = [
   "Basic",
-  // "Place Value",
+  "Place Value",
   "Comparing",
   // "Subtraction"
 ];

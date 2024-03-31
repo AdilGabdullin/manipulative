@@ -4,19 +4,17 @@ import { leftToolbarWidth } from "./LeftToolbar";
 import { menuHeight } from "./Menu";
 import { numberBetween, sum } from "../util";
 
-const margin = 10;
-const buttonHeight = 60;
-const buttonWidth = 140;
-const scrollSize = 14;
-const stroke = "grey";
-
-const commonProps = {
+export const margin = 10;
+export const buttonHeight = 60;
+export const buttonWidth = 140;
+export const scrollSize = 14;
+export const stroke = "grey";
+export const commonProps = {
   cornerRadius: 6,
   stroke: stroke,
   strokeWidth: 2,
 };
-
-const textProps = {
+export const textProps = {
   stroke: "#299af3",
   fill: "#299af3",
   align: "center",
@@ -24,7 +22,8 @@ const textProps = {
 };
 
 const Comparing = () => {
-  const { origin, width, height, fullscreen, elements } = useAppStore();
+  const state = useAppStore();
+  const { origin, width, height, fullscreen } = state;
   if (!width) return null;
   const totalWidth = Math.min(width - leftToolbarWidth - 45, 750);
   let totalHeight = height - margin * 2 - menuHeight - scrollSize;
@@ -32,30 +31,10 @@ const Comparing = () => {
     totalHeight = Math.min(totalHeight, 600);
   }
   const mainHeight = totalHeight - buttonHeight - margin;
-  const x = origin.x - totalWidth / 2;
+  const x = origin.x - (totalWidth + scrollSize) / 2;
   const y = origin.y - (totalHeight + scrollSize) / 2;
-  const left = sum(
-    Object.values(elements)
-      .filter((e) => {
-        return (
-          !e.ignoreSum &&
-          numberBetween(origin.x + e.x, x, x + totalWidth / 2) &&
-          numberBetween(origin.y + e.y, y, y + mainHeight)
-        );
-      })
-      .map((e) => e.value)
-  );
-  const right = sum(
-    Object.values(elements)
-      .filter((e) => {
-        return (
-          !e.ignoreSum &&
-          numberBetween(origin.x + e.x, x + totalWidth / 2, x + totalWidth) &&
-          numberBetween(origin.y + e.y, y, y + mainHeight)
-        );
-      })
-      .map((e) => e.value)
-  );
+  const left = sumInRect(state, x, y, totalWidth / 2, mainHeight);
+  const right = sumInRect(state, x + totalWidth / 2, y, totalWidth / 2, mainHeight);
   const sign = left < right ? "<" : left > right ? ">" : "=";
 
   return (
@@ -80,7 +59,7 @@ const CenterCircle = ({ x, y, value }) => {
   );
 };
 
-const Button = ({ x, y, value }) => {
+export const Button = ({ x, y, value }) => {
   const fontSize = 32;
   return (
     <Group x={x} y={y}>
@@ -96,5 +75,19 @@ const Button = ({ x, y, value }) => {
     </Group>
   );
 };
+
+export function sumInRect(state, x, y, width, height) {
+  return sum(
+    Object.values(state.elements)
+      .filter((e) => {
+        return (
+          !e.ignoreSum &&
+          numberBetween(state.origin.x + e.x, x, x + width) &&
+          numberBetween(state.origin.y + e.y, y, y + height)
+        );
+      })
+      .map((e) => e.value)
+  );
+}
 
 export default Comparing;
