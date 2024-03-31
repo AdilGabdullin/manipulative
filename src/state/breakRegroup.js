@@ -49,6 +49,7 @@ export const breakRegroupSlice = (set) => ({
             }
             if (element.visibleAfterMove) {
               element.visible = true;
+              delete element.visibleAfterMove;
             }
             if (element.deleteAfterMove) {
               delete state.elements[id];
@@ -87,6 +88,7 @@ export const breakRegroupSlice = (set) => ({
               disk.x = x;
               disk.y = y;
               disk.deleteAfterMove = true;
+              disk.ignoreSum = true;
             }
             state.animation = true;
             clearSelected(state);

@@ -2,6 +2,7 @@ import { Circle, Group, Line, Rect, Text } from "react-konva";
 import { useAppStore } from "../state/store";
 import { leftToolbarWidth } from "./LeftToolbar";
 import { menuHeight } from "./Menu";
+import { numberBetween, sum } from "../util";
 
 const margin = 10;
 const buttonHeight = 60;
@@ -23,28 +24,47 @@ const textProps = {
 };
 
 const Comparing = () => {
-  const { origin, width, height, fullscreen } = useAppStore();
+  const { origin, width, height, fullscreen, elements } = useAppStore();
   if (!width) return null;
-
   const totalWidth = Math.min(width - leftToolbarWidth - 45, 750);
-  let totalHeight = (height - margin * 2 - menuHeight - scrollSize);
-
-  if (fullscreen ) {
+  let totalHeight = height - margin * 2 - menuHeight - scrollSize;
+  if (fullscreen) {
     totalHeight = Math.min(totalHeight, 600);
   }
-
   const mainHeight = totalHeight - buttonHeight - margin;
-
   const x = origin.x - totalWidth / 2;
   const y = origin.y - (totalHeight + scrollSize) / 2;
+  const left = sum(
+    Object.values(elements)
+      .filter((e) => {
+        return (
+          !e.ignoreSum &&
+          numberBetween(origin.x + e.x, x, x + totalWidth / 2) &&
+          numberBetween(origin.y + e.y, y, y + mainHeight)
+        );
+      })
+      .map((e) => e.value)
+  );
+  const right = sum(
+    Object.values(elements)
+      .filter((e) => {
+        return (
+          !e.ignoreSum &&
+          numberBetween(origin.x + e.x, x + totalWidth / 2, x + totalWidth) &&
+          numberBetween(origin.y + e.y, y, y + mainHeight)
+        );
+      })
+      .map((e) => e.value)
+  );
+  const sign = left < right ? "<" : left > right ? ">" : "=";
+
   return (
     <Group x={x} y={y}>
       <Rect x={0} y={0} width={totalWidth} height={mainHeight} {...commonProps} />
       <Line x={totalWidth / 2} y={0} points={[0, 0, 0, mainHeight]} {...commonProps} />
-
-      <Button x={totalWidth / 4 - buttonWidth / 2} y={mainHeight + margin} value={100} />
-      <CenterCircle x={totalWidth / 2} y={mainHeight + margin + buttonHeight / 2} value={"="} />
-      <Button x={(totalWidth * 3) / 4 - buttonWidth / 2} y={mainHeight + margin} value={100} />
+      <Button x={totalWidth / 4 - buttonWidth / 2} y={mainHeight + margin} value={left} />
+      <CenterCircle x={totalWidth / 2} y={mainHeight + margin + buttonHeight / 2} value={sign} />
+      <Button x={(totalWidth * 3) / 4 - buttonWidth / 2} y={mainHeight + margin} value={right} />
     </Group>
   );
 };
