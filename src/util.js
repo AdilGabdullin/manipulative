@@ -83,6 +83,7 @@ export function isPointCloseToLine(point, line1, line2, dist = SEARCH_THRESHOLD)
 }
 
 export function isPointInRect(point, rect) {
+  if (!rect) return false;
   const { x: px, y: py } = point;
   const { x, y, width, height } = rect;
   return px > x && px < x + width && py > y && py < y + height;

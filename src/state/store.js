@@ -214,9 +214,15 @@ export const useAppStore = create((set) => ({
         for (const id of state.selected) {
           const element = state.elements[id];
           if (!element) continue;
-          if (diskInWrongColumn(state, { ...current(element), x: element.x + dx, y: element.y + dy })) {
-            element.moveFrom = { x: element.x + dx, y: element.y + dy };
-            state.animation = true;
+          const nextPosition = { ...current(element), x: element.x + dx, y: element.y + dy };
+          if (diskInWrongColumn(state, nextPosition)) {
+            if (diskInBreakColumn(current(state), nextPosition)) {
+              createTenDisks(state, nextPosition);
+              delete state.elements[id];
+            } else {
+              element.moveFrom = { x: element.x + dx, y: element.y + dy };
+              state.animation = true;
+            }
           } else {
             element.x += dx;
             element.y += dy;
@@ -235,9 +241,15 @@ export const useAppStore = create((set) => ({
       produce((state) => {
         const element = state.elements[id];
         if (!element) return;
-        if (diskInWrongColumn(state, { ...current(element), x: element.x + dx, y: element.y + dy })) {
-          element.moveFrom = { x: element.x + dx, y: element.y + dy };
-          state.animation = true;
+        const nextPosition = { ...current(element), x: element.x + dx, y: element.y + dy };
+        if (diskInWrongColumn(state, nextPosition)) {
+          if (diskInBreakColumn(current(state), nextPosition)) {
+            createTenDisks(state, nextPosition);
+            delete state.elements[id];
+          } else {
+            element.moveFrom = { x: element.x + dx, y: element.y + dy };
+            state.animation = true;
+          }
         } else {
           element.x += dx;
           element.y += dy;
