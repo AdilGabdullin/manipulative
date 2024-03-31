@@ -3,6 +3,7 @@ import { useAppStore } from "../state/store";
 import { leftToolbarWidth } from "./LeftToolbar";
 import { menuHeight } from "./Menu";
 import { numberBetween, sum } from "../util";
+import { useRef, useState } from "react";
 
 export const margin = 10;
 export const buttonHeight = 60;
@@ -49,22 +50,45 @@ const Comparing = () => {
 };
 
 const CenterCircle = ({ x, y, value }) => {
+  const [visible, setVisible] = useState(true);
   const r = buttonHeight / 2;
   const fontSize = 40;
+  const rectRef = useRef();
+  const onPointerEnter = (e) => {
+    rectRef.current?.setAttr("stroke", textProps.stroke);
+  };
+  const onPointerLeave = (e) => {
+    rectRef.current?.setAttr("stroke", commonProps.stroke);
+  };
+  const onPointerClick = (e) => {
+    setVisible(!visible);
+  };
   return (
-    <Group x={x} y={y}>
-      <Circle x={0} y={0} radius={r} {...commonProps} />
-      <Text x={-r} y={-fontSize / 2} width={2 * r} text={value} fontSize={fontSize} {...textProps} />
+    <Group x={x} y={y} onPointerEnter={onPointerEnter} onPointerLeave={onPointerLeave} onPointerClick={onPointerClick}>
+      <Circle ref={rectRef} x={0} y={0} radius={r} {...commonProps} />
+      <Text visible={visible} x={-r} y={-fontSize / 2} width={2 * r} text={value} fontSize={fontSize} {...textProps} />
     </Group>
   );
 };
 
 export const Button = ({ x, y, value }) => {
+  const [visible, setVisible] = useState(true);
   const fontSize = 32;
+  const rectRef = useRef();
+  const onPointerEnter = (e) => {
+    rectRef.current?.setAttr("stroke", textProps.stroke);
+  };
+  const onPointerLeave = (e) => {
+    rectRef.current?.setAttr("stroke", commonProps.stroke);
+  };
+  const onPointerClick = (e) => {
+    setVisible(!visible);
+  };
   return (
-    <Group x={x} y={y}>
-      <Rect x={0} y={0} width={buttonWidth} height={buttonHeight} {...commonProps} />
+    <Group x={x} y={y} onPointerEnter={onPointerEnter} onPointerLeave={onPointerLeave} onPointerClick={onPointerClick}>
+      <Rect ref={rectRef} x={0} y={0} width={buttonWidth} height={buttonHeight} {...commonProps} />
       <Text
+        visible={visible}
         x={0}
         y={(buttonHeight - fontSize) / 2}
         width={buttonWidth}
