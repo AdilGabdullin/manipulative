@@ -12,6 +12,7 @@ import Elements from "./Elements";
 import FreeDrawing from "./FreeDrawing";
 import ImagePreloader from "./ImagePreloader";
 import { appSaveText } from "./TextElement";
+import Comparing from "./Comparing";
 
 const App = () => {
   const state = useAppStore();
@@ -301,6 +302,7 @@ const App = () => {
           scaleX={state.scale}
           scaleY={state.scale}
         >
+          {state.workspace == "Comparing" && <Comparing />}
           <Elements />
           <SelectRect />
         </Layer>

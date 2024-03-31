@@ -7,6 +7,7 @@ import { maxOffset } from "../components/Scrolls";
 import { freeDrawingSlice } from "./freeDrawingSlice";
 import { historySlice, pushHistory } from "./historySlice";
 import { breakRegroupSlice } from "./breakRegroup";
+import { menuHeight } from "../components/Menu";
 
 export const gridStep = 60;
 export const boardSize = {
@@ -24,7 +25,7 @@ export const useAppStore = create((set) => ({
   offset: { x: 0, y: 0 },
   scale: 1.0,
   fullscreen: false,
-  workspace: "basic",
+  workspace: "Comparing",
   width: 0,
   height: 0,
   origin: { x: 0, y: 0 },
@@ -35,9 +36,9 @@ export const useAppStore = create((set) => ({
   minValue: 1,
   maxValue: 1_000_000,
 
-  offset: { x: 50, y: 150 },
-  scale: 1.2,
-  fullscreen: true,
+  // offset: { x: 50, y: 150 },
+  // scale: 1.2,
+  // fullscreen: true,
 
   setMode: (value) =>
     set(
@@ -335,7 +336,7 @@ export const useAppStore = create((set) => ({
 
 function keepOrigin(state) {
   state.origin.x = ((state.width - leftToolbarWidth) / 2 + leftToolbarWidth) / state.scale;
-  state.origin.y = state.height / 2 / state.scale;
+  state.origin.y = ((state.height - menuHeight) / 2 + menuHeight) / state.scale;
 }
 
 function removeOutrangeDisks(state) {

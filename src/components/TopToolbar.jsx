@@ -4,8 +4,11 @@ import ShapesMenu from "./ShapesMenu";
 
 export const topToolbarHeight = 42;
 
-const workspaceOptions = ["Basic", 
-// "Place Value", "Comparing", "Subtraction"
+const workspaceOptions = [
+  "Basic",
+  // "Place Value",
+  "Comparing",
+  // "Subtraction"
 ];
 
 const TopToolbar = () => {
@@ -63,7 +66,7 @@ const WorkspaceSelector = () => {
       <select onChange={(e) => state.setWorkspace(e.target.value)} value={state.workspace}>
         {workspaceOptions.map((option) => (
           <option key={option} value={option}>
-            {capitalizeFirstLetter(option)}
+            {option}
           </option>
         ))}
       </select>
