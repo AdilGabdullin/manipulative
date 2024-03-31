@@ -16,7 +16,7 @@ const Disk = (props) => {
   const diskRef = useRef(null);
 
   useEffect(() => {
-    animateMove(diskRef.current, moveFrom, state);
+    animateMove(diskRef.current, moveFrom, { x, y }, state);
   }, [moveFrom]);
 
   const onPointerClick = (e) => {
@@ -102,13 +102,13 @@ export function fontSize(value) {
   return 22;
 }
 
-function animateMove(node, moveFrom, state) {
+function animateMove(node, moveFrom, moveTo, state) {
   if (!moveFrom) return;
   const { origin } = state;
   const xFrom = moveFrom.x + origin.x;
   const yFrom = moveFrom.y + origin.y;
-  const xTo = node.x();
-  const yTo = node.y();
+  const xTo = moveTo.x;
+  const yTo = moveTo.y;
   node.setAttrs({ x: xFrom, y: yFrom, visible: true });
   const animation = new Animation(({ time }) => {
     if (time > duration) {

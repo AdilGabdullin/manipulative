@@ -220,10 +220,15 @@ export const useAppStore = create((set) => ({
       produce((state) => {
         const element = state.elements[id];
         if (!element) return;
-        element.x += dx;
-        element.y += dy;
-        state.lastActiveElement = id;
-        pushHistory(state);
+        if (diskInWrongColumn(state, { ...current(element), x: element.x + dx, y: element.y + dy })) {
+          element.moveFrom = {x: element.x + dx, y: element.y + dy};
+          state.animation = true;
+        } else {
+          element.x += dx;
+          element.y += dy;
+          state.lastActiveElement = id;
+          pushHistory(state);
+        }
       })
     ),
   relocateElements: (ids, dx, dy) =>
