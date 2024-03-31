@@ -3,20 +3,56 @@ import { allOptions, leftToolbarWidth } from "./LeftToolbar";
 import { Button, buttonHeight, buttonWidth, commonProps, margin, scrollSize, sumInRect, textProps } from "./Comparing";
 import { menuHeight } from "./Menu";
 import { useAppStore } from "../state/store";
+import { isPointInRect } from "../util";
+
+const getTotalWidth = (state) => {
+  return Math.min(state.width - leftToolbarWidth - 45, 1200);
+};
+
+const getTotalHeight = (state) => {
+  let totalHeight = state.height - margin * 2 - menuHeight - scrollSize;
+  if (state.fullscreen) {
+    totalHeight = Math.min(totalHeight, 600);
+  }
+  return totalHeight;
+};
+
+const getValueRects = (state) => {
+  const { minValue, maxValue } = state;
+  const totalWidth = getTotalWidth(state);
+  const totalHeight = getTotalHeight(state);
+  const mainHeight = totalHeight - buttonHeight - margin;
+  const x0 = -(totalWidth + scrollSize) / 2;
+  const y0 = -(totalHeight + scrollSize) / 2;
+  const columns = Math.log10(maxValue / minValue) + 1;
+  const columnWidth = totalWidth / columns;
+  const rects = {};
+  for (let x = 0, value = maxValue; value >= minValue; x += columnWidth, value /= 10) {
+    rects[value] = { x: x0 + x, y: y0, width: columnWidth, height: mainHeight };
+  }
+  rects.all = {
+    x: x0,
+    y: y0,
+    width: totalWidth,
+    height: mainHeight,
+  };
+  return rects;
+};
+
+export function diskInWrongColumn(state, e) {
+  const rects = getValueRects(state);
+  return e.type == "disk" && isPointInRect(e, rects.all) && !isPointInRect(e, rects[e.value]);
+}
 
 const PlaceValue = () => {
   const state = useAppStore();
-  const { origin, width, height, fullscreen, minValue, maxValue } = state;
+  const { origin, width, minValue, maxValue, elements } = state;
   if (!width) return null;
-  const totalWidth = Math.min(width - leftToolbarWidth - 45, 1200);
-  let totalHeight = height - margin * 2 - menuHeight - scrollSize;
-  if (fullscreen) {
-    totalHeight = Math.min(totalHeight, 600);
-  }
+  const totalWidth = getTotalWidth(state);
+  const totalHeight = getTotalHeight(state);
   const mainHeight = totalHeight - buttonHeight - margin;
   const x = origin.x - (totalWidth + scrollSize) / 2;
   const y = origin.y - (totalHeight + scrollSize) / 2;
-
   const columns = Math.log10(maxValue / minValue) + 1;
   const columnWidth = totalWidth / columns;
   const heads = [];

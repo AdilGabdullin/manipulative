@@ -8,6 +8,7 @@ import { freeDrawingSlice } from "./freeDrawingSlice";
 import { historySlice, pushHistory } from "./historySlice";
 import { breakRegroupSlice } from "./breakRegroup";
 import { menuHeight } from "../components/Menu";
+import { diskInWrongColumn } from "../components/PlaceValue";
 
 export const gridStep = 60;
 export const boardSize = {
@@ -309,12 +310,14 @@ export const useAppStore = create((set) => ({
   addElement: (element) =>
     set(
       produce((state) => {
-        const id = newId();
-        state.elements[id] = { ...element, id, locked: false };
-        state.fdMode = null;
-        state.lastActiveElement = id;
-        clearSelected(state);
-        pushHistory(state);
+        if (!diskInWrongColumn(current(state), element)) {
+          const id = newId();
+          state.elements[id] = { ...element, id, locked: false };
+          state.fdMode = null;
+          state.lastActiveElement = id;
+          clearSelected(state);
+          pushHistory(state);
+        }
       })
     ),
 

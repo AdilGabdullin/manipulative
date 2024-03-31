@@ -105,6 +105,7 @@ export function sumInRect(state, x, y, width, height) {
     Object.values(state.elements)
       .filter((e) => {
         return (
+          e.type == "disk" &&
           !e.ignoreSum &&
           numberBetween(state.origin.x + e.x, x, x + width) &&
           numberBetween(state.origin.y + e.y, y, y + height)
