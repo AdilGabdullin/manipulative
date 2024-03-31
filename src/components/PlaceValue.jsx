@@ -41,13 +41,18 @@ const getValueRects = (state) => {
 
 export function diskInWrongColumn(state, e) {
   const rects = getValueRects(state);
-  return e.type == "disk" && isPointInRect(e, rects.all) && !isPointInRect(e, rects[e.value]);
+  return (
+    ["Place Value", "Subtraction"].includes(state.workspace) &&
+    e.type == "disk" &&
+    isPointInRect(e, rects.all) &&
+    !isPointInRect(e, rects[e.value])
+  );
 }
 
 const PlaceValue = () => {
   const state = useAppStore();
-  const { origin, width, minValue, maxValue, elements } = state;
-  if (!width) return null;
+  const { origin, width, minValue, maxValue, workspace } = state;
+  if (!width || !(workspace == "Place Value" || workspace == "Subtraction")) return null;
   const totalWidth = getTotalWidth(state);
   const totalHeight = getTotalHeight(state);
   const mainHeight = totalHeight - buttonHeight - margin;

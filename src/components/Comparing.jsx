@@ -24,8 +24,8 @@ export const textProps = {
 
 const Comparing = () => {
   const state = useAppStore();
-  const { origin, width, height, fullscreen } = state;
-  if (!width) return null;
+  const { origin, width, height, fullscreen, workspace } = state;
+  if (!width || workspace != "Comparing") return null;
   const totalWidth = Math.min(width - leftToolbarWidth - 45, 750);
   let totalHeight = height - margin * 2 - menuHeight - scrollSize;
   if (fullscreen) {

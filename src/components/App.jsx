@@ -147,10 +147,10 @@ const App = () => {
   const onMouseClick = (e) => {
     // console.log("stage click");
     if (state.minValueDropdown) {
-      state.toggle("minValueDropdown")
+      state.toggle("minValueDropdown");
     }
     if (state.maxValueDropdown) {
-      state.toggle("maxValueDropdown")
+      state.toggle("maxValueDropdown");
     }
     if (state.selected.length > 0) state.clearSelect();
   };
@@ -303,8 +303,8 @@ const App = () => {
           scaleX={state.scale}
           scaleY={state.scale}
         >
-          {state.workspace == "Comparing" && <Comparing />}
-          {state.workspace == "Place Value" && <PlaceValue />}
+          <Comparing />
+          <PlaceValue />
           <Elements />
           <SelectRect />
         </Layer>

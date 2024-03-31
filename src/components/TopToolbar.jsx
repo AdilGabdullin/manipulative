@@ -7,7 +7,7 @@ const workspaceOptions = [
   "Basic",
   "Place Value",
   "Comparing",
-  // "Subtraction"
+  "Subtraction"
 ];
 
 const TopToolbar = () => {

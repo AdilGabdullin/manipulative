@@ -105,6 +105,13 @@ export const useAppStore = create((set) => ({
     set(
       produce((state) => {
         state.workspace = workspace;
+        if (["Place Value", "Subtraction"].includes(workspace)) {
+          for (const id in current(state.elements)) {
+            if (diskInWrongColumn(state, state.elements[id])) {
+              delete state.elements[id];
+            }
+          }
+        }
       })
     ),
   toggle: (field) =>
