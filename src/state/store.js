@@ -6,9 +6,9 @@ import { topToolbarHeight } from "../components/TopToolbar";
 import { maxOffset } from "../components/Scrolls";
 import { freeDrawingSlice } from "./freeDrawingSlice";
 import { historySlice, pushHistory } from "./historySlice";
-import { breakRegroupSlice } from "./breakRegroup";
+import { createTenDisks, breakRegroupSlice } from "./breakRegroup";
 import { menuHeight } from "../components/Menu";
-import { diskInWrongColumn } from "../components/PlaceValue";
+import { diskInBreakColumn, diskInWrongColumn } from "../components/PlaceValue";
 
 export const gridStep = 60;
 export const boardSize = {
@@ -330,14 +330,19 @@ export const useAppStore = create((set) => ({
   addElement: (element) =>
     set(
       produce((state) => {
-        if (!diskInWrongColumn(current(state), element)) {
+        const curr = current(state);
+        if (diskInWrongColumn(curr, element)) {
+          if (diskInBreakColumn(curr, element)) {
+            createTenDisks(state, element);
+          }
+        } else {
           const id = newId();
           state.elements[id] = { ...element, id, locked: false };
-          state.fdMode = null;
           state.lastActiveElement = id;
-          clearSelected(state);
-          pushHistory(state);
         }
+        clearSelected(state);
+        state.fdMode = null;
+        pushHistory(state);
       })
     ),
 

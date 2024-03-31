@@ -11,27 +11,7 @@ export const breakRegroupSlice = (set) => ({
       produce((state) => {
         for (const id of current(state.selected)) {
           const disk = current(state.elements[id]);
-          const value = disk.value / 10;
-          const color = getColor(value);
-          for (let y = disk.y - radius * 4; y < disk.y + radius * 5; y += 2 * radius) {
-            for (let x = disk.x - radius; x <= disk.x + radius; x += 2 * radius) {
-              const id = newId();
-              state.elements[id] = {
-                id,
-                type: "disk",
-                x: x,
-                y: y,
-                color,
-                value,
-                moveFrom: { x: disk.x, y: disk.y },
-                visible: false,
-                visibleAfterMove: true,
-                locked: false,
-              };
-              state.animation = true;
-              state.lastActiveElement = id;
-            }
-          }
+          createTenDisks(state, disk);
           delete state.elements[id];
         }
         clearSelected(state);
@@ -118,4 +98,28 @@ export function regroupPossible(state) {
 
 function avgPos(disks) {
   return { x: avg(disks.map((d) => d.x)), y: avg(disks.map((d) => d.y)) };
+}
+
+export function createTenDisks(state, source) {
+  const value = source.value / 10;
+  const color = getColor(value);
+  for (let y = source.y - radius * 4; y < source.y + radius * 5; y += 2 * radius) {
+    for (let x = source.x - radius; x <= source.x + radius; x += 2 * radius) {
+      const id = newId();
+      state.elements[id] = {
+        id,
+        type: "disk",
+        x: x,
+        y: y,
+        color,
+        value,
+        moveFrom: { x: source.x, y: source.y },
+        visible: false,
+        visibleAfterMove: true,
+        locked: false,
+      };
+      state.animation = true;
+      state.lastActiveElement = id;
+    }
+  }
 }

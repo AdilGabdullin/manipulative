@@ -49,6 +49,16 @@ export function diskInWrongColumn(state, e) {
   );
 }
 
+export function diskInBreakColumn(state, e) {
+  const rects = getValueRects(state);
+  return (
+    ["Place Value", "Subtraction"].includes(state.workspace) &&
+    e.type == "disk" &&
+    isPointInRect(e, rects.all) &&
+    isPointInRect(e, rects[e.value / 10])
+  );
+}
+
 const PlaceValue = () => {
   const state = useAppStore();
   const { origin, width, minValue, maxValue, workspace } = state;
