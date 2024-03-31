@@ -149,7 +149,7 @@ export function setVisibility(e, value) {
 export function setVisibilityFrame(e, value) {
   e.target
     .getStage()
-    .find(".popup-menu,.drag-hidden,#selected-frame")
+    ?.find(".popup-menu,.drag-hidden,#selected-frame")
     .forEach((node) => node.visible(value));
 }
 

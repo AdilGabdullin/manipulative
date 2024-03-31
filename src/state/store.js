@@ -207,9 +207,17 @@ export const useAppStore = create((set) => ({
         for (const id of state.selected) {
           const element = state.elements[id];
           if (!element) continue;
-          element.x += dx;
-          element.y += dy;
-          state.lastActiveElement = id;
+          if (diskInWrongColumn(state, { ...current(element), x: element.x + dx, y: element.y + dy })) {
+            element.moveFrom = { x: element.x + dx, y: element.y + dy };
+            state.animation = true;
+          } else {
+            element.x += dx;
+            element.y += dy;
+            state.lastActiveElement = id;
+          }
+        }
+        if (state.animation) {
+          clearSelected(state);
         }
         pushHistory(state);
       })
@@ -221,7 +229,7 @@ export const useAppStore = create((set) => ({
         const element = state.elements[id];
         if (!element) return;
         if (diskInWrongColumn(state, { ...current(element), x: element.x + dx, y: element.y + dy })) {
-          element.moveFrom = {x: element.x + dx, y: element.y + dy};
+          element.moveFrom = { x: element.x + dx, y: element.y + dy };
           state.animation = true;
         } else {
           element.x += dx;
