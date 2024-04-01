@@ -63,7 +63,7 @@ const LeftToolbar = () => {
       const left = (width - radius * 4) / 2;
       pos = {
         x: x + left + (1 + (exist % 2) * 2) * radius,
-        y: y + left + (1 + Math.floor(exist / 2) * 2) * radius,
+        y: y + left * state.fullscreen + (1 + Math.floor(exist / 2) * 2) * radius,
       };
     } else {
       const last = elements[lastActiveElement];

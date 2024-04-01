@@ -65,6 +65,7 @@ export const useAppStore = create((set) => ({
         state.minValueDropdown = false;
         state.maxValueDropdown = false;
         removeOutrangeDisks(state);
+        clearSelected(state);
         pushHistory(state);
       })
     ),
