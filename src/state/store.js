@@ -39,7 +39,10 @@ export const useAppStore = create((set) => ({
 
   // offset: { x: 50, y: 150 },
   // scale: 1.2,
-  // fullscreen: true,
+  mode: "Decimals",
+  minValue: 0.001,
+  maxValue: 10,
+  fullscreen: true,
 
   setMode: (value) =>
     set(

@@ -17,13 +17,14 @@ const getTotalHeight = (state) => {
   return totalHeight;
 };
 
-const getValueRects = (state) => {
+export const getValueRects = (state) => {
   const { minValue, maxValue } = state;
   const totalWidth = getTotalWidth(state);
   const totalHeight = getTotalHeight(state);
-  const mainHeight = totalHeight - buttonHeight - margin;
+  const headHeight = buttonHeight + 2 * margin;
+  const mainHeight = totalHeight - buttonHeight - margin - headHeight;
   const x0 = -(totalWidth + scrollSize) / 2;
-  const y0 = -(totalHeight + scrollSize) / 2;
+  const y0 = -(totalHeight + scrollSize) / 2 + headHeight;
   const columns = Math.log10(maxValue / minValue) + 1;
   const columnWidth = totalWidth / columns;
   const rects = {};

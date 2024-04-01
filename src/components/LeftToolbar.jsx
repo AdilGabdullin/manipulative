@@ -3,6 +3,7 @@ import { useAppStore } from "../state/store";
 import { fontSize, format, magnet, radius } from "./Disk";
 import { Fragment } from "react";
 import { fromStageXY, toStageXY } from "../util";
+import { getValueRects } from "./PlaceValue";
 
 export const leftToolbarWidth = 180;
 
@@ -25,7 +26,8 @@ export function getColor(value) {
 
 const LeftToolbar = () => {
   const state = useAppStore();
-  const { origin, offset, scale, addElement, height, lastActiveElement, elements, minValue, maxValue } = state;
+  const { workspace, origin, offset, scale, addElement, height, lastActiveElement, elements, minValue, maxValue } =
+    state;
   const options = Object.values(allOptions)
     .toSorted((a, b) => b.value - a.value)
     .filter(({ value }) => value >= minValue && value <= maxValue);
@@ -52,8 +54,22 @@ const LeftToolbar = () => {
   };
 
   const onPointerClick = (value, color) => (e) => {
-    const last = elements[lastActiveElement];
-    const pos = last ? { x: last.x + radius * 2, y: last.y } : { x: 0, y: 0 };
+    let pos;
+
+    if (["Place Value", "Subtraction"].includes(workspace)) {
+      const exist = Object.values(elements).filter((e) => e.value == value).length;
+      if (exist >= 10) return;
+      const { x, y, width } = getValueRects(state)[value];
+      const left = (width - radius * 4) / 2;
+      pos = {
+        x: x + left + (1 + (exist % 2) * 2) * radius,
+        y: y + left + (1 + Math.floor(exist / 2) * 2) * radius,
+      };
+    } else {
+      const last = elements[lastActiveElement];
+      pos = last ? { x: last.x + radius * 2, y: last.y } : { x: 0, y: 0 };
+    }
+
     addElement({
       type: "disk",
       color,
