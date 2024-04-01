@@ -101,18 +101,17 @@ export const Button = ({ x, y, value }) => {
 };
 
 export function sumInRect(state, x, y, width, height) {
-  return sum(
-    Object.values(state.elements)
-      .filter((e) => {
-        return (
-          e.type == "disk" &&
-          !e.ignoreSum &&
-          numberBetween(state.origin.x + e.x, x, x + width) &&
-          numberBetween(state.origin.y + e.y, y, y + height)
-        );
-      })
-      .map((e) => e.value)
-  );
+  const values = Object.values(state.elements)
+    .filter((e) => {
+      return (
+        e.type == "disk" &&
+        !e.ignoreSum &&
+        numberBetween(state.origin.x + e.x, x, x + width) &&
+        numberBetween(state.origin.y + e.y, y, y + height)
+      );
+    })
+    .map((e) => e.value * 1000);
+  return sum(values) / 1000;
 }
 
 export default Comparing;

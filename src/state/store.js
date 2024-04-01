@@ -26,7 +26,7 @@ export const useAppStore = create((set) => ({
   offset: { x: 0, y: 0 },
   scale: 1.0,
   fullscreen: false,
-  workspace: "Place Value",
+  workspace: "Basic",
   width: 0,
   height: 0,
   origin: { x: 0, y: 0 },
@@ -43,6 +43,7 @@ export const useAppStore = create((set) => ({
   minValue: 0.001,
   maxValue: 10,
   fullscreen: true,
+  workspace: "Subtraction",
 
   setMode: (value) =>
     set(
