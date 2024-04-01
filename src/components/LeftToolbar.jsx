@@ -2,6 +2,9 @@ import { Circle, Group, Label, Rect, Text } from "react-konva";
 import { useAppStore } from "../state/store";
 import { fontSize, format, radius } from "./Disk";
 import { Fragment } from "react";
+import ToolbarArrow from "./ToolbarArrow";
+import OpenMarker from "./OpenMarker";
+import NumberLine from "./NumberLine";
 
 export const leftToolbarWidth = 180;
 
@@ -19,56 +22,27 @@ const allOptions = [
 ];
 
 const LeftToolbar = () => {
-  const state = useAppStore();
-  const { mode } = state;
-  const [min, max] = mode == "Whole Numbers" ? [1, 1000000] : [0.001, 10];
-  const options = allOptions.filter(({ value }) => value >= min && value <= max);
-  const top = (state.height - radius * 2 * options.length) / (options.length + 1);
-  const left = (leftToolbarWidth - 2 * radius) / 2;
+  const { height } = useAppStore();
+  if (!height) return null;
+
+  const left = 25;
+  const width = leftToolbarWidth - 2 * left;
+  const shapes = [];
+  const heightTotal = width + width * 0.9 + width / 10;
+  let top = (height - heightTotal) / 5;
+  let y = top;
+  shapes.push(<ToolbarArrow key={0} x={left} y={y} width={width} height={width / 2} isBlue />);
+  y += width / 2 + top;
+  shapes.push(<ToolbarArrow key={1} x={left} y={y} width={width} height={width / 2} />);
+  y += width / 2 + top;
+  shapes.push(<OpenMarker key={2} x={left + width / 4} y={y} width={width / 2} height={width * 0.9} />);
+  y += width + top;
+  shapes.push(<NumberLine key={3} x={left} y={y} width={width} height={width / 10} />);
 
   return (
     <>
-      <Rect fill="#f3f9ff" x={0} y={0} width={leftToolbarWidth} height={state.height} />
-      {options.map(({ value, color }, i) => (
-        <Fragment key={value}>
-          <Disk
-            value={value}
-            x={left + radius}
-            y={top + i * (top + radius * 2) + radius}
-            color={color}
-          />
-          <Group draggable>
-            <Disk
-              key={value}
-              value={value}
-              x={left + radius}
-              y={top + i * (top + radius * 2) + radius}
-              color={color}
-            />
-          </Group>
-        </Fragment>
-      ))}
-    </>
-  );
-};
-
-const Disk = ({ value, x, y, color }) => {
-  return (
-    <>
-      <Circle x={x} y={y} fill={color} radius={radius} />
-      <Text
-        x={x - radius}
-        y={y - fontSize(value) / 2}
-        width={radius * 2}
-        text={format(value)}
-        fontFamily={"Calibri"}
-        fontSize={fontSize(value)}
-        wrap="char"
-        align="center"
-        verticalAlign="center"
-        fill={"white"}
-        color={"white"}
-      />
+      <Rect fill="#f3f9ff" x={0} y={0} width={leftToolbarWidth} height={height} />
+      {shapes}
     </>
   );
 };

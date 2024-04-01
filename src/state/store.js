@@ -21,13 +21,16 @@ export const useAppStore = create((set) => ({
   loadedImagesCount: 0,
   offset: { x: 0, y: 0 },
   scale: 1.0,
-  fullscreen: true,
-  workspace: "basic",
+  fullscreen: false,
+  workspace: "Integers",
   width: 0,
   height: 0,
   origin: { x: 0, y: 0 },
   selected: [],
   lockSelect: false,
+
+  fullscreen: true,
+  workspace: "Open",
   setMode: (value) =>
     set(
       produce((state) => {
