@@ -11,7 +11,7 @@ export const duration = 400;
 const Disk = (props) => {
   const state = useAppStore();
   const { origin, selectIds, elements, relocateElement, subtract } = state;
-  const { id, value, color, locked, moveFrom, visible } = props;
+  const { id, value, color, locked, moveFrom, shrink, visible } = props;
   const x = origin.x + props.x;
   const y = origin.y + props.y;
   const diskRef = useRef(null);
@@ -19,6 +19,9 @@ const Disk = (props) => {
   useEffect(() => {
     animateMove(diskRef.current, moveFrom, { x, y }, state);
   }, [moveFrom]);
+  useEffect(() => {
+    if (shrink) animateShrink(diskRef.current);
+  }, [shrink]);
 
   const onPointerClick = (e) => {
     selectIds([id], locked);
@@ -129,6 +132,22 @@ function animateMove(node, moveFrom, moveTo, state) {
     node.setAttrs({
       x: xFrom * (1 - k) + xTo * k,
       y: yFrom * (1 - k) + yTo * k,
+    });
+  }, node.getLayer());
+  animation.start();
+}
+
+function animateShrink(node) {
+  const animation = new Animation(({ time }) => {
+    if (time > duration) {
+      animation.stop();
+      return;
+    }
+    const t = time / duration;
+    const k = (t * t) / (2 * (t * t - t) + 1);
+    node.setAttrs({
+      scaleX: 1 - k,
+      scaleY: 1 - k,
     });
   }, node.getLayer());
   animation.start();

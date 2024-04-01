@@ -70,8 +70,7 @@ const Head = ({ x, width, height, color, text }) => {
   );
 };
 
-const Subtractor = ({ x, y }) => {
-  const {} = useAppStore();
+const Subtractor = ({ x, y, count }) => {
   const fontSize = 28;
 
   const cx = subtractorSize / 2;
@@ -92,7 +91,7 @@ const Subtractor = ({ x, y }) => {
       <Text
         x={0}
         y={subtractorSize / 2 - fontSize / 2}
-        text={0}
+        text={count}
         width={subtractorSize}
         fontSize={fontSize}
         fill={"#333"}
@@ -140,7 +139,7 @@ export function getValueRects(state) {
 }
 
 export function getSubtractors(state, relative = false) {
-  const { minValue, maxValue } = state;
+  const { minValue, maxValue, subtractorCounts } = state;
   const totalWidth = getTotalWidth(state);
   const totalHeight = getTotalHeight(state);
   const mainHeight = totalHeight - buttonHeight - margin;
@@ -155,6 +154,7 @@ export function getSubtractors(state, relative = false) {
       y: y0 + mainHeight - subtractorSize - margin,
       width: subtractorSize,
       height: subtractorSize,
+      count: subtractorCounts[value],
     };
   }
   return subtractors;

@@ -8,7 +8,7 @@ import { freeDrawingSlice } from "./freeDrawingSlice";
 import { historySlice, pushHistory } from "./historySlice";
 import { createTenDisks, breakRegroupSlice } from "./breakRegroup";
 import { menuHeight } from "../components/Menu";
-import { diskInBreakColumn, diskInWrongColumn } from "../components/PlaceValue";
+import { diskInBreakColumn, diskInWrongColumn, getSubtractors } from "../components/PlaceValue";
 
 export const gridStep = 60;
 export const boardSize = {
@@ -37,13 +37,18 @@ export const useAppStore = create((set) => ({
   minValue: 1,
   maxValue: 1_000_000,
 
-  // offset: { x: 50, y: 150 },
-  // scale: 1.2,
-  mode: "Decimals",
-  minValue: 0.001,
-  maxValue: 10,
-  fullscreen: true,
-  workspace: "Subtraction",
+  subtractorCounts: {
+    1_000_000: 0,
+    100_000: 0,
+    10_000: 0,
+    1000: 0,
+    100: 0,
+    10: 0,
+    1: 0,
+    0.1: 0,
+    0.01: 0,
+    0.001: 0,
+  },
 
   setMode: (value) =>
     set(
@@ -378,7 +383,16 @@ export const useAppStore = create((set) => ({
   subtract: (ids) =>
     set(
       produce((state) => {
-        console.log("subtract", ids);
+        for (const id of ids) {
+          const disk = state.elements[id];
+          const { x, y, width, height } = getSubtractors(current(state))[disk.value];
+          disk.x = x + width / 2;
+          disk.y = y + height / 2;
+          disk.shrink = true;
+          disk.deleteAfterMove = true;
+          state.animation = true;
+          state.subtractorCounts[disk.value] += 1;
+        }
       })
     ),
   action: () => set(produce((state) => {})),
