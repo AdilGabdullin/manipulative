@@ -3,9 +3,12 @@ import { Group, Line, Rect } from "react-konva";
 const lineWidth = 10;
 const headSize = 15;
 
-const NumberLine = ({ x, y, width, height }) => {
+export const defaultWidth = 900;
+export const defaultHeight = 13;
+
+const NumberLine = ({ id, x, y, width, height, visible }) => {
   return (
-    <Group x={x} y={y}>
+    <Group id={id} x={x} y={y} visible={visible}>
       <Line
         x={headSize / 2}
         y={height / 2}
@@ -29,8 +32,6 @@ const NumberLine = ({ x, y, width, height }) => {
         fill="black"
         closed
       />
-
-      {/* <Rect width={width} height={height} stroke={"red"} /> */}
     </Group>
   );
 };

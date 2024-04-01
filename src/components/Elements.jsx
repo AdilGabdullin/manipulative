@@ -4,6 +4,7 @@ import LineElement from "./LineElement";
 import TextElement from "./TextElement";
 import RectElement from "./RectElement";
 import EllipseElement from "./EllipseElement";
+import NumberLine, { defaultHeight, defaultWidth } from "./NumberLine";
 
 const Elements = () => {
   const state = useAppStore();
@@ -36,6 +37,7 @@ const Elements = () => {
       <Ellipse id="shadow-ellipse" visible={false} />
       <Line id="shadow-line" visible={false} lineCap={"round"} lineJoin={"round"} />
       <Text id="shadow-text" visible={false} fill={"black"} fontSize={36} text="Text" fontFamily="Calibri" />
+      <NumberLine id="shadow-number-line" x={0} y={0} visible={false} width={defaultWidth} height={defaultHeight} />
     </>
   );
 };

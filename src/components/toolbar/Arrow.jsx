@@ -1,17 +1,28 @@
-import { Arc, Group, Line, Path, Rect } from "react-konva";
-import { colors } from "../state/colors";
-import { cos, sin } from "../util";
+import { Group, Path, Rect } from "react-konva";
+import { colors } from "../../state/colors";
+import { leftToolbarWidth } from "../LeftToolbar";
 
 const strokeWidth = 10;
 const headSize = 25;
 
-const ToolbarArrow = ({ x, y, width, height, isBlue }) => {
+const Arrow = ({ x, y, width, height, isBlue, draggable }) => {
   const color = isBlue ? colors.blue : colors.red;
   const headX = isBlue ? width : 0;
   const headY = height;
 
+  const onDragMove = (e) => {
+    const target = e.target;
+    const stage = target.getStage();
+    const {x,y} = stage.getPointerPosition();
+  };
+
+  const onDragEnd = (e) => {
+
+  };
+
   return (
-    <Group x={x} y={y}>
+    <Group x={x} y={y} draggable={draggable} onDragMove={onDragMove} onDragEnd={onDragEnd}>
+      {draggable && <Rect width={width} height={height} />}
       <Path
         x={isBlue ? -strokeWidth / 2 : width + strokeWidth / 2}
         y={height}
@@ -34,7 +45,6 @@ const ToolbarArrow = ({ x, y, width, height, isBlue }) => {
         y={headY}
         fill={color}
         stroke={color}
-        // stroke={"black"}
         data={`
           m 0 0
           l ${-headSize / 2} ${-headSize}
@@ -42,9 +52,9 @@ const ToolbarArrow = ({ x, y, width, height, isBlue }) => {
           l ${-headSize / 2} ${headSize}
         `}
       />
-      {/* <Rect width={width} height={height} stroke={"black"} /> */}
+      <Rect width={width} height={height} stroke={"black"} />
     </Group>
   );
 };
 
-export default ToolbarArrow;
+export default Arrow;
