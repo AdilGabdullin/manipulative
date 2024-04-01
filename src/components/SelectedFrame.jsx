@@ -8,7 +8,7 @@ import { breakPossible, regroupPossible } from "../state/breakRegroup";
 
 const SelectedFrame = (props) => {
   const state = useAppStore();
-  const { selected, lockSelect, origin, offset, scale, elements, maxValue, minValue } = state;
+  const { workspace, selected, lockSelect, origin, offset, scale, elements } = state;
 
   const selectedTargets = [];
 
@@ -28,10 +28,7 @@ const SelectedFrame = (props) => {
       for (const id of selected) {
         const el = elements[id];
         if (!el) continue;
-        switch (el.type) {
-          default:
-            pushTarget(id);
-        }
+        pushTarget(id);
       }
     }
   });
@@ -71,6 +68,8 @@ const SelectedFrame = (props) => {
     state.relocateSelected(dx, dy);
   };
 
+  const columnMode = ["Place Value", "Subtraction"].includes(workspace);
+
   let menuButtons = [
     {
       text: "Edit",
@@ -91,7 +90,7 @@ const SelectedFrame = (props) => {
     {
       text: "Break",
       active: !lockSelect && breakPossible(state),
-      show: true,
+      show: !columnMode,
       onPointerClick: (e) => {
         state.breakDisks();
       },
@@ -99,7 +98,7 @@ const SelectedFrame = (props) => {
     {
       text: "Regroup",
       active: !lockSelect && regroupPossible(state),
-      show: true,
+      show: !columnMode,
       onPointerClick: (e) => {
         state.regroupSelected();
       },
