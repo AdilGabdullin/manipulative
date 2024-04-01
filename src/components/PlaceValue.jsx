@@ -1,12 +1,11 @@
 import { Group, Line, Rect, Text } from "react-konva";
 import { allOptions, leftToolbarWidth } from "./LeftToolbar";
-import { Button, buttonHeight, buttonWidth, commonProps, margin, scrollSize, sumInRect, textProps } from "./Comparing";
+import { Button, buttonHeight, buttonWidth, commonProps, margin, scrollSize, sumInRect } from "./Comparing";
 import { menuHeight } from "./Menu";
 import { useAppStore } from "../state/store";
 import { isPointInRect } from "../util";
-import { fontSize, radius } from "./Disk";
 
-const subtractorSize = 2 * radius;
+const subtractorSize = buttonHeight;
 
 const PlaceValue = () => {
   const state = useAppStore();
@@ -21,10 +20,8 @@ const PlaceValue = () => {
   const columnWidth = totalWidth / columns;
   const heads = [];
   const lines = [];
-  const subtractors = [];
   for (let x = 0, value = maxValue; value >= minValue; x += columnWidth, value /= 10) {
     heads.push({ x, ...allOptions[value] });
-    subtractors.push({ x: x + columnWidth / 2 - subtractorSize / 2, y: mainHeight - subtractorSize - margin });
     if (x > 0) lines.push(x);
   }
 
@@ -39,7 +36,8 @@ const PlaceValue = () => {
         <Head key={i} {...props} width={columnWidth} height={buttonHeight + 2 * margin} />
       ))}
 
-      {workspace == "Subtraction" && subtractors.map((props, i) => <Subtractor key={i} {...props} />)}
+      {workspace == "Subtraction" &&
+        Object.values(getSubtractors(state, true)).map((props, i) => <Subtractor key={i} {...props} />)}
 
       <Button
         x={totalWidth / 2 - buttonWidth / 2}
@@ -139,6 +137,27 @@ export function getValueRects(state) {
     height: mainHeight,
   };
   return rects;
+}
+
+export function getSubtractors(state, relative = false) {
+  const { minValue, maxValue } = state;
+  const totalWidth = getTotalWidth(state);
+  const totalHeight = getTotalHeight(state);
+  const mainHeight = totalHeight - buttonHeight - margin;
+  const x0 = relative ? 0 : -(totalWidth + scrollSize) / 2;
+  const y0 = relative ? 0 : -(totalHeight + scrollSize) / 2;
+  const columns = Math.log10(maxValue / minValue) + 1;
+  const columnWidth = totalWidth / columns;
+  const subtractors = {};
+  for (let x = 0, value = maxValue; value >= minValue; x += columnWidth, value /= 10) {
+    subtractors[value] = {
+      x: x0 + x + columnWidth / 2 - subtractorSize / 2,
+      y: y0 + mainHeight - subtractorSize - margin,
+      width: subtractorSize,
+      height: subtractorSize,
+    };
+  }
+  return subtractors;
 }
 
 export function diskInWrongColumn(state, e) {

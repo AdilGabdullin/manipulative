@@ -375,6 +375,12 @@ export const useAppStore = create((set) => ({
         pushHistory(state);
       })
     ),
+  subtract: (ids) =>
+    set(
+      produce((state) => {
+        console.log("subtract", ids);
+      })
+    ),
   action: () => set(produce((state) => {})),
 }));
 

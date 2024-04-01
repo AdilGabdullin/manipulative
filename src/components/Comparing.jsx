@@ -6,7 +6,7 @@ import { numberBetween, sum } from "../util";
 import { useRef, useState } from "react";
 
 export const margin = 10;
-export const buttonHeight = 60;
+export const buttonHeight = 64;
 export const buttonWidth = 140;
 export const scrollSize = 14;
 export const stroke = "grey";

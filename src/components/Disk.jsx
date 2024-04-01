@@ -1,15 +1,16 @@
 import { Circle, Group, Text } from "react-konva";
 import { useAppStore } from "../state/store";
-import { fromStageXY, pointsIsClose, toStageXY } from "../util";
+import { isPointInRect, pointsIsClose } from "../util";
 import { useEffect, useRef } from "react";
 import { Animation } from "konva/lib/Animation";
+import { getSubtractors } from "./PlaceValue";
 
 export const radius = 32;
 export const duration = 400;
 
 const Disk = (props) => {
   const state = useAppStore();
-  const { origin, selectIds, elements, relocateElement } = state;
+  const { origin, selectIds, elements, relocateElement, subtract } = state;
   const { id, value, color, locked, moveFrom, visible } = props;
   const x = origin.x + props.x;
   const y = origin.y + props.y;
@@ -31,8 +32,15 @@ const Disk = (props) => {
     }
   };
   const onDragEnd = (e) => {
-    const group = e.target;
-    relocateElement(id, group.x() - x, group.y() - y);
+    const target = e.target;
+    const tx = target.x();
+    const ty = target.y();
+    const point = { x: tx - origin.x, y: ty - origin.y };
+    if (isPointInRect(point, getSubtractors(state)[value])) {
+      subtract([id]);
+      return;
+    }
+    relocateElement(id, tx - x, ty - y);
   };
 
   return (
