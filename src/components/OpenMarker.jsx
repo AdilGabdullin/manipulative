@@ -2,9 +2,9 @@ import { Group, Rect } from "react-konva";
 import { colors } from "../state/colors";
 import { useAppStore } from "../state/store";
 
-const OpenMarker = ({ id, x, y, width, height, visible }) => {
+const OpenMarker = ({ id, x, y, width, height, visible, locked }) => {
   const state = useAppStore();
-  const { origin } = state;
+  const { origin, selectIds, relocateElement } = state;
 
   const top = {
     width: width / 20,
@@ -16,22 +16,22 @@ const OpenMarker = ({ id, x, y, width, height, visible }) => {
     margin: width * 0.1,
   };
 
-  const onDragStart = (e) => {};
-
-  const onDragMove = (e) => {};
-
-  const onDragEnd = (e) => {};
+  const pos = {
+    x: origin.x + x,
+    y: origin.y + y,
+  };
 
   return (
     <Group
       id={id}
-      x={origin.x + x}
-      y={origin.y + y}
+      x={pos.x}
+      y={pos.y}
       visible={visible !== undefined ? visible : true}
       draggable
-      onDragStart={onDragStart}
-      onDragMove={onDragMove}
-      onDragEnd={onDragEnd}
+      onDragEnd={(e) => {
+        relocateElement(id, e.target.x() - pos.x, e.target.y() - pos.y);
+      }}
+      onPointerClick={() => selectIds([id], locked)}
     >
       <Rect width={width} height={height} stroke={"black"} />
       <Rect
