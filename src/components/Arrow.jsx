@@ -27,11 +27,11 @@ const Arrow = ({ id, x, y, width, height, isBlue, visible, locked }) => {
     width = Math.abs(width);
     return `
       m ${shift} 0 
-      a ${width / 2} ${height} 0 0 1
+      a ${width / 2 + strokeWidth / 2} ${height + strokeWidth / 2} 0 0 1
         ${width + strokeWidth * Math.sign(width)}
         ${0}
       h ${-strokeWidth}
-      a ${width / 2 - strokeWidth} ${height - strokeWidth} 0 0 0
+      a ${width / 2 - strokeWidth / 2} ${height - strokeWidth / 2} 0 0 0
         ${strokeWidth * Math.sign(width) - width}
         ${0}
       h ${-strokeWidth}
