@@ -1,14 +1,15 @@
-import { Group, Line, Rect } from "react-konva";
-
-const lineWidth = 10;
-const headSize = 15;
+import { Group, Line } from "react-konva";
+import { useAppStore } from "../state/store";
 
 export const defaultWidth = 900;
-export const defaultHeight = 13;
+export const defaultHeight = 26;
+export const lineWidth = 5;
 
 const NumberLine = ({ id, x, y, width, height, visible }) => {
+  const { origin } = useAppStore();
+  const headSize = height / 2;
   return (
-    <Group id={id} x={x} y={y} visible={visible}>
+    <Group id={id} x={origin.x + x} y={origin.y + y} visible={visible !== undefined ? visible : true}>
       <Line
         x={headSize / 2}
         y={height / 2}

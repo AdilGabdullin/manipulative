@@ -29,22 +29,6 @@ const DefaultMenu = (props) => {
   const { x, y } = props;
 
   let buttons = [
-    {
-      text: "Whole Numbers",
-      field: "mode",
-      fill: state.mode == "Whole Numbers",
-      image: null,
-      width: 118,
-      shift: 0,
-    },
-    {
-      text: "Decimals",
-      field: "mode",
-      fill: state.mode == "Decimals",
-      image: null,
-      width: 65,
-      shift: 35,
-    },
   ];
   const padding = 8;
   const buttonHeight = 20;
@@ -52,11 +36,6 @@ const DefaultMenu = (props) => {
 
   const onPointerClick = (field, text) => (e) => {
     e.cancelBubble = true;
-    if (field == "mode") {
-      state.setMode(text);
-    } else {
-      state.toggleGlobal(field);
-    }
   };
 
   return (

@@ -28,8 +28,8 @@ const Elements = () => {
           case "line":
             return <LineElement key={id} {...element} />;
             break;
-          case "disk":
-            return <Disk key={id} {...element} />;
+          case "number-line":
+            return <NumberLine key={id} {...element} />;
             break;
         }
       })}

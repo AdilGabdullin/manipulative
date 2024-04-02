@@ -1,36 +1,57 @@
 import { Group, Line, Rect } from "react-konva";
 import { leftToolbarWidth } from "../LeftToolbar";
-import { useRef } from "react";
+import { defaultHeight, defaultWidth, lineWidth } from "../NumberLine";
+import { useAppStore } from "../../state/store";
+import { getStageXY } from "../../util";
 
-const lineWidth = 10;
-const headSize = 15;
+const NumberLine = ({ x, y, width, height }) => {
+  const state = useAppStore();
+  const { addElement, origin } = state;
 
-export const defaultWidth = 900;
+  const headSize = height / 2;
 
-const NumberLine = ({ x, y, width, height, draggable }) => {
+  let shadow = null;
+  const getShadow = (e) => {
+    return shadow || (shadow = e.target.getStage().findOne("#shadow-number-line"));
+  };
+
+  const onDragStart = (e) => {
+    getShadow(e).setAttrs({ visible: true });
+  };
+
   const onDragMove = (e) => {
     const target = e.target;
-    const stage = target.getStage();
-    const pos = stage.getPointerPosition();
+    const pos = target.getStage().getPointerPosition();
     target.setAttrs({ x, y });
     if (pos.x > leftToolbarWidth) {
-      stage.findOne("#shadow-number-line").setAttrs({
+      const stagePos = getStageXY(e.target.getStage(), state);
+      getShadow(e).setAttrs({
+        x: origin.x + stagePos.x,
+        y: origin.y + stagePos.y,
         visible: true,
-        x: pos.x,
-        y: pos.y,
       });
     } else {
-      stage.findOne("#shadow-number-line").setAttrs({
+      getShadow(e).setAttrs({
         visible: false,
       });
     }
   };
 
-  const onDragEnd = (e) => {};
+  const onDragEnd = (e) => {
+    getShadow(e).setAttrs({
+      visible: false,
+    });
+    addElement({
+      type: "number-line",
+      width: defaultWidth,
+      height: defaultHeight,
+      ...getStageXY(e.target.getStage(), state),
+    });
+  };
 
   return (
-    <Group x={x} y={y} draggable onDragMove={onDragMove} onDragEnd={onDragEnd}>
-      {draggable && <Rect width={width} height={height} />}
+    <Group x={x} y={y} draggable onDragStart={onDragStart} onDragMove={onDragMove} onDragEnd={onDragEnd}>
+      <Rect width={width} height={height} stroke={"black"} />
       <Line
         x={headSize / 2}
         y={height / 2}

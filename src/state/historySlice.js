@@ -1,8 +1,9 @@
 import { current, original, produce } from "immer";
 import { clearSelected } from "../util";
+import { initElements } from "./store";
 
 export const historySlice = (set) => ({
-  history: [{ elements: {}, fdLines: {} }],
+  history: [{ elements: initElements(), fdLines: {} }],
   historyIndex: 0,
 
   undo: () =>

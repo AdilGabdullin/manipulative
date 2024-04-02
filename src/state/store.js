@@ -6,6 +6,7 @@ import { topToolbarHeight } from "../components/TopToolbar";
 import { maxOffset } from "../components/Scrolls";
 import { freeDrawingSlice } from "./freeDrawingSlice";
 import { historySlice, pushHistory } from "./historySlice";
+import { defaultHeight, defaultWidth } from "../components/NumberLine";
 
 export const gridStep = 60;
 export const boardSize = {
@@ -16,7 +17,6 @@ export const boardSize = {
 export const useAppStore = create((set) => ({
   ...freeDrawingSlice(set),
   ...historySlice(set),
-  mode: "Whole Numbers",
   imagesReady: false,
   loadedImagesCount: 0,
   offset: { x: 0, y: 0 },
@@ -31,12 +31,6 @@ export const useAppStore = create((set) => ({
 
   fullscreen: true,
   workspace: "Open",
-  setMode: (value) =>
-    set(
-      produce((state) => {
-        state.mode = value;
-      })
-    ),
   toggleGlobal: (field) =>
     set(
       produce((state) => {
@@ -47,7 +41,7 @@ export const useAppStore = create((set) => ({
         }
       })
     ),
-  elements: {},
+  elements: initElements(),
   lastActiveElement: null,
   setValue: (field, value) =>
     set(
@@ -306,4 +300,18 @@ export const useAppStore = create((set) => ({
 function keepOrigin(state) {
   state.origin.x = ((state.width - leftToolbarWidth) / 2 + leftToolbarWidth) / state.scale;
   state.origin.y = state.height / 2 / state.scale;
+}
+
+export function initElements() {
+  const id = "default-line";
+  return {
+    [id]: {
+      id,
+      type: "number-line",
+      x: 0 - defaultWidth / 2,
+      y: 0 - defaultHeight / 2,
+      width: defaultWidth,
+      height: defaultHeight,
+    },
+  };
 }
