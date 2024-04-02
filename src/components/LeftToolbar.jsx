@@ -1,9 +1,10 @@
 import { Rect } from "react-konva";
 import { useAppStore } from "../state/store";
 import Arrow from "./toolbar/Arrow";
-import OpenMarker from "./toolbar/OpenMarker";
+import OpenMarker, { omHeight, omWidth } from "./toolbar/OpenMarker";
 import NumberLine from "./toolbar/NumberLine";
-import { defaultHeight } from "./NumberLine";
+import { nlHeight } from "./NumberLine";
+import { sum } from "../util";
 
 export const leftToolbarWidth = 180;
 
@@ -14,15 +15,14 @@ const LeftToolbar = () => {
   const left = 25;
   const width = leftToolbarWidth - 2 * left;
   const shapes = [];
-  const heightTotal = width + width * 0.9 + width / 10;
   const options = [
     { Component: Arrow, x: left, width: width, height: width / 2, isBlue: true },
     { Component: Arrow, x: left, width: width, height: width / 2, isBlue: false },
-    { Component: OpenMarker, x: left + width / 4, width: width / 2, height: width * 0.9 },
-    { Component: NumberLine, x: left, width: width, height: defaultHeight },
+    { Component: OpenMarker, x: (leftToolbarWidth - omWidth) / 2, width: omWidth, height: omHeight },
+    { Component: NumberLine, x: left, width: width, height: nlHeight },
   ];
 
-  const top = (height - heightTotal) / 5;
+  const top = (height - sum(options.map((o) => o.height))) / (options.length + 1);
   let y = top;
   for (const option of options) {
     option.y = y;

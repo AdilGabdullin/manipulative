@@ -6,7 +6,7 @@ import { topToolbarHeight } from "../components/TopToolbar";
 import { maxOffset } from "../components/Scrolls";
 import { freeDrawingSlice } from "./freeDrawingSlice";
 import { historySlice, pushHistory } from "./historySlice";
-import { defaultHeight, defaultWidth } from "../components/NumberLine";
+import { nlHeight, nlWidth } from "../components/NumberLine";
 
 export const gridStep = 60;
 export const boardSize = {
@@ -308,10 +308,10 @@ export function initElements() {
     [id]: {
       id,
       type: "number-line",
-      x: 0 - defaultWidth / 2,
-      y: 0 - defaultHeight / 2,
-      width: defaultWidth,
-      height: defaultHeight,
+      x: 0 - nlWidth / 2,
+      y: 0 - nlHeight / 2,
+      width: nlWidth,
+      height: nlHeight,
     },
   };
 }

@@ -1,9 +1,9 @@
 import { Group, Line } from "react-konva";
 import { useAppStore } from "../state/store";
 
-export const defaultWidth = 900;
-export const defaultHeight = 26;
-export const lineWidth = 5;
+export const nlWidth = 900;
+export const nlHeight = 26;
+export const nlLineWidth = 5;
 
 const NumberLine = ({ id, x, y, width, height, visible }) => {
   const { origin } = useAppStore();
@@ -14,7 +14,7 @@ const NumberLine = ({ id, x, y, width, height, visible }) => {
         x={headSize / 2}
         y={height / 2}
         points={[0, 0, width - headSize, 0]}
-        strokeWidth={lineWidth}
+        strokeWidth={nlLineWidth}
         stroke={"black"}
       />
       <Line

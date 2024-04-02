@@ -1,6 +1,6 @@
 import { Group, Line, Rect } from "react-konva";
 import { leftToolbarWidth } from "../LeftToolbar";
-import { defaultHeight, defaultWidth, lineWidth } from "../NumberLine";
+import { nlHeight, nlWidth, nlLineWidth } from "../NumberLine";
 import { useAppStore } from "../../state/store";
 import { getStageXY } from "../../util";
 
@@ -43,8 +43,8 @@ const NumberLine = ({ x, y, width, height }) => {
     });
     addElement({
       type: "number-line",
-      width: defaultWidth,
-      height: defaultHeight,
+      width: nlWidth,
+      height: nlHeight,
       ...getStageXY(e.target.getStage(), state),
     });
   };
@@ -56,7 +56,7 @@ const NumberLine = ({ x, y, width, height }) => {
         x={headSize / 2}
         y={height / 2}
         points={[0, 0, width - headSize, 0]}
-        strokeWidth={lineWidth}
+        strokeWidth={nlLineWidth}
         stroke={"black"}
       />
       <Line
