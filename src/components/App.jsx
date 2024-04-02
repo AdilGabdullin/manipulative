@@ -65,7 +65,7 @@ const App = () => {
       return;
     }
 
-    if (e.target.draggable()) {
+    if (e.target.draggable() || e.target.parent?.draggable()) {
       return;
     }
     downPos = getStageXY(stageRef.current, state);
