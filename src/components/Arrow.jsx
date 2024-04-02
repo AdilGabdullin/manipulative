@@ -21,20 +21,26 @@ const Arrow = ({ id, x, y, width, height, isBlue, visible, locked }) => {
     y: origin.y + y,
   };
 
-  const arcData = (width, height) => `
-    m 0 0 
-    a ${width / 2} ${height} 0 0 1
-      ${width + strokeWidth}
-      ${0}
-    h ${-strokeWidth}
-    a ${width / 2 - strokeWidth} ${height - strokeWidth} 0 0 0
-      ${strokeWidth - width}
-      ${0}
-    h ${-strokeWidth}
-  `;
+  const arcData = (width, height) => {
+    const shift = width < 0 ? width : 0;
+    width = Math.abs(width);
+    return `
+      m ${shift} 0 
+      a ${width / 2} ${height} 0 0 1
+        ${width + strokeWidth * Math.sign(width)}
+        ${0}
+      h ${-strokeWidth}
+      a ${width / 2 - strokeWidth} ${height - strokeWidth} 0 0 0
+        ${strokeWidth * Math.sign(width) - width}
+        ${0}
+      h ${-strokeWidth}
+    `;
+  };
 
   const group = useRef();
   const arc = useRef();
+  const rect = useRef();
+  const head = useRef();
   return (
     <Group
       ref={group}
@@ -54,9 +60,10 @@ const Arrow = ({ id, x, y, width, height, isBlue, visible, locked }) => {
       }}
       onPointerClick={() => selectIds([id], locked)}
     >
-      <Rect width={width} height={height} stroke={"black"} />
+      <Rect ref={rect} width={width} height={height} stroke={"black"} />
       <Path ref={arc} x={-strokeWidth / 2} y={height} fill={color} data={arcData(width, height)} />
       <Path
+        ref={head}
         x={headX}
         y={headY}
         fill={color}
@@ -74,22 +81,26 @@ const Arrow = ({ id, x, y, width, height, isBlue, visible, locked }) => {
           e.target.setAttrs({ y: headY });
           const newWidth = isBlue ? headX + dx : width - x;
           const newX = isBlue ? -strokeWidth / 2 : -strokeWidth / 2 + dx;
-          // const newIsBlue = dx > -width;
+          const newIsBlue = dx > -width;
+          const newColor = newIsBlue ? colors.blue : colors.red;
           arc.current.setAttrs({
             x: newX,
             data: arcData(newWidth, height),
-            // fill: newIsBlue ? colors.blue : colors.red,
+            fill: newColor,
           });
+          head.current.setAttrs({ fill: newColor, stroke: newColor });
+          rect.current.setAttrs({ width: newWidth, x: newX + strokeWidth / 2 });
         }}
         onDragEnd={(e) => {
           const x = e.target.x();
           const dx = x - headX;
-          e.target.setAttrs({ x:0, y: headY });
+          e.target.setAttrs({ x: 0, y: headY });
           const newWidth = isBlue ? headX + dx : width - x;
           const newX = isBlue ? pos.x - origin.x : pos.x + dx - origin.x;
           arc.current.setAttrs({
             x: -strokeWidth / 2,
           });
+          rect.current.setAttrs({ x: 0, y: 0 });
           updateElement(id, { x: newX, width: newWidth });
         }}
       />
