@@ -7,6 +7,7 @@ import EllipseElement from "./EllipseElement";
 import NumberLine, { nlHeight, nlWidth } from "./NumberLine";
 import { omHeight, omWidth } from "./toolbar/OpenMarker";
 import OpenMarker from "./OpenMarker";
+import Arrow, { arHeight, arWidth } from "./Arrow";
 
 const Elements = () => {
   const state = useAppStore();
@@ -36,6 +37,9 @@ const Elements = () => {
           case "open-marker":
             return <OpenMarker key={id} {...element} />;
             break;
+          case "arrow":
+            return <Arrow key={id} {...element} />;
+            break;
         }
       })}
       <Rect id="shadow-rect" visible={false} />
@@ -44,6 +48,8 @@ const Elements = () => {
       <Text id="shadow-text" visible={false} fill={"black"} fontSize={36} text="Text" fontFamily="Calibri" />
       <NumberLine id="shadow-number-line" x={0} y={0} visible={false} width={nlWidth} height={nlHeight} />
       <OpenMarker id="shadow-open-marker" x={0} y={0} visible={false} width={omWidth} height={omHeight} />
+      <Arrow id="shadow-arrow-blue" x={0} y={0} visible={false} width={arWidth} height={arHeight} isBlue={true} />
+      <Arrow id="shadow-arrow-red" x={0} y={0} visible={false} width={arWidth} height={arHeight} isBlue={false} />
     </>
   );
 };

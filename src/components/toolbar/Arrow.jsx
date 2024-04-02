@@ -1,27 +1,63 @@
 import { Group, Path, Rect } from "react-konva";
 import { colors } from "../../state/colors";
 import { leftToolbarWidth } from "../LeftToolbar";
+import { useAppStore } from "../../state/store";
+import { arHeight, arWidth } from "../Arrow";
+import { getStageXY } from "../../util";
 
 const strokeWidth = 10;
 const headSize = 25;
 
 const Arrow = ({ x, y, width, height, isBlue, draggable }) => {
+  const state = useAppStore();
+  const { addElement, origin } = state;
+
   const color = isBlue ? colors.blue : colors.red;
   const headX = isBlue ? width : 0;
   const headY = height;
 
+  let shadow = null;
+  const getShadow = (e) => {
+    return shadow || (shadow = e.target.getStage().findOne("#shadow-arrow-" + (isBlue ? "blue" : "red")));
+  };
+
+  const onDragStart = (e) => {
+    getShadow(e).setAttrs({ visible: true });
+  };
+
   const onDragMove = (e) => {
     const target = e.target;
-    const stage = target.getStage();
-    const {x,y} = stage.getPointerPosition();
+    const pos = target.getStage().getPointerPosition();
+    target.setAttrs({ x, y });
+    if (pos.x > leftToolbarWidth) {
+      const stagePos = getStageXY(e.target.getStage(), state);
+      getShadow(e).setAttrs({
+        x: origin.x + stagePos.x,
+        y: origin.y + stagePos.y,
+        visible: true,
+      });
+    } else {
+      getShadow(e).setAttrs({
+        visible: false,
+      });
+    }
   };
 
   const onDragEnd = (e) => {
-
+    getShadow(e).setAttrs({
+      visible: false,
+    });
+    addElement({
+      type: "arrow",
+      width: arWidth,
+      height: arHeight,
+      isBlue: isBlue,
+      ...getStageXY(e.target.getStage(), state),
+    });
   };
 
   return (
-    <Group x={x} y={y} draggable={draggable} onDragMove={onDragMove} onDragEnd={onDragEnd}>
+    <Group x={x} y={y} draggable onDragStart={onDragStart} onDragMove={onDragMove} onDragEnd={onDragEnd}>
       {draggable && <Rect width={width} height={height} />}
       <Path
         x={isBlue ? -strokeWidth / 2 : width + strokeWidth / 2}
