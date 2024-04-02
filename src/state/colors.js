@@ -6,4 +6,5 @@ export const colors = {
   redBorder: "#d53737",
   purple: "#9c27b0",
   yellow: "#ffc107",
+  white: "#ffffff",
 };

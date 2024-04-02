@@ -1,4 +1,4 @@
-import { Arc, Group, Path, Rect } from "react-konva";
+import { Arc, Circle, Group, Path, Rect } from "react-konva";
 import { colors } from "../state/colors";
 import { useAppStore } from "../state/store";
 import { useRef } from "react";
@@ -7,6 +7,7 @@ const strokeWidth = 10;
 const headSize = 25;
 export const arWidth = 130;
 export const arHeight = 65;
+const minHeight = 50;
 
 const Arrow = ({ id, x, y, width, height, isBlue, visible, locked }) => {
   const state = useAppStore();
@@ -55,7 +56,7 @@ const Arrow = ({ id, x, y, width, height, isBlue, visible, locked }) => {
       }}
       onDragEnd={(e) => {
         if (e.target === group.current) {
-          relocateElement(id, e.target.x() - pos.x, 0);
+          relocateElement(id, e.target.x() - pos.x, e.target.y() - pos.y);
         }
       }}
       onPointerClick={() => selectIds([id], locked)}
@@ -81,7 +82,7 @@ const Arrow = ({ id, x, y, width, height, isBlue, visible, locked }) => {
           e.target.setAttrs({ y: headY });
           const newWidth = isBlue ? headX + dx : width - x;
           const newX = isBlue ? -strokeWidth / 2 : -strokeWidth / 2 + dx;
-          const newIsBlue = dx > -width;
+          const newIsBlue = isBlue ? dx > -width : dx > width;
           const newColor = newIsBlue ? colors.blue : colors.red;
           arc.current.setAttrs({
             x: newX,
@@ -102,6 +103,31 @@ const Arrow = ({ id, x, y, width, height, isBlue, visible, locked }) => {
           });
           rect.current.setAttrs({ x: 0, y: 0 });
           updateElement(id, { x: newX, width: newWidth });
+        }}
+      />
+      <Circle
+        x={width / 2}
+        y={0}
+        radius={6}
+        draggable
+        onPointerEnter={(e) => e.target.setAttrs({ stroke: colors.blue, fill: colors.white })}
+        onPointerLeave={(e) => e.target.setAttrs({ stroke: null, fill: null })}
+        onDragMove={(e) => {
+          const dy = Math.min(e.target.y(), height - minHeight);
+          e.target.setAttrs({ x: width / 2, y: dy });
+          const newHeight = height - dy;
+          arc.current.setAttrs({
+            data: arcData(width, newHeight),
+          });
+        }}
+        onDragEnd={(e) => {
+          const dy = Math.min(e.target.y(), height - minHeight);
+          e.target.setAttrs({ x: width / 2, y: 0 });
+          const newHeight = height - dy;
+          updateElement(id, { y: pos.y - origin.y + dy, height: newHeight });
+          arc.current.setAttrs({
+            data: arcData(width, newHeight),
+          });
         }}
       />
     </Group>
