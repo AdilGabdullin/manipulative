@@ -17,8 +17,6 @@ const Arrow = (props) => {
   const { origin, selectIds, relocateElement, updateElement } = state;
   const { id, x, y, width, height, isBlue, visible, locked } = props;
 
-  x && console.log({ x, width });
-
   const headX = isBlue ? width : 0;
 
   const pos = {
@@ -26,8 +24,9 @@ const Arrow = (props) => {
     y: origin.y + y,
   };
 
-  const arcProps = ({ width, height, isBlue, shift }) => {
-    shift = shift || 0;
+  const arcProps = ({ width, height, isBlue, shiftX, shiftY }) => {
+    shiftX = shiftX || 0;
+    shiftY = shiftY || 0;
     width = Math.abs(width);
     const rx1 = width / 2 - strokeWidth / 2;
     const rx2 = width / 2 + strokeWidth / 2;
@@ -35,8 +34,8 @@ const Arrow = (props) => {
     const ry2 = height + strokeWidth / 2;
     const theta = asin(headSize / ry2);
     return {
-      x: width / 2 + shift,
-      y: height,
+      x: width / 2 + shiftX,
+      y: height + shiftY,
       fill: isBlue ? colors.blue : colors.red,
       scaleX: isBlue ? 1 : -1,
       data: `
@@ -49,14 +48,15 @@ const Arrow = (props) => {
     };
   };
 
-  const headProps = ({ width, height, isBlue, shift }) => {
-    shift = shift || 0;
+  const headProps = ({ width, height, isBlue, shiftX, shiftY }) => {
+    shiftX = shiftX || 0;
+    shiftY = shiftY || 0;
     const ry2 = height + strokeWidth / 2;
     const theta = asin(headSize / ry2) * (isBlue ? 1 : -1);
     const color = isBlue ? colors.blue : colors.red;
     return {
-      x: isBlue ? Math.abs(width) + shift : 0 + shift,
-      y: height,
+      x: isBlue ? Math.abs(width) + shiftX : 0 + shiftX,
+      y: height + shiftY,
       fill: color,
       stroke: color,
       data: `
@@ -68,11 +68,12 @@ const Arrow = (props) => {
   };
 
   const updateNodes = (newProps) => {
-    let { shift, width, height } = newProps;
-    shift = shift || 0;
+    let { shiftX, shiftY, width, height } = newProps;
+    shiftX = shiftX || 0;
+    shiftY = shiftY || 0;
     head.current.setAttrs(headProps(newProps));
     arc.current.setAttrs(arcProps(newProps));
-    rect.current.setAttrs({ x: shift, y: 0, width: Math.abs(width), height });
+    rect.current.setAttrs({ x: shiftX, y: shiftY, width: Math.abs(width), height });
   };
 
   const group = useRef();
@@ -99,12 +100,12 @@ const Arrow = (props) => {
     e.target.setAttrs({ y: height });
     if (isBlue) {
       const isBlue = width + dx > 0;
-      const shift = isBlue ? 0 : width + dx;
-      updateNodes({ ...props, width: width + dx, height, isBlue, shift });
+      const shiftX = isBlue ? 0 : width + dx;
+      updateNodes({ ...props, width: width + dx, height, isBlue, shiftX });
     } else {
       const isBlue = width - dx < 0;
-      const shift = isBlue ? width : dx;
-      const newProps = { ...props, width: width - dx, x: dx, height, isBlue, shift };
+      const shiftX = isBlue ? width : dx;
+      const newProps = { ...props, width: width - dx, x: dx, height, isBlue, shiftX };
       updateNodes(newProps);
     }
   };
@@ -114,17 +115,18 @@ const Arrow = (props) => {
     e.target.setAttrs({ y: height });
     if (isBlue) {
       const isBlue = width + dx > 0;
-      const shift = isBlue ? 0 : width + dx;
+      const shiftX = isBlue ? 0 : width + dx;
       const newWidth = Math.abs(width + dx);
       rect.current.setAttrs({ x: 0, y: 0 });
-      updateElement(id, { ...props, x: props.x + shift, width: newWidth, height, isBlue });
+      head.current.setAttrs({ x: 0 });
+      updateElement(id, { ...props, x: props.x + shiftX, width: newWidth, height, isBlue });
     } else {
       const isBlue = width - dx < 0;
-      const shift = isBlue ? width : dx;
+      const shiftX = isBlue ? width : dx;
       const newWidth = Math.abs(width - dx);
-      const newProps = { ...props, x: props.x + shift, width: newWidth, height, isBlue };
+      const newProps = { ...props, x: props.x + shiftX, width: newWidth, height, isBlue };
       rect.current.setAttrs({ x: 0, y: 0 });
-      head.current.setAttrs({x: 0});
+      head.current.setAttrs({ x: 0 });
       updateElement(id, newProps);
     }
   };
@@ -133,15 +135,15 @@ const Arrow = (props) => {
     const dy = Math.min(e.target.y() + rhHeight / 2, height - minHeight);
     e.target.setAttrs({ x: width / 2 - rhWidth / 2, y: -rhHeight / 2 + dy });
     const newHeight = height - dy;
-    arc.current.setAttrs({ data: arcData(width, newHeight) });
-    head.current.setAttrs({ data: headData(width, newHeight, isBlue) });
+    const shiftY = dy;
+    updateNodes({ ...props, height: newHeight, shiftY });
   };
   const resizeHandleDragEnd = (e) => {
     const dy = Math.min(e.target.y() + rhHeight / 2, height - minHeight);
     e.target.setAttrs({ x: width / 2 - rhWidth / 2, y: -rhHeight / 2 });
     const newHeight = height - dy;
-    updateElement(id, { y: pos.y - origin.y + dy, height: newHeight });
-    arc.current.setAttrs({ data: arcData(width, newHeight) });
+    rect.current.setAttrs({ x: 0, y: 0 });
+    updateElement(id, { ...props, height: newHeight, y: y + dy });
   };
 
   return (
