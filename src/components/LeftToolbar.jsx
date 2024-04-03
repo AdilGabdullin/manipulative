@@ -1,10 +1,11 @@
 import { Rect } from "react-konva";
 import { useAppStore } from "../state/store";
 import Arrow from "./toolbar/Arrow";
-import OpenMarker, { omHeight, omWidth } from "./toolbar/OpenMarker";
+import OpenMarker from "./toolbar/OpenMarker";
 import NumberLine from "./toolbar/NumberLine";
 import { nlHeight } from "./NumberLine";
 import { sum } from "../util";
+import { omHeight, omWidth } from "./OpenMarker";
 
 export const leftToolbarWidth = 180;
 

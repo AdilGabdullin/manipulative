@@ -5,8 +5,7 @@ import TextElement from "./TextElement";
 import RectElement from "./RectElement";
 import EllipseElement from "./EllipseElement";
 import NumberLine, { nlHeight, nlWidth } from "./NumberLine";
-import { omHeight, omWidth } from "./toolbar/OpenMarker";
-import OpenMarker from "./OpenMarker";
+import OpenMarker, { omHeight, omWidth } from "./OpenMarker";
 import Arrow, { arHeight, arWidth } from "./Arrow";
 
 const Elements = () => {

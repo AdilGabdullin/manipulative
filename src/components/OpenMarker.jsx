@@ -1,6 +1,11 @@
 import { Group, Rect } from "react-konva";
 import { colors } from "../state/colors";
 import { useAppStore } from "../state/store";
+import { numberBetween } from "../util";
+import { nlLineWidth } from "./NumberLine";
+
+export const omWidth = 60;
+export const omHeight = 100;
 
 const OpenMarker = ({ id, x, y, width, height, visible, locked }) => {
   const state = useAppStore();
@@ -28,6 +33,12 @@ const OpenMarker = ({ id, x, y, width, height, visible, locked }) => {
       y={pos.y}
       visible={visible !== undefined ? visible : true}
       draggable
+      onDragMove={(e) => {
+        const dx = e.target.x() - pos.x;
+        const dy = e.target.y() - pos.y;
+        const newPos = openMarkerMagnet({ x: x + dx, y: y + dy }, state);
+        e.target.setAttrs({ x: origin.x + newPos.x, y: origin.y + newPos.y});
+      }}
       onDragEnd={(e) => {
         relocateElement(id, e.target.x() - pos.x, e.target.y() - pos.y);
       }}
@@ -61,5 +72,16 @@ const OpenMarker = ({ id, x, y, width, height, visible, locked }) => {
     </Group>
   );
 };
+
+export function openMarkerMagnet({ x, y }, state) {
+  const sens = 80;
+  const lines = Object.values(state.elements).filter((e) => e.type == "number-line");
+  for (const line of lines) {
+    if (numberBetween(x, line.x, line.x + line.width) && numberBetween(y, line.y - sens, line.y + sens)) {
+      return { x, y: line.y + (line.height + nlLineWidth) / 2 + 1 };
+    }
+  }
+  return { x, y };
+}
 
 export default OpenMarker;
