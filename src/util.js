@@ -171,6 +171,10 @@ export function atan2(y, x) {
   return (Math.atan2(y, x) / Math.PI) * 180;
 }
 
+export function asin(x) {
+  return (Math.asin(x) / Math.PI) * 180;
+}
+
 export function rotateVector({ x, y }, rotation) {
   return { x: x * cos(rotation) - y * sin(rotation), y: x * sin(rotation) + y * cos(rotation) };
 }
