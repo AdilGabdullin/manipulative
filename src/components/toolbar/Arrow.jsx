@@ -2,7 +2,7 @@ import { Group, Path, Rect } from "react-konva";
 import { colors } from "../../state/colors";
 import { leftToolbarWidth } from "../LeftToolbar";
 import { useAppStore } from "../../state/store";
-import { arHeight, arWidth } from "../Arrow";
+import { arHeight, arWidth, arrowMagnet } from "../Arrow";
 import { getStageXY, asin, cos, sin } from "../../util";
 import { useRef } from "react";
 
@@ -12,11 +12,7 @@ const headSize = 25;
 const Arrow = (props) => {
   const state = useAppStore();
   const { addElement, origin } = state;
-  const { x, y, width, height, isBlue, draggable } = props;
-
-  const color = isBlue ? colors.blue : colors.red;
-  const headX = isBlue ? width : 0;
-  const headY = height;
+  const { x, y, width, height, isBlue } = props;
 
   let shadow = null;
   const getShadow = (e) => {
@@ -78,12 +74,14 @@ const Arrow = (props) => {
   const onDragMove = (e) => {
     const target = e.target;
     const pos = target.getStage().getPointerPosition();
+
     target.setAttrs({ x, y });
     if (pos.x > leftToolbarWidth) {
-      const stagePos = getStageXY(e.target.getStage(), state);
+      let stagePos = getStageXY(e.target.getStage(), state);
+      stagePos = arrowMagnet({ x: stagePos.x - width / 2, y: stagePos.y - height / 2, height }, state);
       getShadow(e).setAttrs({
-        x: origin.x + stagePos.x - width / 2,
-        y: origin.y + stagePos.y - height / 2,
+        x: origin.x + stagePos.x,
+        y: origin.y + stagePos.y,
         visible: true,
       });
     } else {
@@ -94,7 +92,8 @@ const Arrow = (props) => {
   };
 
   const onDragEnd = (e) => {
-    const stagePos = getStageXY(e.target.getStage(), state);
+    let stagePos = getStageXY(e.target.getStage(), state);
+    stagePos = arrowMagnet({ x: stagePos.x - width / 2, y: stagePos.y - height / 2, height }, state);
     getShadow(e).setAttrs({
       visible: false,
     });
@@ -103,8 +102,8 @@ const Arrow = (props) => {
       width: arWidth,
       height: arHeight,
       isBlue: isBlue,
-      x: stagePos.x - width / 2,
-      y: stagePos.y - height / 2,
+      x: stagePos.x,
+      y: stagePos.y,
     });
   };
 

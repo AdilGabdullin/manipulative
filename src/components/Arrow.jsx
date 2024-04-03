@@ -2,7 +2,8 @@ import { Group, Path, Rect } from "react-konva";
 import { colors } from "../state/colors";
 import { useAppStore } from "../state/store";
 import { useRef } from "react";
-import { asin, cos, sin } from "../util";
+import { asin, cos, numberBetween, sin } from "../util";
+import { nlLineWidth } from "./NumberLine";
 
 const strokeWidth = 10;
 const headSize = 25;
@@ -81,7 +82,10 @@ const Arrow = (props) => {
 
   const groupDragMove = (e) => {
     if (e.target === group.current) {
-      // TODO magnet
+      const dx = e.target.x() - pos.x;
+      const dy = e.target.y() - pos.y;
+      const newPos = arrowMagnet({ x: x + dx, y: y + dy, height }, state);
+      e.target.setAttrs({ x: origin.x + newPos.x, y: origin.y + newPos.y });
     }
   };
 
@@ -168,5 +172,19 @@ const Arrow = (props) => {
     </Group>
   );
 };
+
+export function arrowMagnet({ x, y, height }, state) {
+  const sens = 50;
+  const lines = Object.values(state.elements).filter((e) => e.type == "number-line");
+  for (const line of lines) {
+    if (
+      numberBetween(x, line.x, line.x + line.width) &&
+      numberBetween(y + height, line.y + line.height / 2 - sens, line.y + line.height / 2 + sens)
+    ) {
+      return { x, y: line.y + (line.height - nlLineWidth) / 2  - height };
+    }
+  }
+  return { x, y };
+}
 
 export default Arrow;
