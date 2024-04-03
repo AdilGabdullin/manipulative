@@ -294,6 +294,20 @@ export const useAppStore = create((set) => ({
         pushHistory(state);
       })
     ),
+  keyDown: (key) =>
+    set(
+      produce((state) => {
+        const { selected, elements } = state;
+        const target = selected.length == 1 && elements[selected[0]];
+        if (!target || target.text === undefined) return;
+        const text = target.text;
+        if (key == "Backspace") {
+          target.text = text.substring(0, text.length - 1);
+        } else if (key.match(/[0-9]/) && text.length < 3) {
+          target.text = text + key;
+        }
+      })
+    ),
   action: () => set(produce((state) => {})),
 }));
 

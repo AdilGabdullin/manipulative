@@ -165,6 +165,10 @@ const App = () => {
     onMouseUp();
   };
 
+  const onKeyDown = e => {
+    state.keyDown(e.key);
+  }
+
   // shapes menu events
   const shadow = null;
   const getShadow = (id) => {
@@ -264,6 +268,7 @@ const App = () => {
       onDrop={onDrop}
       tabIndex={1}
       className={"stage-wrap " + (state.fullscreen ? "stage-wrap-fullscreen" : "stage-wrap-default")}
+      onKeyDown={onKeyDown}
     >
       <TopToolbar />
       <Stage

@@ -58,6 +58,7 @@ const OpenMarker = ({ x, y, width, height }) => {
       height: omHeight,
       x: stagePos.x,
       y: stagePos.y,
+      text: "",
     });
   };
 

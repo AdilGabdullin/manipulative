@@ -1,4 +1,4 @@
-import { Group, Rect } from "react-konva";
+import { Group, Rect, Text } from "react-konva";
 import { colors } from "../state/colors";
 import { useAppStore } from "../state/store";
 import { numberBetween } from "../util";
@@ -7,7 +7,7 @@ import { nlLineWidth } from "./NumberLine";
 export const omWidth = 60;
 export const omHeight = 100;
 
-const OpenMarker = ({ id, x, y, width, height, visible, locked }) => {
+const OpenMarker = ({ id, x, y, width, height, visible, locked, text }) => {
   const state = useAppStore();
   const { origin, selectIds, relocateElement } = state;
 
@@ -68,6 +68,15 @@ const OpenMarker = ({ id, x, y, width, height, visible, locked }) => {
         width={window.width}
         height={window.height}
         fill={"white"}
+      />
+      <Text
+        x={window.margin}
+        y={top.height + window.margin + window.height / 2 - 24 / 2}
+        width={window.width}
+        text={text}
+        fontFamily="Calibri"
+        fontSize={24}
+        align="center"
       />
     </Group>
   );
