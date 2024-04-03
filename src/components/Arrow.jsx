@@ -1,8 +1,8 @@
-import { Arc, Circle, Group, Path, Rect } from "react-konva";
+import { Group, Path, Rect } from "react-konva";
 import { colors } from "../state/colors";
 import { useAppStore } from "../state/store";
 import { useRef } from "react";
-import { asin, atan2, cos, sin } from "../util";
+import { asin, cos, sin } from "../util";
 
 const strokeWidth = 10;
 const headSize = 25;
@@ -32,7 +32,7 @@ const Arrow = (props) => {
     const rx2 = width / 2 + strokeWidth / 2;
     const ry1 = height - strokeWidth / 2;
     const ry2 = height + strokeWidth / 2;
-    const theta = asin(headSize / ry2);
+    const theta = asin(headSize / ry2) - width / height;
     return {
       x: width / 2 + shiftX,
       y: height + shiftY,
@@ -73,12 +73,10 @@ const Arrow = (props) => {
     shiftY = shiftY || 0;
     head.current.setAttrs(headProps(newProps));
     arc.current.setAttrs(arcProps(newProps));
-    rect.current.setAttrs({ x: shiftX, y: shiftY, width: Math.abs(width), height });
   };
 
   const group = useRef();
   const arc = useRef();
-  const rect = useRef();
   const head = useRef();
 
   const groupDragMove = (e) => {
@@ -117,7 +115,6 @@ const Arrow = (props) => {
       const isBlue = width + dx > 0;
       const shiftX = isBlue ? 0 : width + dx;
       const newWidth = Math.abs(width + dx);
-      rect.current.setAttrs({ x: 0, y: 0 });
       head.current.setAttrs({ x: 0 });
       updateElement(id, { ...props, x: props.x + shiftX, width: newWidth, height, isBlue });
     } else {
@@ -125,7 +122,6 @@ const Arrow = (props) => {
       const shiftX = isBlue ? width : dx;
       const newWidth = Math.abs(width - dx);
       const newProps = { ...props, x: props.x + shiftX, width: newWidth, height, isBlue };
-      rect.current.setAttrs({ x: 0, y: 0 });
       head.current.setAttrs({ x: 0 });
       updateElement(id, newProps);
     }
@@ -142,7 +138,6 @@ const Arrow = (props) => {
     const dy = Math.min(e.target.y() + rhHeight / 2, height - minHeight);
     e.target.setAttrs({ x: width / 2 - rhWidth / 2, y: -rhHeight / 2 });
     const newHeight = height - dy;
-    rect.current.setAttrs({ x: 0, y: 0 });
     updateElement(id, { ...props, height: newHeight, y: y + dy });
   };
 
@@ -158,7 +153,7 @@ const Arrow = (props) => {
       onDragEnd={groupDragEnd}
       onPointerClick={groupClick}
     >
-      <Rect ref={rect} x={0} y={0} width={width} height={height} stroke={"black"} />
+      {/* <Rect x={0} y={0} width={width} height={height} stroke={"black"}/> */}
       <Path ref={arc} {...arcProps(props)} />
       <Path ref={head} {...headProps(props)} draggable onDragMove={headDragMove} onDragEnd={headDragEnd} />
       <Rect
@@ -166,7 +161,6 @@ const Arrow = (props) => {
         y={-rhHeight / 2}
         width={rhWidth}
         height={rhHeight}
-        stroke={"black"}
         draggable
         onDragMove={resizeHandleDragMove}
         onDragEnd={resizeHandleDragEnd}

@@ -3,14 +3,16 @@ import { colors } from "../../state/colors";
 import { leftToolbarWidth } from "../LeftToolbar";
 import { useAppStore } from "../../state/store";
 import { arHeight, arWidth } from "../Arrow";
-import { getStageXY } from "../../util";
+import { getStageXY, asin, cos, sin } from "../../util";
+import { useRef } from "react";
 
 const strokeWidth = 10;
 const headSize = 25;
 
-const Arrow = ({ x, y, width, height, isBlue, draggable }) => {
+const Arrow = (props) => {
   const state = useAppStore();
   const { addElement, origin } = state;
+  const { x, y, width, height, isBlue, draggable } = props;
 
   const color = isBlue ? colors.blue : colors.red;
   const headX = isBlue ? width : 0;
@@ -19,6 +21,54 @@ const Arrow = ({ x, y, width, height, isBlue, draggable }) => {
   let shadow = null;
   const getShadow = (e) => {
     return shadow || (shadow = e.target.getStage().findOne("#shadow-arrow-" + (isBlue ? "blue" : "red")));
+  };
+
+  const group = useRef();
+  const arc = useRef();
+  const rect = useRef();
+  const head = useRef();
+
+  const arcProps = ({ width, height, isBlue, shiftX, shiftY }) => {
+    shiftX = shiftX || 0;
+    shiftY = shiftY || 0;
+    width = Math.abs(width);
+    const rx1 = width / 2 - strokeWidth / 2;
+    const rx2 = width / 2 + strokeWidth / 2;
+    const ry1 = height - strokeWidth / 2;
+    const ry2 = height + strokeWidth / 2;
+    const theta = asin(headSize / ry2) - width / height;
+    return {
+      x: width / 2 + shiftX,
+      y: height + shiftY,
+      fill: isBlue ? colors.blue : colors.red,
+      scaleX: isBlue ? 1 : -1,
+      data: `
+      M ${-rx2} 0 
+      A ${rx2} ${ry2} 0 0 1 ${rx2 * cos(theta)} ${-ry2 * sin(theta)}
+      L ${rx1 * cos(theta)} ${-ry1 * sin(theta)}
+      A ${rx1} ${ry1} 0 0 0 ${-rx1} ${0}
+      L ${-rx2} 0 
+    `,
+    };
+  };
+
+  const headProps = ({ width, height, isBlue, shiftX, shiftY }) => {
+    shiftX = shiftX || 0;
+    shiftY = shiftY || 0;
+    const ry2 = height + strokeWidth / 2;
+    const theta = asin(headSize / ry2) * (isBlue ? 1 : -1);
+    const color = isBlue ? colors.blue : colors.red;
+    return {
+      x: isBlue ? Math.abs(width) + shiftX : 0 + shiftX,
+      y: height + shiftY,
+      fill: color,
+      stroke: color,
+      data: `
+      M ${headSize * cos(-120 - theta)} ${headSize * sin(-120 - theta)}
+      L ${headSize * cos(-60 - theta)} ${headSize * sin(-60 - theta)}
+      L 0 0
+    `,
+    };
   };
 
   const onDragStart = (e) => {
@@ -32,8 +82,8 @@ const Arrow = ({ x, y, width, height, isBlue, draggable }) => {
     if (pos.x > leftToolbarWidth) {
       const stagePos = getStageXY(e.target.getStage(), state);
       getShadow(e).setAttrs({
-        x: origin.x + stagePos.x,
-        y: origin.y + stagePos.y,
+        x: origin.x + stagePos.x - width / 2,
+        y: origin.y + stagePos.y - height / 2,
         visible: true,
       });
     } else {
@@ -44,6 +94,7 @@ const Arrow = ({ x, y, width, height, isBlue, draggable }) => {
   };
 
   const onDragEnd = (e) => {
+    const stagePos = getStageXY(e.target.getStage(), state);
     getShadow(e).setAttrs({
       visible: false,
     });
@@ -52,43 +103,16 @@ const Arrow = ({ x, y, width, height, isBlue, draggable }) => {
       width: arWidth,
       height: arHeight,
       isBlue: isBlue,
-      ...getStageXY(e.target.getStage(), state),
+      x: stagePos.x - width / 2,
+      y: stagePos.y - height / 2,
     });
   };
 
   return (
-    <Group x={x} y={y} draggable onDragStart={onDragStart} onDragMove={onDragMove} onDragEnd={onDragEnd}>
-      {draggable && <Rect width={width} height={height} />}
-      <Path
-        x={isBlue ? -strokeWidth / 2 : width + strokeWidth / 2}
-        y={height}
-        fill={color}
-        data={`
-          m 0 0 
-          a ${width / 2} ${height} 0 0 1
-            ${width - headSize / 4.5}
-            ${-headSize}
-          h ${-strokeWidth}
-          a ${width / 2 - strokeWidth} ${height - strokeWidth} 0 0 0
-            ${2 * strokeWidth - width + headSize / 4.5}
-            ${headSize}
-          h ${-strokeWidth}
-        `}
-        scaleX={isBlue ? 1.13 : -1.13}
-      />
-      <Path
-        x={headX}
-        y={headY}
-        fill={color}
-        stroke={color}
-        data={`
-          m 0 0
-          l ${-headSize / 2} ${-headSize}
-          l ${headSize} ${0}
-          l ${-headSize / 2} ${headSize}
-        `}
-      />
-      <Rect width={width} height={height} stroke={"black"} />
+    <Group ref={group} x={x} y={y} draggable onDragStart={onDragStart} onDragMove={onDragMove} onDragEnd={onDragEnd}>
+      <Path ref={arc} {...arcProps(props)} />
+      <Path ref={head} {...headProps(props)} />
+      <Rect ref={rect} x={0} y={0} width={width} height={height} />
     </Group>
   );
 };

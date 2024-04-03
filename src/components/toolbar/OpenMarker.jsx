@@ -36,8 +36,8 @@ const OpenMarker = ({ x, y, width, height }) => {
     if (pos.x > leftToolbarWidth) {
       const stagePos = getStageXY(e.target.getStage(), state);
       getShadow(e).setAttrs({
-        x: origin.x + stagePos.x,
-        y: origin.y + stagePos.y,
+        x: origin.x + stagePos.x - width / 2,
+        y: origin.y + stagePos.y - height / 2,
         visible: true,
       });
     } else {
@@ -48,6 +48,7 @@ const OpenMarker = ({ x, y, width, height }) => {
   };
 
   const onDragEnd = (e) => {
+    const stagePos = getStageXY(e.target.getStage(), state);
     getShadow(e).setAttrs({
       visible: false,
     });
@@ -55,13 +56,14 @@ const OpenMarker = ({ x, y, width, height }) => {
       type: "open-marker",
       width: omWidth,
       height: omHeight,
-      ...getStageXY(e.target.getStage(), state),
+      x: stagePos.x - width / 2,
+      y: stagePos.y - height / 2,
     });
   };
 
   return (
     <Group x={x} y={y} draggable onDragStart={onDragStart} onDragMove={onDragMove} onDragEnd={onDragEnd}>
-      <Rect width={width} height={height} stroke={"black"} />
+      <Rect width={width} height={height} />
       <Rect
         x={width / 2 - top.width / 2}
         y={0}
