@@ -17,6 +17,8 @@ const Arrow = (props) => {
   const { origin, selectIds, relocateElement, updateElement } = state;
   const { id, x, y, width, height, isBlue, visible, locked } = props;
 
+  x && console.log({ x, width });
+
   const headX = isBlue ? width : 0;
 
   const pos = {
@@ -109,6 +111,22 @@ const Arrow = (props) => {
 
   const headDragEnd = (e) => {
     const dx = e.target.x() - headX;
+    e.target.setAttrs({ y: height });
+    if (isBlue) {
+      const isBlue = width + dx > 0;
+      const shift = isBlue ? 0 : width + dx;
+      const newWidth = Math.abs(width + dx);
+      rect.current.setAttrs({ x: 0, y: 0 });
+      updateElement(id, { ...props, x: props.x + shift, width: newWidth, height, isBlue });
+    } else {
+      const isBlue = width - dx < 0;
+      const shift = isBlue ? width : dx;
+      const newWidth = Math.abs(width - dx);
+      const newProps = { ...props, x: props.x + shift, width: newWidth, height, isBlue };
+      rect.current.setAttrs({ x: 0, y: 0 });
+      head.current.setAttrs({x: 0});
+      updateElement(id, newProps);
+    }
   };
 
   const resizeHandleDragMove = (e) => {
@@ -138,7 +156,7 @@ const Arrow = (props) => {
       onDragEnd={groupDragEnd}
       onPointerClick={groupClick}
     >
-      <Rect ref={rect} width={width} height={height} stroke={"black"} />
+      <Rect ref={rect} x={0} y={0} width={width} height={height} stroke={"black"} />
       <Path ref={arc} {...arcProps(props)} />
       <Path ref={head} {...headProps(props)} draggable onDragMove={headDragMove} onDragEnd={headDragEnd} />
       <Rect
