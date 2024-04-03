@@ -297,8 +297,10 @@ export const useAppStore = create((set) => ({
   keyDown: (key) =>
     set(
       produce((state) => {
-        const { selected, elements } = state;
-        const target = selected.length == 1 && elements[selected[0]];
+        const { selected, elements, lastActiveElement } = state;
+        const selectedTarget = selected.length == 1 && elements[selected[0]];
+        const activeTarget = selected.length == 0 && lastActiveElement && elements[lastActiveElement];
+        const target = selectedTarget || activeTarget;
         if (!target || target.text === undefined) return;
         const text = target.text;
         if (key == "Backspace") {

@@ -1,4 +1,4 @@
-import { Group, Path, Rect } from "react-konva";
+import { Group, Path, Rect, Text } from "react-konva";
 import { colors } from "../state/colors";
 import { useAppStore } from "../state/store";
 import { useRef } from "react";
@@ -16,7 +16,7 @@ const rhHeight = strokeWidth;
 const Arrow = (props) => {
   const state = useAppStore();
   const { origin, selectIds, relocateElement, updateElement } = state;
-  const { id, x, y, width, height, isBlue, visible, locked } = props;
+  const { id, x, y, width, height, isBlue, visible, locked, text } = props;
 
   const headX = isBlue ? width : 0;
 
@@ -68,17 +68,30 @@ const Arrow = (props) => {
     };
   };
 
-  const updateNodes = (newProps) => {
-    let { shiftX, shiftY, width, height } = newProps;
+  const textProps = ({ width, height, isBlue, shiftX, shiftY }) => {
     shiftX = shiftX || 0;
     shiftY = shiftY || 0;
+    const color = isBlue ? colors.blue : colors.red;
+    return {
+      x: shiftX - 100,
+      y: shiftY - 50,
+      width: Math.abs(width) + 200,
+      text: text ? (isBlue ? "+" : "-") + text : "",
+      fill: color,
+      stroke: color,
+    };
+  };
+
+  const updateNodes = (newProps) => {
     head.current.setAttrs(headProps(newProps));
     arc.current.setAttrs(arcProps(newProps));
+    textRef.current.setAttrs(textProps(newProps));
   };
 
   const group = useRef();
   const arc = useRef();
   const head = useRef();
+  const textRef = useRef();
 
   const groupDragMove = (e) => {
     if (e.target === group.current) {
@@ -120,6 +133,7 @@ const Arrow = (props) => {
       const shiftX = isBlue ? 0 : width + dx;
       const newWidth = Math.abs(width + dx);
       head.current.setAttrs({ x: 0 });
+      textRef.current.setAttrs({ x: -100, y: -50 });
       updateElement(id, { ...props, x: props.x + shiftX, width: newWidth, height, isBlue });
     } else {
       const isBlue = width - dx < 0;
@@ -127,6 +141,7 @@ const Arrow = (props) => {
       const newWidth = Math.abs(width - dx);
       const newProps = { ...props, x: props.x + shiftX, width: newWidth, height, isBlue };
       head.current.setAttrs({ x: 0 });
+      textRef.current.setAttrs({ x: -100, y: -50 });
       updateElement(id, newProps);
     }
   };
@@ -142,6 +157,7 @@ const Arrow = (props) => {
     const dy = Math.min(e.target.y() + rhHeight / 2, height - minHeight);
     e.target.setAttrs({ x: width / 2 - rhWidth / 2, y: -rhHeight / 2 });
     const newHeight = height - dy;
+    textRef.current.setAttrs({ x: -100, y: -50 });
     updateElement(id, { ...props, height: newHeight, y: y + dy });
   };
 
@@ -169,6 +185,7 @@ const Arrow = (props) => {
         onDragMove={resizeHandleDragMove}
         onDragEnd={resizeHandleDragEnd}
       />
+      <Text ref={textRef} fontFamily="Calibri" fontSize={24} align="center" {...textProps(props)} />
     </Group>
   );
 };
@@ -181,7 +198,7 @@ export function arrowMagnet({ x, y, height }, state) {
       numberBetween(x, line.x, line.x + line.width) &&
       numberBetween(y + height, line.y + line.height / 2 - sens, line.y + line.height / 2 + sens)
     ) {
-      return { x, y: line.y + (line.height - nlLineWidth) / 2  - height };
+      return { x, y: line.y + (line.height - nlLineWidth) / 2 - height };
     }
   }
   return { x, y };
