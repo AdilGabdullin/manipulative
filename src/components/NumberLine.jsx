@@ -140,25 +140,43 @@ const NumberLine = (props) => {
 const Notches = (props) => {
   const { id, min, max } = props;
   const xs = [];
-  for (let i = 0; i < max - min + 1; i += 1) {
+  const range = max - min;
+  for (let i = 0; i < range + 1; i += 1) {
     xs.push({ x: notchX(i, props), text: min + i });
   }
+  let textSkipStep = 200;
+  if (range < 30) textSkipStep = 1;
+  else if (range < 80) textSkipStep = 2;
+  else if (range < 200) textSkipStep = 10;
+  else if (range < 400) textSkipStep = 20;
+  else if (range < 600) textSkipStep = 50;
+  else if (range < 1500) textSkipStep = 100;
+  let notchSkipStep = 100;
+  if (range < 200) notchSkipStep = 1;
+  else if (range < 1000) notchSkipStep = 10;
+  else if (range < 1500) notchSkipStep = 20;
 
-  return xs.map(({ x, text }, i) => (
-    <Group key={i} x={x} id={`${id}-notch-${i}`}>
-      <NotchLine {...props} />
-      <NotchText {...props} text={text} />
-    </Group>
-  ));
+  return xs.map(({ x, text }, i) => {
+    const skipNotch = i % notchSkipStep == 0;
+    const showText = i % textSkipStep == 0;
+
+    return (
+      <Group key={i} x={x} id={`${id}-notch-${i}`}>
+        {skipNotch && <NotchLine {...props} short={!showText} />}
+        {showText && <NotchText {...props} text={text} />}
+      </Group>
+    );
+  });
 };
 
-const NotchLine = ({ height, id }) => {
+const NotchLine = ({ height, id, short }) => {
+  const size = short ? height / 3 : height / 2;
   return (
     <Line
       name={`${id}-notch`}
       x={0}
-      y={height / 4}
-      points={[0, 0, 0, height / 2]}
+      y={height / 2 - size / 2}
+      points={[0, 0, 0, size]}
       strokeWidth={nlLineWidth / 2}
       stroke={"black"}
       fill="black"
@@ -170,7 +188,6 @@ const NotchLine = ({ height, id }) => {
 const NotchText = ({ width, height, min, max, text }) => {
   const [textVisible, setTextVisible] = useState(true);
 
-  const step = (width - 4 * height) / (max - min);
   const textRef = useRef();
   const rectRef = useRef();
 
@@ -208,9 +225,9 @@ const NotchText = ({ width, height, min, max, text }) => {
         ref={textRef}
         text={text}
         visible={textVisible}
-        x={-step / 2}
+        x={-50}
         y={height * 1.25}
-        width={step}
+        width={100}
         align="center"
         fontFamily="Calibri"
         fontSize={20}
