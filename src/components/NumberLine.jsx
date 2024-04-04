@@ -1,11 +1,11 @@
-import { Group, Line, Rect, Text } from "react-konva";
+import { Circle, Group, Line, Rect, Text } from "react-konva";
 import { useAppStore } from "../state/store";
 import { colors } from "../state/colors";
-import { Fragment, useRef } from "react";
+import { useRef, useState } from "react";
 
 export const nlWidth = 900;
 export const nlHeight = 26;
-export const nlLineWidth = 5;
+export const nlLineWidth = 4;
 const nlMinWidth = 100;
 
 const NumberLine = (props) => {
@@ -127,13 +127,18 @@ const NumberLine = (props) => {
           updateElement(id, { width: width + dx });
         }}
       />
-      {haveNotches && <Notches {...{ id, width, height, min, max }} />}
+      {haveNotches && (
+        <>
+          <Notches {...props} />
+          <RangeSelector {...props} />
+        </>
+      )}
     </Group>
   );
 };
 
 const Notches = (props) => {
-  const { id, height, min, max } = props;
+  const { id, min, max } = props;
   const xs = [];
   for (let i = 0; i < max - min + 1; i += 1) {
     xs.push({ x: notchX(i, props), text: min + i });
@@ -141,21 +146,73 @@ const Notches = (props) => {
 
   return xs.map(({ x, text }, i) => (
     <Group key={i} x={x} id={`${id}-notch-${i}`}>
-      <Line
-        name={`${id}-notch`}
-        x={0}
-        y={height / 4}
-        points={[0, 0, 0, height / 2]}
-        strokeWidth={nlLineWidth / 2}
-        stroke={"black"}
-        fill="black"
-        lineCap="round"
-      />
+      <NotchLine {...props} />
+      <NotchText {...props} text={text} />
+    </Group>
+  ));
+};
+
+const NotchLine = ({ height, id }) => {
+  return (
+    <Line
+      name={`${id}-notch`}
+      x={0}
+      y={height / 4}
+      points={[0, 0, 0, height / 2]}
+      strokeWidth={nlLineWidth / 2}
+      stroke={"black"}
+      fill="black"
+      lineCap="round"
+    />
+  );
+};
+
+const NotchText = ({ width, height, min, max, text }) => {
+  const [textVisible, setTextVisible] = useState(true);
+
+  const step = (width - 4 * height) / (max - min);
+  const textRef = useRef();
+  const rectRef = useRef();
+
+  const events = {
+    onPointerEnter: (e) => {
+      textRef.current.setAttrs({
+        stroke: colors.blue,
+        fill: colors.blue,
+      });
+      if (!textVisible) {
+        rectRef.current.setAttr("stroke", colors.blue);
+      }
+    },
+    onPointerLeave: (e) => {
+      textRef.current.setAttrs({
+        stroke: colors.black,
+        fill: colors.black,
+      });
+      if (!textVisible) {
+        rectRef.current.setAttr("stroke", null);
+      }
+    },
+    onPointerClick: (e) => {
+      e.cancelBubble = true;
+      if (textVisible) {
+        rectRef.current.setAttr("stroke", colors.blue);
+      }
+      setTextVisible(!textVisible);
+    },
+  };
+
+  const rectSize = 18;
+
+  return (
+    <Group {...events}>
       <Text
+        ref={textRef}
         text={text}
-        x={-50}
+        visible={textVisible}
+        x={-step / 2}
         y={height * 1.25}
-        width={100}
+        width={step}
         align="center"
         stroke={"black"}
         fill="black"
@@ -163,8 +220,17 @@ const Notches = (props) => {
         fontStyle="200"
         fontSize={20}
       />
+      <Rect
+        ref={rectRef}
+        x={-rectSize / 2}
+        y={height * 1.25 + 20 / 2 - rectSize / 2}
+        width={rectSize}
+        height={rectSize}
+        strokeWidth={2}
+        visible={!textVisible}
+      />
     </Group>
-  ));
+  );
 };
 
 function notchX(i, { width, height, min, max, shift }) {
@@ -172,5 +238,92 @@ function notchX(i, { width, height, min, max, shift }) {
   const start = height * 2 + (shift || 0);
   return start + i * step + width / 100000;
 }
+
+const RangeSelector = (props) => {
+  const { updateElement } = useAppStore();
+  const r = 12;
+
+  const values = [-1000, -500, -100, -20, -10, 0, 10, 20, 100, 500, 1000];
+  const start = props.width / 4;
+  const end = (props.width * 3) / 4;
+  const y = 100;
+  const step = (end - start) / (values.length - 1);
+
+  const leftIndex = values.findIndex((v) => v == props.min);
+  const rightIndex = values.findIndex((v) => v == props.max);
+
+  const leftCircle = useRef();
+  const rightCircle = useRef();
+
+  const getLeftIndex = () => {
+    let index = Math.round((leftCircle.current.x() - start) / step);
+    index = Math.max(index, 0);
+    index = Math.min(index, rightIndex - 1);
+    return index;
+  };
+
+  const getRightIndex = () => {
+    let index = Math.round((rightCircle.current.x() - start) / step);
+    index = Math.min(index, values.length - 1);
+    index = Math.max(index, leftIndex + 1);
+    return index;
+  };
+
+  const events = {
+    left: {
+      onDragMove: (e) => {
+        leftCircle.current.setAttrs({ x: start + getLeftIndex() * step, y });
+        updateElement(props.id, { min: values[getLeftIndex()] });
+      },
+      onDragEnd: (e) => {
+        updateElement(props.id, { min: values[getLeftIndex()] });
+      },
+    },
+    right: {
+      onDragMove: (e) => {
+        rightCircle.current.setAttrs({ x: start + getRightIndex() * step, y });
+        updateElement(props.id, { max: values[getRightIndex()] });
+      },
+      onDragEnd: (e) => {
+        updateElement(props.id, { max: values[getRightIndex()] });
+      },
+    },
+  };
+
+  return (
+    <>
+      <Rect
+        x={start - r}
+        y={y - r / 2}
+        width={end - start + 2 * r}
+        height={r}
+        fill={colors.grey}
+        cornerRadius={r / 2}
+      />
+      <Group>
+        <Circle
+          ref={leftCircle}
+          x={start + leftIndex * step}
+          y={y}
+          radius={r}
+          fill={colors.blue}
+          draggable
+          {...events.left}
+        />
+      </Group>
+      <Group>
+        <Circle
+          ref={rightCircle}
+          x={start + rightIndex * step}
+          y={y}
+          radius={r}
+          fill={colors.blue}
+          draggable
+          {...events.right}
+        />
+      </Group>
+    </>
+  );
+};
 
 export default NumberLine;

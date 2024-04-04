@@ -305,7 +305,7 @@ export const useAppStore = create((set) => ({
         const text = target.text;
         if (key == "Backspace") {
           target.text = text.substring(0, text.length - 1);
-        } else if (key.match(/[0-9]/) && text.length < 3) {
+        } else if (key.match(/^[0-9]$/) && text.length < 3) {
           target.text = text + key;
         }
       })

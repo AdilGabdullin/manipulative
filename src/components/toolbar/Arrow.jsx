@@ -33,7 +33,7 @@ const Arrow = (props) => {
     const rx2 = width / 2 + strokeWidth / 2;
     const ry1 = height - strokeWidth / 2;
     const ry2 = height + strokeWidth / 2;
-    const theta = asin(headSize / ry2) - width / height;
+    const theta = asin(headSize / ry2) * 0.9;
     return {
       x: width / 2 + shiftX,
       y: height + shiftY,
@@ -53,7 +53,7 @@ const Arrow = (props) => {
     shiftX = shiftX || 0;
     shiftY = shiftY || 0;
     const ry2 = height + strokeWidth / 2;
-    const theta = asin(headSize / ry2) * (isBlue ? 1 : -1);
+    const theta = asin(headSize / ry2) * (isBlue ? 1 : -1) * 0.62;
     const color = isBlue ? colors.blue : colors.red;
     return {
       x: isBlue ? Math.abs(width) + shiftX : 0 + shiftX,
