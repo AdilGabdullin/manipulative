@@ -74,11 +74,10 @@ const Arrow = (props) => {
     const color = isBlue ? colors.blue : colors.red;
     return {
       x: shiftX - 100,
-      y: shiftY - 50,
+      y: shiftY - 30,
       width: Math.abs(width) + 200,
       text: text ? (isBlue ? "+" : "-") + text : "",
       fill: color,
-      stroke: color,
     };
   };
 

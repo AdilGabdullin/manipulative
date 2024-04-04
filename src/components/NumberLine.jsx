@@ -177,7 +177,6 @@ const NotchText = ({ width, height, min, max, text }) => {
   const events = {
     onPointerEnter: (e) => {
       textRef.current.setAttrs({
-        stroke: colors.blue,
         fill: colors.blue,
       });
       if (!textVisible) {
@@ -186,7 +185,6 @@ const NotchText = ({ width, height, min, max, text }) => {
     },
     onPointerLeave: (e) => {
       textRef.current.setAttrs({
-        stroke: colors.black,
         fill: colors.black,
       });
       if (!textVisible) {
@@ -214,10 +212,7 @@ const NotchText = ({ width, height, min, max, text }) => {
         y={height * 1.25}
         width={step}
         align="center"
-        stroke={"black"}
-        fill="black"
         fontFamily="Calibri"
-        fontStyle="200"
         fontSize={20}
       />
       <Rect
@@ -273,7 +268,7 @@ const RangeSelector = (props) => {
     left: {
       onDragMove: (e) => {
         leftCircle.current.setAttrs({ x: start + getLeftIndex() * step, y });
-        updateElement(props.id, { min: values[getLeftIndex()] });
+        updateElement(props.id, { min: values[getLeftIndex()] }, false);
       },
       onDragEnd: (e) => {
         updateElement(props.id, { min: values[getLeftIndex()] });
@@ -282,7 +277,7 @@ const RangeSelector = (props) => {
     right: {
       onDragMove: (e) => {
         rightCircle.current.setAttrs({ x: start + getRightIndex() * step, y });
-        updateElement(props.id, { max: values[getRightIndex()] });
+        updateElement(props.id, { max: values[getRightIndex()] }, false);
       },
       onDragEnd: (e) => {
         updateElement(props.id, { max: values[getRightIndex()] });
@@ -290,37 +285,32 @@ const RangeSelector = (props) => {
     },
   };
 
+  const rectHeight = r * 0.7;
+
   return (
     <>
       <Rect
         x={start - r}
-        y={y - r / 2}
+        y={y - rectHeight / 2}
         width={end - start + 2 * r}
-        height={r}
+        height={rectHeight}
         fill={colors.grey}
-        cornerRadius={r / 2}
+        cornerRadius={rectHeight / 2}
       />
-      <Group>
-        <Circle
-          ref={leftCircle}
-          x={start + leftIndex * step}
-          y={y}
-          radius={r}
-          fill={colors.blue}
-          draggable
-          {...events.left}
-        />
+      <Rect
+        x={start + leftIndex * step}
+        y={y - rectHeight / 2}
+        width={(rightIndex - leftIndex) * step}
+        height={rectHeight}
+        fill={colors.blue}
+      />
+      <Group ref={leftCircle} x={start + leftIndex * step} y={y} draggable {...events.left}>
+        <Circle radius={r} fill={colors.blue} />
+        <Text y={16} text={props.min} x={-50} width={100} align="center" fontSize={20} fontFamily="Calibri" />
       </Group>
-      <Group>
-        <Circle
-          ref={rightCircle}
-          x={start + rightIndex * step}
-          y={y}
-          radius={r}
-          fill={colors.blue}
-          draggable
-          {...events.right}
-        />
+      <Group ref={rightCircle} x={start + rightIndex * step} y={y} draggable {...events.right}>
+        <Circle radius={r} fill={colors.blue} />
+        <Text y={16} text={props.max} x={-50} width={100} align="center" fontSize={20} fontFamily="Calibri" />
       </Group>
     </>
   );
