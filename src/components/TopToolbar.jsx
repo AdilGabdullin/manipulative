@@ -4,7 +4,12 @@ import ShapesMenu from "./ShapesMenu";
 
 export const topToolbarHeight = 42;
 
-const workspaceOptions = ["Open"];
+const workspaceOptions = [
+  "Integers",
+  "Decimals",
+  "Fractions",
+  "Open",
+];
 
 const TopToolbar = () => {
   return (

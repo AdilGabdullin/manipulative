@@ -7,10 +7,11 @@ import { useRef } from "react";
 
 const NumberLine = ({ x, y, width, height }) => {
   const state = useAppStore();
-  const { addElement, origin } = state;
+  const { addElement, origin, workspace } = state;
 
   const headSize = height / 2;
   const toolbarShadow = useRef();
+  const haveNotches = workspace != "Open";
 
   let shadow = null;
   const getShadow = (e) => {
@@ -55,66 +56,87 @@ const NumberLine = ({ x, y, width, height }) => {
         height: nlHeight,
         x: stagePos.x - width / 2,
         y: stagePos.y - height / 2,
+        haveNotches: haveNotches,
+        min: 0,
+        max: 20,
       });
     }
   };
 
+  const props = { width, height, headSize };
+
   return (
     <>
       <Group ref={toolbarShadow} x={x} y={y} visible={false}>
-        <Rect width={width} height={height} />
-        <Line
-          x={headSize / 2}
-          y={height / 2}
-          points={[0, 0, width - headSize, 0]}
-          strokeWidth={nlLineWidth}
-          stroke={"black"}
-        />
-        <Line
-          x={0}
-          y={height / 2}
-          points={[0, 0, headSize, headSize, headSize, -headSize, 0, 0]}
-          stroke={"black"}
-          fill="black"
-          closed
-        />
-        <Line
-          x={width}
-          y={height / 2}
-          points={[0, 0, -headSize, -headSize, -headSize, headSize, 0, 0]}
-          stroke={"black"}
-          fill="black"
-          closed
-        />
+        <MainLine {...props} />
+        <LeftHead {...props} />
+        <RightHead {...props} />
+        {workspace != "Open" && <Notches {...props} />}
       </Group>
       <Group x={x} y={y} draggable onDragStart={onDragStart} onDragMove={onDragMove} onDragEnd={onDragEnd}>
         <Rect width={width} height={height} />
-        <Line
-          x={headSize / 2}
-          y={height / 2}
-          points={[0, 0, width - headSize, 0]}
-          strokeWidth={nlLineWidth}
-          stroke={"black"}
-        />
-        <Line
-          x={0}
-          y={height / 2}
-          points={[0, 0, headSize, headSize, headSize, -headSize, 0, 0]}
-          stroke={"black"}
-          fill="black"
-          closed
-        />
-        <Line
-          x={width}
-          y={height / 2}
-          points={[0, 0, -headSize, -headSize, -headSize, headSize, 0, 0]}
-          stroke={"black"}
-          fill="black"
-          closed
-        />
+        <MainLine {...props} />
+        <LeftHead {...props} />
+        <RightHead {...props} />
+        {workspace != "Open" && <Notches {...props} />}
       </Group>
     </>
   );
+};
+
+const MainLine = ({ width, height, headSize }) => {
+  return (
+    <Line
+      x={headSize / 2}
+      y={height / 2}
+      points={[0, 0, width - headSize, 0]}
+      strokeWidth={nlLineWidth}
+      stroke={"black"}
+    />
+  );
+};
+
+const LeftHead = ({ width, height, headSize }) => {
+  return (
+    <Line
+      x={0}
+      y={height / 2}
+      points={[0, 0, headSize, headSize, headSize, -headSize, 0, 0]}
+      stroke={"black"}
+      fill="black"
+      closed
+    />
+  );
+};
+
+const RightHead = ({ width, height, headSize }) => {
+  return (
+    <Line
+      x={width}
+      y={height / 2}
+      points={[0, 0, -headSize, -headSize, -headSize, headSize, 0, 0]}
+      stroke={"black"}
+      fill="black"
+      closed
+    />
+  );
+};
+
+const Notches = ({ width, height, headSize }) => {
+  const step = (width - 2 * headSize) / 4;
+  const xs = [step, step * 2, step * 3];
+  return xs.map((x) => (
+    <Line
+      key={x}
+      x={headSize + x}
+      y={height / 4}
+      points={[0, 0, 0, height / 2]}
+      strokeWidth={nlLineWidth / 2}
+      stroke={"black"}
+      fill="black"
+      lineCap="round"
+    />
+  ));
 };
 
 export default NumberLine;

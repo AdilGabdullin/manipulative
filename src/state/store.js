@@ -30,7 +30,6 @@ export const useAppStore = create((set) => ({
   lockSelect: false,
 
   fullscreen: true,
-  workspace: "Open",
   toggleGlobal: (field) =>
     set(
       produce((state) => {
