@@ -207,6 +207,7 @@ export const useAppStore = create((set) => ({
           state.elements[id][key] = attrs[key];
         }
         if (doPush) pushHistory(state);
+        state.lastActiveElement = id;
       })
     ),
 
