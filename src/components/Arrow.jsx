@@ -3,7 +3,7 @@ import { colors } from "../state/colors";
 import { useAppStore } from "../state/store";
 import { useRef } from "react";
 import { asin, cos, numberBetween, sin } from "../util";
-import { nlLineWidth } from "./NumberLine";
+import { nlLineWidth, notchStep } from "./NumberLine";
 
 const strokeWidth = 10;
 const headSize = 25;
@@ -156,7 +156,7 @@ const Arrow = (props) => {
     const dy = Math.min(e.target.y() + rhHeight / 2, height - minHeight);
     e.target.setAttrs({ x: width / 2 - rhWidth / 2, y: -rhHeight / 2 });
     const newHeight = height - dy;
-    textRef.current.setAttrs({ x: -100, y: -50 });
+    textRef.current.setAttrs({ x: -100, y: -30 });
     updateElement(id, { ...props, height: newHeight, y: y + dy });
   };
 
@@ -197,7 +197,11 @@ export function arrowMagnet({ x, y, height }, state) {
       numberBetween(x, line.x, line.x + line.width) &&
       numberBetween(y + height, line.y + line.height / 2 - sens, line.y + line.height / 2 + sens)
     ) {
-      return { x, y: line.y + (line.height - nlLineWidth) / 2 - height };
+      const firstNotch = line.x + line.height * 2;
+      const range = line.max - line.min;
+      const step = (line.width - line.height * 4) / range * notchStep(range);
+      x = x - (x - firstNotch) % step;
+      return { x: x, y: line.y + (line.height - nlLineWidth) / 2 - height };
     }
   }
   return { x, y };

@@ -110,7 +110,7 @@ const Arrow = (props) => {
         isBlue: isBlue,
         x: stagePos.x,
         y: stagePos.y,
-        text: "",
+        text: "10",
       });
     }
   };

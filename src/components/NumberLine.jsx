@@ -148,10 +148,7 @@ const Notches = (props) => {
   else if (range < 400) textSkipStep = 20;
   else if (range < 600) textSkipStep = 50;
   else if (range < 1500) textSkipStep = 100;
-  let notchSkipStep = 100;
-  if (range < 200) notchSkipStep = 1;
-  else if (range < 1000) notchSkipStep = 10;
-  else if (range < 1500) notchSkipStep = 20;
+  const notchSkipStep = notchStep(range);
 
   return xs.map(({ x, text }, i) => {
     const skipNotch = i % notchSkipStep == 0;
@@ -165,6 +162,13 @@ const Notches = (props) => {
     );
   });
 };
+
+export function notchStep(range) {
+  if (range < 200) return 1;
+  if (range < 1000) return 10;
+  if (range < 1500) return 20;
+  return 100;
+}
 
 const NotchLine = ({ height, id, short }) => {
   const size = short ? height / 3 : height / 2;
@@ -242,10 +246,10 @@ const NotchText = ({ width, height, min, max, text }) => {
   );
 };
 
-function notchX(i, { width, height, min, max, shift }) {
+export function notchX(i, { width, height, min, max, shift }) {
   const step = (width - 4 * height) / (max - min);
   const start = height * 2 + (shift || 0);
-  return start + i * step + width / 100000;
+  return start + i * step + width * 0.000001;
 }
 
 const RangeSelector = (props) => {
