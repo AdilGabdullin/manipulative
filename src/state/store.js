@@ -329,8 +329,8 @@ export function initElements() {
       width: nlWidth,
       height: nlHeight,
       haveNotches: true,
-      min: -20,
-      max: 100,
+      min: 0,
+      max: 20,
     },
   };
 }
