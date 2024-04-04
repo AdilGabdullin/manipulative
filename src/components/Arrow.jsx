@@ -132,7 +132,7 @@ const Arrow = (props) => {
       const shiftX = isBlue ? 0 : width + dx;
       const newWidth = Math.abs(width + dx);
       head.current.setAttrs({ x: 0 });
-      textRef.current.setAttrs({ x: -100, y: -50 });
+      textRef.current.setAttrs({ x: -100, y: -30 });
       updateElement(id, { ...props, x: props.x + shiftX, width: newWidth, height, isBlue });
     } else {
       const isBlue = width - dx < 0;
@@ -140,7 +140,7 @@ const Arrow = (props) => {
       const newWidth = Math.abs(width - dx);
       const newProps = { ...props, x: props.x + shiftX, width: newWidth, height, isBlue };
       head.current.setAttrs({ x: 0 });
-      textRef.current.setAttrs({ x: -100, y: -50 });
+      textRef.current.setAttrs({ x: -100, y: -30 });
       updateElement(id, newProps);
     }
   };
@@ -189,7 +189,7 @@ const Arrow = (props) => {
   );
 };
 
-export function arrowMagnet({ x, y, height }, state) {
+export function arrowMagnet({ x, y, width, height }, state) {
   const sens = 50;
   const lines = Object.values(state.elements).filter((e) => e.type == "number-line");
   for (const line of lines) {
@@ -197,14 +197,17 @@ export function arrowMagnet({ x, y, height }, state) {
       numberBetween(x, line.x, line.x + line.width) &&
       numberBetween(y + height, line.y + line.height / 2 - sens, line.y + line.height / 2 + sens)
     ) {
-      const firstNotch = line.x + line.height * 2;
-      const range = line.max - line.min;
-      const step = (line.width - line.height * 4) / range * notchStep(range);
-      x = x - (x - firstNotch) % step;
-      return { x: x, y: line.y + (line.height - nlLineWidth) / 2 - height };
+      if (state.workspace != "Open") {
+        const firstNotch = line.x + line.height * 2;
+        const range = line.max - line.min;
+        const step = ((line.width - line.height * 4) / range) * notchStep(range);
+        x = x - ((x - firstNotch) % step);
+        width = 10 * step;
+      }
+      return { x: x, y: line.y + (line.height - nlLineWidth) / 2 - height, width };
     }
   }
-  return { x, y };
+  return { x, y, width };
 }
 
 export default Arrow;
