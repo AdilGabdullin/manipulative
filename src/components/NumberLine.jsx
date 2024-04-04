@@ -9,8 +9,9 @@ export const nlLineWidth = 4;
 const nlMinWidth = 100;
 
 const NumberLine = (props) => {
-  const { origin, relocateElement, updateElement, selectIds, selected } = useAppStore();
-  const { id, x, y, width, height, visible, locked, haveNotches, min, max } = props;
+  const { workspace, origin, relocateElement, updateElement, selectIds, selected } = useAppStore();
+  const { id, x, y, width, height, visible, locked, min, max } = props;
+  const showNotches = workspace != "Open";
   const headSize = height / 2;
   const groupPos = { x: origin.x + x, y: origin.y + y };
   const rectPos = { x: headSize, y: 0 };
@@ -127,8 +128,8 @@ const NumberLine = (props) => {
           updateElement(id, { width: width + dx });
         }}
       />
-      {haveNotches && <Notches {...props} />}
-      {haveNotches && selected.length == 1 && selected[0] == id && <RangeSelector {...props} />}
+      {showNotches && <Notches {...props} />}
+      {showNotches && selected.length == 1 && selected[0] == id && <RangeSelector {...props} />}
     </Group>
   );
 };

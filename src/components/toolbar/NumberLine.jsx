@@ -56,7 +56,6 @@ const NumberLine = ({ x, y, width, height }) => {
         height: nlHeight,
         x: stagePos.x - width / 2,
         y: stagePos.y - height / 2,
-        haveNotches: haveNotches,
         min: 0,
         max: 20,
       });
