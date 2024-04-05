@@ -25,15 +25,16 @@ const Arrow = (props) => {
     y: origin.y + y,
   };
 
-  const textProps = ({ width, height, isBlue, shiftX, shiftY }) => {
+  const textProps = ({ width, height, isBlue, shiftX, shiftY, text }) => {
     shiftX = shiftX || 0;
     shiftY = shiftY || 0;
     const color = isBlue ? colors.blue : colors.red;
+    const prefix = width == 0 ? "" : isBlue ? "+" : "-";
     return {
       x: shiftX - 100,
       y: shiftY - 30,
       width: Math.abs(width) + 200,
-      text: text ? (isBlue ? "+" : "-") + text : "",
+      text: text !== undefined ? prefix + text : "",
       fill: color,
     };
   };
@@ -72,11 +73,11 @@ const Arrow = (props) => {
     if (isBlue) {
       const isBlue = width + dx > 0;
       const shiftX = isBlue ? 0 : width + dx;
-      updateNodes({ ...props, width: width + dx, height, isBlue, shiftX });
+      updateNodes(headMagnet({ ...props, width: width + dx, height, isBlue, shiftX }, state));
     } else {
       const isBlue = width - dx < 0;
       const shiftX = isBlue ? width : dx;
-      const newProps = { ...props, width: width - dx, x: dx, height, isBlue, shiftX };
+      const newProps = headMagnet({ ...props, width: width - dx, x: dx, height, isBlue, shiftX }, state);
       updateNodes(newProps);
     }
   };
@@ -85,20 +86,20 @@ const Arrow = (props) => {
     const dx = e.target.x() - headX;
     e.target.setAttrs({ y: height });
     if (isBlue) {
-      const isBlue = width + dx > 0;
+      const isBlue = width + dx >= 0;
       const shiftX = isBlue ? 0 : width + dx;
       const newWidth = Math.abs(width + dx);
       head.current.setAttrs({ x: 0 });
       textRef.current.setAttrs({ x: -100, y: -30 });
-      updateElement(id, { ...props, x: props.x + shiftX, width: newWidth, height, isBlue });
+      updateElement(id, headMagnet({ ...props, x: props.x + shiftX, width: newWidth, height, isBlue }, state));
     } else {
-      const isBlue = width - dx < 0;
+      const isBlue = width - dx <= 0;
       const shiftX = isBlue ? width : dx;
       const newWidth = Math.abs(width - dx);
       const newProps = { ...props, x: props.x + shiftX, width: newWidth, height, isBlue };
       head.current.setAttrs({ x: 0 });
       textRef.current.setAttrs({ x: -100, y: -30 });
-      updateElement(id, newProps);
+      updateElement(id, headMagnet(newProps, state));
     }
   };
 
@@ -154,19 +155,31 @@ export function arcProps({ width, height, isBlue, shiftX, shiftY }) {
   const rx2 = width / 2 + strokeWidth / 2;
   const ry1 = height - strokeWidth / 2;
   const ry2 = height + strokeWidth / 2;
-  const theta = asin(headSize / ry2) - (height / width > 3 ? 4 : 2);
+  let theta = asin(headSize / ry2);
+
+  if (height / width > 3) {
+    theta -= 4;
+  } else {
+    theta -= 2;
+  }
   return {
     x: width / 2 + shiftX,
     y: height + shiftY,
     fill: isBlue ? colors.blue : colors.red,
     scaleX: isBlue ? 1 : -1,
-    data: `
-    M ${-rx2} 0 
-    A ${rx2} ${ry2} 0 0 1 ${rx2 * cos(theta)} ${-ry2 * sin(theta)}
-    L ${rx1 * cos(theta)} ${-ry1 * sin(theta)}
-    A ${rx1} ${ry1} 0 0 0 ${-rx1} ${0}
-    L ${-rx2} 0 
-  `,
+    data:
+      width == 0
+        ? `M ${-strokeWidth / 2} ${-height} h ${strokeWidth}
+           v ${height - headSize * sin(60)} h ${-strokeWidth}
+           v ${-height + headSize * sin(60)}
+          `
+        : `
+          M ${-rx2} 0 
+          A ${rx2} ${ry2} 0 0 1 ${rx2 * cos(theta)} ${-ry2 * sin(theta)}
+          L ${rx1 * cos(theta)} ${-ry1 * sin(theta)}
+          A ${rx1} ${ry1} 0 0 0 ${-rx1} ${0}
+          L ${-rx2} 0 
+        `,
   };
 }
 
@@ -175,7 +188,7 @@ export function headProps({ width, height, isBlue, shiftX, shiftY }) {
   shiftY = shiftY || 0;
   const ry2 = height + strokeWidth / 2;
 
-  width = Math.abs(width)
+  width = Math.abs(width);
   const theta = asin(headSize / ry2);
   let alpha = (90 - atan2((height / 2) * sin(theta), width / 2 - (width / 2) * cos(theta))) * (isBlue ? 1 : -1);
   if (width / height > 3) {
@@ -216,6 +229,29 @@ export function arrowMagnet({ x, y, width, height }, state) {
     }
   }
   return { x, y, width };
+}
+
+function headMagnet(props, state) {
+  if (state.workspace == "Open") {
+    return props;
+  }
+  const { x, y, width, height, shiftX } = props;
+  const sens = 50;
+  const lines = Object.values(state.elements).filter((e) => e.type == "number-line");
+  for (const line of lines) {
+    if (
+      numberBetween(x, line.x, line.x + line.width) &&
+      numberBetween(y + height, line.y + line.height / 2 - sens, line.y + line.height / 2 + sens)
+    ) {
+      const range = line.max - line.min;
+      const step = ((line.width - line.height * 4) / range) * notchStep(range);
+      const newText = Math.abs(Math.round(width / step));
+      const newWidth = Math.round(width / step) * step;
+      const newShiftX = Math.round(shiftX / step) * step;
+      return { ...props, width: newWidth, shiftX: newShiftX, text: newText };
+    }
+  }
+  return props;
 }
 
 export default Arrow;
