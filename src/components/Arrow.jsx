@@ -54,14 +54,17 @@ const Arrow = (props) => {
     if (e.target === group.current) {
       const dx = e.target.x() - pos.x;
       const dy = e.target.y() - pos.y;
-      const newPos = arrowMagnet({ x: x + dx, y: y + dy, height }, state);
-      e.target.setAttrs({ x: origin.x + newPos.x, y: origin.y + newPos.y });
+      const newProps = arrowMagnet({ ...props, x: x + dx, y: y + dy }, state);
+      e.target.setAttrs({ ...newProps, x: origin.x + newProps.x, y: origin.y + newProps.y });
     }
   };
 
   const groupDragEnd = (e) => {
     if (e.target === group.current) {
-      relocateElement(id, e.target.x() - pos.x, e.target.y() - pos.y);
+      const dx = e.target.x() - pos.x;
+      const dy = e.target.y() - pos.y;
+      const newProps = arrowMagnet({ ...props, x: x + dx, y: y + dy }, state);
+      updateElement(id, { ...props, x: newProps.x, y: newProps.y });
     }
   };
 
@@ -210,7 +213,8 @@ export function headProps({ width, height, isBlue, shiftX, shiftY }) {
   };
 }
 
-export function arrowMagnet({ x, y, width, height }, state) {
+export function arrowMagnet(props, state) {
+  let { x, y, width, height, text } = props;
   const sens = 50;
   const lines = Object.values(state.elements).filter((e) => e.type == "number-line");
   for (const line of lines) {
@@ -224,11 +228,12 @@ export function arrowMagnet({ x, y, width, height }, state) {
         const step = ((line.width - line.height * 4) / range) * notchStep(range);
         x = x - ((x - firstNotch) % step);
         width = 10 * step;
+        text = 10 * notchStep(range);
       }
-      return { x: x, y: line.y + (line.height - nlLineWidth) / 2 - height, width };
+      return { x: x, y: line.y + (line.height - nlLineWidth) / 2 - height, width, text };
     }
   }
-  return { x, y, width };
+  return { ...props };
 }
 
 function headMagnet(props, state) {

@@ -35,7 +35,7 @@ const Arrow = (props) => {
     const shadow = getShadow(e);
     if (pos.x > leftToolbarWidth) {
       let stagePos = getStageXY(e.target.getStage(), state);
-      stagePos = arrowMagnet({ x: stagePos.x - width / 2, y: stagePos.y - height / 2, width, height }, state);
+      stagePos = arrowMagnet({ x: stagePos.x - width / 2, y: stagePos.y - height / 2, width, height, text: 10 }, state);
       target.visible(false);
 
       shadow.setAttrs({
@@ -57,7 +57,7 @@ const Arrow = (props) => {
     const width = arWidth;
     const height = arHeight;
     let stagePos = getStageXY(e.target.getStage(), state);
-    stagePos = arrowMagnet({ x: stagePos.x - width / 2, y: stagePos.y - height / 2, width, height }, state);
+    stagePos = arrowMagnet({ x: stagePos.x - width / 2, y: stagePos.y - height / 2, width, height, text: 10 }, state);
     e.target.setAttrs({ x, y, visible: true });
     toolbarShadow.current.visible(false);
     getShadow(e).setAttrs({
@@ -71,7 +71,7 @@ const Arrow = (props) => {
         isBlue: isBlue,
         x: stagePos.x,
         y: stagePos.y,
-        text: "10",
+        text: stagePos.text,
       });
     }
   };
