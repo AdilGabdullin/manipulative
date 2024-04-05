@@ -25,49 +25,6 @@ const Arrow = (props) => {
     y: origin.y + y,
   };
 
-  const arcProps = ({ width, height, isBlue, shiftX, shiftY }) => {
-    shiftX = shiftX || 0;
-    shiftY = shiftY || 0;
-    width = Math.abs(width);
-    const rx1 = width / 2 - strokeWidth / 2;
-    const rx2 = width / 2 + strokeWidth / 2;
-    const ry1 = height - strokeWidth / 2;
-    const ry2 = height + strokeWidth / 2;
-    const theta = asin(headSize / ry2) - width / height;
-    return {
-      x: width / 2 + shiftX,
-      y: height + shiftY,
-      fill: isBlue ? colors.blue : colors.red,
-      scaleX: isBlue ? 1 : -1,
-      data: `
-      M ${-rx2} 0 
-      A ${rx2} ${ry2} 0 0 1 ${rx2 * cos(theta)} ${-ry2 * sin(theta)}
-      L ${rx1 * cos(theta)} ${-ry1 * sin(theta)}
-      A ${rx1} ${ry1} 0 0 0 ${-rx1} ${0}
-      L ${-rx2} 0 
-    `,
-    };
-  };
-
-  const headProps = ({ width, height, isBlue, shiftX, shiftY }) => {
-    shiftX = shiftX || 0;
-    shiftY = shiftY || 0;
-    const ry2 = height + strokeWidth / 2;
-    const theta = asin(headSize / ry2) * (isBlue ? 1 : -1);
-    const color = isBlue ? colors.blue : colors.red;
-    return {
-      x: isBlue ? Math.abs(width) + shiftX : 0 + shiftX,
-      y: height + shiftY,
-      fill: color,
-      stroke: color,
-      data: `
-      M ${headSize * cos(-120 - theta)} ${headSize * sin(-120 - theta)}
-      L ${headSize * cos(-60 - theta)} ${headSize * sin(-60 - theta)}
-      L 0 0
-    `,
-    };
-  };
-
   const textProps = ({ width, height, isBlue, shiftX, shiftY }) => {
     shiftX = shiftX || 0;
     shiftY = shiftY || 0;
@@ -188,6 +145,53 @@ const Arrow = (props) => {
     </Group>
   );
 };
+
+export function arcProps({ width, height, isBlue, shiftX, shiftY }) {
+  shiftX = shiftX || 0;
+  shiftY = shiftY || 0;
+  width = Math.abs(width);
+  const rx1 = width / 2 - strokeWidth / 2;
+  const rx2 = width / 2 + strokeWidth / 2;
+  const ry1 = height - strokeWidth / 2;
+  const ry2 = height + strokeWidth / 2;
+  const theta = asin(headSize / ry2) - width / height;
+  return {
+    x: width / 2 + shiftX,
+    y: height + shiftY,
+    fill: isBlue ? colors.blue : colors.red,
+    scaleX: isBlue ? 1 : -1,
+    data: `
+    M ${-rx2} 0 
+    A ${rx2} ${ry2} 0 0 1 ${rx2 * cos(theta)} ${-ry2 * sin(theta)}
+    L ${rx1 * cos(theta)} ${-ry1 * sin(theta)}
+    A ${rx1} ${ry1} 0 0 0 ${-rx1} ${0}
+    L ${-rx2} 0 
+  `,
+  };
+}
+
+export function headProps({ width, height, isBlue, shiftX, shiftY }) {
+  shiftX = shiftX || 0;
+  shiftY = shiftY || 0;
+  const ry2 = height + strokeWidth / 2;
+
+  const theta1 = asin(headSize / ry2) - width / height;
+  // ${width/2 * cos(theta1)} ${-height/2 * sin(theta1)}
+
+  const theta = asin(headSize / ry2) * (isBlue ? 1 : -1);
+  const color = isBlue ? colors.blue : colors.red;
+  return {
+    x: isBlue ? Math.abs(width) + shiftX : 0 + shiftX,
+    y: height + shiftY,
+    fill: color,
+    stroke: color,
+    data: `
+    M ${headSize * cos(-120 - theta)} ${headSize * sin(-120 - theta)}
+    L ${headSize * cos(-60 - theta)} ${headSize * sin(-60 - theta)}
+    L 0 0
+  `,
+  };
+}
 
 export function arrowMagnet({ x, y, width, height }, state) {
   const sens = 50;
