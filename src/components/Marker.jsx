@@ -1,7 +1,7 @@
-import { Group, Rect, Text } from "react-konva";
+import { Circle, Group, Path, Rect, Text } from "react-konva";
 import { colors } from "../state/colors";
 import { useAppStore } from "../state/store";
-import { numberBetween } from "../util";
+import { cos, numberBetween, sin } from "../util";
 import { nlLineWidth } from "./NumberLine";
 
 export const mWidth = 70;
@@ -20,6 +20,14 @@ const Marker = ({ id, x, y, width, height, visible, locked, text }) => {
     height: width * 0.8,
     margin: width * 0.1,
   };
+
+  const angle = 60;
+  const r1 = width / 2 - 5;
+  const r2 = width / 2;
+  const cx = width / 2;
+  const cy = r2;
+  const dx = r2 * cos(angle);
+  const dy = r2 * sin(angle);
 
   const pos = {
     x: origin.x + x,
@@ -44,30 +52,17 @@ const Marker = ({ id, x, y, width, height, visible, locked, text }) => {
       }}
       onPointerClick={() => selectIds([id], locked)}
     >
-      <Rect width={width} height={height} />
-      <Rect
-        x={width / 2 - top.width / 2}
-        y={0}
-        width={top.width}
-        height={top.height}
-        stroke={colors.yellow}
-        fill={colors.yellow}
-      />
-      <Rect
-        x={0}
-        y={top.height}
-        width={width}
-        height={height - top.height}
-        stroke={colors.yellow}
-        fill={colors.yellow}
-        cornerRadius={8}
-      />
-      <Rect
-        x={window.margin}
-        y={top.height + window.margin}
-        width={window.width}
-        height={window.height}
-        fill={"white"}
+      <Circle x={cx} y={cy} radius={r2} fill={colors.purple} />
+      <Circle x={cx} y={cy} radius={r1} fill={colors.white} />
+      <Path
+        stroke={colors.purple}
+        fill={colors.purple}
+        data={`
+            M ${cx - dx} ${cy + dy}
+            A ${r2} ${r2} 0 0 0 ${cx + dx} ${cy + dy}
+            L ${cx} ${height}
+            L ${cx - dx} ${cy + dy}
+          `}
       />
       <Text
         x={window.margin}

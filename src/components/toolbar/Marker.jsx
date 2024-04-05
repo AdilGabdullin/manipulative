@@ -5,6 +5,7 @@ import { leftToolbarWidth } from "../LeftToolbar";
 import { cos, getStageXY, sin } from "../../util";
 import { omHeight, omWidth, openMarkerMagnet } from "../OpenMarker";
 import { useRef } from "react";
+import { mHeight, mWidth } from "../Marker";
 
 const Marker = ({ x, y, width, height }) => {
   const state = useAppStore();
@@ -59,8 +60,8 @@ const Marker = ({ x, y, width, height }) => {
     if (e.target.getStage().getPointerPosition().x > leftToolbarWidth) {
       addElement({
         type: "marker",
-        width: omWidth,
-        height: omHeight,
+        width: mWidth,
+        height: mHeight,
         x: stagePos.x,
         y: stagePos.y,
         text: "",

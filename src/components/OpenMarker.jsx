@@ -44,7 +44,6 @@ const OpenMarker = ({ id, x, y, width, height, visible, locked, text }) => {
       }}
       onPointerClick={() => selectIds([id], locked)}
     >
-      <Rect width={width} height={height} />
       <Rect
         x={width / 2 - top.width / 2}
         y={0}

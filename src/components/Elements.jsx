@@ -37,6 +37,9 @@ const Elements = () => {
           case "open-marker":
             return <OpenMarker key={id} {...element} />;
             break;
+          case "marker":
+            return <Marker key={id} {...element} />;
+            break;
           case "arrow":
             return <Arrow key={id} {...element} />;
             break;
