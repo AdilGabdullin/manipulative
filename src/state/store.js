@@ -29,7 +29,7 @@ export const useAppStore = create((set) => ({
   selected: [],
   lockSelect: false,
 
-  fullscreen: true,
+  // fullscreen: true,
   toggleGlobal: (field) =>
     set(
       produce((state) => {
@@ -302,7 +302,7 @@ export const useAppStore = create((set) => ({
         const activeTarget = selected.length == 0 && lastActiveElement && elements[lastActiveElement];
         const target = selectedTarget || activeTarget;
         if (!target || target.text === undefined) return;
-        const text = target.text;
+        const text = "" + target.text;
         if (key == "Backspace") {
           target.text = text.substring(0, text.length - 1);
         } else if (key.match(/^[0-9]$/) && text.length < 3) {

@@ -6,8 +6,8 @@ export const topToolbarHeight = 42;
 
 const workspaceOptions = [
   "Integers",
-  "Decimals",
-  "Fractions",
+  // "Decimals",
+  // "Fractions",
   "Open",
 ];
 

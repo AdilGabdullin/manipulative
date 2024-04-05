@@ -9,6 +9,7 @@ import { sum } from "../util";
 import { omHeight, omWidth } from "./OpenMarker";
 import Marker from "./toolbar/Marker";
 import { mHeight, mWidth } from "./Marker";
+import RectShape from "./toolbar/RectShape";
 
 export const leftToolbarWidth = 180;
 
@@ -27,6 +28,8 @@ const LeftToolbar = () => {
   if (workspace == "Open") {
     options.push({ Component: OpenMarker, x: (leftToolbarWidth - omWidth) / 2, width: omWidth, height: omHeight });
   } else {
+    options.push({ Component: RectShape, x: left, width: width, height: 50, isBlue: true });
+    options.push({ Component: RectShape, x: left, width: width, height: 50, isBlue: false });
     options.push({ Component: StraightArrow, x: left, width: width, height: 50, isBlue: true });
     options.push({ Component: StraightArrow, x: left, width: width, height: 50, isBlue: false });
     options.push({ Component: Marker, x: (leftToolbarWidth - mWidth) / 2, width: mWidth, height: mHeight });
