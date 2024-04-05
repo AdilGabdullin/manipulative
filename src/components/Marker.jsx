@@ -2,14 +2,15 @@ import { Circle, Group, Line, Path, Rect, Text } from "react-konva";
 import { colors } from "../state/colors";
 import { useAppStore } from "../state/store";
 import { cos, numberBetween, sin } from "../util";
-import { nlLineWidth, notchStep } from "./NumberLine";
+import { notchStep } from "./NumberLine";
 
 export const mWidth = 70;
 export const mHeight = 100;
 
-const Marker = ({ id, x, y, width, height, visible, locked, text, lineHeight }) => {
+const Marker = (props) => {
+  const { id, x, y, width, height, visible, locked, text, lineHeight } = props;
   const state = useAppStore();
-  const { origin, selectIds, relocateElement } = state;
+  const { origin, selectIds, updateElement } = state;
 
   const angle = 60;
   const r1 = width / 2 - 5;
@@ -34,11 +35,22 @@ const Marker = ({ id, x, y, width, height, visible, locked, text, lineHeight }) 
       onDragMove={(e) => {
         const dx = e.target.x() - pos.x;
         const dy = e.target.y() - pos.y;
-        const newPos = markerMagnet({ x: x + dx, y: y + dy, width, height }, state);
-        e.target.setAttrs({ x: origin.x + newPos.x, y: origin.y + newPos.y });
+        const newProps = markerMagnet({ ...props, x: x + dx, y: y + dy }, state);
+        e.target.setAttrs({ x: origin.x + newProps.x, y: origin.y + newProps.y });
+        e.target.children[3].setAttrs({
+          text: newProps.text,
+          visible: !!newProps.text,
+        });
+        e.target.children[4].setAttrs({
+          height: newProps.lineHeight,
+          visible: !!newProps.lineHeight,
+        });
       }}
       onDragEnd={(e) => {
-        relocateElement(id, e.target.x() - pos.x, e.target.y() - pos.y);
+        const dx = e.target.x() - pos.x;
+        const dy = e.target.y() - pos.y;
+        const newProps = markerMagnet({ ...props, x: x + dx, y: y + dy }, state);
+        updateElement(id, newProps);
       }}
       onPointerClick={() => selectIds([id], locked)}
     >
@@ -64,7 +76,7 @@ const Marker = ({ id, x, y, width, height, visible, locked, text, lineHeight }) 
         fontSize={28}
         align="center"
       />
-      <Rect visible={!!lineHeight} x={cx-1} y={height} width={2} height={lineHeight || 0} fill={colors.purple} />
+      <Rect visible={!!lineHeight} x={cx - 1} y={height} width={2} height={lineHeight || 0} fill={colors.purple} />
     </Group>
   );
 };
@@ -75,7 +87,7 @@ export function markerMagnet(props, state) {
   const lines = Object.values(state.elements).filter((e) => e.type == "number-line");
   for (const line of lines) {
     if (
-      numberBetween(x, line.x, line.x + line.width) &&
+      numberBetween(x + width / 2, line.x + line.height * 2, line.x - line.height * 2 + line.width) &&
       numberBetween(y + height - line.height / 2, line.y - sens, line.y)
     ) {
       const firstNotch = line.x + line.height * 2;
@@ -86,7 +98,7 @@ export function markerMagnet(props, state) {
       return { ...props, x: newX, y, lineHeight: line.y + line.height / 2 - y - height, text };
     }
   }
-  return props;
+  return { ...props, lineHeight: 0, text: "" };
 }
 
 export default Marker;

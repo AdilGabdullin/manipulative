@@ -220,15 +220,16 @@ const NotchText = ({ width, height, min, max, text }) => {
 
   const rectSize = 18;
 
+  const textWidth = text < 100 ? 25 : text < 1000 ? 35 : 45;
   return (
     <Group {...events}>
       <Text
         ref={textRef}
         text={text}
         visible={textVisible}
-        x={-50}
+        x={-textWidth / 2}
         y={height * 1.25}
-        width={100}
+        width={textWidth}
         align="center"
         fontFamily="Calibri"
         fontSize={20}
