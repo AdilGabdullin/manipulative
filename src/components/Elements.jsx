@@ -8,6 +8,7 @@ import NumberLine, { nlHeight, nlWidth } from "./NumberLine";
 import OpenMarker, { omHeight, omWidth } from "./OpenMarker";
 import Arrow, { arHeight, arWidth } from "./Arrow";
 import Marker, { mHeight, mWidth } from "./Marker";
+import StraightArrow, { sarHeight, sarWidth } from "./StraightArrow";
 
 const Elements = () => {
   const state = useAppStore();
@@ -43,6 +44,9 @@ const Elements = () => {
           case "arrow":
             return <Arrow key={id} {...element} />;
             break;
+          case "straight-arrow":
+            return <StraightArrow key={id} {...element} />;
+            break;
         }
       })}
       <Rect id="shadow-rect" visible={false} />
@@ -54,6 +58,8 @@ const Elements = () => {
       <Marker id="shadow-marker" x={0} y={0} visible={false} width={mWidth} height={mHeight} />
       <Arrow id="shadow-arrow-blue" x={0} y={0} visible={false} width={arWidth} height={arHeight} isBlue={true} />
       <Arrow id="shadow-arrow-red" x={0} y={0} visible={false} width={arWidth} height={arHeight} isBlue={false} />
+      <StraightArrow id="shadow-straight-arrow-blue" x={0} y={0} visible={false} width={sarWidth} height={sarHeight} isBlue={true} />
+      <StraightArrow id="shadow-straight-arrow-red" x={0} y={0} visible={false} width={sarWidth} height={sarHeight} isBlue={false} />
     </>
   );
 };

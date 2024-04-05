@@ -7,11 +7,8 @@ import { nlLineWidth, notchStep } from "./NumberLine";
 
 const strokeWidth = 10;
 const headSize = 25;
-export const arWidth = 260;
-export const arHeight = 130;
-const minHeight = 100;
-const rhWidth = 50;
-const rhHeight = strokeWidth;
+export const sarWidth = 130;
+export const sarHeight = 50;
 
 const StraightArrow = (props) => {
   const state = useAppStore();
@@ -103,21 +100,6 @@ const StraightArrow = (props) => {
     }
   };
 
-  const resizeHandleDragMove = (e) => {
-    const dy = Math.min(e.target.y() + rhHeight / 2, height - minHeight);
-    e.target.setAttrs({ x: width / 2 - rhWidth / 2, y: -rhHeight / 2 + dy });
-    const newHeight = height - dy;
-    const shiftY = dy;
-    updateNodes({ ...props, height: newHeight, shiftY });
-  };
-  const resizeHandleDragEnd = (e) => {
-    const dy = Math.min(e.target.y() + rhHeight / 2, height - minHeight);
-    e.target.setAttrs({ x: width / 2 - rhWidth / 2, y: -rhHeight / 2 });
-    const newHeight = height - dy;
-    textRef.current.setAttrs({ x: -100, y: -30 });
-    updateElement(id, { ...props, height: newHeight, y: y + dy });
-  };
-
   return (
     <Group
       ref={group}
@@ -131,17 +113,8 @@ const StraightArrow = (props) => {
       onPointerClick={groupClick}
     >
       {/* <Rect x={0} y={0} width={width} height={height} stroke={"black"}/> */}
-      <Path ref={arc} {...arcProps(props)} />
+      <Rect ref={arc} {...arcProps(props)} />
       <Path ref={head} {...headProps(props)} draggable onDragMove={headDragMove} onDragEnd={headDragEnd} />
-      <Rect
-        x={width / 2 - rhWidth / 2}
-        y={-rhHeight / 2}
-        width={rhWidth}
-        height={rhHeight}
-        draggable
-        onDragMove={resizeHandleDragMove}
-        onDragEnd={resizeHandleDragEnd}
-      />
       <Text ref={textRef} fontFamily="Calibri" fontSize={24} align="center" {...textProps(props)} />
     </Group>
   );
@@ -181,7 +154,7 @@ export function headProps({ width, height, isBlue, shiftX, shiftY }) {
 }
 
 export function arrowMagnet({ x, y, width, height }, state) {
-  const sens = 50;
+  const sens = 250;
   const lines = Object.values(state.elements).filter((e) => e.type == "number-line");
   for (const line of lines) {
     if (
@@ -195,7 +168,7 @@ export function arrowMagnet({ x, y, width, height }, state) {
         x = x - ((x - firstNotch) % step);
         width = 10 * step;
       }
-      return { x: x, y: line.y + (line.height - nlLineWidth) / 2 - height, width };
+      return { x, y, width };
     }
   }
   return { x, y, width };

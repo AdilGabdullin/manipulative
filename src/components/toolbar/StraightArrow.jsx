@@ -1,7 +1,7 @@
 import { Group, Path, Rect } from "react-konva";
 import { leftToolbarWidth } from "../LeftToolbar";
 import { useAppStore } from "../../state/store";
-import { arHeight, arWidth, arcProps, arrowMagnet, headProps } from "../StraightArrow";
+import { sarHeight, sarWidth, arcProps, arrowMagnet, headProps } from "../StraightArrow";
 import { getStageXY } from "../../util";
 import { useRef } from "react";
 
@@ -12,7 +12,7 @@ const StraightArrow = (props) => {
 
   let shadow = null;
   const getShadow = (e) => {
-    return shadow || (shadow = e.target.getStage().findOne("#shadow-arrow-" + (isBlue ? "blue" : "red")));
+    return shadow || (shadow = e.target.getStage().findOne("#shadow-straight-arrow-" + (isBlue ? "blue" : "red")));
   };
 
   const group = useRef();
@@ -29,8 +29,8 @@ const StraightArrow = (props) => {
   const onDragMove = (e) => {
     const target = e.target;
     const pos = target.getStage().getPointerPosition();
-    const width = arWidth;
-    const height = arHeight;
+    const width = sarWidth;
+    const height = sarHeight;
 
     const shadow = getShadow(e);
     if (pos.x > leftToolbarWidth) {
@@ -54,8 +54,8 @@ const StraightArrow = (props) => {
   };
 
   const onDragEnd = (e) => {
-    const width = arWidth;
-    const height = arHeight;
+    const width = sarWidth;
+    const height = sarHeight;
     let stagePos = getStageXY(e.target.getStage(), state);
     stagePos = arrowMagnet({ x: stagePos.x - width / 2, y: stagePos.y - height / 2, width, height }, state);
     e.target.setAttrs({ x, y, visible: true });
@@ -65,7 +65,7 @@ const StraightArrow = (props) => {
     });
     if (e.target.getStage().getPointerPosition().x > leftToolbarWidth) {
       addElement({
-        type: "arrow",
+        type: "straight-arrow",
         width: stagePos.width,
         height,
         isBlue: isBlue,
