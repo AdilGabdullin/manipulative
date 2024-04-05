@@ -33,6 +33,8 @@ const Arrow = (props) => {
   const onDragMove = (e) => {
     const target = e.target;
     const pos = target.getStage().getPointerPosition();
+    const width = arWidth;
+    const height = arHeight;
 
     const shadow = getShadow(e);
     if (pos.x > leftToolbarWidth) {
@@ -45,8 +47,8 @@ const Arrow = (props) => {
         y: origin.y + stagePos.y,
         visible: true,
       });
-      shadow.children[0].setAttrs(arcProps({...props, width: stagePos.width}));
-      shadow.children[1].setAttrs(headProps({...props, width: stagePos.width, height: arHeight}));
+      shadow.children[0].setAttrs(arcProps({ ...props, width: stagePos.width, height }));
+      shadow.children[1].setAttrs(headProps({ ...props, width: stagePos.width, height }));
     } else {
       target.visible(true);
       shadow.setAttrs({
@@ -56,6 +58,8 @@ const Arrow = (props) => {
   };
 
   const onDragEnd = (e) => {
+    const width = arWidth;
+    const height = arHeight;
     let stagePos = getStageXY(e.target.getStage(), state);
     stagePos = arrowMagnet({ x: stagePos.x - width / 2, y: stagePos.y - height / 2, width, height }, state);
     e.target.setAttrs({ x, y, visible: true });
@@ -67,7 +71,7 @@ const Arrow = (props) => {
       addElement({
         type: "arrow",
         width: stagePos.width,
-        height: arHeight,
+        height,
         isBlue: isBlue,
         x: stagePos.x,
         y: stagePos.y,

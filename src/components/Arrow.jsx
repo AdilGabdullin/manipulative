@@ -2,14 +2,14 @@ import { Group, Path, Rect, Text } from "react-konva";
 import { colors } from "../state/colors";
 import { useAppStore } from "../state/store";
 import { useRef } from "react";
-import { asin, cos, numberBetween, sin } from "../util";
+import { asin, atan2, cos, numberBetween, sin } from "../util";
 import { nlLineWidth, notchStep } from "./NumberLine";
 
 const strokeWidth = 10;
 const headSize = 25;
-export const arWidth = 130;
-export const arHeight = 65;
-const minHeight = 50;
+export const arWidth = 260;
+export const arHeight = 130;
+const minHeight = 100;
 const rhWidth = 50;
 const rhHeight = strokeWidth;
 
@@ -154,7 +154,7 @@ export function arcProps({ width, height, isBlue, shiftX, shiftY }) {
   const rx2 = width / 2 + strokeWidth / 2;
   const ry1 = height - strokeWidth / 2;
   const ry2 = height + strokeWidth / 2;
-  const theta = asin(headSize / ry2) - width / height;
+  const theta = asin(headSize / ry2) - (height / width > 3 ? 4 : 2);
   return {
     x: width / 2 + shiftX,
     y: height + shiftY,
@@ -175,10 +175,14 @@ export function headProps({ width, height, isBlue, shiftX, shiftY }) {
   shiftY = shiftY || 0;
   const ry2 = height + strokeWidth / 2;
 
-  const theta1 = asin(headSize / ry2) - width / height;
-  // ${width/2 * cos(theta1)} ${-height/2 * sin(theta1)}
-
-  const theta = asin(headSize / ry2) * (isBlue ? 1 : -1);
+  width = Math.abs(width)
+  const theta = asin(headSize / ry2);
+  let alpha = (90 - atan2((height / 2) * sin(theta), width / 2 - (width / 2) * cos(theta))) * (isBlue ? 1 : -1);
+  if (width / height > 3) {
+    alpha *= 0.5;
+  } else if (width / height > 1) {
+    alpha *= 0.7;
+  }
   const color = isBlue ? colors.blue : colors.red;
   return {
     x: isBlue ? Math.abs(width) + shiftX : 0 + shiftX,
@@ -186,8 +190,8 @@ export function headProps({ width, height, isBlue, shiftX, shiftY }) {
     fill: color,
     stroke: color,
     data: `
-    M ${headSize * cos(-120 - theta)} ${headSize * sin(-120 - theta)}
-    L ${headSize * cos(-60 - theta)} ${headSize * sin(-60 - theta)}
+    M ${headSize * cos(-120 - alpha)} ${headSize * sin(-120 - alpha)}
+    L ${headSize * cos(-60 - alpha)} ${headSize * sin(-60 - alpha)}
     L 0 0
   `,
   };
