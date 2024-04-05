@@ -31,29 +31,39 @@ const Marker = ({ x, y, width, height }) => {
   const onDragMove = (e) => {
     const target = e.target;
     const pos = target.getStage().getPointerPosition();
+    const shadow = getShadow(e);
     if (pos.x > leftToolbarWidth) {
-      let stagePos = getStageXY(e.target.getStage(), state);
-      stagePos = markerMagnet({ x: stagePos.x - width / 2, y: stagePos.y - height / 2, width, height }, state);
+      const stagePos = getStageXY(e.target.getStage(), state);
+      const props = markerMagnet({ x: stagePos.x - width / 2, y: stagePos.y - height / 2, width, height }, state);
       target.visible(false);
-      getShadow(e).setAttrs({
-        x: origin.x + stagePos.x,
-        y: origin.y + stagePos.y,
+      shadow.setAttrs({
+        x: origin.x + props.x,
+        y: origin.y + props.y,
         visible: true,
+      });
+      shadow.children[3].setAttrs({
+        text: props.text,
+        visible: !!props.text,
+      });
+      shadow.children[4].setAttrs({
+        height: props.lineHeight,
+        visible: !!props.lineHeight,
       });
     } else {
       target.visible(true);
-      getShadow(e).setAttrs({
+      shadow.setAttrs({
         visible: false,
       });
     }
   };
 
   const onDragEnd = (e) => {
-    let stagePos = getStageXY(e.target.getStage(), state);
-    stagePos = markerMagnet({ x: stagePos.x - width / 2, y: stagePos.y - height / 2, width, height }, state);
+    const stagePos = getStageXY(e.target.getStage(), state);
+    const shadow = getShadow(e);
+    const props = markerMagnet({ x: stagePos.x - width / 2, y: stagePos.y - height / 2, width, height }, state);
     e.target.setAttrs({ x, y, visible: true });
     toolbarShadow.current.visible(false);
-    getShadow(e).setAttrs({
+    shadow.setAttrs({
       visible: false,
     });
     if (e.target.getStage().getPointerPosition().x > leftToolbarWidth) {
@@ -61,9 +71,7 @@ const Marker = ({ x, y, width, height }) => {
         type: "marker",
         width: mWidth,
         height: mHeight,
-        x: stagePos.x,
-        y: stagePos.y,
-        text: "",
+        ...props,
       });
     }
   };

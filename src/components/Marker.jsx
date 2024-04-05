@@ -1,4 +1,4 @@
-import { Circle, Group, Path, Rect, Text } from "react-konva";
+import { Circle, Group, Line, Path, Rect, Text } from "react-konva";
 import { colors } from "../state/colors";
 import { useAppStore } from "../state/store";
 import { cos, numberBetween, sin } from "../util";
@@ -7,19 +7,9 @@ import { nlLineWidth, notchStep } from "./NumberLine";
 export const mWidth = 70;
 export const mHeight = 100;
 
-const Marker = ({ id, x, y, width, height, visible, locked, text }) => {
+const Marker = ({ id, x, y, width, height, visible, locked, text, lineHeight }) => {
   const state = useAppStore();
   const { origin, selectIds, relocateElement } = state;
-
-  const top = {
-    width: width / 20,
-    height: width * 0.4,
-  };
-  const window = {
-    width: width * 0.8,
-    height: width * 0.8,
-    margin: width * 0.1,
-  };
 
   const angle = 60;
   const r1 = width / 2 - 5;
@@ -65,19 +55,22 @@ const Marker = ({ id, x, y, width, height, visible, locked, text }) => {
           `}
       />
       <Text
-        x={window.margin}
-        y={top.height + window.margin + window.height / 2 - 24 / 2}
-        width={window.width}
+        x={0}
+        y={cy - 28 / 2}
+        width={width}
         text={text}
+        fill={colors.purple}
         fontFamily="Calibri"
-        fontSize={24}
+        fontSize={28}
         align="center"
       />
+      <Rect visible={!!lineHeight} x={cx-1} y={height} width={2} height={lineHeight || 0} fill={colors.purple} />
     </Group>
   );
 };
 
-export function markerMagnet({ x, y, width, height }, state) {
+export function markerMagnet(props, state) {
+  const { x, y, width, height } = props;
   const sens = 200;
   const lines = Object.values(state.elements).filter((e) => e.type == "number-line");
   for (const line of lines) {
@@ -85,16 +78,15 @@ export function markerMagnet({ x, y, width, height }, state) {
       numberBetween(x, line.x, line.x + line.width) &&
       numberBetween(y + height - line.height / 2, line.y - sens, line.y)
     ) {
-      if (state.workspace != "Open") {
-        const firstNotch = line.x + line.height * 2;
-        const range = line.max - line.min;
-        const step = ((line.width - line.height * 4) / range) * notchStep(range);
-        x = x - ((x + width / 2 - firstNotch) % step);
-      }
-      return { x, y, lineY: line.y + line.height / 2 };
+      const firstNotch = line.x + line.height * 2;
+      const range = line.max - line.min;
+      const step = ((line.width - line.height * 4) / range) * notchStep(range);
+      const text = Math.round((x + width / 2 - firstNotch) / step) * notchStep(range);
+      const newX = firstNotch - width / 2 + Math.round((x + width / 2 - firstNotch) / step) * step;
+      return { ...props, x: newX, y, lineHeight: line.y + line.height / 2 - y - height, text };
     }
   }
-  return { x, y };
+  return props;
 }
 
 export default Marker;
