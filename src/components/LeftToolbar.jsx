@@ -1,6 +1,7 @@
 import { Rect } from "react-konva";
 import { useAppStore } from "../state/store";
 import Arrow from "./toolbar/Arrow";
+import StraightArrow from "./toolbar/StraightArrow";
 import OpenMarker from "./toolbar/OpenMarker";
 import NumberLine from "./toolbar/NumberLine";
 import { nlHeight } from "./NumberLine";
@@ -26,6 +27,8 @@ const LeftToolbar = () => {
   if (workspace == "Open") {
     options.push({ Component: OpenMarker, x: (leftToolbarWidth - omWidth) / 2, width: omWidth, height: omHeight });
   } else {
+    options.push({ Component: StraightArrow, x: left, width: width, height: 50, isBlue: true });
+    options.push({ Component: StraightArrow, x: left, width: width, height: 50, isBlue: false });
     options.push({ Component: Marker, x: (leftToolbarWidth - mWidth) / 2, width: mWidth, height: mHeight });
   }
   options.push({ Component: NumberLine, x: left, width: width, height: nlHeight });

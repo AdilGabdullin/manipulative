@@ -1,11 +1,11 @@
 import { Group, Path, Rect } from "react-konva";
 import { leftToolbarWidth } from "../LeftToolbar";
 import { useAppStore } from "../../state/store";
-import { arHeight, arWidth, arcProps, arrowMagnet, headProps } from "../Arrow";
+import { arHeight, arWidth, arcProps, arrowMagnet, headProps } from "../StraightArrow";
 import { getStageXY } from "../../util";
 import { useRef } from "react";
 
-const Arrow = (props) => {
+const StraightArrow = (props) => {
   const state = useAppStore();
   const { addElement, origin } = state;
   const { x, y, width, height, isBlue } = props;
@@ -79,11 +79,11 @@ const Arrow = (props) => {
   return (
     <>
       <Group ref={toolbarShadow} x={x} y={y} visible={false}>
-        <Path ref={arc} {...arcProps(props)} />
+        <Rect ref={arc} {...arcProps(props)} />
         <Path ref={head} {...headProps(props)} />
       </Group>
       <Group ref={group} x={x} y={y} draggable onDragStart={onDragStart} onDragMove={onDragMove} onDragEnd={onDragEnd}>
-        <Path ref={arc} {...arcProps(props)} />
+        <Rect ref={arc} {...arcProps(props)} />
         <Path ref={head} {...headProps(props)} />
         <Rect ref={rect} x={0} y={0} width={width} height={height} />
       </Group>
@@ -91,4 +91,4 @@ const Arrow = (props) => {
   );
 };
 
-export default Arrow;
+export default StraightArrow;
