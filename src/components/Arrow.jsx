@@ -168,8 +168,8 @@ export function arcProps({ width, height, isBlue, shiftX, shiftY }) {
     fill: isBlue ? colors.blue : colors.red,
     scaleX: isBlue ? 1 : -1,
     data:
-      width == 0
-        ? `M ${-strokeWidth / 2} ${-height} h ${strokeWidth}
+      width < 5
+        ? `M ${-strokeWidth / 2 + width / 2} ${-height} h ${strokeWidth}
            v ${height - headSize * sin(60)} h ${-strokeWidth}
            v ${-height + headSize * sin(60)}
           `
@@ -245,7 +245,7 @@ function headMagnet(props, state) {
     ) {
       const range = line.max - line.min;
       const step = ((line.width - line.height * 4) / range) * notchStep(range);
-      const newText = Math.abs(Math.round(width / step));
+      const newText = Math.abs(Math.round(width / step)) * notchStep(range);
       const newWidth = Math.round(width / step) * step;
       const newShiftX = Math.round(shiftX / step) * step;
       return { ...props, width: newWidth, shiftX: newShiftX, text: newText };

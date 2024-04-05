@@ -6,22 +6,29 @@ import NumberLine from "./toolbar/NumberLine";
 import { nlHeight } from "./NumberLine";
 import { sum } from "../util";
 import { omHeight, omWidth } from "./OpenMarker";
+import Marker from "./toolbar/Marker";
+import { mHeight, mWidth } from "./Marker";
 
 export const leftToolbarWidth = 180;
 
 const LeftToolbar = () => {
-  const { height } = useAppStore();
+  const { height, workspace } = useAppStore();
   if (!height) return null;
 
   const left = 25;
   const width = leftToolbarWidth - 2 * left;
   const shapes = [];
+
   const options = [
     { Component: Arrow, x: left, width: width, height: width / 2, isBlue: true },
     { Component: Arrow, x: left, width: width, height: width / 2, isBlue: false },
-    { Component: OpenMarker, x: (leftToolbarWidth - omWidth) / 2, width: omWidth, height: omHeight },
-    { Component: NumberLine, x: left, width: width, height: nlHeight },
   ];
+  if (workspace == "Open") {
+    options.push({ Component: OpenMarker, x: (leftToolbarWidth - omWidth) / 2, width: omWidth, height: omHeight });
+  } else {
+    options.push({ Component: Marker, x: (leftToolbarWidth - mWidth) / 2, width: mWidth, height: mHeight });
+  }
+  options.push({ Component: NumberLine, x: left, width: width, height: nlHeight });
 
   const top = (height - sum(options.map((o) => o.height))) / (options.length + 1);
   let y = top;
