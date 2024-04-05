@@ -2,7 +2,7 @@ import { Circle, Group, Path, Rect, Text } from "react-konva";
 import { colors } from "../state/colors";
 import { useAppStore } from "../state/store";
 import { cos, numberBetween, sin } from "../util";
-import { nlLineWidth } from "./NumberLine";
+import { nlLineWidth, notchStep } from "./NumberLine";
 
 export const mWidth = 70;
 export const mHeight = 100;
@@ -44,7 +44,7 @@ const Marker = ({ id, x, y, width, height, visible, locked, text }) => {
       onDragMove={(e) => {
         const dx = e.target.x() - pos.x;
         const dy = e.target.y() - pos.y;
-        const newPos = openMarkerMagnet({ x: x + dx, y: y + dy }, state);
+        const newPos = markerMagnet({ x: x + dx, y: y + dy, width, height }, state);
         e.target.setAttrs({ x: origin.x + newPos.x, y: origin.y + newPos.y });
       }}
       onDragEnd={(e) => {
@@ -77,15 +77,21 @@ const Marker = ({ id, x, y, width, height, visible, locked, text }) => {
   );
 };
 
-export function openMarkerMagnet({ x, y }, state) {
-  const sens = 80;
+export function markerMagnet({ x, y, width, height }, state) {
+  const sens = 200;
   const lines = Object.values(state.elements).filter((e) => e.type == "number-line");
   for (const line of lines) {
     if (
       numberBetween(x, line.x, line.x + line.width) &&
-      numberBetween(y, line.y + line.height / 2 - sens, line.y + line.height / 2 + sens)
+      numberBetween(y + height - line.height / 2, line.y - sens, line.y)
     ) {
-      return { x, y: line.y + (line.height + nlLineWidth) / 2 + 1 };
+      if (state.workspace != "Open") {
+        const firstNotch = line.x + line.height * 2;
+        const range = line.max - line.min;
+        const step = ((line.width - line.height * 4) / range) * notchStep(range);
+        x = x - ((x + width / 2 - firstNotch) % step);
+      }
+      return { x, y, lineY: line.y + line.height / 2 };
     }
   }
   return { x, y };

@@ -3,9 +3,8 @@ import { colors } from "../../state/colors";
 import { useAppStore } from "../../state/store";
 import { leftToolbarWidth } from "../LeftToolbar";
 import { cos, getStageXY, sin } from "../../util";
-import { omHeight, omWidth, openMarkerMagnet } from "../OpenMarker";
 import { useRef } from "react";
-import { mHeight, mWidth } from "../Marker";
+import { mHeight, mWidth, markerMagnet } from "../Marker";
 
 const Marker = ({ x, y, width, height }) => {
   const state = useAppStore();
@@ -34,7 +33,7 @@ const Marker = ({ x, y, width, height }) => {
     const pos = target.getStage().getPointerPosition();
     if (pos.x > leftToolbarWidth) {
       let stagePos = getStageXY(e.target.getStage(), state);
-      stagePos = openMarkerMagnet({ x: stagePos.x - width / 2, y: stagePos.y - height / 2 }, state);
+      stagePos = markerMagnet({ x: stagePos.x - width / 2, y: stagePos.y - height / 2, width, height }, state);
       target.visible(false);
       getShadow(e).setAttrs({
         x: origin.x + stagePos.x,
@@ -51,7 +50,7 @@ const Marker = ({ x, y, width, height }) => {
 
   const onDragEnd = (e) => {
     let stagePos = getStageXY(e.target.getStage(), state);
-    stagePos = openMarkerMagnet({ x: stagePos.x - width / 2, y: stagePos.y - height / 2 }, state);
+    stagePos = markerMagnet({ x: stagePos.x - width / 2, y: stagePos.y - height / 2, width, height }, state);
     e.target.setAttrs({ x, y, visible: true });
     toolbarShadow.current.visible(false);
     getShadow(e).setAttrs({
