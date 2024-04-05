@@ -2,8 +2,8 @@ import { Group, Path, Rect, Text } from "react-konva";
 import { colors } from "../state/colors";
 import { useAppStore } from "../state/store";
 import { useRef } from "react";
-import { asin, atan2, cos, numberBetween, sin } from "../util";
-import { nlLineWidth, notchStep } from "./NumberLine";
+import { numberBetween } from "../util";
+import { notchStep } from "./NumberLine";
 
 const strokeWidth = 10;
 const headSize = 25;
@@ -66,7 +66,7 @@ const StraightArrow = (props) => {
 
   const headDragMove = (e) => {
     const dx = e.target.x() - headX;
-    e.target.setAttrs({ y: height });
+    e.target.setAttrs({ y: 0 });
     if (isBlue) {
       const isBlue = width + dx > 0;
       const shiftX = isBlue ? 0 : width + dx;
@@ -81,7 +81,7 @@ const StraightArrow = (props) => {
 
   const headDragEnd = (e) => {
     const dx = e.target.x() - headX;
-    e.target.setAttrs({ y: height });
+    e.target.setAttrs({ y: 0 });
     if (isBlue) {
       const isBlue = width + dx >= 0;
       const shiftX = isBlue ? 0 : width + dx;
@@ -153,7 +153,8 @@ export function headProps({ width, height, isBlue, shiftX, shiftY }) {
   };
 }
 
-export function arrowMagnet({ x, y, width, height }, state) {
+export function arrowMagnet(props, state) {
+  let { x, y, width, height, text } = props;
   const sens = 250;
   const lines = Object.values(state.elements).filter((e) => e.type == "number-line");
   for (const line of lines) {
@@ -167,11 +168,12 @@ export function arrowMagnet({ x, y, width, height }, state) {
         const step = ((line.width - line.height * 4) / range) * notchStep(range);
         x = x - ((x - firstNotch) % step);
         width = 10 * step;
+        text = 10 * notchStep(range);
       }
-      return { x, y, width };
+      return { x, y, width, text };
     }
   }
-  return { x, y, width };
+  return props;
 }
 
 function headMagnet(props, state) {

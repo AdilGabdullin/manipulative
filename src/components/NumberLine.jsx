@@ -220,7 +220,7 @@ const NotchText = ({ width, height, min, max, text }) => {
 
   const rectSize = 18;
 
-  const textWidth = text < 100 ? 25 : text < 1000 ? 35 : 45;
+  const textWidth = Math.abs(text) < 100 ? 30 : Math.abs(text) < 1000 ? 40 : 50;
   return (
     <Group {...events}>
       <Text
