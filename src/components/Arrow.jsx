@@ -219,10 +219,7 @@ export function arrowMagnet(props, state) {
   const lines = Object.values(state.elements).filter((e) => e.type == "number-line");
   for (const line of lines) {
     const { m, k } = mk(state, line.denominator || 1);
-    if (
-      numberBetween(x, line.x, line.x + line.width) &&
-      numberBetween(y + height, line.y + line.height / 2 - sens, line.y + line.height / 2 + sens)
-    ) {
+    if (numberBetween(y + height, line.y + line.height / 2 - sens, line.y + line.height / 2 + sens)) {
       if (state.workspace != "Open") {
         const firstNotch = line.x + line.height * 2;
         const range = line.max - line.min;
