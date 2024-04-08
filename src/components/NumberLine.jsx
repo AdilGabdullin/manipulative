@@ -129,10 +129,7 @@ const NumberLine = (props) => {
         }}
       />
       {showNotches && <Notches {...props} />}
-      {
-        // showNotches && selected.length == 1 && selected[0] == id &&
-        <RangeSelector {...props} />
-      }
+      {showNotches && selected.length == 1 && selected[0] == id && <RangeSelector {...props} />}
     </Group>
   );
 };
@@ -151,7 +148,7 @@ const Notches = (props) => {
   }
 
   const textSkipStep = textStep(range, workspace);
-  const notchSkipStep = notchStep(range);
+  const notchSkipStep = notchStep(range, workspace);
 
   return xs.map(({ x, text }, i) => {
     const skipNotch = i % notchSkipStep == 0;
@@ -184,8 +181,8 @@ function textStep(range, workspace) {
   }
 }
 
-export function notchStep(range) {
-  if (range > 15 && range <= 20) return 2;
+export function notchStep(range, workspace = "Integers") {
+  if (workspace == "Decimals" && range > 15 && range <= 20) return 2;
   if (range < 200) return 1;
   if (range < 1000) return 10;
   if (range < 1500) return 20;
@@ -269,7 +266,7 @@ const NotchText = ({ width, height, min, max, text }) => {
         strokeWidth={2}
         visible={!textVisible}
       />
-      <Rect x={-textWidth / 2} y={height * 1.25} width={textWidth} height={20} stroke={"black"} />
+      {/* <Rect x={-textWidth / 2} y={height * 1.25} width={textWidth} height={20} stroke={"black"} /> */}
     </Group>
   );
 };
@@ -281,7 +278,7 @@ export function notchX(i, { width, height, min, max, shift }) {
 }
 
 const RangeSelector = (props) => {
-  const { updateElement, workspace } = useAppStore();
+  const { setMinMax, workspace } = useAppStore();
   const r = 12;
 
   const values = {
@@ -317,19 +314,19 @@ const RangeSelector = (props) => {
     left: {
       onDragMove: (e) => {
         leftCircle.current.setAttrs({ x: start + getLeftIndex() * step, y });
-        updateElement(props.id, { min: values[getLeftIndex()] }, false);
+        setMinMax(props.id, "min", values[getLeftIndex()], false);
       },
       onDragEnd: (e) => {
-        updateElement(props.id, { min: values[getLeftIndex()] });
+        setMinMax(props.id, "min", values[getLeftIndex()]);
       },
     },
     right: {
       onDragMove: (e) => {
         rightCircle.current.setAttrs({ x: start + getRightIndex() * step, y });
-        updateElement(props.id, { max: values[getRightIndex()] }, false);
+        setMinMax(props.id, "max", values[getRightIndex()], false);
       },
       onDragEnd: (e) => {
-        updateElement(props.id, { max: values[getRightIndex()] });
+        setMinMax(props.id, "max", values[getRightIndex()]);
       },
     },
   };
@@ -369,6 +366,8 @@ export function mk(state) {
   return {
     Integers: { m: 10, k: 1 },
     Decimals: { m: 0.5, k: 10 },
+    Open: { m: 1, k: 1 },
+    Fractions: { m: 1, k: 1 },
   }[state.workspace];
 }
 

@@ -29,8 +29,8 @@ export const useAppStore = create((set) => ({
   selected: [],
   lockSelect: false,
 
-  fullscreen: true,
-  workspace: "Decimals",
+  // fullscreen: true,
+  // workspace: "Decimals",
   toggleGlobal: (field) =>
     set(
       produce((state) => {
@@ -67,6 +67,19 @@ export const useAppStore = create((set) => ({
     set(
       produce((state) => {
         state.workspace = workspace;
+        const deleteTypes = ["arrow", "straight-arrow", "rect-shape", "marker", "open-marker"];
+        for (let id in current(state.elements)) {
+          const type = state.elements[id].type;
+          if (deleteTypes.includes(type)) {
+            delete state.elements[id];
+          }
+          if (type == "number-line") {
+            state.elements[id].min = { Integers: 0, Decimals: 0 }[workspace];
+            state.elements[id].max = { Integers: 20, Decimals: 1 }[workspace];
+          }
+        }
+        state.lastActiveElement = null;
+        clearSelected(state);
       })
     ),
   toggle: (field) =>
@@ -211,6 +224,21 @@ export const useAppStore = create((set) => ({
       })
     ),
 
+  setMinMax: (id, field, value, doPush = true) =>
+    set(
+      produce((state) => {
+        state.elements[id][field] = value;
+        const deleteTypes = ["arrow", "straight-arrow", "rect-shape", "marker", "open-marker"];
+        for (let id in current(state.elements)) {
+          const type = state.elements[id].type;
+          if (deleteTypes.includes(type)) {
+            delete state.elements[id];
+          }
+        }
+        if (doPush) pushHistory(state);
+      })
+    ),
+
   deleteSelected: () =>
     set(
       produce((state) => {
@@ -330,7 +358,7 @@ export function initElements() {
       width: nlWidth,
       height: nlHeight,
       min: 0,
-      max: 1,
+      max: 20,
     },
   };
 }
