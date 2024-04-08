@@ -1,7 +1,7 @@
 import { Group, Rect } from "react-konva";
 import { leftToolbarWidth } from "../LeftToolbar";
 import { useAppStore } from "../../state/store";
-import { sarHeight, sarWidth, arcProps, arrowMagnet, headProps } from "../RectShape";
+import { sarHeight, sarWidth, arcProps, arrowMagnet } from "../RectShape";
 import { getStageXY } from "../../util";
 import { useRef } from "react";
 
@@ -17,9 +17,7 @@ const RectShape = (props) => {
 
   const group = useRef();
   const toolbarShadow = useRef();
-  const arc = useRef();
   const rect = useRef();
-  const head = useRef();
 
   const onDragStart = (e) => {
     getShadow(e).setAttrs({ visible: true });
@@ -44,7 +42,6 @@ const RectShape = (props) => {
         visible: true,
       });
       shadow.children[0].setAttrs(arcProps({ ...props, width: stagePos.width, height }));
-      shadow.children[1].setAttrs(headProps({ ...props, width: stagePos.width, height }));
     } else {
       target.visible(true);
       shadow.setAttrs({
@@ -79,10 +76,10 @@ const RectShape = (props) => {
   return (
     <>
       <Group ref={toolbarShadow} x={x} y={y} visible={false}>
-        <Rect ref={arc} {...arcProps(props)} />
+        <Rect {...arcProps(props)} />
       </Group>
       <Group ref={group} x={x} y={y} draggable onDragStart={onDragStart} onDragMove={onDragMove} onDragEnd={onDragEnd}>
-        <Rect ref={arc} {...arcProps(props)} />
+        <Rect {...arcProps(props)} />
         <Rect ref={rect} x={0} y={0} width={width} height={height} />
       </Group>
     </>

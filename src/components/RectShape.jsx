@@ -1,4 +1,4 @@
-import { Group, Path, Rect, Text } from "react-konva";
+import { Group, Rect, Text } from "react-konva";
 import { colors } from "../state/colors";
 import { useAppStore } from "../state/store";
 import { useRef } from "react";
@@ -14,7 +14,7 @@ const RectShape = (props) => {
   const { origin, selectIds, relocateElement, updateElement } = state;
   const { id, x, y, width, height, isBlue, visible, locked, text } = props;
 
-  const headX = isBlue ? width : 0;
+  const headX = isBlue ? width - headSize / 2 : -headSize / 2;
 
   const pos = {
     x: origin.x + x,
@@ -36,8 +36,8 @@ const RectShape = (props) => {
   };
 
   const updateNodes = (newProps) => {
-    head.current.setAttrs(headProps(newProps));
     arc.current.setAttrs(arcProps(newProps));
+    head.current.setAttrs(headProps(newProps));
     textRef.current.setAttrs(textProps(newProps));
   };
 
@@ -85,16 +85,19 @@ const RectShape = (props) => {
       const isBlue = width + dx >= 0;
       const shiftX = isBlue ? 0 : width + dx;
       const newWidth = Math.abs(width + dx);
-      head.current.setAttrs({ x: 0 });
+      const newProps = { ...props, x: props.x + shiftX, width: newWidth, height, isBlue };
+      arc.current.setAttrs(arcProps(newProps));
       textRef.current.setAttrs({ x: -100, y: -30 });
-      updateElement(id, headMagnet({ ...props, x: props.x + shiftX, width: newWidth, height, isBlue }, state));
+      head.current.setAttrs({ x: isBlue ? width - headSize / 2 : -headSize / 2 });
+      updateElement(id, headMagnet(newProps, state));
     } else {
       const isBlue = width - dx <= 0;
       const shiftX = isBlue ? width : dx;
       const newWidth = Math.abs(width - dx);
       const newProps = { ...props, x: props.x + shiftX, width: newWidth, height, isBlue };
-      head.current.setAttrs({ x: 0 });
+      arc.current.setAttrs(arcProps(newProps));
       textRef.current.setAttrs({ x: -100, y: -30 });
+      head.current.setAttrs({ x: isBlue ? width - headSize / 2 : -headSize / 2 });
       updateElement(id, headMagnet(newProps, state));
     }
   };
@@ -111,8 +114,18 @@ const RectShape = (props) => {
       onDragEnd={groupDragEnd}
       onPointerClick={groupClick}
     >
-      {/* <Rect x={0} y={0} width={width} height={height} stroke={"black"}/> */}
       <Rect ref={arc} {...arcProps(props)} />
+      <Rect
+        ref={head}
+        x={headX}
+        y={0}
+        width={headSize}
+        height={height}
+        stroke={"black"}
+        draggable
+        onDragMove={headDragMove}
+        onDragEnd={headDragEnd}
+      />
       <Text ref={textRef} fontFamily="Calibri" fontSize={24} align="center" {...textProps(props)} />
     </Group>
   );
@@ -136,18 +149,9 @@ export function headProps({ width, height, isBlue, shiftX, shiftY }) {
   shiftY = shiftY || 0;
   width = Math.abs(width);
 
-  const color = isBlue ? colors.blue : colors.red;
   return {
-    x: isBlue ? Math.abs(width) + shiftX : 0 + shiftX,
+    x: (isBlue ? width - headSize / 2 : -headSize / 2) + shiftX,
     y: shiftY,
-    fill: color,
-    stroke: color,
-    data: `
-    M ${isBlue ? -headSize : headSize} ${0}
-    l ${isBlue ? headSize : -headSize} ${headSize}
-    l ${isBlue ? -headSize : headSize} ${headSize}
-    v ${-2 * headSize}
-  `,
   };
 }
 
@@ -158,7 +162,7 @@ export function arrowMagnet(props, state) {
   for (const line of lines) {
     if (
       numberBetween(x, line.x, line.x + line.width) &&
-      numberBetween(y + height, line.y + line.height / 2 - sens, line.y + line.height / 2 + sens)
+      numberBetween(y + height / 2, line.y + line.height / 2 - sens, line.y + line.height / 2 + sens)
     ) {
       if (state.workspace != "Open") {
         const firstNotch = line.x + line.height * 2;
@@ -179,12 +183,12 @@ function headMagnet(props, state) {
     return props;
   }
   const { x, y, width, height, shiftX } = props;
-  const sens = 50;
+  const sens = 250;
   const lines = Object.values(state.elements).filter((e) => e.type == "number-line");
   for (const line of lines) {
     if (
       numberBetween(x, line.x, line.x + line.width) &&
-      numberBetween(y + height, line.y + line.height / 2 - sens, line.y + line.height / 2 + sens)
+      numberBetween(y + height / 2, line.y + line.height / 2 - sens, line.y + line.height / 2 + sens)
     ) {
       const range = line.max - line.min;
       const step = ((line.width - line.height * 4) / range) * notchStep(range);
