@@ -29,7 +29,8 @@ export const useAppStore = create((set) => ({
   selected: [],
   lockSelect: false,
 
-  // fullscreen: true,
+  fullscreen: true,
+  workspace: "Decimals",
   toggleGlobal: (field) =>
     set(
       produce((state) => {
@@ -329,7 +330,7 @@ export function initElements() {
       width: nlWidth,
       height: nlHeight,
       min: 0,
-      max: 20,
+      max: 1,
     },
   };
 }

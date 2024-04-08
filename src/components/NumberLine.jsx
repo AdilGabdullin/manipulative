@@ -129,25 +129,28 @@ const NumberLine = (props) => {
         }}
       />
       {showNotches && <Notches {...props} />}
-      {showNotches && selected.length == 1 && selected[0] == id && <RangeSelector {...props} />}
+      {
+        // showNotches && selected.length == 1 && selected[0] == id &&
+        <RangeSelector {...props} />
+      }
     </Group>
   );
 };
 
 const Notches = (props) => {
+  const { workspace } = useAppStore();
   const { id, min, max } = props;
   const xs = [];
   const range = max - min;
-  for (let i = 0; i < range + 1; i += 1) {
+  const iStep = {
+    Integers: 1,
+    Decimals: 0.1,
+  }[workspace];
+  for (let i = 0; i < range + iStep / 2; i += iStep) {
     xs.push({ x: notchX(i, props), text: min + i });
   }
-  let textSkipStep = 200;
-  if (range < 30) textSkipStep = 1;
-  else if (range < 80) textSkipStep = 2;
-  else if (range < 200) textSkipStep = 10;
-  else if (range < 400) textSkipStep = 20;
-  else if (range < 600) textSkipStep = 50;
-  else if (range < 1500) textSkipStep = 100;
+
+  const textSkipStep = textStep(range, workspace);
   const notchSkipStep = notchStep(range);
 
   return xs.map(({ x, text }, i) => {
@@ -163,7 +166,26 @@ const Notches = (props) => {
   });
 };
 
+function textStep(range, workspace) {
+  if (workspace == "Decimals") {
+    if (range < 3) return 1;
+    else if (range <= 10) return 5;
+    else if (range <= 15) return 10;
+    else return 20;
+  }
+  if (workspace == "Integers") {
+    if (range < 30) return 1;
+    else if (range < 80) return 2;
+    else if (range < 200) return 10;
+    else if (range < 400) return 20;
+    else if (range < 600) return 50;
+    else if (range < 1500) return 100;
+    else return 200;
+  }
+}
+
 export function notchStep(range) {
+  if (range > 15 && range <= 20) return 2;
   if (range < 200) return 1;
   if (range < 1000) return 10;
   if (range < 1500) return 20;
@@ -187,10 +209,15 @@ const NotchLine = ({ height, id, short }) => {
 };
 
 const NotchText = ({ width, height, min, max, text }) => {
+  const { workspace } = useAppStore();
   const [textVisible, setTextVisible] = useState(true);
 
   const textRef = useRef();
   const rectRef = useRef();
+  if (workspace == "Decimals") {
+    text = text.toFixed(1);
+  }
+  const textWidth = text.toString().length * 12;
 
   const events = {
     onPointerEnter: (e) => {
@@ -220,7 +247,6 @@ const NotchText = ({ width, height, min, max, text }) => {
 
   const rectSize = 18;
 
-  const textWidth = Math.abs(text) < 100 ? 30 : Math.abs(text) < 1000 ? 40 : 50;
   return (
     <Group {...events}>
       <Text
@@ -243,6 +269,7 @@ const NotchText = ({ width, height, min, max, text }) => {
         strokeWidth={2}
         visible={!textVisible}
       />
+      <Rect x={-textWidth / 2} y={height * 1.25} width={textWidth} height={20} stroke={"black"} />
     </Group>
   );
 };
@@ -254,10 +281,13 @@ export function notchX(i, { width, height, min, max, shift }) {
 }
 
 const RangeSelector = (props) => {
-  const { updateElement } = useAppStore();
+  const { updateElement, workspace } = useAppStore();
   const r = 12;
 
-  const values = [-1000, -500, -100, -20, -10, 0, 10, 20, 100, 500, 1000];
+  const values = {
+    Integers: [-1000, -500, -100, -20, -10, 0, 10, 20, 100, 500, 1000],
+    Decimals: [-10, -9, -8, -7, -6, -5, -4, -3, -2, -1, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
+  }[workspace];
   const start = props.width / 4;
   const end = (props.width * 3) / 4;
   const y = 100;
