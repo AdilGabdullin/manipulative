@@ -365,4 +365,11 @@ const RangeSelector = (props) => {
   );
 };
 
+export function mk(state) {
+  return {
+    Integers: { m: 10, k: 1 },
+    Decimals: { m: 0.5, k: 10 },
+  }[state.workspace];
+}
+
 export default NumberLine;

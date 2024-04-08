@@ -3,7 +3,7 @@ import { colors } from "../state/colors";
 import { useAppStore } from "../state/store";
 import { useRef } from "react";
 import { numberBetween } from "../util";
-import { notchStep } from "./NumberLine";
+import { mk, notchStep } from "./NumberLine";
 
 const headSize = 25;
 export const sarWidth = 130;
@@ -158,6 +158,7 @@ export function headProps({ width, height, isBlue, shiftX, shiftY }) {
 export function arrowMagnet(props, state) {
   let { x, y, width, height, text } = props;
   const sens = 250;
+  const { m, k } = mk(state);
   const lines = Object.values(state.elements).filter((e) => e.type == "number-line");
   for (const line of lines) {
     if (
@@ -168,9 +169,9 @@ export function arrowMagnet(props, state) {
         const firstNotch = line.x + line.height * 2;
         const range = line.max - line.min;
         const step = ((line.width - line.height * 4) / range) * notchStep(range);
-        x = x - ((x - firstNotch) % step);
-        width = 10 * step;
-        text = 10 * notchStep(range);
+        x = x - ((x - firstNotch) % (step / k));
+        width = m * step;
+        text = m * notchStep(range);
       }
       return { x, y, width, text };
     }
@@ -184,6 +185,7 @@ function headMagnet(props, state) {
   }
   const { x, y, width, height, shiftX } = props;
   const sens = 250;
+  const { k } = mk(state);
   const lines = Object.values(state.elements).filter((e) => e.type == "number-line");
   for (const line of lines) {
     if (
@@ -191,8 +193,8 @@ function headMagnet(props, state) {
       numberBetween(y + height / 2, line.y + line.height / 2 - sens, line.y + line.height / 2 + sens)
     ) {
       const range = line.max - line.min;
-      const step = ((line.width - line.height * 4) / range) * notchStep(range);
-      const newText = Math.abs(Math.round(width / step)) * notchStep(range);
+      const step = (((line.width - line.height * 4) / range) * notchStep(range)) / k;
+      const newText = Math.abs(Math.round(width / step) / k) * notchStep(range);
       const newWidth = Math.round(width / step) * step;
       const newShiftX = Math.round(shiftX / step) * step;
       return { ...props, width: newWidth, shiftX: newShiftX, text: newText };

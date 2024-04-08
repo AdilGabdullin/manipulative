@@ -79,8 +79,8 @@ const Arrow = (props) => {
   return (
     <>
       <Group ref={toolbarShadow} x={x} y={y} visible={false}>
-        <Path ref={arc} {...arcProps(props)} />
-        <Path ref={head} {...headProps(props)} />
+        <Path {...arcProps(props)} />
+        <Path {...headProps(props)} />
       </Group>
       <Group ref={group} x={x} y={y} draggable onDragStart={onDragStart} onDragMove={onDragMove} onDragEnd={onDragEnd}>
         <Path ref={arc} {...arcProps(props)} />

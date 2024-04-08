@@ -79,8 +79,8 @@ const StraightArrow = (props) => {
   return (
     <>
       <Group ref={toolbarShadow} x={x} y={y} visible={false}>
-        <Rect ref={arc} {...arcProps(props)} />
-        <Path ref={head} {...headProps(props)} />
+        <Rect {...arcProps(props)} />
+        <Path {...headProps(props)} />
       </Group>
       <Group ref={group} x={x} y={y} draggable onDragStart={onDragStart} onDragMove={onDragMove} onDragEnd={onDragEnd}>
         <Rect ref={arc} {...arcProps(props)} />
