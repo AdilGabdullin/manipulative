@@ -150,11 +150,12 @@ const NumberLine = (props) => {
   );
 };
 
-export function notchStep(range, workspace = "Integers") {
+export function notchStep(range, workspace = "Integers", denominator = 1) {
   if (workspace == "Decimals" && range > 15 && range <= 20) return 2;
-  if (range < 200) return 1;
-  if (range < 1000) return 10;
-  if (range < 1500) return 20;
+  if (range * denominator < 50) return 1;
+  if (range * denominator < 200) return 2;
+  if (range * denominator < 1000) return 10;
+  if (range * denominator < 1500) return 20;
   return 100;
 }
 

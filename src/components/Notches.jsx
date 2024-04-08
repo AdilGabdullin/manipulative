@@ -18,8 +18,8 @@ const Notches = (props) => {
     xs.push({ x: notchX(i, props), text: min + i });
   }
 
-  const textSkipStep = textStep(range, workspace);
-  const notchSkipStep = notchStep(range, workspace);
+  const textSkipStep = textStep(range, workspace, denominator);
+  const notchSkipStep = notchStep(range, workspace, denominator);
 
   return xs.map(({ x, text }, i) => {
     const skipNotch = i % notchSkipStep == 0;
@@ -60,15 +60,16 @@ const NotchText = ({ height, text, denominator }) => {
   const textRef2 = useRef();
   const rectRef = useRef();
 
-  const minus = text < 0;
+  const minus = text < 0 && workspace == "Fractions";
 
   if (workspace == "Decimals") {
     text = text.toFixed(1);
   }
   if (workspace == "Fractions") {
     if (denominator != 1) {
-      if (text % 1 == 0) {
+      if (Math.abs(text - Math.round(text)) < 0.0001) {
         denominator = 1;
+        text = Math.round(text);
       } else {
         text = Math.round(text * denominator);
       }
@@ -164,7 +165,7 @@ const NotchText = ({ height, text, denominator }) => {
   );
 };
 
-function textStep(range, workspace) {
+function textStep(range, workspace, denominator) {
   if (workspace == "Decimals") {
     if (range < 3) return 1;
     else if (range <= 10) return 5;
@@ -181,7 +182,12 @@ function textStep(range, workspace) {
     else return 200;
   }
   if (workspace == "Fractions") {
-    return 1;
+    const count = range * denominator;
+    if (count < 20) return 1;
+    else if (count < 40) return 2;
+    else if (count < 60) return 5;
+    else if (count < 100) return 10;
+    else return 10;
   }
 }
 
