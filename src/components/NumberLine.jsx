@@ -376,4 +376,21 @@ export function mk(state, denominator = 1) {
   }[state.workspace];
 }
 
+export function defaultMinMax(workspace) {
+  switch (workspace) {
+    case "Integers":
+      return { min: 0, max: 20 };
+      break;
+    case "Decimals":
+      return { min: 0, max: 1 };
+      break;
+    case "Fractions":
+      return { min: 0, max: 1, denominator: 8 };
+      break;
+    case "Open":
+      return {};
+      break;
+  }
+}
+
 export default NumberLine;

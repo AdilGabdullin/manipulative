@@ -6,7 +6,7 @@ import { topToolbarHeight } from "../components/TopToolbar";
 import { maxOffset } from "../components/Scrolls";
 import { freeDrawingSlice } from "./freeDrawingSlice";
 import { historySlice, pushHistory } from "./historySlice";
-import { nlHeight, nlWidth } from "../components/NumberLine";
+import { defaultMinMax, nlHeight, nlWidth } from "../components/NumberLine";
 
 export const gridStep = 60;
 export const boardSize = {
@@ -74,8 +74,13 @@ export const useAppStore = create((set) => ({
             delete state.elements[id];
           }
           if (type == "number-line") {
-            state.elements[id].min = { Integers: 0, Decimals: 0, Fractions: -5 }[workspace];
-            state.elements[id].max = { Integers: 20, Decimals: 1, Fractions: 5 }[workspace];
+            const line = state.elements[id];
+            const { min, max, denominator } = defaultMinMax(workspace);
+            line.min = min;
+            line.max = max;
+            if (denominator) {
+              line.denominator = denominator;
+            }
           }
         }
         state.lastActiveElement = null;
@@ -357,9 +362,7 @@ export function initElements() {
       y: 0 - nlHeight / 2,
       width: nlWidth,
       height: nlHeight,
-      min: 0,
-      max: 1,
-      denominator: 8,
+      ...defaultMinMax("Fractions"),
     },
   };
 }

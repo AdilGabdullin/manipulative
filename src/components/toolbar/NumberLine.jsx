@@ -1,6 +1,6 @@
 import { Group, Line, Rect } from "react-konva";
 import { leftToolbarWidth } from "../LeftToolbar";
-import { nlHeight, nlWidth, nlLineWidth } from "../NumberLine";
+import { nlHeight, nlWidth, nlLineWidth, defaultMinMax } from "../NumberLine";
 import { useAppStore } from "../../state/store";
 import { getStageXY } from "../../util";
 import { useRef } from "react";
@@ -56,8 +56,7 @@ const NumberLine = ({ x, y, width, height }) => {
         height: nlHeight,
         x: stagePos.x - width / 2,
         y: stagePos.y - height / 2,
-        min: 0,
-        max: 20,
+        ...defaultMinMax(state.workspace),
       });
     }
   };
