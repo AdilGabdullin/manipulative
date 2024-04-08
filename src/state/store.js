@@ -29,8 +29,8 @@ export const useAppStore = create((set) => ({
   selected: [],
   lockSelect: false,
 
-  // fullscreen: true,
-  // workspace: "Decimals",
+  fullscreen: true,
+  workspace: "Fractions",
   toggleGlobal: (field) =>
     set(
       produce((state) => {
@@ -74,8 +74,8 @@ export const useAppStore = create((set) => ({
             delete state.elements[id];
           }
           if (type == "number-line") {
-            state.elements[id].min = { Integers: 0, Decimals: 0 }[workspace];
-            state.elements[id].max = { Integers: 20, Decimals: 1 }[workspace];
+            state.elements[id].min = { Integers: 0, Decimals: 0, Fractions: -5 }[workspace];
+            state.elements[id].max = { Integers: 20, Decimals: 1, Fractions: 5 }[workspace];
           }
         }
         state.lastActiveElement = null;
@@ -358,7 +358,8 @@ export function initElements() {
       width: nlWidth,
       height: nlHeight,
       min: 0,
-      max: 20,
+      max: 1,
+      denominator: 8,
     },
   };
 }

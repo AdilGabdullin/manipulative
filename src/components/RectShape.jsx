@@ -158,9 +158,9 @@ export function headProps({ width, height, isBlue, shiftX, shiftY }) {
 export function arrowMagnet(props, state) {
   let { x, y, width, height, text } = props;
   const sens = 250;
-  const { m, k } = mk(state);
   const lines = Object.values(state.elements).filter((e) => e.type == "number-line");
   for (const line of lines) {
+    const { m, k } = mk(state, line.denominator || 1);
     if (
       numberBetween(x, line.x, line.x + line.width) &&
       numberBetween(y + height / 2, line.y + line.height / 2 - sens, line.y + line.height / 2 + sens)
@@ -185,9 +185,9 @@ function headMagnet(props, state) {
   }
   const { x, y, width, height, shiftX } = props;
   const sens = 250;
-  const { k } = mk(state);
   const lines = Object.values(state.elements).filter((e) => e.type == "number-line");
   for (const line of lines) {
+    const { k } = mk(state, line.denominator || 1);
     if (
       numberBetween(x, line.x, line.x + line.width) &&
       numberBetween(y + height / 2, line.y + line.height / 2 - sens, line.y + line.height / 2 + sens)

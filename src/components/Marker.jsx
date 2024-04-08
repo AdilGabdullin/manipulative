@@ -85,8 +85,8 @@ export function markerMagnet(props, state) {
   const { x, y, width, height } = props;
   const sens = 200;
   const lines = Object.values(state.elements).filter((e) => e.type == "number-line");
-  const { m, k } = mk(state);
   for (const line of lines) {
+    const { k } = mk(state, line.denominator || 1);
     if (
       numberBetween(x + width / 2, line.x + line.height * 2, line.x - line.height * 2 + line.width) &&
       numberBetween(y + height - line.height / 2, line.y - sens, line.y)

@@ -136,12 +136,13 @@ const NumberLine = (props) => {
 
 const Notches = (props) => {
   const { workspace } = useAppStore();
-  const { id, min, max } = props;
+  const { id, min, max, denominator } = props;
   const xs = [];
   const range = max - min;
   const iStep = {
     Integers: 1,
     Decimals: 0.1,
+    Fractions: 1 / denominator,
   }[workspace];
   for (let i = 0; i < range + iStep / 2; i += iStep) {
     xs.push({ x: notchX(i, props), text: min + i });
@@ -178,6 +179,9 @@ function textStep(range, workspace) {
     else if (range < 600) return 50;
     else if (range < 1500) return 100;
     else return 200;
+  }
+  if (workspace == "Fractions") {
+    return 1;
   }
 }
 
@@ -284,6 +288,7 @@ const RangeSelector = (props) => {
   const values = {
     Integers: [-1000, -500, -100, -20, -10, 0, 10, 20, 100, 500, 1000],
     Decimals: [-10, -9, -8, -7, -6, -5, -4, -3, -2, -1, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
+    Fractions: [-5, -4, -3, -2, -1, 0, 1, 2, 3, 4, 5],
   }[workspace];
   const start = props.width / 4;
   const end = (props.width * 3) / 4;
@@ -362,12 +367,12 @@ const RangeSelector = (props) => {
   );
 };
 
-export function mk(state) {
+export function mk(state, denominator = 1) {
   return {
     Integers: { m: 10, k: 1 },
     Decimals: { m: 0.5, k: 10 },
     Open: { m: 1, k: 1 },
-    Fractions: { m: 1, k: 1 },
+    Fractions: { m: 0.5, k: denominator },
   }[state.workspace];
 }
 
