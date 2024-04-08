@@ -209,20 +209,37 @@ const NotchLine = ({ height, id, short }) => {
   );
 };
 
-const NotchText = ({ width, height, min, max, text }) => {
+const NotchText = ({ height, text, denominator }) => {
   const { workspace } = useAppStore();
   const [textVisible, setTextVisible] = useState(true);
 
   const textRef = useRef();
+  const lineRef = useRef();
+  const textRef2 = useRef();
   const rectRef = useRef();
   if (workspace == "Decimals") {
     text = text.toFixed(1);
   }
+
+  if (denominator != 1) {
+    if (text % 1 == 0) {
+      denominator = 1;
+    } else {
+      text = Math.round(text * denominator);
+    }
+  }
+
   const textWidth = text.toString().length * 12;
 
   const events = {
     onPointerEnter: (e) => {
       textRef.current.setAttrs({
+        fill: colors.blue,
+      });
+      lineRef.current.setAttrs({
+        stroke: colors.blue,
+      });
+      textRef2.current.setAttrs({
         fill: colors.blue,
       });
       if (!textVisible) {
@@ -231,6 +248,12 @@ const NotchText = ({ width, height, min, max, text }) => {
     },
     onPointerLeave: (e) => {
       textRef.current.setAttrs({
+        fill: colors.black,
+      });
+      lineRef.current.setAttrs({
+        stroke: colors.black,
+      });
+      textRef2.current.setAttrs({
         fill: colors.black,
       });
       if (!textVisible) {
@@ -261,6 +284,26 @@ const NotchText = ({ width, height, min, max, text }) => {
         fontFamily="Calibri"
         fontSize={20}
       />
+      <Line
+        ref={lineRef}
+        x={-textWidth / 2}
+        y={height * 1.25 + 19}
+        points={[0, 0, textWidth, 0]}
+        stroke="black"
+        strokeWidth={2}
+        visible={textVisible && denominator != 1}
+      />
+      <Text
+        ref={textRef2}
+        text={denominator}
+        visible={textVisible && denominator != 1}
+        x={-textWidth / 2}
+        y={height * 1.25 + 20}
+        width={textWidth}
+        align="center"
+        fontFamily="Calibri"
+        fontSize={20}
+      />
       <Rect
         ref={rectRef}
         x={-rectSize / 2}
@@ -270,7 +313,7 @@ const NotchText = ({ width, height, min, max, text }) => {
         strokeWidth={2}
         visible={!textVisible}
       />
-      {/* <Rect x={-textWidth / 2} y={height * 1.25} width={textWidth} height={20} stroke={"black"} /> */}
+      {/* <Rect x={-textWidth / 2} y={height * 1.25} width={textWidth} height={40} stroke={"black"} /> */}
     </Group>
   );
 };
@@ -379,16 +422,16 @@ export function mk(state, denominator = 1) {
 export function defaultMinMax(workspace) {
   switch (workspace) {
     case "Integers":
-      return { min: 0, max: 20 };
+      return { min: 0, max: 20, denominator: null };
       break;
     case "Decimals":
-      return { min: 0, max: 1 };
+      return { min: 0, max: 1, denominator: null };
       break;
     case "Fractions":
       return { min: 0, max: 1, denominator: 8 };
       break;
     case "Open":
-      return {};
+      return { min: null, max: null, denominator: null };
       break;
   }
 }

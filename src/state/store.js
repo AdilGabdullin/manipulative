@@ -78,9 +78,7 @@ export const useAppStore = create((set) => ({
             const { min, max, denominator } = defaultMinMax(workspace);
             line.min = min;
             line.max = max;
-            if (denominator) {
-              line.denominator = denominator;
-            }
+            line.denominator = denominator;
           }
         }
         state.lastActiveElement = null;
