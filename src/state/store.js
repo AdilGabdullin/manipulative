@@ -329,7 +329,7 @@ export function initElements() {
       width: nlWidth,
       height: nlHeight,
       min: 0,
-      max: 500,
+      max: 20,
     },
   };
 }

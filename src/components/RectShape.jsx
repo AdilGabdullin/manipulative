@@ -121,7 +121,7 @@ const RectShape = (props) => {
         y={0}
         width={headSize}
         height={height}
-        stroke={"black"}
+        // stroke={"black"}
         draggable
         onDragMove={headDragMove}
         onDragEnd={headDragEnd}
