@@ -9,8 +9,9 @@ export const nlLineWidth = 4;
 const nlMinWidth = 100;
 
 const NumberLine = (props) => {
-  const { workspace, origin, relocateElement, updateElement, selectIds, selected } = useAppStore();
-  const { id, x, y, width, height, visible, locked, min, max } = props;
+  const state = useAppStore();
+  const { workspace, origin, relocateElement, updateElement, selectIds, selected } = state;
+  const { id, x, y, width, height, visible, locked, min, max, denominator } = props;
   const showNotches = workspace != "Open";
   const headSize = height / 2;
   const groupPos = { x: origin.x + x, y: origin.y + y };
@@ -27,8 +28,14 @@ const NumberLine = (props) => {
     if (notchGroups) return notchGroups;
     notchGroups = [];
     const stage = e.target.getStage();
-    for (let i = 0; i < max - min + 1; i += 1) {
-      notchGroups.push(stage.findOne(`#${id}-notch-${i}`));
+
+    const iStep = {
+      Integers: 1,
+      Decimals: 0.1,
+      Fractions: 1 / denominator,
+    }[workspace];
+    for (let index = 0, i = 0; i < max - min + iStep / 2; i += iStep, index++) {
+      notchGroups.push(stage.findOne(`#${id}-notch-${index}`));
     }
     return notchGroups;
   };
@@ -41,6 +48,8 @@ const NumberLine = (props) => {
       });
     }
   };
+
+  const k = mk(state, denominator).k;
 
   return (
     <Group
@@ -92,7 +101,7 @@ const NumberLine = (props) => {
           e.target.setAttrs({ x: dx, y: height / 2 });
           line.current.setAttrs({ x: linePos.x + dx, points: [0, 0, width - headSize * 2 - dx, 0] });
           getNotchGroups(e).forEach((notchGroup, i) => {
-            notchGroup.x(notchX(i, { ...props, width: width - dx, shift: dx }));
+            notchGroup.x(notchX(i, { ...props, width: width - dx, shift: dx }, k));
           });
         }}
         onDragEnd={(e) => {
@@ -118,7 +127,7 @@ const NumberLine = (props) => {
           e.target.setAttrs({ x: width + dx, y: height / 2 });
           line.current.setAttrs({ points: [0, 0, width - headSize * 2 + dx, 0] });
           getNotchGroups(e).forEach((notchGroup, i) => {
-            notchGroup.x(notchX(i, { ...props, width: width + dx }));
+            notchGroup.x(notchX(i, { ...props, width: width + dx }, k));
           });
         }}
         onDragEnd={(e) => {
@@ -215,47 +224,43 @@ const NotchText = ({ height, text, denominator }) => {
 
   const textRef = useRef();
   const lineRef = useRef();
+  const lineRef2 = useRef();
   const textRef2 = useRef();
   const rectRef = useRef();
+
+  const minus = text < 0;
+
   if (workspace == "Decimals") {
     text = text.toFixed(1);
   }
-
-  if (denominator != 1) {
-    if (text % 1 == 0) {
-      denominator = 1;
-    } else {
-      text = Math.round(text * denominator);
+  if (workspace == "Fractions") {
+    if (denominator != 1) {
+      if (text % 1 == 0) {
+        denominator = 1;
+      } else {
+        text = Math.round(text * denominator);
+      }
     }
+    text = Math.abs(text);
   }
 
   const textWidth = text.toString().length * 12;
 
   const events = {
     onPointerEnter: (e) => {
-      textRef.current.setAttrs({
-        fill: colors.blue,
-      });
-      lineRef.current.setAttrs({
-        stroke: colors.blue,
-      });
-      textRef2.current.setAttrs({
-        fill: colors.blue,
-      });
+      textRef.current.setAttrs({ fill: colors.blue });
+      textRef2.current.setAttrs({ fill: colors.blue });
+      lineRef.current.setAttrs({ stroke: colors.blue });
+      lineRef2.current.setAttrs({ stroke: colors.blue });
       if (!textVisible) {
         rectRef.current.setAttr("stroke", colors.blue);
       }
     },
     onPointerLeave: (e) => {
-      textRef.current.setAttrs({
-        fill: colors.black,
-      });
-      lineRef.current.setAttrs({
-        stroke: colors.black,
-      });
-      textRef2.current.setAttrs({
-        fill: colors.black,
-      });
+      textRef.current.setAttrs({ fill: colors.black });
+      textRef2.current.setAttrs({ fill: colors.black });
+      lineRef.current.setAttrs({ stroke: colors.black });
+      lineRef2.current.setAttrs({ stroke: colors.black });
       if (!textVisible) {
         rectRef.current.setAttr("stroke", null);
       }
@@ -278,7 +283,7 @@ const NotchText = ({ height, text, denominator }) => {
         text={text}
         visible={textVisible}
         x={-textWidth / 2}
-        y={height * 1.25}
+        y={height * 1.25 + (denominator == 1 && workspace == "Fractions" ? 9 : 0)}
         width={textWidth}
         align="center"
         fontFamily="Calibri"
@@ -286,12 +291,21 @@ const NotchText = ({ height, text, denominator }) => {
       />
       <Line
         ref={lineRef}
-        x={-textWidth / 2}
+        x={0}
         y={height * 1.25 + 19}
-        points={[0, 0, textWidth, 0]}
+        points={[-textWidth * 0.6, 0, textWidth * 0.6, 0]}
         stroke="black"
         strokeWidth={2}
         visible={textVisible && denominator != 1}
+      />
+      <Line
+        ref={lineRef2}
+        x={-textWidth * 0.6 + (denominator == 1 ? 5 : 0)}
+        y={height * 1.25 + 19}
+        points={[-10, 0, -5, 0]}
+        stroke="black"
+        strokeWidth={2}
+        visible={textVisible && minus}
       />
       <Text
         ref={textRef2}
@@ -318,8 +332,8 @@ const NotchText = ({ height, text, denominator }) => {
   );
 };
 
-export function notchX(i, { width, height, min, max, shift }) {
-  const step = (width - 4 * height) / (max - min);
+export function notchX(i, { width, height, min, max, shift }, k = 1) {
+  const step = (width - 4 * height) / (max - min) / k;
   const start = height * 2 + (shift || 0);
   return start + i * step + width * 0.000001;
 }
@@ -422,16 +436,16 @@ export function mk(state, denominator = 1) {
 export function defaultMinMax(workspace) {
   switch (workspace) {
     case "Integers":
-      return { min: 0, max: 20, denominator: null };
+      return { min: 0, max: 20, denominator: 1 };
       break;
     case "Decimals":
-      return { min: 0, max: 1, denominator: null };
+      return { min: 0, max: 1, denominator: 1 };
       break;
     case "Fractions":
       return { min: 0, max: 1, denominator: 8 };
       break;
     case "Open":
-      return { min: null, max: null, denominator: null };
+      return { min: null, max: null, denominator: 1 };
       break;
   }
 }
