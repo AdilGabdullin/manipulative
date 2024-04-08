@@ -2,7 +2,7 @@ import { Circle, Group, Line, Path, Rect, Text } from "react-konva";
 import { colors } from "../state/colors";
 import { useAppStore } from "../state/store";
 import { cos, numberBetween, sin } from "../util";
-import { notchStep } from "./NumberLine";
+import { mk, notchStep } from "./NumberLine";
 
 export const mWidth = 70;
 export const mHeight = 100;
@@ -10,7 +10,7 @@ export const mHeight = 100;
 const Marker = (props) => {
   const { id, x, y, width, height, visible, locked, text, lineHeight } = props;
   const state = useAppStore();
-  const { origin, selectIds, updateElement } = state;
+  const { origin, selectIds, updateElement, workspace } = state;
 
   const angle = 60;
   const r1 = width / 2 - 5;
@@ -39,7 +39,7 @@ const Marker = (props) => {
         e.target.setAttrs({ x: origin.x + newProps.x, y: origin.y + newProps.y });
         e.target.children[3].setAttrs({
           text: newProps.text,
-          visible: !!newProps.text,
+          visible: newProps.text !== "",
         });
         e.target.children[4].setAttrs({
           height: newProps.lineHeight,
@@ -70,7 +70,7 @@ const Marker = (props) => {
         x={0}
         y={cy - 28 / 2}
         width={width}
-        text={text}
+        text={workspace == "Dicimals" ? text.toFixed(1) : text}
         fill={colors.purple}
         fontFamily="Calibri"
         fontSize={28}
@@ -85,6 +85,7 @@ export function markerMagnet(props, state) {
   const { x, y, width, height } = props;
   const sens = 200;
   const lines = Object.values(state.elements).filter((e) => e.type == "number-line");
+  const { m, k } = mk(state);
   for (const line of lines) {
     if (
       numberBetween(x + width / 2, line.x + line.height * 2, line.x - line.height * 2 + line.width) &&
@@ -92,8 +93,8 @@ export function markerMagnet(props, state) {
     ) {
       const firstNotch = line.x + line.height * 2;
       const range = line.max - line.min;
-      const step = ((line.width - line.height * 4) / range) * notchStep(range);
-      const text = Math.round((x + width / 2 - firstNotch) / step) * notchStep(range);
+      const step = (((line.width - line.height * 4) / range) * notchStep(range)) / k;
+      const text = (Math.round((x + width / 2 - firstNotch) / step) * notchStep(range)) / 10;
       const newX = firstNotch - width / 2 + Math.round((x + width / 2 - firstNotch) / step) * step;
       return { ...props, x: newX, y, lineHeight: line.y + line.height / 2 - y - height, text };
     }

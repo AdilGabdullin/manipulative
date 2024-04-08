@@ -43,7 +43,7 @@ const Marker = ({ x, y, width, height }) => {
       });
       shadow.children[3].setAttrs({
         text: props.text,
-        visible: !!props.text,
+        visible: props.text !== "",
       });
       shadow.children[4].setAttrs({
         height: props.lineHeight,
