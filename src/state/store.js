@@ -216,11 +216,16 @@ export const useAppStore = create((set) => ({
   updateElement: (id, attrs, doPush = true) =>
     set(
       produce((state) => {
-        for (const key in attrs) {
-          state.elements[id][key] = attrs[key];
+        const element = state.elements[id];
+        if (attrs.width == 0 && [ "straight-arrow", "rect-shape"].includes(element.type) ) {
+            delete state.elements[id];
+        } else {
+          for (const key in attrs) {
+            element[key] = attrs[key];
+          }
+          state.lastActiveElement = id;
         }
         if (doPush) pushHistory(state);
-        state.lastActiveElement = id;
       })
     ),
 
