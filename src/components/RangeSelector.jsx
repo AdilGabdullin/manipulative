@@ -93,7 +93,7 @@ export const DenominatorSelector = (props) => {
   const { setMinMax } = useAppStore();
   const r = 12;
 
-  const values = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20];
+  const values = [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20];
   const start = props.width / 2 + props.height;
   const end = props.width - props.height;
   const y = 100;

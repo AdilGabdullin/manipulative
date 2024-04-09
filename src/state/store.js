@@ -29,8 +29,8 @@ export const useAppStore = create((set) => ({
   selected: [],
   lockSelect: false,
 
-  fullscreen: true,
-  workspace: "Fractions",
+  // fullscreen: true,
+  // workspace: "Fractions",
   toggleGlobal: (field) =>
     set(
       produce((state) => {
@@ -375,7 +375,7 @@ export function initElements() {
       width: nlWidth,
       height: nlHeight,
       ...defaultMinMax("Integers"),
-      ...defaultMinMax("Fractions"),
+      // ...defaultMinMax("Fractions"),
     },
   };
 }

@@ -185,7 +185,7 @@ export function defaultMinMax(workspace) {
       return { min: 0, max: 1, denominator: 1 };
       break;
     case "Fractions":
-      return { min: 0, max: 1, denominator: 8 };
+      return { min: 0, max: 1, denominator: 7 };
       break;
     case "Open":
       return { min: 0, max: 1, denominator: 1 };

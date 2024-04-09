@@ -228,6 +228,10 @@ export function arrowMagnet(props, state) {
         width = m * step;
         text = m * notchStep(range);
         if (state.workspace == "Fractions") {
+          if (k % 2 == 1) {
+            width = (width * 2 - step / k) / 2;
+            text = (width / step) * notchStep(range);
+          }
           text = `${text * k}/${k}`;
         }
       }

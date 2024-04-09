@@ -41,6 +41,7 @@ const StraightArrow = (props) => {
       shadow.setAttrs({
         x: origin.x + stagePos.x,
         y: origin.y + stagePos.y,
+        width: stagePos.width,
         visible: true,
       });
       shadow.children[0].setAttrs(arcProps({ ...props, width: stagePos.width, height }));
