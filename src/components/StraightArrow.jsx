@@ -86,17 +86,20 @@ const StraightArrow = (props) => {
       const isBlue = width + dx >= 0;
       const shiftX = isBlue ? 0 : width + dx;
       const newWidth = Math.abs(width + dx);
-      head.current.setAttrs({ x: 0 });
-      textRef.current.setAttrs({ x: -100, y: -30 });
-      updateElement(id, headMagnet({ ...props, x: props.x + shiftX, width: newWidth, height, isBlue }, state));
+      const newProps = headMagnet({ ...props, x: props.x + shiftX, width: newWidth, height, isBlue }, state);
+      head.current.setAttrs(headProps(newProps));
+      textRef.current.setAttrs(textProps(newProps));
+      arc.current.setAttrs(arcProps(newProps));
+      updateElement(id, newProps);
     } else {
       const isBlue = width - dx <= 0;
       const shiftX = isBlue ? width : dx;
       const newWidth = Math.abs(width - dx);
-      const newProps = { ...props, x: props.x + shiftX, width: newWidth, height, isBlue };
-      head.current.setAttrs({ x: 0 });
-      textRef.current.setAttrs({ x: -100, y: -30 });
-      updateElement(id, headMagnet(newProps, state));
+      const newProps = headMagnet({ ...props, x: props.x + shiftX, width: newWidth, height, isBlue }, state);
+      head.current.setAttrs(headProps(newProps));
+      textRef.current.setAttrs(textProps(newProps));
+      arc.current.setAttrs(arcProps(newProps));
+      updateElement(id, newProps);
     }
   };
 
@@ -179,7 +182,7 @@ function headMagnet(props, state) {
     return props;
   }
   const { x, y, width, height, shiftX } = props;
-  const sens = 50;
+  const sens = 250;
   const lines = Object.values(state.elements).filter((e) => e.type == "number-line");
   for (const line of lines) {
     const { k } = mk(state, line.denominator || 1);
