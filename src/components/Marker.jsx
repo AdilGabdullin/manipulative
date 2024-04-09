@@ -94,7 +94,10 @@ export function markerMagnet(props, state) {
       const firstNotch = line.x + line.height * 2;
       const range = line.max - line.min;
       const step = (((line.width - line.height * 4) / range) * notchStep(range)) / k;
-      const text = (Math.round((x + width / 2 - firstNotch) / step) * notchStep(range)) / 10;
+      let text = (Math.round((x + width / 2 - firstNotch) / step) * notchStep(range)) / k;
+      if (state.workspace == "Fractions") {
+        text = `${text * k}/${k}`;
+      }
       const newX = firstNotch - width / 2 + Math.round((x + width / 2 - firstNotch) / step) * step;
       return { ...props, x: newX, y, lineHeight: line.y + line.height / 2 - y - height, text };
     }

@@ -170,6 +170,9 @@ export function arrowMagnet(props, state) {
         x = x - ((x - firstNotch) % (step / k));
         width = m * step;
         text = m * notchStep(range);
+        if (state.workspace == "Fractions") {
+          text = `${text * k}/${k}`;
+        }
       }
       return { x, y, width, text };
     }
@@ -189,9 +192,12 @@ function headMagnet(props, state) {
     if (numberBetween(y + height, line.y + line.height / 2 - sens, line.y + line.height / 2 + sens)) {
       const range = line.max - line.min;
       const step = (((line.width - line.height * 4) / range) * notchStep(range)) / k;
-      const newText = Math.abs(Math.round(width / step) / k) * notchStep(range);
+      let newText = Math.abs(Math.round(width / step) / k) * notchStep(range);
       const newWidth = Math.round(width / step) * step;
       const newShiftX = Math.round(shiftX / step) * step;
+      if (state.workspace == "Fractions") {
+        newText = `${newText * k}/${k}`;
+      }
       return { ...props, width: newWidth, shiftX: newShiftX, text: newText };
     }
   }
