@@ -32,7 +32,7 @@ const OpenMarker = ({ id, x, y, width, height, visible, locked, text }) => {
       x={pos.x}
       y={pos.y}
       visible={visible !== undefined ? visible : true}
-      draggable
+      draggable={!locked}
       onDragMove={(e) => {
         const dx = e.target.x() - pos.x;
         const dy = e.target.y() - pos.y;

@@ -13,7 +13,7 @@ export const sarHeight = 50;
 const StraightArrow = (props) => {
   const state = useAppStore();
   const { origin, selectIds, relocateElement, updateElement } = state;
-  const { id, x, y, width, height, isBlue, visible, locked, text } = props;
+  const { id, x, y, width, height, isBlue, visible, locked } = props;
 
   const headX = isBlue ? width : 0;
 
@@ -110,14 +110,14 @@ const StraightArrow = (props) => {
       x={pos.x}
       y={pos.y}
       visible={visible !== undefined ? visible : true}
-      draggable
+      draggable={!locked}
       onDragMove={groupDragMove}
       onDragEnd={groupDragEnd}
       onPointerClick={groupClick}
     >
       {/* <Rect x={0} y={0} width={width} height={height} stroke={"black"}/> */}
       <Rect ref={arc} {...arcProps(props)} />
-      <Path ref={head} {...headProps(props)} draggable onDragMove={headDragMove} onDragEnd={headDragEnd} />
+      <Path ref={head} {...headProps(props)} draggable={!locked} onDragMove={headDragMove} onDragEnd={headDragEnd} />
       <Text ref={textRef} fontFamily="Calibri" fontSize={24} align="center" {...textProps(props)} />
     </Group>
   );

@@ -12,7 +12,7 @@ export const sarHeight = 50;
 const RectShape = (props) => {
   const state = useAppStore();
   const { origin, selectIds, relocateElement, updateElement } = state;
-  const { id, x, y, width, height, isBlue, visible, locked, text } = props;
+  const { id, x, y, width, height, isBlue, visible, locked } = props;
 
   const headX = isBlue ? width - headSize / 2 : -headSize / 2;
 
@@ -109,7 +109,7 @@ const RectShape = (props) => {
       x={pos.x}
       y={pos.y}
       visible={visible !== undefined ? visible : true}
-      draggable
+      draggable={!locked}
       onDragMove={groupDragMove}
       onDragEnd={groupDragEnd}
       onPointerClick={groupClick}
@@ -122,7 +122,7 @@ const RectShape = (props) => {
         width={headSize}
         height={height}
         // stroke={"black"}
-        draggable
+        draggable={!locked}
         onDragMove={headDragMove}
         onDragEnd={headDragEnd}
       />

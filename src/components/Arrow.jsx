@@ -15,8 +15,8 @@ const rhHeight = strokeWidth;
 
 const Arrow = (props) => {
   const state = useAppStore();
-  const { origin, selectIds, relocateElement, updateElement } = state;
-  const { id, x, y, width, height, isBlue, visible, locked, text } = props;
+  const { origin, selectIds, updateElement } = state;
+  const { id, x, y, width, height, isBlue, visible, locked } = props;
 
   const headX = isBlue ? width : 0;
 
@@ -128,20 +128,20 @@ const Arrow = (props) => {
       x={pos.x}
       y={pos.y}
       visible={visible !== undefined ? visible : true}
-      draggable
+      draggable={!locked}
       onDragMove={groupDragMove}
       onDragEnd={groupDragEnd}
       onPointerClick={groupClick}
     >
       {/* <Rect x={0} y={0} width={width} height={height} stroke={"black"}/> */}
       <Path ref={arc} {...arcProps(props)} />
-      <Path ref={head} {...headProps(props)} draggable onDragMove={headDragMove} onDragEnd={headDragEnd} />
+      <Path ref={head} {...headProps(props)} draggable={!locked} onDragMove={headDragMove} onDragEnd={headDragEnd} />
       <Rect
         x={width / 2 - rhWidth / 2}
         y={-rhHeight / 2}
         width={rhWidth}
         height={rhHeight}
-        draggable
+        draggable={!locked}
         onDragMove={resizeHandleDragMove}
         onDragEnd={resizeHandleDragEnd}
       />

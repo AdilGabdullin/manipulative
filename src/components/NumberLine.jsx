@@ -59,7 +59,7 @@ const NumberLine = (props) => {
       id={id}
       {...groupPos}
       visible={visible !== undefined ? visible : true}
-      draggable
+      draggable={!locked}
       onDragEnd={(e) => {
         if (e.target === group.current) {
           relocateElement(id, e.target.x() - groupPos.x, e.target.y() - groupPos.y);
@@ -95,7 +95,7 @@ const NumberLine = (props) => {
         stroke={"black"}
         fill="black"
         closed
-        draggable
+        draggable={!locked}
         onPointerEnter={(e) => setColor([e.target], colors.blue)}
         onPointerLeave={(e) => setColor([e.target], colors.black)}
         onDragMove={(e) => {
@@ -122,7 +122,7 @@ const NumberLine = (props) => {
         stroke={"black"}
         fill="black"
         closed
-        draggable
+        draggable={!locked}
         onPointerEnter={(e) => setColor([e.target], colors.blue)}
         onPointerLeave={(e) => setColor([e.target], colors.black)}
         onDragMove={(e) => {
