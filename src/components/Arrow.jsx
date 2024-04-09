@@ -34,7 +34,7 @@ const Arrow = (props) => {
       x: shiftX - 100,
       y: shiftY - 30,
       width: Math.abs(width) + 200,
-      text: text !== undefined ? prefix + text : "",
+      text: text !== undefined && text !== "" ? prefix + text : "",
       fill: color,
     };
   };

@@ -326,15 +326,17 @@ export const useAppStore = create((set) => ({
   keyDown: (key) =>
     set(
       produce((state) => {
-        const { selected, elements, lastActiveElement } = state;
+        const { selected, elements, lastActiveElement, workspace } = state;
         const selectedTarget = selected.length == 1 && elements[selected[0]];
         const activeTarget = selected.length == 0 && lastActiveElement && elements[lastActiveElement];
         const target = selectedTarget || activeTarget;
-        if (!target || target.text === undefined) return;
+        if (workspace != "Open" || !target || target.text === undefined ) return;
         const text = "" + target.text;
         if (key == "Backspace") {
           target.text = text.substring(0, text.length - 1);
-        } else if (key.match(/^[0-9]$/) && text.length < 3) {
+        } else if (key == "Delete") {
+          target.text = "";
+        } else if (key.match(/^[0-9\.\-]$/) && text.length < 4) {
           target.text = text + key;
         }
       })
