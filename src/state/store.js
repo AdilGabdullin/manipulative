@@ -29,8 +29,8 @@ export const useAppStore = create((set) => ({
   selected: [],
   lockSelect: false,
 
-  // fullscreen: true,
-  // workspace: "Fractions",
+  fullscreen: true,
+  workspace: "Fractions",
   toggleGlobal: (field) =>
     set(
       produce((state) => {
@@ -67,12 +67,9 @@ export const useAppStore = create((set) => ({
     set(
       produce((state) => {
         state.workspace = workspace;
-        const deleteTypes = ["arrow", "straight-arrow", "rect-shape", "marker", "open-marker"];
+        removeElements(state);
         for (let id in current(state.elements)) {
           const type = state.elements[id].type;
-          if (deleteTypes.includes(type)) {
-            delete state.elements[id];
-          }
           if (type == "number-line") {
             const line = state.elements[id];
             const { min, max, denominator } = defaultMinMax(workspace);
@@ -231,17 +228,17 @@ export const useAppStore = create((set) => ({
     set(
       produce((state) => {
         state.elements[id][field] = value;
-        const deleteTypes = ["arrow", "straight-arrow", "rect-shape", "marker", "open-marker"];
-        for (let id in current(state.elements)) {
-          const type = state.elements[id].type;
-          if (deleteTypes.includes(type)) {
-            delete state.elements[id];
-          }
-        }
+        removeElements(state);
         if (doPush) pushHistory(state);
       })
     ),
-
+  removeElements: () =>
+    set(
+      produce((state) => {
+        removeElements(state);
+        clearSelected(state);
+      })
+    ),
   deleteSelected: () =>
     set(
       produce((state) => {
@@ -350,6 +347,16 @@ function keepOrigin(state) {
   state.origin.y = state.height / 2 / state.scale;
 }
 
+function removeElements(state) {
+  const deleteTypes = ["arrow", "straight-arrow", "rect-shape", "marker", "open-marker"];
+  for (const id in current(state.elements)) {
+    const type = state.elements[id].type;
+    if (deleteTypes.includes(type)) {
+      delete state.elements[id];
+    }
+  }
+}
+
 export function initElements() {
   const id = "default-line";
   return {
@@ -361,7 +368,7 @@ export function initElements() {
       width: nlWidth,
       height: nlHeight,
       ...defaultMinMax("Integers"),
-      // ...defaultMinMax("Fractions"),
+      ...defaultMinMax("Fractions"),
     },
   };
 }

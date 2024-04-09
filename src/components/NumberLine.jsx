@@ -12,7 +12,7 @@ const nlMinWidth = 100;
 
 const NumberLine = (props) => {
   const state = useAppStore();
-  const { workspace, origin, relocateElement, updateElement, selectIds, selected } = state;
+  const { workspace, origin, relocateElement, updateElement, selectIds, selected, removeElements } = state;
   const { id, x, y, width, height, visible, locked, min, max, denominator } = props;
   const showNotches = workspace != "Open";
   const headSize = height / 2;
@@ -105,6 +105,7 @@ const NumberLine = (props) => {
           getNotchGroups(e).forEach((notchGroup, i) => {
             notchGroup.x(notchX(i, { ...props, width: width - dx, shift: dx }, k));
           });
+          removeElements();
         }}
         onDragEnd={(e) => {
           const dx = Math.min(e.target.x() - 0, width - nlMinWidth);
@@ -131,6 +132,7 @@ const NumberLine = (props) => {
           getNotchGroups(e).forEach((notchGroup, i) => {
             notchGroup.x(notchX(i, { ...props, width: width + dx }, k));
           });
+          removeElements();
         }}
         onDragEnd={(e) => {
           const dx = Math.max(e.target.x() - width, nlMinWidth - width);
