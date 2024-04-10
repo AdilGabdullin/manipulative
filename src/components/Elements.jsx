@@ -3,7 +3,7 @@ import { useAppStore } from "../state/store";
 import TextElement from "./TextElement";
 import RectElement from "./RectElement";
 import EllipseElement from "./EllipseElement";
-import { Tile } from "./Tile";
+import { BoardTile, Tile, tileType } from "./Tile";
 
 const Elements = () => {
   const state = useAppStore();
@@ -26,6 +26,9 @@ const Elements = () => {
             break;
           case "line":
             return <LineElement key={id} {...element} />;
+            break;
+          case tileType:
+            return <BoardTile key={id} {...element} />;
             break;
         }
       })}
