@@ -3,6 +3,7 @@ import { useAppStore } from "../state/store";
 import TextElement from "./TextElement";
 import RectElement from "./RectElement";
 import EllipseElement from "./EllipseElement";
+import { Tile } from "./Tile";
 
 const Elements = () => {
   const state = useAppStore();
@@ -32,6 +33,7 @@ const Elements = () => {
       <Ellipse id="shadow-ellipse" visible={false} />
       <Line id="shadow-line" visible={false} lineCap={"round"} lineJoin={"round"} />
       <Text id="shadow-text" visible={false} fill={"black"} fontSize={36} text="Text" fontFamily="Calibri" />
+      <Tile id="shadow-tile" visible={false} />
     </>
   );
 };
