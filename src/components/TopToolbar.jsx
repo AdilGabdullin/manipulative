@@ -1,10 +1,8 @@
+import { workspace } from "../config";
 import { useAppStore } from "../state/store";
-import { capitalizeFirstLetter } from "../util";
 import ShapesMenu from "./ShapesMenu";
 
 export const topToolbarHeight = 42;
-
-const workspaceOptions = ["option 1", "option 2"];
 
 const TopToolbar = () => {
   return (
@@ -54,14 +52,13 @@ const Button = ({ onClick, imageSrc, text, active }) => {
 
 const WorkspaceSelector = () => {
   const state = useAppStore();
-  if (!workspaceOptions) return null;
   return (
     <div className="workspace-selector">
       <label className="workspace-selector-label">Workspace</label>
       <select onChange={(e) => state.setWorkspace(e.target.value)} value={state.workspace}>
-        {workspaceOptions.map((option) => (
-          <option key={option} value={option}>
-            {capitalizeFirstLetter(option)}
+        {Object.entries(workspace).map(([key,option]) => (
+          <option key={key} value={key}>
+            {option}
           </option>
         ))}
       </select>

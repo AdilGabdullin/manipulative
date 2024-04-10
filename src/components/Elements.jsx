@@ -1,6 +1,5 @@
 import { Ellipse, Line, Rect, Text } from "react-konva";
 import { useAppStore } from "../state/store";
-import LineElement from "./LineElement";
 import TextElement from "./TextElement";
 import RectElement from "./RectElement";
 import EllipseElement from "./EllipseElement";
@@ -26,9 +25,6 @@ const Elements = () => {
             break;
           case "line":
             return <LineElement key={id} {...element} />;
-            break;
-          case "disk":
-            return <Disk key={id} {...element} />;
             break;
         }
       })}

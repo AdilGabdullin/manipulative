@@ -182,10 +182,6 @@ export function gcd(a, b) {
   return gcd(b, a % b);
 }
 
-export function capitalizeFirstLetter(string) {
-  return string.charAt(0).toUpperCase() + string.slice(1);
-}
-
 function combineBoxes(box1, box2) {
   const x = Math.min(box1.x, box2.x);
   const y = Math.min(box1.y, box2.y);

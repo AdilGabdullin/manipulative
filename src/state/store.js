@@ -6,6 +6,7 @@ import { topToolbarHeight } from "../components/TopToolbar";
 import { maxOffset } from "../components/Scrolls";
 import { freeDrawingSlice } from "./freeDrawingSlice";
 import { historySlice, pushHistory } from "./historySlice";
+import { workspace } from "../config";
 
 export const gridStep = 60;
 export const boardSize = {
@@ -16,24 +17,19 @@ export const boardSize = {
 export const useAppStore = create((set) => ({
   ...freeDrawingSlice(set),
   ...historySlice(set),
-  mode: "Whole Numbers",
   imagesReady: false,
   loadedImagesCount: 0,
   offset: { x: 0, y: 0 },
   scale: 1.0,
-  fullscreen: true,
-  workspace: "basic",
+  fullscreen: false,
+  workspace: workspace.basic,
   width: 0,
   height: 0,
   origin: { x: 0, y: 0 },
   selected: [],
   lockSelect: false,
-  setMode: (value) =>
-    set(
-      produce((state) => {
-        state.mode = value;
-      })
-    ),
+
+  fullscreen: true,
   toggleGlobal: (field) =>
     set(
       produce((state) => {
