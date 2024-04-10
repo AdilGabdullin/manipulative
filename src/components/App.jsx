@@ -65,7 +65,7 @@ const App = () => {
       return;
     }
 
-    if (e.target.draggable()) {
+    if (e.target.draggable() || e.target.parent?.draggable() || e.target.parent?.parent?.draggable()) {
       return;
     }
     downPos = getStageXY(stageRef.current, state);
@@ -75,9 +75,6 @@ const App = () => {
       downPos,
     };
     dragTarget.nodes = dragTarget.nodes.map((id) => stageRef.current.findOne("#" + id));
-    if (dragTarget.type != "select-rect") {
-      findAll("angle-measure").forEach((node) => node.visible(false));
-    }
   };
 
   const onMouseMove = (e) => {
@@ -134,9 +131,6 @@ const App = () => {
         findAll("popup-menu").forEach((node) => node.visible(true));
         state.select(downPos, upPos);
         break;
-    }
-    if (dragTarget.type != "select-rect") {
-      findAll("angle-measure").forEach((node) => node.visible(true));
     }
     downPos = null;
     dragTarget = null;

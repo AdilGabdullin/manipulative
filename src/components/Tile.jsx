@@ -9,6 +9,23 @@ const fontSize = 20;
 export const baseSize = 50;
 export const tileType = "algebra-tile";
 
+function dynamicProps({ x, y, width, height, text, visible }) {
+  const { blue, red, blueBorder, redBorder } = colors;
+  const isPositive = text && text[0] != "-";
+  const fill = isPositive ? blue : red;
+  const stroke = isPositive ? blueBorder : redBorder;
+  return {
+    group: { x, y, visible },
+    rect: { width, height, fill, stroke },
+    text: {
+      x: 0,
+      y: (height - fontSize) / 2 || 0,
+      width: width,
+      text: text,
+    },
+  };
+}
+
 export const Tile = (props) => {
   const dynamic = dynamicProps(props);
   return (
@@ -84,24 +101,23 @@ export const ToolbarTile = ({ x, y, text, width, height, base }) => {
 };
 
 export const BoardTile = (props) => {
-  const { origin } = useAppStore();
-  const { x, y } = props;
-  return <Tile {...props} x={origin.x + x} y={origin.y + y} />;
-};
-
-export function dynamicProps({ x, y, width, height, text, visible }) {
-  const { blue, red, blueBorder, redBorder } = colors;
-  const isPositive = text && text[0] != "-";
-  const fill = isPositive ? blue : red;
-  const stroke = isPositive ? blueBorder : redBorder;
-  return {
-    group: { x, y, visible },
-    rect: { width, height, fill, stroke },
-    text: {
-      x: 0,
-      y: (height - fontSize) / 2 || 0,
-      width: width,
-      text: text,
+  const { origin, selectIds, relocateElement } = useAppStore();
+  const { id, locked } = props;
+  const x = props.x + origin.x;
+  const y = props.y + origin.y;
+  const events = {
+    onDragStart: (e) => {},
+    onDragMove: (e) => {},
+    onDragEnd: (e) => {
+      relocateElement(id, e.target.x() - x, e.target.y() - y);
+    },
+    onPointerClick: (e) => {
+      selectIds([id], locked);
     },
   };
-}
+  return (
+    <Group x={x} y={y} draggable {...events}>
+      <Tile {...props} x={0} y={0} />
+    </Group>
+  );
+};
