@@ -3,7 +3,7 @@ import { useEffect, useLayoutEffect, useRef } from "react";
 import SelectRect, { selectRectMove, selectRectStop } from "./SelectRect";
 import { useAppStore } from "../state/store";
 import LeftToolbar, { leftToolbarWidth } from "./LeftToolbar";
-import { getStageXY, pointsIsClose } from "../util";
+import { getStageXY } from "../util";
 import TopToolbar, { topToolbarHeight } from "./TopToolbar";
 import Menu from "./Menu";
 import Scrolls from "./Scrolls";

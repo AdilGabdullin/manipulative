@@ -1,7 +1,7 @@
 import { Group, Rect, Text } from "react-konva";
 import { colors } from "../config";
 import { useAppStore } from "../state/store";
-import { getStageXY } from "../util";
+import { getStageXY, pointsIsClose } from "../util";
 import { useRef } from "react";
 import { outOfToolbar } from "./LeftToolbar";
 
@@ -29,7 +29,7 @@ function dynamicProps({ x, y, width, height, text, visible }) {
 export const Tile = (props) => {
   const dynamic = dynamicProps(props);
   return (
-    <Group id={props.id} {...dynamic.group}>
+    <Group id={props.id} {...dynamic.group} draggable={!!props.events} {...props.events}>
       <Rect {...dynamic.rect} />
       <Text {...dynamic.text} fontFamily="Calibri" fontSize={fontSize} align="center" fill={colors.white} />
     </Group>
@@ -57,7 +57,12 @@ export const ToolbarTile = ({ x, y, text, width, height, placeWidth, placeHeight
       shadow.current.visible(true);
       const group = getBoardShadow(e);
       const [rect, tileText] = group.children;
-      const dynamic = dynamicProps({ text, width: placeWidth * baseSize, height: placeHeight * baseSize, visible: true });
+      const dynamic = dynamicProps({
+        text,
+        width: placeWidth * baseSize,
+        height: placeHeight * baseSize,
+        visible: true,
+      });
       rect.setAttrs(dynamic.rect);
       tileText.setAttrs(dynamic.text);
     },
@@ -101,13 +106,25 @@ export const ToolbarTile = ({ x, y, text, width, height, placeWidth, placeHeight
 };
 
 export const BoardTile = (props) => {
-  const { origin, selectIds, relocateElement } = useAppStore();
+  const { origin, selectIds, relocateElement, elements } = useAppStore();
   const { id, locked } = props;
   const x = props.x + origin.x;
   const y = props.y + origin.y;
   const events = {
     onDragStart: (e) => {},
-    onDragMove: (e) => {},
+    onDragMove: (e) => {
+      const dx = e.target.x() - x;
+      const dy = e.target.y() - y;
+      let pos = null;
+      for (const [id, element] of Object.entries(elements)) {
+        if (props.id == id) continue;
+        pos = magnet({ ...props, x: props.x + dx, y: props.y + dy }, element);
+        if (pos) {
+          e.target.setAttrs({ x: origin.x + pos.x, y: origin.y + pos.y });
+          return;
+        }
+      }
+    },
     onDragEnd: (e) => {
       relocateElement(id, e.target.x() - x, e.target.y() - y);
     },
@@ -115,9 +132,33 @@ export const BoardTile = (props) => {
       selectIds([id], locked);
     },
   };
-  return (
-    <Group x={x} y={y} draggable {...events}>
-      <Tile {...props} x={0} y={0} />
-    </Group>
-  );
+  return <Tile {...props} x={x} y={y} events={events} />;
 };
+
+function magnet(tile, other) {
+  const { x, y, width, height } = tile;
+
+  const options = [
+    [0, 0],
+    [width, 0],
+    [0, height],
+    [width, height],
+    [-other.width + 0, 0],
+    [-other.width + width, 0],
+    [-other.width + 0, height],
+    [-other.width + width, height],
+    [0, 0 - other.height],
+    [width, 0 - other.height],
+    [0, height - other.height],
+    [width, height - other.height],
+    [-other.width + 0, 0 - other.height],
+    [-other.width + width, 0 - other.height],
+    [-other.width + 0, height - other.height],
+    [-other.width + width, height - other.height],
+  ];
+
+  for (const [dx, dy] of options) {
+    if (pointsIsClose({ x: x + dx, y: y + dy }, other)) return { x: other.x - dx, y: other.y - dy };
+  }
+  return null;
+}

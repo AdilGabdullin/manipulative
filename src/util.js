@@ -5,7 +5,7 @@ export function newId() {
   return `e-${id++}`;
 }
 
-export function pointsIsClose(pos1, pos2, sens = 10) {
+export function pointsIsClose(pos1, pos2, sens = 25) {
   return distance2(pos1, pos2) <= sens ** 2;
 }
 
