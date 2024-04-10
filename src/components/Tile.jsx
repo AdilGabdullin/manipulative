@@ -5,8 +5,8 @@ import { getStageXY } from "../util";
 import { useRef } from "react";
 import { outOfToolbar } from "./LeftToolbar";
 
-const fontSize = 20;
-export const baseSize = 50;
+const fontSize = 24;
+export const baseSize = 45;
 export const tileType = "algebra-tile";
 
 function dynamicProps({ x, y, width, height, text, visible }) {
@@ -36,15 +36,15 @@ export const Tile = (props) => {
   );
 };
 
-export const ToolbarTile = ({ x, y, text, width, height, base }) => {
+export const ToolbarTile = ({ x, y, text, width, height, placeWidth, placeHeight, base }) => {
   const state = useAppStore();
   const { origin, addElement, lastActiveElement, elements } = state;
   const shadow = useRef();
 
   const placeProps = (e) => {
     const { x, y } = getStageXY(e.target.getStage(), state);
-    const w = width * baseSize;
-    const h = height * baseSize;
+    const w = placeWidth * baseSize;
+    const h = placeHeight * baseSize;
     return { x: x - w / 2, y: y - h / 2, width: w, height: h };
   };
 
@@ -57,7 +57,7 @@ export const ToolbarTile = ({ x, y, text, width, height, base }) => {
       shadow.current.visible(true);
       const group = getBoardShadow(e);
       const [rect, tileText] = group.children;
-      const dynamic = dynamicProps({ text, width: width * baseSize, height: height * baseSize, visible: true });
+      const dynamic = dynamicProps({ text, width: placeWidth * baseSize, height: placeHeight * baseSize, visible: true });
       rect.setAttrs(dynamic.rect);
       tileText.setAttrs(dynamic.text);
     },

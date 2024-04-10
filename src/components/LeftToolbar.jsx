@@ -10,7 +10,7 @@ const LeftToolbar = () => {
   return (
     <>
       <Rect fill="#f3f9ff" x={0} y={0} width={leftToolbarWidth} height={height} />
-      {createTiles(height, tileRows())}
+      {createTiles(height, tileRows(true))}
     </>
   );
 };
@@ -37,29 +37,32 @@ function createTiles(height, rows) {
   return tiles;
 }
 
-function tileRows() {
-  return [
+function tileRows(showY) {
+  const xRows = [
     [
-      { text: "1", width: 1, height: 1 },
-      { text: "-1", width: 1, height: 1 },
+      { text: "1", width: 1, height: 1, placeWidth: 1, placeHeight: 1 },
+      { text: "-1", width: 1, height: 1, placeWidth: 1, placeHeight: 1 },
     ],
-    [{ text: "x", width: 2.5, height: 1 }],
-    [{ text: "-x", width: 2.5, height: 1 }],
-    [{ text: "x²", width: 2.5, height: 2.5 }],
-    [{ text: "-x²", width: 2.5, height: 2.5 }],
+    [{ text: "x", width: 2.5, height: 1, placeWidth: 4, placeHeight: 1 }],
+    [{ text: "-x", width: 2.5, height: 1, placeWidth: 4, placeHeight: 1 }],
+    [{ text: "x²", width: 2.5, height: 2.5, placeWidth: 4, placeHeight: 4 }],
+    [{ text: "-x²", width: 2.5, height: 2.5, placeWidth: 4, placeHeight: 4 }],
+  ];
+  const yRows = [
     [
-      { text: "y", width: 2, height: 1 },
-      { text: "-y", width: 2, height: 1 },
-    ],
-    [
-      { text: "y²", width: 2, height: 2 },
-      { text: "-y²", width: 2, height: 2 },
+      { text: "y", width: 2, height: 1, placeWidth: 3, placeHeight: 1 },
+      { text: "-y", width: 2, height: 1, placeWidth: 3, placeHeight: 1 },
     ],
     [
-      { text: "xy", width: 2, height: 3 },
-      { text: "-xy", width: 2, height: 3 },
+      { text: "y²", width: 2, height: 2, placeWidth: 3, placeHeight: 3 },
+      { text: "-y²", width: 2, height: 2, placeWidth: 3, placeHeight: 3 },
+    ],
+    [
+      { text: "xy", width: 2, height: 3, placeWidth: 3, placeHeight: 4 },
+      { text: "-xy", width: 2, height: 3, placeWidth: 3, placeHeight: 4 },
     ],
   ];
+  return showY ? [...xRows, ...yRows] : xRows;
 }
 
 export function outOfToolbar(e) {
