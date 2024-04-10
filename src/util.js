@@ -106,7 +106,7 @@ export function checkClockwise(points) {
 export function setVisibility(e, value) {
   e.target
     .getStage()
-    .find(".popup-menu,.angle-measure,.drag-hidden")
+    .find(".popup-menu,.drag-hidden")
     .forEach((node) => node.visible(value));
 }
 
