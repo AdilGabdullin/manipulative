@@ -1,18 +1,19 @@
 import { Group, Rect, Text } from "react-konva";
-import { colors } from "../config";
+import { animationDuration, colors } from "../config";
 import { useAppStore } from "../state/store";
 import { getStageXY, pointsIsClose } from "../util";
-import { useRef } from "react";
+import { useEffect, useRef } from "react";
 import { outOfToolbar } from "./LeftToolbar";
+import { Animation } from "konva/lib/Animation";
 
 const fontSize = 24;
 export const baseSize = 45;
 export const tileType = "algebra-tile";
 
-function dynamicProps({ x, y, width, height, text, visible, annihilation }) {
-  const { blue, red, grey, blueBorder, redBorder } = colors;
+function dynamicProps({ x, y, width, height, text, visible }) {
+  const { blue, red, blueBorder, redBorder } = colors;
   const isPositive = text && text[0] != "-";
-  const fill = annihilation ? grey : isPositive ? blue : red;
+  const fill = isPositive ? blue : red;
   const stroke = isPositive ? blueBorder : redBorder;
   x = x || 0;
   y = y || 0;
@@ -123,9 +124,14 @@ export const ToolbarTile = ({ x, y, text, width, height, placeWidth, placeHeight
 
 export const BoardTile = (props) => {
   const { origin, selectIds, relocateElement, elements } = useAppStore();
-  const { id, locked } = props;
+  const { id, locked, annihilation } = props;
   const x = props.x + origin.x;
   const y = props.y + origin.y;
+  const groupRef = useRef();
+  useEffect(() => {
+    if (annihilation) animateAnnihilation(groupRef.current);
+  }, [annihilation]);
+
   const events = {
     onDragStart: (e) => {},
     onDragMove: (e) => {
@@ -143,7 +149,11 @@ export const BoardTile = (props) => {
       selectIds([id], locked);
     },
   };
-  return <Tile {...props} x={x} y={y} events={events} />;
+  return (
+    <Group ref={groupRef}>
+      <Tile {...props} x={x} y={y} events={events} />
+    </Group>
+  );
 };
 
 export function magnetToAll(tile, elements) {
@@ -181,4 +191,19 @@ function magnetToOne(tile, other) {
     if (pointsIsClose({ x: x + dx, y: y + dy }, other)) return { x: other.x - dx, y: other.y - dy };
   }
   return null;
+}
+
+function animateAnnihilation(node) {
+  node.setAttr("opacity", 1);
+  const animation = new Animation(({ time }) => {
+    if (time > animationDuration) {
+      animation.stop();
+      node.setAttr("opacity", 0);
+      return;
+    }
+    const t = time / animationDuration;
+    const k = (t * t) / (2 * (t * t - t) + 1);
+    node.setAttr("opacity", 1 - k);
+  }, node.getLayer());
+  animation.start();
 }

@@ -16,3 +16,5 @@ export const workspace = {
   basic: "Basic",
   // solving: "Solving",
 };
+
+export const animationDuration = 400;
