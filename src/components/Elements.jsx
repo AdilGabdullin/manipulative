@@ -4,10 +4,15 @@ import TextElement from "./TextElement";
 import RectElement from "./RectElement";
 import EllipseElement from "./EllipseElement";
 import { BoardTile, Tile, tileType } from "./Tile";
+import { animationDuration } from "../config";
 
 const Elements = () => {
   const state = useAppStore();
-  const { elements } = state;
+  const { elements, animation, finishAnimations } = state;
+
+  if (animation) {
+    setTimeout(finishAnimations, animationDuration + 50);
+  }
 
   const list = sortedElements(elements);
   return (

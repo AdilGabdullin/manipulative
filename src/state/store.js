@@ -29,6 +29,7 @@ export const useAppStore = create((set) => ({
   origin: { x: 0, y: 0 },
   selected: [],
   lockSelect: false,
+  animation: false,
 
   fullscreen: true,
   toggleGlobal: (field) =>
@@ -297,13 +298,40 @@ export const useAppStore = create((set) => ({
   annihilation: () =>
     set(
       produce((state) => {
-        const elements = current(state.elements);
-        const tiles = Object.values(elements).filter((e) => e.type == tileType);
-        for (const [tile, other] of allPairs(tiles)) {
-          if (boxesIntersect(tile, other) && oppositeText(tile.text, other.text)) {
-            state.elements[tile.id].annihilation = true;
-            state.elements[other.id].annihilation = true;
+        const elements = state.elements;
+        const tiles = Object.values(current(elements)).filter((e) => e.type == tileType);
+        for (const [that, other] of allPairs(tiles)) {
+          if (boxesIntersect(that, other) && oppositeText(that.text, other.text)) {
+            elements[that.id].annihilation = true;
+            elements[that.id].delete = true;
+            elements[other.id].annihilation = true;
+            elements[other.id].delete = true;
+            state.animation = true;
           }
+        }
+      })
+    ),
+
+  finishAnimations: () =>
+    set(
+      produce((state) => {
+        if (state.animation) {
+          for (const id in current(state.elements)) {
+            const element = state.elements[id];
+            if (element.moveFrom) {
+              delete element.moveFrom;
+            }
+            if (element.visibleAfterMove) {
+              element.visible = true;
+              delete element.visibleAfterMove;
+            }
+            if (element.delete) {
+              delete state.elements[id];
+            }
+          }
+          state.animation = false;
+          clearSelected(state);
+          pushHistory(state);
         }
       })
     ),
