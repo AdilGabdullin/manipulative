@@ -4,6 +4,7 @@ import { Fragment, useEffect } from "react";
 import { elementBox, setVisibility, setVisibilityFrame } from "../util";
 import ShapeResizeHandles from "./ShapeResizeHandles";
 import { createTextArea } from "./TextElement";
+import { magnetToAll, tileType } from "./Tile";
 
 const SelectedFrame = (props) => {
   const state = useAppStore();
@@ -54,12 +55,17 @@ const SelectedFrame = (props) => {
   const onDragMove = (e) => {
     let dx = (e.target.x() - x) / state.scale;
     let dy = (e.target.y() - y) / state.scale;
-    if (selected.some((id) => elements[id] && elements[id].type == "rod")) {
-      dx -= dx % (gridStep / 2);
-      dy -= dy % (gridStep / 2);
+    for (const id of selected) {
+      const tile = elements[id];
+      if (tile.type != tileType) continue;
+      const pos = magnetToAll({ ...tile, x: tile.x + dx, y: tile.y + dy }, elements);
+      if (pos) {
+        dx = pos.x - tile.x;
+        dy = pos.y - tile.y;
+        break;
+      }
     }
     selectedTargets.forEach(({ point, node, x, y }) => {
-      if (point) return;
       node.setAttrs({ x: x + dx, y: y + dy });
     });
     e.target.setAttrs({ x: x + dx * scale, y: y + dy * scale });

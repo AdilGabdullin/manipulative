@@ -146,7 +146,7 @@ export const BoardTile = (props) => {
   return <Tile {...props} x={x} y={y} events={events} />;
 };
 
-function magnetToAll(tile, elements) {
+export function magnetToAll(tile, elements) {
   for (const [id, element] of Object.entries(elements)) {
     if (tile.id == id || element.type != tileType) continue;
     const pos = magnetToOne(tile, element);
