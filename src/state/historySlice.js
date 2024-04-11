@@ -3,7 +3,7 @@ import { clearSelected } from "../util";
 import { searchAnnihilations } from "./animationSlice";
 
 export const historySlice = (set) => ({
-  history: [{ elements: {}, fdLines: {} }],
+  history: [{ elements: {}, fdLines: {}, showYTiles: false }],
   historyIndex: 0,
 
   undo: () =>
@@ -17,6 +17,7 @@ export const historySlice = (set) => ({
           state.elements = historyState.elements;
           state.fdLines = historyState.fdLines;
           state.lastActiveElement = historyState.lastActiveElement;
+          state.showYTiles = historyState.showYTiles;
           clearSelected(state);
         }
       })
@@ -32,6 +33,7 @@ export const historySlice = (set) => ({
           state.elements = historyState.elements;
           state.fdLines = historyState.fdLines;
           state.lastActiveElement = historyState.lastActiveElement;
+          state.showYTiles = historyState.showYTiles;
           clearSelected(state);
         }
       })
@@ -53,6 +55,7 @@ export function pushHistory(state) {
     elements: currentState.elements,
     fdLines: currentState.fdLines,
     lastActiveElement: currentState.lastActiveElement,
+    showYTiles: currentState.showYTiles,
   });
   state.historyIndex += 1;
 }

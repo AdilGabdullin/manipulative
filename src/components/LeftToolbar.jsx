@@ -6,11 +6,11 @@ import { ToolbarTile } from "./Tile";
 export const leftToolbarWidth = 180;
 
 const LeftToolbar = () => {
-  const { height } = useAppStore();
+  const { height, showYTiles } = useAppStore();
   return (
     <>
       <Rect fill="#f3f9ff" x={0} y={0} width={leftToolbarWidth} height={height} />
-      {createTiles(height, tileRows(true))}
+      {createTiles(height, tileRows(showYTiles))}
     </>
   );
 };

@@ -8,7 +8,7 @@ const fontSize = 36;
 
 const Summary = () => {
   const state = useAppStore();
-  if (state.workspace != workspace.basic) return null;
+  if (state.workspace != workspace.basic || !state.showSummary) return null;
   const text = generateSum(countParts(state.elements)) || "0";
   const width = text.length * 15 + 32;
   const height = 56;

@@ -1,8 +1,7 @@
-import { Image, Line, Rect, Text } from "react-konva";
+import { Group, Line, Rect, Text } from "react-konva";
 import { useAppStore } from "../state/store";
 import { leftToolbarWidth } from "./LeftToolbar";
 import BrushMenu from "./BrushMenu";
-import { Fragment } from "react";
 import { colors } from "../config";
 
 export const menuHeight = 50;
@@ -35,35 +34,39 @@ const DefaultMenu = (props) => {
       field: "showYTiles",
       fill: state.showYTiles,
       width: 50,
+      onClick: () => state.toggleShowYTiles(),
     },
     {
       text: "Summary",
       field: "showSummary",
       fill: state.showSummary,
       width: 70,
+      onClick: () => state.setValue("showSummary", !state.showSummary),
     },
     {
       text: "Multi-colored",
       field: "multiColored",
       fill: state.multiColored,
       width: 100,
+      onClick: () => state.setValue("multiColored", !state.multiColored),
     },
   ];
   const padding = 8;
   const buttonHeight = 20;
 
-  const onPointerClick = (field, text) => (e) => {
-    e.cancelBubble = true;
-    state.toggleGlobal(field);
-  };
-
   x += padding;
   return (
     <>
-      {buttons.map(({ text, field, width, fill }, i) => {
+      {buttons.map(({ text, field, width, fill, onClick }, i) => {
         x += width + padding * 3;
         return (
-          <Fragment key={text}>
+          <Group
+            key={text}
+            onPointerClick={(e) => {
+              e.cancelBubble = true;
+              onClick();
+            }}
+          >
             <Rect
               x={x - width - padding * 3}
               y={y + padding}
@@ -71,7 +74,6 @@ const DefaultMenu = (props) => {
               height={buttonHeight + padding * 2}
               cornerRadius={5}
               fill={fill ? colors.solitude : colors.white}
-              onPointerClick={onPointerClick(field, text)}
             />
             <Text
               x={x - width - padding * 2}
@@ -80,9 +82,8 @@ const DefaultMenu = (props) => {
               fill={"black"}
               fontSize={18}
               fontFamily="Calibri"
-              onPointerClick={onPointerClick(field, text)}
             />
-          </Fragment>
+          </Group>
         );
       })}
     </>

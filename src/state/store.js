@@ -315,6 +315,25 @@ export const useAppStore = create((set) => ({
         pushHistory(state);
       })
     ),
+
+  toggleShowYTiles: () =>
+    set(
+      produce((state) => {
+        if (!state.showYTiles) {
+          state.showYTiles = true;
+        } else {
+          state.showYTiles = false;
+          for (const id in current(state.elements)) {
+            const element = state.elements[id];
+            if (element.type == tileType && element.text.includes("y")) {
+              delete state.elements[id];
+            }
+          }
+          clearSelected(state);
+          pushHistory(state);
+        }
+      })
+    ),
   action: () => set(produce((state) => {})),
 }));
 
