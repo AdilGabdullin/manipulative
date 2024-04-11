@@ -1,13 +1,13 @@
 import { create } from "zustand";
 import { current, produce } from "immer";
 import { leftToolbarWidth } from "../components/LeftToolbar";
-import { allPairs, boxesIntersect, clearSelected, elementBox, newId, numberBetween, oppositeText } from "../util";
+import { clearSelected, elementBox, newId, numberBetween, oppositeText } from "../util";
 import { topToolbarHeight } from "../components/TopToolbar";
 import { maxOffset } from "../components/Scrolls";
 import { freeDrawingSlice } from "./freeDrawingSlice";
 import { historySlice, pushHistory } from "./historySlice";
 import { workspace } from "../config";
-import { tileType } from "../components/Tile";
+import { animationSlice } from "./animationSlice";
 
 export const gridStep = 60;
 export const boardSize = {
@@ -18,6 +18,7 @@ export const boardSize = {
 export const useAppStore = create((set) => ({
   ...freeDrawingSlice(set),
   ...historySlice(set),
+  ...animationSlice(set),
   imagesReady: false,
   loadedImagesCount: 0,
   offset: { x: 0, y: 0 },
@@ -29,7 +30,6 @@ export const useAppStore = create((set) => ({
   origin: { x: 0, y: 0 },
   selected: [],
   lockSelect: false,
-  animation: false,
 
   fullscreen: true,
   toggleGlobal: (field) =>
@@ -293,46 +293,6 @@ export const useAppStore = create((set) => ({
         state.fdMode = null;
         clearSelected(state);
         pushHistory(state);
-      })
-    ),
-  annihilation: () =>
-    set(
-      produce((state) => {
-        const elements = state.elements;
-        const tiles = Object.values(current(elements)).filter((e) => e.type == tileType);
-        for (const [that, other] of allPairs(tiles)) {
-          if (boxesIntersect(that, other) && oppositeText(that.text, other.text)) {
-            elements[that.id].annihilation = true;
-            elements[that.id].delete = true;
-            elements[other.id].annihilation = true;
-            elements[other.id].delete = true;
-            state.animation = true;
-          }
-        }
-      })
-    ),
-
-  finishAnimations: () =>
-    set(
-      produce((state) => {
-        if (state.animation) {
-          for (const id in current(state.elements)) {
-            const element = state.elements[id];
-            if (element.moveFrom) {
-              delete element.moveFrom;
-            }
-            if (element.visibleAfterMove) {
-              element.visible = true;
-              delete element.visibleAfterMove;
-            }
-            if (element.delete) {
-              delete state.elements[id];
-            }
-          }
-          state.animation = false;
-          clearSelected(state);
-          pushHistory(state);
-        }
       })
     ),
   action: () => set(produce((state) => {})),

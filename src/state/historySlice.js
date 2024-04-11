@@ -1,5 +1,6 @@
 import { current, original, produce } from "immer";
 import { clearSelected } from "../util";
+import { searchAnnihilations } from "./animationSlice";
 
 export const historySlice = (set) => ({
   history: [{ elements: {}, fdLines: {} }],
@@ -38,6 +39,9 @@ export const historySlice = (set) => ({
 });
 
 export function pushHistory(state) {
+  if (searchAnnihilations(state).length > 0) {
+    return;
+  }
   const { historyIndex, history } = original(state);
   if (historyIndex < history.length - 1) {
     for (let i = 0; i < history.length - 1 - historyIndex; i += 1) {

@@ -1,7 +1,7 @@
 import { Rect, Text } from "react-konva";
 import { gridStep, useAppStore } from "../state/store";
 import { Fragment, useEffect } from "react";
-import { elementBox, setVisibility, setVisibilityFrame } from "../util";
+import { allPairs, elementBox, oppositeText, setVisibility, setVisibilityFrame } from "../util";
 import ShapeResizeHandles from "./ShapeResizeHandles";
 import { createTextArea } from "./TextElement";
 import { magnetToAll, tileType } from "./Tile";
@@ -78,7 +78,17 @@ const SelectedFrame = (props) => {
     setVisibilityFrame(e, true);
   };
 
+  const tiles = selected.map((id) => elements[id]).filter((el) => el.type == tileType);
+
   let menuButtons = [
+    {
+      text: "Zero Pair",
+      active: allPairs(tiles.map((t) => t.text)).some(([that, other]) => oppositeText(that, other)),
+      show: true,
+      onPointerClick: (e) => {
+        state.annihilateSelected();
+      },
+    },
     {
       text: "Edit",
       active: !lockSelect,

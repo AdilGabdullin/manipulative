@@ -240,6 +240,6 @@ export function boxesIntersect({ x, y, width, height }, other) {
   );
 }
 
-export function oppositeText(text, other) {
-  return "-" + text == other || "-" + other == text;
+export function oppositeText(that, other) {
+  return "-" + that == other || "-" + other == that;
 }
