@@ -34,7 +34,7 @@ function dynamicProps({ x, y, width, height, text, visible }) {
 export const Tile = (props) => {
   const dynamic = dynamicProps(props);
   return (
-    <Group id={props.id} {...dynamic.group} draggable={!!props.events} {...props.events}>
+    <Group id={props.id} {...dynamic.group} draggable={!!props.events && !props.locked} {...props.events}>
       <Rect {...dynamic.rect} />
       <Text {...dynamic.text} fontFamily="Calibri" fontSize={fontSize} align="center" fill={colors.white} />
     </Group>
@@ -88,16 +88,18 @@ export const ToolbarTile = ({ x, y, text, width, height, placeWidth, placeHeight
       shadow.current.visible(false);
       target.setAttrs({ x, y, visible: true });
       getBoardShadow(e).visible(false);
-      const place = placeProps(e);
-      const pos = magnetToAll(place, elements);
-      addElement({
-        type: tileType,
-        x: pos ? pos.x : place.x,
-        y: pos ? pos.y : place.y,
-        width: place.width,
-        height: place.height,
-        text,
-      });
+      if (out) {
+        const place = placeProps(e);
+        const pos = magnetToAll(place, elements);
+        addElement({
+          type: tileType,
+          x: pos ? pos.x : place.x,
+          y: pos ? pos.y : place.y,
+          width: place.width,
+          height: place.height,
+          text,
+        });
+      }
     },
     onPointerClick: (e) => {
       const { width, height } = placeProps(e);
@@ -206,7 +208,7 @@ function animateAnnihilation(node) {
     if (time > animationDuration) {
       animation.stop();
       node.setAttr("opacity", 0);
-      
+
       return;
     }
     const t = time / animationDuration;

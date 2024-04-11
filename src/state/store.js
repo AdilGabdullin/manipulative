@@ -8,6 +8,7 @@ import { freeDrawingSlice } from "./freeDrawingSlice";
 import { historySlice, pushHistory } from "./historySlice";
 import { workspace } from "../config";
 import { animationSlice } from "./animationSlice";
+import { tileType } from "../components/Tile";
 
 export const gridStep = 60;
 export const boardSize = {
@@ -292,6 +293,21 @@ export const useAppStore = create((set) => ({
         }
         state.fdMode = null;
         clearSelected(state);
+        pushHistory(state);
+      })
+    ),
+
+  invertSelected: () =>
+    set(
+      produce((state) => {
+        for (const id in current(state.elements)) {
+          const element = state.elements[id];
+          if (element.type == tileType) {
+            const text = element.text;
+            element.text = text.match(/-/) ? text.slice(1) : "-" + text;
+            state.lastActiveElement = id;
+          }
+        }
         pushHistory(state);
       })
     ),

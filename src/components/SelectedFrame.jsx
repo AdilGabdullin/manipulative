@@ -82,6 +82,14 @@ const SelectedFrame = (props) => {
 
   let menuButtons = [
     {
+      text: "Invert",
+      active: tiles.length > 0 && !lockSelect,
+      show: true,
+      onPointerClick: (e) => {
+        state.invertSelected();
+      },
+    },
+    {
       text: "Zero Pair",
       active: allPairs(tiles.map((t) => t.text)).some(([that, other]) => oppositeText(that, other)),
       show: true,

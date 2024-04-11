@@ -46,7 +46,7 @@ const Elements = () => {
 };
 
 function sortedElements(elements) {
-  return Object.values(elements);
+  return Object.values(elements).toSorted((one, two) => one.x + one.y - two.x - two.y);
 }
 
 export default Elements;
