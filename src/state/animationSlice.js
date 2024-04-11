@@ -41,6 +41,7 @@ export const animationSlice = (set) => ({
             other.delete = true;
           }
           state.finishDelay = animationDuration * 2;
+          clearSelected(state);
         }
       })
     ),
@@ -64,9 +65,12 @@ export function searchAnnihilations(state) {
   const annihilations = [];
   const elements = state.elements;
   const tiles = Object.values(current(elements)).filter((e) => e.type == tileType);
+  const used = [];
   for (const [that, other] of allPairs(tiles)) {
+    if (used.includes(that.id) || used.includes(other.id)) continue;
     if (boxesIntersect(that, other) && oppositeText(that.text, other.text)) {
       annihilations.push([that.id, other.id]);
+      used.push(that.id, other.id);
     }
   }
   return annihilations;
@@ -75,10 +79,15 @@ export function searchAnnihilations(state) {
 export function searchOpposites(state) {
   const opposites = [];
   const elements = state.elements;
-  const tiles = Object.values(current(elements)).filter((e) => e.type == tileType);
+  const isTile = (e) => e.type == tileType;
+  const isSelected = (e) => state.selected.includes(e.id);
+  const tiles = Object.values(current(elements)).filter((e) => isTile(e) && isSelected(e));
+  const used = [];
   for (const [that, other] of allPairs(tiles)) {
+    if (used.includes(that.id) || used.includes(other.id)) continue;
     if (oppositeText(that.text, other.text)) {
       opposites.push([that.id, other.id]);
+      used.push(that.id, other.id);
     }
   }
   return opposites;

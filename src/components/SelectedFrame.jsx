@@ -1,5 +1,5 @@
 import { Rect, Text } from "react-konva";
-import { gridStep, useAppStore } from "../state/store";
+import { useAppStore } from "../state/store";
 import { Fragment, useEffect } from "react";
 import { allPairs, elementBox, oppositeText, setVisibility, setVisibilityFrame } from "../util";
 import ShapeResizeHandles from "./ShapeResizeHandles";
