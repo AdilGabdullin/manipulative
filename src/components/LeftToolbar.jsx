@@ -40,26 +40,26 @@ function createTiles(height, rows) {
 function tileRows(showY) {
   const xRows = [
     [
-      { text: "1", width: 1, height: 1, placeWidth: 1, placeHeight: 1 },
-      { text: "-1", width: 1, height: 1, placeWidth: 1, placeHeight: 1 },
+      { text: "1", width: 1, height: 1, placeWidth: 1, placeHeight: 1, color: "#ffeb3b", borderColor: "#fdd835" },
+      { text: "-1", width: 1, height: 1, placeWidth: 1, placeHeight: 1, color: "#ffeb3b", borderColor: "#fdd835" },
     ],
-    [{ text: "x", width: 2.5, height: 1, placeWidth: 4, placeHeight: 1 }],
-    [{ text: "-x", width: 2.5, height: 1, placeWidth: 4, placeHeight: 1 }],
-    [{ text: "x²", width: 2.5, height: 2.5, placeWidth: 4, placeHeight: 4 }],
-    [{ text: "-x²", width: 2.5, height: 2.5, placeWidth: 4, placeHeight: 4 }],
+    [{ text: "x", width: 2.5, height: 1, placeWidth: 4, placeHeight: 1, color: "#4caf50", borderColor: "#388e3c" }],
+    [{ text: "-x", width: 2.5, height: 1, placeWidth: 4, placeHeight: 1, color: "#4caf50", borderColor: "#388e3c" }],
+    [{ text: "x²", width: 2.5, height: 2.5, placeWidth: 4, placeHeight: 4, color: "#2196f3", borderColor: "#1b7dd9" }],
+    [{ text: "-x²", width: 2.5, height: 2.5, placeWidth: 4, placeHeight: 4, color: "#2196f3", borderColor: "#1b7dd9" }],
   ];
   const yRows = [
     [
-      { text: "y", width: 2, height: 1, placeWidth: 3, placeHeight: 1 },
-      { text: "-y", width: 2, height: 1, placeWidth: 3, placeHeight: 1 },
+      { text: "y", width: 2, height: 1, placeWidth: 3, placeHeight: 1, color: "#ff9800", borderColor: "#f57c00" },
+      { text: "-y", width: 2, height: 1, placeWidth: 3, placeHeight: 1, color: "#ff9800", borderColor: "#f57c00" },
     ],
     [
-      { text: "y²", width: 2, height: 2, placeWidth: 3, placeHeight: 3 },
-      { text: "-y²", width: 2, height: 2, placeWidth: 3, placeHeight: 3 },
+      { text: "y²", width: 2, height: 2, placeWidth: 3, placeHeight: 3, color: "#9c27b0", borderColor: "#7e25a5" },
+      { text: "-y²", width: 2, height: 2, placeWidth: 3, placeHeight: 3, color: "#9c27b0", borderColor: "#7e25a5" },
     ],
     [
-      { text: "xy", width: 2, height: 3, placeWidth: 3, placeHeight: 4 },
-      { text: "-xy", width: 2, height: 3, placeWidth: 3, placeHeight: 4 },
+      { text: "xy", width: 2, height: 3, placeWidth: 3, placeHeight: 4, color: "#e91e63", borderColor: "#c2185b" },
+      { text: "-xy", width: 2, height: 3, placeWidth: 3, placeHeight: 4, color: "#e91e63", borderColor: "#c2185b" },
     ],
   ];
   return showY ? [...xRows, ...yRows] : xRows;

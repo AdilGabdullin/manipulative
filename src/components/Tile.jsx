@@ -10,15 +10,21 @@ const fontSize = 24;
 export const baseSize = 45;
 export const tileType = "algebra-tile";
 
-function dynamicProps({ x, y, width, height, text, visible }) {
-  const { blue, red, blueBorder, redBorder } = colors;
-  const isPositive = text && text[0] != "-";
-  const fill = isPositive ? blue : red;
-  const stroke = isPositive ? blueBorder : redBorder;
+function dynamicProps({ x, y, width, height, text, visible, color, borderColor }, multiColored) {
+  const { black, white, blue, red, blueBorder, redBorder } = colors;
+  const isNegative = text && text[0] == "-";
+  let fill = isNegative ? red : blue;
+  let stroke = isNegative ? redBorder : blueBorder;
+  if (color && multiColored && !isNegative) {
+    fill = color;
+  }
+  if (borderColor && multiColored && !isNegative) {
+    stroke = borderColor;
+  }
   x = x || 0;
   y = y || 0;
-  width = (width || 0) - 2;
-  height = (height || 0) - 2;
+  width = (width || 0) - 1;
+  height = (height || 0) - 1;
   return {
     group: { x, y, visible },
     rect: { width, height, fill, stroke },
@@ -27,23 +33,25 @@ function dynamicProps({ x, y, width, height, text, visible }) {
       y: (height - fontSize) / 2,
       width: width,
       text: text,
+      fill: multiColored && text == "1" ? black : white,
     },
   };
 }
 
 export const Tile = (props) => {
-  const dynamic = dynamicProps(props);
+  const { multiColored } = useAppStore();
+  const dynamic = dynamicProps(props, multiColored);
   return (
     <Group id={props.id} {...dynamic.group} draggable={!!props.events && !props.locked} {...props.events}>
       <Rect {...dynamic.rect} />
-      <Text {...dynamic.text} fontFamily="Calibri" fontSize={fontSize} align="center" fill={colors.white} />
+      <Text {...dynamic.text} fontFamily="Calibri" fontSize={fontSize} align="center" />
     </Group>
   );
 };
 
-export const ToolbarTile = ({ x, y, text, width, height, placeWidth, placeHeight, base }) => {
+export const ToolbarTile = ({ x, y, text, width, height, placeWidth, placeHeight, base, color, borderColor }) => {
   const state = useAppStore();
-  const { origin, addElement, lastActiveElement, elements } = state;
+  const { origin, addElement, lastActiveElement, elements, multiColored } = state;
   const shadow = useRef();
 
   const placeProps = (e) => {
@@ -62,12 +70,17 @@ export const ToolbarTile = ({ x, y, text, width, height, placeWidth, placeHeight
       shadow.current.visible(true);
       const group = getBoardShadow(e);
       const [rect, tileText] = group.children;
-      const dynamic = dynamicProps({
-        text,
-        width: placeWidth * baseSize,
-        height: placeHeight * baseSize,
-        visible: true,
-      });
+      const dynamic = dynamicProps(
+        {
+          text,
+          width: placeWidth * baseSize,
+          height: placeHeight * baseSize,
+          visible: true,
+          color,
+          borderColor,
+        },
+        multiColored
+      );
       rect.setAttrs(dynamic.rect);
       tileText.setAttrs(dynamic.text);
     },
@@ -98,6 +111,8 @@ export const ToolbarTile = ({ x, y, text, width, height, placeWidth, placeHeight
           width: place.width,
           height: place.height,
           text,
+          color,
+          borderColor,
         });
       }
     },
@@ -109,16 +124,24 @@ export const ToolbarTile = ({ x, y, text, width, height, placeWidth, placeHeight
         pos.x = last.x;
         pos.y = last.y - height;
       }
-      addElement({ type: tileType, width, height, text, ...pos });
+      addElement({ type: tileType, width, height, text, color, borderColor, ...pos });
     },
   };
   return (
     <>
       <Group ref={shadow} visible={false}>
-        <Tile x={x} y={y} width={width * base} height={height * base} text={text} />
+        <Tile
+          x={x}
+          y={y}
+          width={width * base}
+          height={height * base}
+          text={text}
+          color={color}
+          borderColor={borderColor}
+        />
       </Group>
       <Group x={x} y={y} draggable {...events}>
-        <Tile width={width * base} height={height * base} text={text} />
+        <Tile width={width * base} height={height * base} text={text} color={color} borderColor={borderColor} />
       </Group>
     </>
   );
