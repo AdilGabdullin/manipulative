@@ -54,10 +54,6 @@ const SelectedFrame = (props) => {
   const onDragMove = (e) => {
     let dx = (e.target.x() - x) / state.scale;
     let dy = (e.target.y() - y) / state.scale;
-    if (selected.some((id) => elements[id] && elements[id].type == "rod")) {
-      dx -= dx % (gridStep / 2);
-      dy -= dy % (gridStep / 2);
-    }
     selectedTargets.forEach(({ point, node, x, y }) => {
       if (point) return;
       node.setAttrs({ x: x + dx, y: y + dy });
