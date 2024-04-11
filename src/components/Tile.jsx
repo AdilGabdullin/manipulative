@@ -14,12 +14,16 @@ function dynamicProps({ x, y, width, height, text, visible }) {
   const isPositive = text && text[0] != "-";
   const fill = isPositive ? blue : red;
   const stroke = isPositive ? blueBorder : redBorder;
+  x = x || 0;
+  y = y || 0;
+  width = (width || 0) - 2;
+  height = (height || 0) - 2;
   return {
     group: { x, y, visible },
     rect: { width, height, fill, stroke },
     text: {
       x: 0,
-      y: (height - fontSize) / 2 || 0,
+      y: (height - fontSize) / 2,
       width: width,
       text: text,
     },
@@ -70,8 +74,11 @@ export const ToolbarTile = ({ x, y, text, width, height, placeWidth, placeHeight
       const target = e.target;
       const out = outOfToolbar(e);
       target.visible(!out);
-      const dynamic = dynamicProps({ ...placeProps(e), visible: true });
-      getBoardShadow(e).setAttrs({ x: origin.x + dynamic.group.x, y: origin.y + dynamic.group.y, visible: out });
+      const place = placeProps(e);
+      const pos = magnetToAll(place, elements);
+      const x = origin.x + (pos ? pos.x : place.x);
+      const y = origin.y + (pos ? pos.y : place.y);
+      getBoardShadow(e).setAttrs({ x, y, visible: out });
     },
     onDragEnd: (e) => {
       const target = e.target;
@@ -80,11 +87,20 @@ export const ToolbarTile = ({ x, y, text, width, height, placeWidth, placeHeight
       shadow.current.visible(false);
       target.setAttrs({ x, y, visible: true });
       getBoardShadow(e).visible(false);
-      addElement({ type: tileType, ...placeProps(e), text });
+      const place = placeProps(e);
+      const pos = magnetToAll(place, elements);
+      addElement({
+        type: tileType,
+        x: pos ? pos.x : place.x,
+        y: pos ? pos.y : place.y,
+        width: place.width,
+        height: place.height,
+        text,
+      });
     },
     onPointerClick: (e) => {
-      const pos = { x: 0, y: 0 };
       const { width, height } = placeProps(e);
+      const pos = { x: -width / 2, y: -height / 2 };
       const last = elements[lastActiveElement];
       if (last) {
         pos.x = last.x;
@@ -115,14 +131,9 @@ export const BoardTile = (props) => {
     onDragMove: (e) => {
       const dx = e.target.x() - x;
       const dy = e.target.y() - y;
-      let pos = null;
-      for (const [id, element] of Object.entries(elements)) {
-        if (props.id == id) continue;
-        pos = magnet({ ...props, x: props.x + dx, y: props.y + dy }, element);
-        if (pos) {
-          e.target.setAttrs({ x: origin.x + pos.x, y: origin.y + pos.y });
-          return;
-        }
+      const pos = magnetToAll({ ...props, x: props.x + dx, y: props.y + dy }, elements);
+      if (pos) {
+        e.target.setAttrs({ x: origin.x + pos.x, y: origin.y + pos.y });
       }
     },
     onDragEnd: (e) => {
@@ -135,7 +146,16 @@ export const BoardTile = (props) => {
   return <Tile {...props} x={x} y={y} events={events} />;
 };
 
-function magnet(tile, other) {
+function magnetToAll(tile, elements) {
+  for (const [id, element] of Object.entries(elements)) {
+    if (tile.id == id || element.type != tileType) continue;
+    const pos = magnetToOne(tile, element);
+    if (pos) return pos;
+  }
+  return null;
+}
+
+function magnetToOne(tile, other) {
   const { x, y, width, height } = tile;
 
   const options = [
@@ -143,7 +163,7 @@ function magnet(tile, other) {
     [width, 0],
     [0, height],
     [width, height],
-    [-other.width + 0, 0],
+    [-other.width, 0],
     [-other.width + width, 0],
     [-other.width + 0, height],
     [-other.width + width, height],
