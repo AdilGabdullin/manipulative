@@ -33,6 +33,7 @@ const App = () => {
 
   useEffect(() => {
     containerRef.current.focus();
+    state.annihilation();
   });
 
   if (state.width == 0) {

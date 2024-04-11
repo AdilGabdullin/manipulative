@@ -9,10 +9,10 @@ const fontSize = 24;
 export const baseSize = 45;
 export const tileType = "algebra-tile";
 
-function dynamicProps({ x, y, width, height, text, visible }) {
-  const { blue, red, blueBorder, redBorder } = colors;
+function dynamicProps({ x, y, width, height, text, visible, annihilation }) {
+  const { blue, red, grey, blueBorder, redBorder } = colors;
   const isPositive = text && text[0] != "-";
-  const fill = isPositive ? blue : red;
+  const fill = annihilation ? grey : isPositive ? blue : red;
   const stroke = isPositive ? blueBorder : redBorder;
   x = x || 0;
   y = y || 0;

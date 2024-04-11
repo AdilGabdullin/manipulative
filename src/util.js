@@ -5,7 +5,7 @@ export function newId() {
   return `e-${id++}`;
 }
 
-export function pointsIsClose(pos1, pos2, sens = 25) {
+export function pointsIsClose(pos1, pos2, sens = 16) {
   return distance2(pos1, pos2) <= sens ** 2;
 }
 
@@ -54,6 +54,10 @@ export function isPointCloseToLine(point, line1, line2, dist = SEARCH_THRESHOLD)
 
 export function numberBetween(x, a, b) {
   return (x >= a && x <= b) || (x <= a && x >= b);
+}
+
+export function numberBetweenStrict(x, a, b) {
+  return (x > a && x < b) || (x < a && x > b);
 }
 
 export function numbersClose(a, b, sens = 12) {
@@ -211,4 +215,31 @@ export function sum(xs) {
 
 export function avg(xs) {
   return sum(xs) / xs.length;
+}
+
+export function allPairs(xs) {
+  const pairs = [];
+  for (let i = 0; i < xs.length - 1; i += 1) {
+    for (let k = i + 1; k < xs.length; k += 1) {
+      pairs.push([xs[i], xs[k]]);
+    }
+  }
+  return pairs;
+}
+
+export function boxesIntersect({ x, y, width, height }, other) {
+  return (
+    (numberBetweenStrict(x, other.x, other.x + other.width) ||
+      numberBetweenStrict(x + width, other.x, other.x + other.width) ||
+      numberBetweenStrict(other.x, x, x + width) ||
+      numberBetweenStrict(other.x + other.width, x, x + width)) &&
+    (numberBetweenStrict(y, other.y, other.y + other.height) ||
+      numberBetweenStrict(y + height, other.y, other.y + other.height) ||
+      numberBetweenStrict(other.y, y, y + height) ||
+      numberBetweenStrict(other.y + other.height, y, y + height))
+  );
+}
+
+export function oppositeText(text, other) {
+  return "-" + text == other || "-" + other == text;
 }

@@ -1,12 +1,13 @@
 import { create } from "zustand";
 import { current, produce } from "immer";
 import { leftToolbarWidth } from "../components/LeftToolbar";
-import { clearSelected, elementBox, newId, numberBetween } from "../util";
+import { allPairs, boxesIntersect, clearSelected, elementBox, newId, numberBetween, oppositeText } from "../util";
 import { topToolbarHeight } from "../components/TopToolbar";
 import { maxOffset } from "../components/Scrolls";
 import { freeDrawingSlice } from "./freeDrawingSlice";
 import { historySlice, pushHistory } from "./historySlice";
 import { workspace } from "../config";
+import { tileType } from "../components/Tile";
 
 export const gridStep = 60;
 export const boardSize = {
@@ -291,6 +292,19 @@ export const useAppStore = create((set) => ({
         state.fdMode = null;
         clearSelected(state);
         pushHistory(state);
+      })
+    ),
+  annihilation: () =>
+    set(
+      produce((state) => {
+        const elements = current(state.elements);
+        const tiles = Object.values(elements).filter((e) => e.type == tileType);
+        for (const [tile, other] of allPairs(tiles)) {
+          if (boxesIntersect(tile, other) && oppositeText(tile.text, other.text)) {
+            state.elements[tile.id].annihilation = true;
+            state.elements[other.id].annihilation = true;
+          }
+        }
       })
     ),
   action: () => set(produce((state) => {})),
