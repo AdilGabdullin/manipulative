@@ -124,13 +124,20 @@ export const ToolbarTile = ({ x, y, text, width, height, placeWidth, placeHeight
 
 export const BoardTile = (props) => {
   const { origin, selectIds, relocateElement, elements } = useAppStore();
-  const { id, locked, annihilation } = props;
+  const { id, locked, annihilation, moveTo } = props;
   const x = props.x + origin.x;
   const y = props.y + origin.y;
   const groupRef = useRef();
   useEffect(() => {
-    if (annihilation) animateAnnihilation(groupRef.current);
+    if (annihilation) {
+      animateAnnihilation(groupRef.current);
+    }
   }, [annihilation]);
+  useEffect(() => {
+    if (moveTo) {
+      animateMove(groupRef.current, moveTo.x - props.x, moveTo.y - props.y);
+    }
+  }, [moveTo]);
 
   const events = {
     onDragStart: (e) => {},
@@ -150,7 +157,7 @@ export const BoardTile = (props) => {
     },
   };
   return (
-    <Group ref={groupRef}>
+    <Group x={0} y={0} ref={groupRef}>
       <Tile {...props} x={x} y={y} events={events} />
     </Group>
   );
@@ -199,11 +206,30 @@ function animateAnnihilation(node) {
     if (time > animationDuration) {
       animation.stop();
       node.setAttr("opacity", 0);
+      
       return;
     }
     const t = time / animationDuration;
     const k = (t * t) / (2 * (t * t - t) + 1);
     node.setAttr("opacity", 1 - k);
+  }, node.getLayer());
+  animation.start();
+}
+
+function animateMove(node, x, y) {
+  const animation = new Animation(({ time }) => {
+    if (time > animationDuration) {
+      animation.stop();
+      node.setAttrs({ x, y });
+      animateAnnihilation(node);
+      return;
+    }
+    const t = time / animationDuration;
+    const k = (t * t) / (2 * (t * t - t) + 1);
+    node.setAttrs({
+      x: x * k,
+      y: y * k,
+    });
   }, node.getLayer());
   animation.start();
 }

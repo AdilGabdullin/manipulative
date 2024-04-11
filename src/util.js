@@ -228,6 +228,7 @@ export function allPairs(xs) {
 }
 
 export function boxesIntersect({ x, y, width, height }, other) {
+  if (x == other.x && y == other.y) return true;
   return (
     (numberBetweenStrict(x, other.x, other.x + other.width) ||
       numberBetweenStrict(x + width, other.x, other.x + other.width) ||

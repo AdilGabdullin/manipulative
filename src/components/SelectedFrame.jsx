@@ -86,7 +86,7 @@ const SelectedFrame = (props) => {
       active: allPairs(tiles.map((t) => t.text)).some(([that, other]) => oppositeText(that, other)),
       show: true,
       onPointerClick: (e) => {
-        state.annihilateSelected();
+        state.zeroPair();
       },
     },
     {
