@@ -65,7 +65,8 @@ function generateSum(counts) {
       text += (count > 0 ? " + " : " - ") + Math.abs(count) + (key == 1 ? "" : key);
     }
   }
-  return text.slice(3);
+
+  return text.slice(0, 3) == " + " ? text.slice(3) : "-" + text.slice(3);
 }
 
 export default Summary;
