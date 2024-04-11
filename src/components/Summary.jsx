@@ -9,8 +9,7 @@ const fontSize = 36;
 const Summary = () => {
   const state = useAppStore();
   if (state.workspace != workspace.basic) return null;
-  const text = generateSum(countParts(state.elements));
-  if (text == "") return null;
+  const text = generateSum(countParts(state.elements)) || "0";
   const width = text.length * 15 + 32;
   const height = 56;
   const x = (state.width + leftToolbarWidth) / 2 - width / 2;

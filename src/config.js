@@ -1,5 +1,3 @@
-const devMode = true;
-
 export const colors = {
   black: "#000000",
   blue: "#2196f3",
@@ -10,6 +8,7 @@ export const colors = {
   yellow: "#ffc107",
   white: "#ffffff",
   grey: "#e0e0e0",
+  solitude: "#e8f4fe",
 };
 
 export const workspace = {

@@ -32,6 +32,10 @@ export const useAppStore = create((set) => ({
   selected: [],
   lockSelect: false,
 
+  showYTiles: false,
+  showSummary: true,
+  multiColored: false,
+
   fullscreen: true,
   toggleGlobal: (field) =>
     set(
@@ -300,7 +304,7 @@ export const useAppStore = create((set) => ({
   invertSelected: () =>
     set(
       produce((state) => {
-        for (const id in current(state.elements)) {
+        for (const id of current(state.selected)) {
           const element = state.elements[id];
           if (element.type == tileType) {
             const text = element.text;
