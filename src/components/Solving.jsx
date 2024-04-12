@@ -2,9 +2,11 @@ import { Circle, Group, Line, Rect, Text } from "react-konva";
 import { useAppStore } from "../state/store";
 import { leftToolbarWidth } from "./LeftToolbar";
 import { menuHeight } from "./Menu";
-import { numberBetween, sum } from "../util";
+import { numberBetween, numberBetweenStrict, sum } from "../util";
 import { useRef, useState } from "react";
 import { workspace } from "../config";
+import { tileType } from "./Tile";
+import { generateSum } from "./Summary";
 
 export const margin = 10;
 export const buttonHeight = 64;
@@ -25,28 +27,16 @@ export const textProps = {
 
 const Solving = () => {
   const state = useAppStore();
-  const { origin, width, height, fullscreen } = state;
-  if (!width || state.workspace != workspace.solving) return null;
-  const totalWidth = Math.min(width - leftToolbarWidth - 45, 750);
-  let totalHeight = height - margin * 2 - menuHeight - scrollSize;
-  if (fullscreen) {
-    totalHeight = Math.min(totalHeight, 600);
-  }
-  const mainHeight = totalHeight - buttonHeight - margin;
-  const x = origin.x - (totalWidth + scrollSize) / 2;
-  const y = origin.y - (totalHeight + scrollSize) / 2;
-  const left = sumInRect(state, x, y, totalWidth / 2, mainHeight);
-  const right = sumInRect(state, x + totalWidth / 2, y, totalWidth / 2, mainHeight);
-  const sign = left < right ? "<" : left > right ? ">" : "=";
-
+  const { elements, origin } = state;
+  if (!state.width || state.workspace != workspace.solving) return null;
+  const rect = rectProps(state);
+  const { x, y, width, height } = rect;
   return (
-    <Group x={x} y={y}>
-      <Rect width={totalWidth} height={totalHeight} stroke={"black"} />
-      <Rect x={0} y={0} width={totalWidth} height={mainHeight} {...commonProps} />
-      <Line x={totalWidth / 2} y={0} points={[0, 0, 0, mainHeight]} {...commonProps} />
-      <Button x={totalWidth / 4 - buttonWidth / 2} y={mainHeight + margin} value={left} />
-      <CenterCircle x={totalWidth / 2} y={mainHeight + margin + buttonHeight / 2} value={sign} />
-      <Button x={(totalWidth * 3) / 4 - buttonWidth / 2} y={mainHeight + margin} value={right} />
+    <Group x={origin.x + x} y={origin.y + y}>
+      <Rect x={0} y={0} width={width} height={height} {...commonProps} />
+      <Line x={width / 2} y={0} points={[0, 0, 0, height]} {...commonProps} />
+      <CenterCircle x={width / 2} y={height / 2} value={"?"} />
+      <Button x={width / 2 - buttonWidth / 2} y={height + margin} value={generateEquation(elements, rect)} />
     </Group>
   );
 };
@@ -102,18 +92,36 @@ export const Button = ({ x, y, value }) => {
   );
 };
 
-export function sumInRect(state, x, y, width, height) {
-  const values = Object.values(state.elements)
-    .filter((e) => {
-      return (
-        e.type == "disk" &&
-        !e.ignoreSum &&
-        numberBetween(state.origin.x + e.x, x, x + width) &&
-        numberBetween(state.origin.y + e.y, y, y + height)
-      );
-    })
-    .map((e) => e.value * 1000);
-  return sum(values) / 1000;
+function rectProps(state) {
+  const { width, height, fullscreen } = state;
+  const rectWidth = Math.min(width - leftToolbarWidth - 45, 750);
+  let totalHeight = height - margin * 2 - menuHeight - scrollSize;
+  if (fullscreen) {
+    totalHeight = Math.min(totalHeight, 600);
+  }
+  const rectHeight = totalHeight - buttonHeight - margin;
+  const x = -(rectWidth + scrollSize) / 2;
+  const y = -(totalHeight + scrollSize) / 2;
+  return { x, y, width: rectWidth, height: rectHeight };
+}
+
+function center({ x, y, width, height }) {
+  return { x: x + width / 2, y: y + height / 2 };
+}
+
+function pointInRect(point, rect) {
+  const { x, y, width, height } = rect;
+  return numberBetweenStrict(point.x, x, x + width) && numberBetweenStrict(point.y, y, y + height);
+}
+
+function generateEquation(elements, rect) {
+  const tiles = Object.values(elements).filter((e) => e.type == tileType);
+  const width = rect.width / 2;
+  const leftSide = { ...rect, width };
+  const rightSide = { ...rect, x: rect.x + width, width };
+  const leftTiles = tiles.filter((tile) => pointInRect(center(tile), leftSide));
+  const rightTiles = tiles.filter((tile) => pointInRect(center(tile), rightSide));
+  return generateSum(leftTiles) + " = " + generateSum(rightTiles);
 }
 
 export default Solving;

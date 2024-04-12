@@ -9,6 +9,7 @@ import { historySlice, pushHistory } from "./historySlice";
 import { workspace } from "../config";
 import { animationSlice } from "./animationSlice";
 import { tileType } from "../components/Tile";
+import { menuHeight } from "../components/Menu";
 
 export const gridStep = 60;
 export const boardSize = {
@@ -327,5 +328,5 @@ export const useAppStore = create((set) => ({
 
 function keepOrigin(state) {
   state.origin.x = ((state.width - leftToolbarWidth) / 2 + leftToolbarWidth) / state.scale;
-  state.origin.y = state.height / 2 / state.scale;
+  state.origin.y = ((state.height - menuHeight) / 2 + menuHeight) / state.scale;
 }

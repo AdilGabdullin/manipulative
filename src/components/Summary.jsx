@@ -55,7 +55,7 @@ function signPrefix(count) {
   return count > 0 ? " + " : " - ";
 }
 
-function generateSum(elements) {
+export function generateSum(elements) {
   const counts = countParts(elements);
   let text = "";
   for (const key of ["x²", "y²", "xy", "x", "y", "1"]) {
