@@ -84,7 +84,7 @@ const SelectedFrame = (props) => {
     {
       text: "Rotate",
       active: tiles.length > 0 && !lockSelect,
-      show: true,
+      show: tiles.length > 0,
       onPointerClick: (e) => {
         state.rotateSelected();
       },
@@ -92,7 +92,7 @@ const SelectedFrame = (props) => {
     {
       text: "Invert",
       active: tiles.length > 0 && !lockSelect,
-      show: true,
+      show: tiles.length > 0,
       onPointerClick: (e) => {
         state.invertSelected();
       },
@@ -100,7 +100,7 @@ const SelectedFrame = (props) => {
     {
       text: "Zero Pair",
       active: allPairs(tiles.map((t) => t.text)).some(([that, other]) => oppositeText(that, other)),
-      show: true,
+      show: tiles.length > 0,
       onPointerClick: (e) => {
         state.zeroPair();
       },

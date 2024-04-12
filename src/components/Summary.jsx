@@ -9,7 +9,7 @@ const fontSize = 36;
 const Summary = () => {
   const state = useAppStore();
   if (state.workspace != workspace.basic || !state.showSummary) return null;
-  const text = generateSum(countParts(state.elements)) || "0";
+  const text = generateSum(state.elements);
   const width = text.length * 15 + 32;
   const height = 56;
   const x = (state.width + leftToolbarWidth) / 2 - width / 2;
@@ -51,22 +51,28 @@ function countParts(elements) {
   return counts;
 }
 
-function generateSum(counts) {
+function signPrefix(count) {
+  return count > 0 ? " + " : " - ";
+}
+
+function generateSum(elements) {
+  const counts = countParts(elements);
   let text = "";
   for (const key of ["x²", "y²", "xy", "x", "y", "1"]) {
     const count = counts[key];
-    if (!count) {
-      continue;
-    } else if (count == 1) {
-      text += " + " + key;
-    } else if (count == -1) {
-      text += " - " + key;
+    const absCount = Math.abs(count);
+    if (!count) continue;
+    text += signPrefix(count);
+    if (absCount == 1) {
+      text += key;
     } else {
-      text += (count > 0 ? " + " : " - ") + Math.abs(count) + (key == 1 ? "" : key);
+      text += absCount + (key == 1 ? "" : key);
     }
   }
-
-  return text.slice(0, 3) == " + " ? text.slice(3) : "-" + text.slice(3);
+  if (text == "") return "0";
+  if (text.slice(0, 3) == " + ") return text.slice(3);
+  if (text.slice(0, 3) == " - ") return "-" + text.slice(3);
+  return text;
 }
 
 export default Summary;
