@@ -82,6 +82,14 @@ const SelectedFrame = (props) => {
 
   let menuButtons = [
     {
+      text: "Rotate",
+      active: tiles.length > 0 && !lockSelect,
+      show: true,
+      onPointerClick: (e) => {
+        state.rotateSelected();
+      },
+    },
+    {
       text: "Invert",
       active: tiles.length > 0 && !lockSelect,
       show: true,

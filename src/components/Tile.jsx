@@ -1,7 +1,7 @@
 import { Group, Rect, Text } from "react-konva";
 import { animationDuration, colors } from "../config";
 import { useAppStore } from "../state/store";
-import { getStageXY, pointsIsClose } from "../util";
+import { blendColors, getStageXY, hexToRgb, invertText, pointsIsClose, rgbToHex } from "../util";
 import { useEffect, useRef } from "react";
 import { outOfToolbar } from "./LeftToolbar";
 import { Animation } from "konva/lib/Animation";
@@ -148,21 +148,16 @@ export const ToolbarTile = ({ x, y, text, width, height, placeWidth, placeHeight
 };
 
 export const BoardTile = (props) => {
-  const { origin, selectIds, relocateElement, elements } = useAppStore();
-  const { id, locked, annihilation, moveTo } = props;
+  const { origin, selectIds, relocateElement, elements, multiColored } = useAppStore();
+  const { id, locked, annihilation, moveTo, invert } = props;
   const x = props.x + origin.x;
   const y = props.y + origin.y;
   const groupRef = useRef();
   useEffect(() => {
-    if (annihilation) {
-      animateAnnihilation(groupRef.current);
-    }
-  }, [annihilation]);
-  useEffect(() => {
-    if (moveTo) {
-      animateMove(groupRef.current, moveTo.x - props.x, moveTo.y - props.y);
-    }
-  }, [moveTo]);
+    if (annihilation) animateAnnihilation(groupRef.current);
+    if (moveTo) animateMove(groupRef.current, moveTo.x - props.x, moveTo.y - props.y);
+    if (invert) animateInvert(groupRef.current, props, multiColored);
+  }, [annihilation, moveTo, invert]);
 
   const events = {
     onDragStart: (e) => {},
@@ -256,5 +251,37 @@ function animateMove(node, x, y) {
       y: y * k,
     });
   }, node.getLayer());
+  animation.start();
+}
+
+function animateInvert(node, props, multiColored) {
+  const rect = node.children[0].children[0];
+  const text = node.children[0].children[1];
+  const from = dynamicProps(props, multiColored);
+  const to = dynamicProps({ ...props, text: invertText(props.text) }, multiColored);
+  const fillFrom = hexToRgb(from.rect.fill);
+  const fillTo = hexToRgb(to.rect.fill);
+  const strokeFrom = hexToRgb(from.rect.stroke);
+  const strokeTo = hexToRgb(to.rect.stroke);
+  const textFillFrom = hexToRgb(from.text.fill);
+  const textFillTo = hexToRgb(to.text.fill);
+  const animation = new Animation(({ time }) => {
+    if (time > animationDuration) {
+      animation.stop();
+      rect.setAttrs({
+        fill: to.rect.fill,
+        stroke: to.rect.stroke,
+      });
+      text.setAttr("fill", to.text.fill);
+      return;
+    }
+    const t = time / animationDuration;
+    const k = (t * t) / (2 * (t * t - t) + 1);
+    rect.setAttrs({
+      fill: blendColors(fillFrom, fillTo, k),
+      stroke: blendColors(strokeFrom, strokeTo, k),
+    });
+    text.setAttr("fill", blendColors(textFillFrom, textFillTo, k));
+  }, rect.getLayer());
   animation.start();
 }

@@ -1,5 +1,5 @@
 import { tileType } from "../components/Tile";
-import { allPairs, boxesIntersect, clearSelected, oppositeText } from "../util";
+import { allPairs, boxesIntersect, clearSelected, invertText, oppositeText } from "../util";
 import { current, produce } from "immer";
 import { pushHistory } from "./historySlice";
 import { animationDuration } from "../config";
@@ -45,6 +45,19 @@ export const animationSlice = (set) => ({
         }
       })
     ),
+  invertSelected: () =>
+    set(
+      produce((state) => {
+        for (const id of current(state.selected)) {
+          const element = state.elements[id];
+          if (element.type == tileType) {
+            element.invert = true;
+          }
+        }
+        state.finishDelay = animationDuration;
+        clearSelected(state);
+      })
+    ),
   finishAnimations: () =>
     set(
       produce((state) => {
@@ -52,6 +65,10 @@ export const animationSlice = (set) => ({
           const element = state.elements[id];
           if (element.delete) {
             delete state.elements[id];
+          }
+          if (element.invert) {
+            element.text = invertText(element.text);
+            delete element.invert;
           }
         }
         state.finishDelay = null;

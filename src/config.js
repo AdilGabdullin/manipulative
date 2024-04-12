@@ -13,7 +13,8 @@ export const colors = {
 
 export const workspace = {
   basic: "Basic",
-  // solving: "Solving",
+  solving: "Solving",
+  factors: "Factors",
 };
 
 export const animationDuration = 400;

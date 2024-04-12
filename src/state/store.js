@@ -36,7 +36,11 @@ export const useAppStore = create((set) => ({
   showSummary: true,
   multiColored: false,
 
-  // fullscreen: true,
+  fullscreen: true,
+  workspace: workspace.solving,
+  showYTiles: true,
+  multiColored: true,
+
   toggleGlobal: (field) =>
     set(
       produce((state) => {
@@ -300,22 +304,21 @@ export const useAppStore = create((set) => ({
         pushHistory(state);
       })
     ),
-
-  invertSelected: () =>
+  rotateSelected: () =>
     set(
       produce((state) => {
         for (const id of current(state.selected)) {
           const element = state.elements[id];
           if (element.type == tileType) {
-            const text = element.text;
-            element.text = text.match(/-/) ? text.slice(1) : "-" + text;
+            const {x,y,width,height} = current(element);
+            element.width = height;
+            element.height = width;
             state.lastActiveElement = id;
           }
         }
         pushHistory(state);
       })
     ),
-
   toggleShowYTiles: () =>
     set(
       produce((state) => {

@@ -244,3 +244,32 @@ export function boxesIntersect({ x, y, width, height }, other) {
 export function oppositeText(that, other) {
   return "-" + that == other || "-" + other == that;
 }
+
+export function hexToRgb(hex) {
+  const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+  return result
+    ? {
+        r: parseInt(result[1], 16),
+        g: parseInt(result[2], 16),
+        b: parseInt(result[3], 16),
+      }
+    : null;
+}
+
+function componentToHex(c) {
+  const hex = Math.round(c).toString(16);
+  return hex.length == 1 ? "0" + hex : hex;
+}
+
+export function rgbToHex(r, g, b) {
+  return "#" + componentToHex(r) + componentToHex(g) + componentToHex(b);
+}
+
+export function blendColors(from, to, k) {
+  const t = 1 - k;
+  return rgbToHex(from.r * t + to.r * k, from.g * t + to.g * k, from.b * t + to.b * k);
+}
+
+export function invertText(text) {
+  return text.match(/-/) ? text.slice(1) : "-" + text;
+}
