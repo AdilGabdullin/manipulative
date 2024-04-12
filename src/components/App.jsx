@@ -12,8 +12,9 @@ import Elements from "./Elements";
 import FreeDrawing from "./FreeDrawing";
 import ImagePreloader from "./ImagePreloader";
 import { appSaveText } from "./TextElement";
-import Summary from "./Summary";
+import Summary, { generateSum } from "./Summary";
 import Solving from "./Solving";
+import { workspace } from "../config";
 
 const App = () => {
   const state = useAppStore();
@@ -310,7 +311,12 @@ const App = () => {
             <LeftToolbar findOne={findOne} />
             <Menu />
             <Scrolls />
-            <Summary />
+            <Summary
+              text={generateSum(state.elements)}
+              x={(state.width + leftToolbarWidth) / 2}
+              y={state.height - 80}
+              visible={state.workspace == workspace.basic && state.showSummary}
+            />
             <SelectedFrame findOne={findOne} />
           </Layer>
         )}

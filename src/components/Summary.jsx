@@ -1,19 +1,14 @@
 import { Rect, Text } from "react-konva";
-import { colors, workspace } from "../config";
-import { useAppStore } from "../state/store";
-import { leftToolbarWidth } from "./LeftToolbar";
+import { colors } from "../config";
 import { tileType } from "./Tile";
 
 const fontSize = 36;
 
-const Summary = () => {
-  const state = useAppStore();
-  if (state.workspace != workspace.basic || !state.showSummary) return null;
-  const text = generateSum(state.elements);
+const Summary = ({ text, x, y, visible }) => {
+  if (!visible) return null;
   const width = text.length * 15 + 32;
   const height = 56;
-  const x = (state.width + leftToolbarWidth) / 2 - width / 2;
-  const y = state.height - 80;
+  x = x - width / 2;
   return (
     <>
       <Rect

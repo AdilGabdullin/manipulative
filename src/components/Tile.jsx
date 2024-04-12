@@ -295,13 +295,16 @@ function animateRotate(node, props, origin, multiColored) {
   const { x, y, width, height } = props;
   const animation = new Animation(({ time }) => {
     if (time > animationDuration) {
-      const finalProps = dynamicProps({
-        ...props,
-        width: height,
-        height: width,
-        x: origin.x + x + width / 2 - height / 2,
-        y: origin.y + y + height / 2 - width / 2,
-      }, multiColored);
+      const finalProps = dynamicProps(
+        {
+          ...props,
+          width: height,
+          height: width,
+          x: origin.x + x + width / 2 - height / 2,
+          y: origin.y + y + height / 2 - width / 2,
+        },
+        multiColored
+      );
       group.setAttrs(finalProps.group);
       text.setAttrs(finalProps.text);
       rect.setAttrs({ ...finalProps.rect, rotation: 0 });

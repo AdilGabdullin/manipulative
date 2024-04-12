@@ -2,11 +2,11 @@ import { Circle, Group, Line, Rect, Text } from "react-konva";
 import { useAppStore } from "../state/store";
 import { leftToolbarWidth } from "./LeftToolbar";
 import { menuHeight } from "./Menu";
-import { numberBetween, numberBetweenStrict, sum } from "../util";
+import { numberBetweenStrict } from "../util";
 import { useRef, useState } from "react";
-import { workspace } from "../config";
+import { colors, workspace } from "../config";
 import { tileType } from "./Tile";
-import { generateSum } from "./Summary";
+import Summary, { generateSum } from "./Summary";
 
 export const margin = 10;
 export const buttonHeight = 64;
@@ -14,9 +14,10 @@ export const buttonWidth = 140;
 export const scrollSize = 14;
 export const stroke = "grey";
 export const commonProps = {
-  cornerRadius: 6,
-  stroke: stroke,
   strokeWidth: 2,
+  cornerRadius: 8,
+  stroke: colors.black,
+  fill: colors.white,
 };
 export const textProps = {
   stroke: "#299af3",
@@ -36,7 +37,7 @@ const Solving = () => {
       <Rect x={0} y={0} width={width} height={height} {...commonProps} />
       <Line x={width / 2} y={0} points={[0, 0, 0, height]} {...commonProps} />
       <CenterCircle x={width / 2} y={height / 2} value={"?"} />
-      <Button x={width / 2 - buttonWidth / 2} y={height + margin} value={generateEquation(elements, rect)} />
+      <Summary x={width / 2} y={height + margin} text={generateEquation(elements, rect)} visible={true} />
     </Group>
   );
 };
@@ -59,35 +60,6 @@ const CenterCircle = ({ x, y, value }) => {
     <Group x={x} y={y} onPointerEnter={onPointerEnter} onPointerLeave={onPointerLeave} onPointerClick={onPointerClick}>
       <Circle ref={rectRef} x={0} y={0} radius={r} {...commonProps} />
       <Text visible={visible} x={-r} y={-fontSize / 2} width={2 * r} text={value} fontSize={fontSize} {...textProps} />
-    </Group>
-  );
-};
-
-export const Button = ({ x, y, value }) => {
-  const [visible, setVisible] = useState(true);
-  const fontSize = 32;
-  const rectRef = useRef();
-  const onPointerEnter = (e) => {
-    rectRef.current?.setAttr("stroke", textProps.stroke);
-  };
-  const onPointerLeave = (e) => {
-    rectRef.current?.setAttr("stroke", commonProps.stroke);
-  };
-  const onPointerClick = (e) => {
-    setVisible(!visible);
-  };
-  return (
-    <Group x={x} y={y} onPointerEnter={onPointerEnter} onPointerLeave={onPointerLeave} onPointerClick={onPointerClick}>
-      <Rect ref={rectRef} x={0} y={0} width={buttonWidth} height={buttonHeight} {...commonProps} />
-      <Text
-        visible={visible}
-        x={0}
-        y={(buttonHeight - fontSize) / 2}
-        width={buttonWidth}
-        text={value}
-        fontSize={fontSize}
-        {...textProps}
-      />
     </Group>
   );
 };
