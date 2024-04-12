@@ -29,21 +29,31 @@ export const textProps = {
 const Solving = () => {
   const state = useAppStore();
   const { elements, origin } = state;
+  const signs = ["=", ">", "≥", "<", "≤"];
+  const [signIndex, setSignIndex] = useState(0);
   if (!state.width || state.workspace != workspace.solving) return null;
   const rect = rectProps(state);
   const { x, y, width, height } = rect;
+  const onCenterClick = (e) => {
+    setSignIndex((signIndex + 1) % signs.length);
+  };
+
   return (
     <Group x={origin.x + x} y={origin.y + y}>
       <Rect x={0} y={0} width={width} height={height} {...commonProps} />
       <Line x={width / 2} y={0} points={[0, 0, 0, height]} {...commonProps} />
-      <CenterCircle x={width / 2} y={height / 2} value={"?"} />
-      <Summary x={width / 2} y={height + margin} text={generateEquation(elements, rect)} visible={true} />
+      <CenterCircle x={width / 2} y={height / 2} value={signs[signIndex]} onPointerClick={onCenterClick} />
+      <Summary
+        x={width / 2}
+        y={height + margin}
+        text={generateExpression(elements, rect, signs[signIndex])}
+        visible={true}
+      />
     </Group>
   );
 };
 
-const CenterCircle = ({ x, y, value }) => {
-  const [visible, setVisible] = useState(true);
+const CenterCircle = ({ x, y, value, onPointerClick }) => {
   const r = buttonHeight / 2;
   const fontSize = 40;
   const rectRef = useRef();
@@ -53,13 +63,10 @@ const CenterCircle = ({ x, y, value }) => {
   const onPointerLeave = (e) => {
     rectRef.current?.setAttr("stroke", commonProps.stroke);
   };
-  const onPointerClick = (e) => {
-    setVisible(!visible);
-  };
   return (
     <Group x={x} y={y} onPointerEnter={onPointerEnter} onPointerLeave={onPointerLeave} onPointerClick={onPointerClick}>
       <Circle ref={rectRef} x={0} y={0} radius={r} {...commonProps} />
-      <Text visible={visible} x={-r} y={-fontSize / 2} width={2 * r} text={value} fontSize={fontSize} {...textProps} />
+      <Text x={-r} y={-fontSize / 2} width={2 * r} text={value} fontSize={fontSize} {...textProps} />
     </Group>
   );
 };
@@ -86,14 +93,16 @@ function pointInRect(point, rect) {
   return numberBetweenStrict(point.x, x, x + width) && numberBetweenStrict(point.y, y, y + height);
 }
 
-function generateEquation(elements, rect) {
+function generateExpression(elements, rect, sign) {
   const tiles = Object.values(elements).filter((e) => e.type == tileType);
   const width = rect.width / 2;
   const leftSide = { ...rect, width };
   const rightSide = { ...rect, x: rect.x + width, width };
   const leftTiles = tiles.filter((tile) => pointInRect(center(tile), leftSide));
   const rightTiles = tiles.filter((tile) => pointInRect(center(tile), rightSide));
-  return generateSum(leftTiles) + " = " + generateSum(rightTiles);
+  const expression = `${generateSum(leftTiles)} ${sign} ${generateSum(rightTiles)}`;
+  //   if (expression.match(/^0.*0$/)) return "";
+  return expression;
 }
 
 export default Solving;
