@@ -58,6 +58,19 @@ export const animationSlice = (set) => ({
         clearSelected(state);
       })
     ),
+  rotateSelected: () =>
+    set(
+      produce((state) => {
+        for (const id of current(state.selected)) {
+          const element = state.elements[id];
+          if (element.type == tileType) {
+            element.rotate = true;
+          }
+        }
+        state.finishDelay = animationDuration;
+        clearSelected(state);
+      })
+    ),
   finishAnimations: () =>
     set(
       produce((state) => {
@@ -69,6 +82,14 @@ export const animationSlice = (set) => ({
           if (element.invert) {
             element.text = invertText(element.text);
             delete element.invert;
+          }
+          if (element.rotate) {
+            const { x, y, width, height } = element;
+            element.width = height;
+            element.height = width;
+            element.x = x + width / 2 - height / 2;
+            element.y = y + height / 2 - width / 2;
+            delete element.rotate;
           }
         }
         state.finishDelay = null;

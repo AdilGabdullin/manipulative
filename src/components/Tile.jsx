@@ -27,7 +27,7 @@ function dynamicProps({ x, y, width, height, text, visible, color, borderColor }
   height = (height || 0) - 1;
   return {
     group: { x, y, visible },
-    rect: { width, height, fill, stroke },
+    rect: { width, height, x: width / 2, y: height / 2, offsetX: width / 2, offsetY: height / 2, fill, stroke },
     text: {
       x: 0,
       y: (height - fontSize) / 2,
@@ -149,7 +149,7 @@ export const ToolbarTile = ({ x, y, text, width, height, placeWidth, placeHeight
 
 export const BoardTile = (props) => {
   const { origin, selectIds, relocateElement, elements, multiColored } = useAppStore();
-  const { id, locked, annihilation, moveTo, invert } = props;
+  const { id, locked, annihilation, moveTo, invert, rotate } = props;
   const x = props.x + origin.x;
   const y = props.y + origin.y;
   const groupRef = useRef();
@@ -157,7 +157,8 @@ export const BoardTile = (props) => {
     if (annihilation) animateAnnihilation(groupRef.current);
     if (moveTo) animateMove(groupRef.current, moveTo.x - props.x, moveTo.y - props.y);
     if (invert) animateInvert(groupRef.current, props, multiColored);
-  }, [annihilation, moveTo, invert]);
+    if (rotate) animateRotate(groupRef.current, props, origin, multiColored);
+  }, [annihilation, moveTo, invert, rotate]);
 
   const events = {
     onDragStart: (e) => {},
@@ -283,5 +284,33 @@ function animateInvert(node, props, multiColored) {
     });
     text.setAttr("fill", blendColors(textFillFrom, textFillTo, k));
   }, rect.getLayer());
+  animation.start();
+  text.setAttr("text", invertText(props.text));
+}
+
+function animateRotate(node, props, origin, multiColored) {
+  const group = node.children[0];
+  const [rect, text] = group.children;
+
+  const { x, y, width, height } = props;
+  const animation = new Animation(({ time }) => {
+    if (time > animationDuration) {
+      const finalProps = dynamicProps({
+        ...props,
+        width: height,
+        height: width,
+        x: origin.x + x + width / 2 - height / 2,
+        y: origin.y + y + height / 2 - width / 2,
+      }, multiColored);
+      group.setAttrs(finalProps.group);
+      text.setAttrs(finalProps.text);
+      rect.setAttrs({ ...finalProps.rect, rotation: 0 });
+      animation.stop();
+      return;
+    }
+    const t = time / animationDuration;
+    const k = (t * t) / (2 * (t * t - t) + 1);
+    rect.setAttr("rotation", k * 90);
+  }, node.getLayer());
   animation.start();
 }

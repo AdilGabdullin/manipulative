@@ -304,21 +304,6 @@ export const useAppStore = create((set) => ({
         pushHistory(state);
       })
     ),
-  rotateSelected: () =>
-    set(
-      produce((state) => {
-        for (const id of current(state.selected)) {
-          const element = state.elements[id];
-          if (element.type == tileType) {
-            const {x,y,width,height} = current(element);
-            element.width = height;
-            element.height = width;
-            state.lastActiveElement = id;
-          }
-        }
-        pushHistory(state);
-      })
-    ),
   toggleShowYTiles: () =>
     set(
       produce((state) => {
