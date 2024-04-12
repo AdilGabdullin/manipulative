@@ -80,6 +80,10 @@ export const animationSlice = (set) => ({
             delete state.elements[id];
           }
           if (element.invert) {
+            if (true) {
+              //TODO check in solving
+              element.x = -element.x - element.width;
+            }
             element.text = invertText(element.text);
             delete element.invert;
           }

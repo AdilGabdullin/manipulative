@@ -156,7 +156,7 @@ export const BoardTile = (props) => {
   useEffect(() => {
     if (annihilation) animateAnnihilation(groupRef.current);
     if (moveTo) animateMove(groupRef.current, moveTo.x - props.x, moveTo.y - props.y);
-    if (invert) animateInvert(groupRef.current, props, multiColored);
+    if (invert) animateInvert(groupRef.current, props, origin, multiColored);
     if (rotate) animateRotate(groupRef.current, props, origin, multiColored);
   }, [annihilation, moveTo, invert, rotate]);
 
@@ -255,9 +255,10 @@ function animateMove(node, x, y) {
   animation.start();
 }
 
-function animateInvert(node, props, multiColored) {
-  const rect = node.children[0].children[0];
-  const text = node.children[0].children[1];
+function animateInvert(node, props, origin, multiColored) {
+  const group = node.children[0];
+  const rect = group.children[0];
+  const text = group.children[1];
   const from = dynamicProps(props, multiColored);
   const to = dynamicProps({ ...props, text: invertText(props.text) }, multiColored);
   const fillFrom = hexToRgb(from.rect.fill);
@@ -266,6 +267,8 @@ function animateInvert(node, props, multiColored) {
   const strokeTo = hexToRgb(to.rect.stroke);
   const textFillFrom = hexToRgb(from.text.fill);
   const textFillTo = hexToRgb(to.text.fill);
+  const xFrom = origin.x + props.x;
+  const xTo = origin.x - props.x - props.width;
   const animation = new Animation(({ time }) => {
     if (time > animationDuration) {
       animation.stop();
@@ -283,6 +286,7 @@ function animateInvert(node, props, multiColored) {
       stroke: blendColors(strokeFrom, strokeTo, k),
     });
     text.setAttr("fill", blendColors(textFillFrom, textFillTo, k));
+    group.setAttr("x", xFrom * (1 - k) + xTo * k); // TODO check in solving
   }, rect.getLayer());
   animation.start();
   text.setAttr("text", invertText(props.text));
