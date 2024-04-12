@@ -13,6 +13,7 @@ import FreeDrawing from "./FreeDrawing";
 import ImagePreloader from "./ImagePreloader";
 import { appSaveText } from "./TextElement";
 import Summary from "./Summary";
+import Solving from "./Solving";
 
 const App = () => {
   const state = useAppStore();
@@ -291,6 +292,7 @@ const App = () => {
           scaleX={state.scale}
           scaleY={state.scale}
         >
+          <Solving />
           <Elements />
           <SelectRect />
         </Layer>
