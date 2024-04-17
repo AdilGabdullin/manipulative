@@ -37,7 +37,7 @@ export const useAppStore = create((set) => ({
   showSummary: true,
   multiColored: false,
 
-  workspace: workspace.solving,
+  workspace: workspace.factors,
   fullscreen: true,
   showYTiles: true,
   multiColored: true,

@@ -2,11 +2,11 @@ import { Circle, Group, Line, Rect, Text } from "react-konva";
 import { useAppStore } from "../state/store";
 import { leftToolbarWidth } from "./LeftToolbar";
 import { menuHeight } from "./Menu";
-import { boxesIntersect, numberBetweenStrict } from "../util";
-import { useRef, useState } from "react";
+import { boxesIntersect } from "../util";
+import { useRef } from "react";
 import { colors, workspace } from "../config";
 import { tileType } from "./Tile";
-import Summary, { generateSum } from "./Summary";
+import { generateSum } from "./Summary";
 
 export const margin = 10;
 export const buttonHeight = 64;

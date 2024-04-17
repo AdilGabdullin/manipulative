@@ -15,6 +15,7 @@ import { appSaveText } from "./TextElement";
 import Summary, { generateSum } from "./Summary";
 import Solving, { generateExpression } from "./Solving";
 import { workspace } from "../config";
+import Factors from "./Factors";
 
 const App = () => {
   const state = useAppStore();
@@ -294,6 +295,7 @@ const App = () => {
           scaleY={state.scale}
         >
           <Solving />
+          <Factors />
           <Elements />
           <SelectRect />
         </Layer>
