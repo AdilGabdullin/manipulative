@@ -43,9 +43,6 @@ const Summary = () => {
     return null;
   }
   const text = state.workspace == workspace.basic ? generateSum(state.elements) : generateExpression(state);
-  if (text == "0" || text == "0 = 0") {
-    return null;
-  }
   return <BasicSummary text={text} x={(state.width + leftToolbarWidth) / 2} y={state.height - 80} />;
 };
 
