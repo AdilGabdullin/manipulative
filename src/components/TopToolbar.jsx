@@ -1,4 +1,4 @@
-import { workspace } from "../config";
+import config from "../config";
 import { useAppStore } from "../state/store";
 import ShapesMenu from "./ShapesMenu";
 
@@ -56,7 +56,7 @@ const WorkspaceSelector = () => {
     <div className="workspace-selector">
       <label className="workspace-selector-label">Workspace</label>
       <select onChange={(e) => state.setWorkspace(e.target.value)} value={state.workspace}>
-        {Object.entries(workspace).map(([key,option]) => (
+        {Object.entries(config.workspace).map(([key,option]) => (
           <option key={key} value={key}>
             {option}
           </option>

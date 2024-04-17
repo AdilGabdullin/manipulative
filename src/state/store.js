@@ -6,7 +6,7 @@ import { topToolbarHeight } from "../components/TopToolbar";
 import { maxOffset } from "../components/Scrolls";
 import { freeDrawingSlice } from "./freeDrawingSlice";
 import { historySlice, pushHistory } from "./historySlice";
-import { workspace } from "../config";
+import config from "../config";
 
 export const gridStep = 60;
 export const boardSize = {
@@ -22,7 +22,7 @@ export const useAppStore = create((set) => ({
   offset: { x: 0, y: 0 },
   scale: 1.0,
   fullscreen: false,
-  workspace: workspace.basic,
+  workspace: config.workspace.basic,
   width: 0,
   height: 0,
   origin: { x: 0, y: 0 },
