@@ -23,4 +23,28 @@ const Factors = () => {
   );
 };
 
+export function factorsLeft(state) {
+  const { x, y, height } = solvingRectProps(state);
+  return (
+    state.workspace == workspace.factors && {
+      x: x,
+      y: y + 1.5 * baseSize,
+      width: 1.5 * baseSize,
+      height: height - 1.5 * baseSize,
+    }
+  );
+}
+
+export function factorsRight(state) {
+  const { x, y, width } = solvingRectProps(state);
+  return (
+    state.workspace == workspace.factors && {
+      x: x + 1.5 * baseSize,
+      y: y,
+      width: width - 1.5 * baseSize,
+      height: 1.5 * baseSize,
+    }
+  );
+}
+
 export default Factors;

@@ -223,6 +223,10 @@ export function boxesIntersect({ x, y, width, height }, other) {
   );
 }
 
+export function pointInRect(point, rect) {
+  return numberBetween(point.x, rect.x, rect.x + rect.width) && numberBetween(point.y, rect.y, rect.y + rect.height);
+}
+
 export function oppositeText(that, other) {
   return "-" + that == other || "-" + other == that;
 }
