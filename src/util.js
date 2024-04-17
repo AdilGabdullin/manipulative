@@ -85,24 +85,6 @@ function angleBetweenVectors(A, B, C) {
   return theta * sign;
 }
 
-export function getArcAngles(A, B, C, isClockwise) {
-  const angle = angleBetweenVectors(A, B, C) * (isClockwise ? 1 : -1);
-  const rotation = angleBetweenVectors({ x: 1000, y: B.y + 0.001 }, B, C) - angle * (isClockwise ? 1 : 0);
-  const lv = [A.x + C.x - 2 * B.x, A.y + C.y - 2 * B.y];
-  const mag = vectorMagnitude(lv) * Math.sign(angle);
-  return { angle, rotation: rotation, labelVector: { x: lv[0] / mag, y: lv[1] / mag } };
-}
-
-export function checkClockwise(points) {
-  let area = 0;
-  let j = points.length - 1;
-  for (let i = 0; i < points.length; i++) {
-    area += (points[j].x + points[i].x) * (points[j].y - points[i].y);
-    j = i;
-  }
-  return area > 0.0;
-}
-
 export function setVisibility(e, value) {
   e.target
     .getStage()
