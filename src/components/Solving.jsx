@@ -45,25 +45,6 @@ const Solving = () => {
   );
 };
 
-export const SolvingSummary = () => {
-  const state = useAppStore();
-  const { elements, origin, solvingSign } = state;
-  if (!state.width || state.workspace != workspace.solving) return null;
-  const rect = solvingRectProps(state);
-  const { x, y, width, height } = rect;
-
-  return (
-    <Group x={origin.x + x} y={origin.y + y}>
-      <Summary
-        x={width / 2}
-        y={height + margin}
-        text={generateExpression(elements, rect, solvingSign)}
-        visible={true}
-      />
-    </Group>
-  );
-};
-
 const CenterCircle = ({ x, y, value, onPointerClick }) => {
   const r = buttonHeight / 2;
   const fontSize = 40;
@@ -99,16 +80,13 @@ function center({ x, y, width, height }) {
   return { x: x + width / 2, y: y + height / 2 };
 }
 
-function pointInRect(point, rect) {
-  const { x, y, width, height } = rect;
-  return numberBetweenStrict(point.x, x, x + width) && numberBetweenStrict(point.y, y, y + height);
-}
-
-function generateExpression(elements, rect, sign) {
+export function generateExpression(state) {
+  const { elements, solvingSign } = state;
+  const rect = solvingRectProps(state);
   const tiles = Object.values(elements).filter((e) => e.type == tileType && boxesIntersect(e, rect));
   const leftTiles = tiles.filter((tile) => center(tile).x < 0);
   const rightTiles = tiles.filter((tile) => center(tile).x >= 0);
-  const expression = `${generateSum(leftTiles)} ${sign} ${generateSum(rightTiles)}`;
+  const expression = `${generateSum(leftTiles)} ${solvingSign} ${generateSum(rightTiles)}`;
   return expression;
 }
 
