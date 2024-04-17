@@ -38,9 +38,9 @@ export const useAppStore = create((set) => ({
   multiColored: false,
 
   workspace: workspace.solving,
-  // fullscreen: true,
-  // showYTiles: true,
-  // multiColored: true,
+  fullscreen: true,
+  showYTiles: true,
+  multiColored: true,
 
   toggleGlobal: (field) =>
     set(

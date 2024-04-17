@@ -2,7 +2,8 @@ import { tileType } from "../components/Tile";
 import { allPairs, boxesIntersect, clearSelected, invertText, oppositeText } from "../util";
 import { current, produce } from "immer";
 import { pushHistory } from "./historySlice";
-import { animationDuration } from "../config";
+import { animationDuration, workspace } from "../config";
+import { solvingRectProps } from "../components/Solving";
 
 export const animationSlice = (set) => ({
   finishDelay: null,
@@ -80,8 +81,7 @@ export const animationSlice = (set) => ({
             delete state.elements[id];
           }
           if (element.invert) {
-            if (true) {
-              //TODO check in solving
+            if (state.workspace == workspace.solving && boxesIntersect(element, solvingRectProps(state))) {
               element.x = -element.x - element.width;
             }
             element.text = invertText(element.text);

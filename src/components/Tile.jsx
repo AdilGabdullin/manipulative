@@ -1,10 +1,11 @@
 import { Group, Rect, Text } from "react-konva";
-import { animationDuration, colors } from "../config";
+import { animationDuration, colors, workspace } from "../config";
 import { useAppStore } from "../state/store";
-import { blendColors, getStageXY, hexToRgb, invertText, pointsIsClose, rgbToHex } from "../util";
+import { blendColors, boxesIntersect, getStageXY, hexToRgb, invertText, pointsIsClose } from "../util";
 import { useEffect, useRef } from "react";
 import { outOfToolbar } from "./LeftToolbar";
 import { Animation } from "konva/lib/Animation";
+import { solvingRectProps } from "./Solving";
 
 const fontSize = 24;
 export const baseSize = 45;
@@ -148,7 +149,8 @@ export const ToolbarTile = ({ x, y, text, width, height, placeWidth, placeHeight
 };
 
 export const BoardTile = (props) => {
-  const { origin, selectIds, relocateElement, elements, multiColored } = useAppStore();
+  const state = useAppStore();
+  const { origin, selectIds, relocateElement, elements, multiColored } = state;
   const { id, locked, annihilation, moveTo, invert, rotate } = props;
   const x = props.x + origin.x;
   const y = props.y + origin.y;
@@ -156,7 +158,10 @@ export const BoardTile = (props) => {
   useEffect(() => {
     if (annihilation) animateAnnihilation(groupRef.current);
     if (moveTo) animateMove(groupRef.current, moveTo.x - props.x, moveTo.y - props.y);
-    if (invert) animateInvert(groupRef.current, props, origin, multiColored);
+    if (invert) {
+      const inSolving = state.workspace == workspace.solving && boxesIntersect(props, solvingRectProps(state));
+      animateInvert(groupRef.current, props, origin, multiColored, inSolving);
+    }
     if (rotate) animateRotate(groupRef.current, props, origin, multiColored);
   }, [annihilation, moveTo, invert, rotate]);
 
@@ -255,7 +260,7 @@ function animateMove(node, x, y) {
   animation.start();
 }
 
-function animateInvert(node, props, origin, multiColored) {
+function animateInvert(node, props, origin, multiColored, inSolving) {
   const group = node.children[0];
   const rect = group.children[0];
   const text = group.children[1];
@@ -286,7 +291,9 @@ function animateInvert(node, props, origin, multiColored) {
       stroke: blendColors(strokeFrom, strokeTo, k),
     });
     text.setAttr("fill", blendColors(textFillFrom, textFillTo, k));
-    group.setAttr("x", xFrom * (1 - k) + xTo * k); // TODO check in solving
+    if (inSolving) {
+      group.setAttr("x", xFrom * (1 - k) + xTo * k);
+    }
   }, rect.getLayer());
   animation.start();
   text.setAttr("text", invertText(props.text));

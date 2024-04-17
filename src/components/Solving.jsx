@@ -2,7 +2,7 @@ import { Circle, Group, Line, Rect, Text } from "react-konva";
 import { useAppStore } from "../state/store";
 import { leftToolbarWidth } from "./LeftToolbar";
 import { menuHeight } from "./Menu";
-import { numberBetweenStrict } from "../util";
+import { boxesIntersect, numberBetweenStrict } from "../util";
 import { useRef, useState } from "react";
 import { colors, workspace } from "../config";
 import { tileType } from "./Tile";
@@ -32,7 +32,7 @@ const Solving = () => {
   const signs = ["=", ">", "≥", "<", "≤"];
   const [signIndex, setSignIndex] = useState(0);
   if (!state.width || state.workspace != workspace.solving) return null;
-  const rect = rectProps(state);
+  const rect = solvingRectProps(state);
   const { x, y, width, height } = rect;
   const onCenterClick = (e) => {
     setSignIndex((signIndex + 1) % signs.length);
@@ -71,7 +71,7 @@ const CenterCircle = ({ x, y, value, onPointerClick }) => {
   );
 };
 
-function rectProps(state) {
+export function solvingRectProps(state) {
   const { width, height, fullscreen } = state;
   const rectWidth = Math.min(width - leftToolbarWidth - 45, 750);
   let totalHeight = height - margin * 2 - menuHeight - scrollSize;
@@ -79,7 +79,7 @@ function rectProps(state) {
     totalHeight = Math.min(totalHeight, 600);
   }
   const rectHeight = totalHeight - buttonHeight - margin;
-  const x = -(rectWidth + scrollSize) / 2;
+  const x = -rectWidth / 2;
   const y = -(totalHeight + scrollSize) / 2;
   return { x, y, width: rectWidth, height: rectHeight };
 }
@@ -98,8 +98,8 @@ function generateExpression(elements, rect, sign) {
   const width = rect.width / 2;
   const leftSide = { ...rect, width };
   const rightSide = { ...rect, x: rect.x + width, width };
-  const leftTiles = tiles.filter((tile) => pointInRect(center(tile), leftSide));
-  const rightTiles = tiles.filter((tile) => pointInRect(center(tile), rightSide));
+  const leftTiles = tiles.filter((tile) => boxesIntersect(tile, leftSide) && !pointInRect(center(tile), rightSide));
+  const rightTiles = tiles.filter((tile) => boxesIntersect(tile, rightSide) && !pointInRect(center(tile), leftSide));
   const expression = `${generateSum(leftTiles)} ${sign} ${generateSum(rightTiles)}`;
   //   if (expression.match(/^0.*0$/)) return "";
   return expression;
