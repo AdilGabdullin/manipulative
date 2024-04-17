@@ -37,11 +37,6 @@ export const useAppStore = create((set) => ({
   showSummary: true,
   multiColored: false,
 
-  workspace: workspace.factors,
-  fullscreen: true,
-  showYTiles: true,
-  multiColored: true,
-
   toggleGlobal: (field) =>
     set(
       produce((state) => {
@@ -74,10 +69,23 @@ export const useAppStore = create((set) => ({
         keepOrigin(state);
       })
     ),
-  setWorkspace: (workspace) =>
+  setWorkspace: (ws) =>
     set(
       produce((state) => {
-        state.workspace = workspace;
+        state.workspace = ws;
+        if (ws == workspace.factors) {
+          state.multiColored = true;
+          state.showYTiles = true;
+          state.showSummary = true;
+          for (const id in current(state.elements)) {
+            const element = state.elements[id];
+            if (element.type == tileType && element.text.includes("-")) {
+              delete state.elements[id];
+            }
+          }
+          clearSelected(state);
+          pushHistory(state);
+        }
       })
     ),
   toggle: (field) =>

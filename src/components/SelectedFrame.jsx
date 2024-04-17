@@ -85,7 +85,7 @@ const SelectedFrame = (props) => {
     {
       text: "Rotate",
       active: tiles.length > 0 && !lockSelect,
-      show: tiles.length > 0,
+      show: tiles.length > 0 && state.workspace != workspace.factors,
       onPointerClick: (e) => {
         state.rotateSelected();
       },

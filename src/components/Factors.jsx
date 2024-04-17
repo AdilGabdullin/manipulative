@@ -24,9 +24,9 @@ const Factors = () => {
       <Line x={0} y={factorsSize} points={[0, 0, width, 0]} {...commonProps} />
       <Line x={0} y={0} points={[0, -1, 0, height]} {...commonProps} />
       <Line x={factorsSize} y={0} points={[0, 0, 0, height]} {...commonProps} />
-      <BasicSummary text={sums.left} x={-margin} align={true} y={(height - fontSize) / 2} />
-      <BasicSummary text={sums.top} x={width / 2} y={-56  - margin} />
-      <BasicSummary text={sums.main} x={width / 2} y={height - 56 - margin} />
+      {sums.left != "0" && <BasicSummary text={sums.left} x={-margin} align={true} y={(height - fontSize) / 2} />}
+      {sums.top != "0" && <BasicSummary text={sums.top} x={width / 2} y={-56 - margin} />}
+      {sums.main != "0" && <BasicSummary text={sums.main} x={width / 2} y={height - 56 - margin} />}
     </Group>
   );
 };

@@ -2,6 +2,8 @@ import { Rect, Text } from "react-konva";
 import { colors, workspace } from "../config";
 import { tileType } from "./Tile";
 import { useAppStore } from "../state/store";
+import { leftToolbarWidth } from "./LeftToolbar";
+import { generateExpression } from "./Solving";
 
 export const fontSize = 36;
 
@@ -37,27 +39,14 @@ export const BasicSummary = ({ text, x, y, align }) => {
 
 const Summary = () => {
   const state = useAppStore();
-  if (!state.showSummary) {
+  if (!state.showSummary || !state.width || state.workspace == workspace.factors) {
     return null;
   }
-  switch (state.workspace) {
-    case workspace.basic:
-      return (
-        <BasicSummary
-          text={generateSum(state.elements)}
-          x={(state.width + leftToolbarWidth) / 2}
-          y={state.height - 80}
-        />
-      );
-      break;
-    case workspace.solving:
-      return (
-        <Summary text={generateExpression(state)} x={(state.width + leftToolbarWidth) / 2} y={state.height - 80} />
-      );
-      break;
-    default:
-      return null;
+  const text = state.workspace == workspace.basic ? generateSum(state.elements) : generateExpression(state);
+  if (text == "0" || text == "0 = 0") {
+    return null;
   }
+  return <BasicSummary text={text} x={(state.width + leftToolbarWidth) / 2} y={state.height - 80} />;
 };
 
 function countParts(elements) {

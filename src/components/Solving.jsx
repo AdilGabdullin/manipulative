@@ -5,7 +5,7 @@ import { menuHeight } from "./Menu";
 import { boxesIntersect, center } from "../util";
 import { useRef } from "react";
 import { colors, workspace } from "../config";
-import { tileType } from "./Tile";
+import { baseSize, tileType } from "./Tile";
 import { generateSum } from "./Summary";
 
 export const margin = 10;
@@ -72,7 +72,7 @@ export function solvingRectProps(state) {
   }
   const rectHeight = totalHeight - buttonHeight - margin;
   const x = -rectWidth / 2;
-  const y = -(totalHeight + scrollSize) / 2;
+  const y = -(totalHeight + scrollSize) / 2 + (state.workspace == workspace.factors ? baseSize * 1.5 : 0);
   return { x, y, width: rectWidth, height: rectHeight };
 }
 
