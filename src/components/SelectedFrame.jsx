@@ -93,7 +93,7 @@ const SelectedFrame = (props) => {
     {
       text: "Invert",
       active: tiles.length > 0 && !lockSelect,
-      show: tiles.length > 0,
+      show: tiles.length > 0 && state.workspace != workspace.factors,
       onPointerClick: (e) => {
         state.invertSelected();
       },

@@ -2,15 +2,16 @@ import { Rect } from "react-konva";
 import { useAppStore } from "../state/store";
 import { sum } from "../util";
 import { ToolbarTile } from "./Tile";
+import { workspace } from "../config";
 
 export const leftToolbarWidth = 180;
 
 const LeftToolbar = () => {
-  const { height, showYTiles } = useAppStore();
+  const { height, showYTiles, workspace: ws } = useAppStore();
   return (
     <>
       <Rect fill="#f3f9ff" x={0} y={0} width={leftToolbarWidth} height={height} />
-      {createTiles(height, tileRows(showYTiles))}
+      {createTiles(height, tileRows(showYTiles, ws == workspace.factors))}
     </>
   );
 };
@@ -37,7 +38,7 @@ function createTiles(height, rows) {
   return tiles;
 }
 
-function tileRows(showY) {
+function tileRows(showY, hideNegative) {
   const xRows = [
     [
       { text: "1", width: 1, height: 1, placeWidth: 1, placeHeight: 1, color: "#ffeb3b", borderColor: "#fdd835" },
@@ -62,7 +63,21 @@ function tileRows(showY) {
       { text: "-xy", width: 2, height: 3, placeWidth: 3, placeHeight: 4, color: "#e91e63", borderColor: "#c2185b" },
     ],
   ];
-  return showY ? [...xRows, ...yRows] : xRows;
+  const rows = showY ? [...xRows, ...yRows] : xRows;
+  if (!hideNegative) {
+    return rows;
+  }
+  const positive = [];
+  for (const row of rows) {
+    if (row.length == 1) {
+      if (!row[0].text.includes("-")) {
+        positive.push(row);
+      }
+    } else {
+      positive.push([row[0]]);
+    }
+  }
+  return positive;
 }
 
 export function outOfToolbar(e) {

@@ -323,7 +323,7 @@ const App = () => {
               text={generateExpression(state)}
               x={(state.width + leftToolbarWidth) / 2}
               y={state.height - 80}
-              visible={state.workspace == workspace.solving}
+              visible={state.workspace == workspace.solving && state.showSummary}
             />
             <SelectedFrame findOne={findOne} />
           </Layer>
