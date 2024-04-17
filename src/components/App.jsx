@@ -12,9 +12,8 @@ import Elements from "./Elements";
 import FreeDrawing from "./FreeDrawing";
 import ImagePreloader from "./ImagePreloader";
 import { appSaveText } from "./TextElement";
-import Summary, { generateSum } from "./Summary";
-import Solving, { generateExpression } from "./Solving";
-import { workspace } from "../config";
+import Summary from "./Summary";
+import Solving from "./Solving";
 import Factors from "./Factors";
 
 const App = () => {
@@ -313,18 +312,7 @@ const App = () => {
             <LeftToolbar findOne={findOne} />
             <Menu />
             <Scrolls />
-            <Summary
-              text={generateSum(state.elements)}
-              x={(state.width + leftToolbarWidth) / 2}
-              y={state.height - 80}
-              visible={state.workspace == workspace.basic && state.showSummary}
-            />
-            <Summary
-              text={generateExpression(state)}
-              x={(state.width + leftToolbarWidth) / 2}
-              y={state.height - 80}
-              visible={state.workspace == workspace.solving && state.showSummary}
-            />
+            <Summary />
             <SelectedFrame findOne={findOne} />
           </Layer>
         )}

@@ -223,6 +223,10 @@ export function boxesIntersect({ x, y, width, height }, other) {
   );
 }
 
+export function center({ x, y, width, height }) {
+  return { x: x + width / 2, y: y + height / 2 };
+}
+
 export function pointInRect(point, rect) {
   return numberBetween(point.x, rect.x, rect.x + rect.width) && numberBetween(point.y, rect.y, rect.y + rect.height);
 }

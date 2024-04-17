@@ -2,7 +2,7 @@ import { Circle, Group, Line, Rect, Text } from "react-konva";
 import { useAppStore } from "../state/store";
 import { leftToolbarWidth } from "./LeftToolbar";
 import { menuHeight } from "./Menu";
-import { boxesIntersect } from "../util";
+import { boxesIntersect, center } from "../util";
 import { useRef } from "react";
 import { colors, workspace } from "../config";
 import { tileType } from "./Tile";
@@ -74,10 +74,6 @@ export function solvingRectProps(state) {
   const x = -rectWidth / 2;
   const y = -(totalHeight + scrollSize) / 2;
   return { x, y, width: rectWidth, height: rectHeight };
-}
-
-function center({ x, y, width, height }) {
-  return { x: x + width / 2, y: y + height / 2 };
 }
 
 export function generateExpression(state) {

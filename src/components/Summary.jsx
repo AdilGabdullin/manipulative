@@ -1,14 +1,14 @@
 import { Rect, Text } from "react-konva";
-import { colors } from "../config";
+import { colors, workspace } from "../config";
 import { tileType } from "./Tile";
+import { useAppStore } from "../state/store";
 
-const fontSize = 36;
+export const fontSize = 36;
 
-const Summary = ({ text, x, y, visible }) => {
-  if (!visible) return null;
+export const BasicSummary = ({ text, x, y, align }) => {
   const width = text.length * 15 + 32;
   const height = 56;
-  x = x - width / 2;
+  x = align ? x - width : x - width / 2;
   return (
     <>
       <Rect
@@ -33,6 +33,31 @@ const Summary = ({ text, x, y, visible }) => {
       />
     </>
   );
+};
+
+const Summary = () => {
+  const state = useAppStore();
+  if (!state.showSummary) {
+    return null;
+  }
+  switch (state.workspace) {
+    case workspace.basic:
+      return (
+        <BasicSummary
+          text={generateSum(state.elements)}
+          x={(state.width + leftToolbarWidth) / 2}
+          y={state.height - 80}
+        />
+      );
+      break;
+    case workspace.solving:
+      return (
+        <Summary text={generateExpression(state)} x={(state.width + leftToolbarWidth) / 2} y={state.height - 80} />
+      );
+      break;
+    default:
+      return null;
+  }
 };
 
 function countParts(elements) {
