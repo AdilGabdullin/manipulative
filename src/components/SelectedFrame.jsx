@@ -5,6 +5,7 @@ import { allPairs, elementBox, oppositeText, setVisibility, setVisibilityFrame }
 import ShapeResizeHandles from "./ShapeResizeHandles";
 import { createTextArea } from "./TextElement";
 import { magnetToAll, tileType } from "./Tile";
+import { workspace } from "../config";
 
 const SelectedFrame = (props) => {
   const state = useAppStore();
@@ -100,7 +101,7 @@ const SelectedFrame = (props) => {
     {
       text: "Zero Pair",
       active: allPairs(tiles.map((t) => t.text)).some(([that, other]) => oppositeText(that, other)),
-      show: tiles.length > 0,
+      show: tiles.length > 0 && state.workspace == workspace.basic,
       onPointerClick: (e) => {
         state.zeroPair();
       },

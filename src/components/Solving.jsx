@@ -47,14 +47,19 @@ const Solving = () => {
 
 export const SolvingSummary = () => {
   const state = useAppStore();
-  const { elements, origin } = state;
+  const { elements, origin, solvingSign } = state;
   if (!state.width || state.workspace != workspace.solving) return null;
   const rect = solvingRectProps(state);
   const { x, y, width, height } = rect;
 
   return (
     <Group x={origin.x + x} y={origin.y + y}>
-      <Summary x={width / 2} y={height + margin} text={generateExpression(elements, rect, "=")} visible={true} />
+      <Summary
+        x={width / 2}
+        y={height + margin}
+        text={generateExpression(elements, rect, solvingSign)}
+        visible={true}
+      />
     </Group>
   );
 };

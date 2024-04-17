@@ -328,7 +328,7 @@ export const useAppStore = create((set) => ({
     set(
       produce((state) => {
         const signs = ["=", ">", "≥", "<", "≤"];
-        const signIndex = signs.findIndex(state.solvingSign);
+        const signIndex = signs.findIndex((sign) => sign == state.solvingSign);
         state.solvingSign = signs[(signIndex + 1) % signs.length];
       })
     ),
