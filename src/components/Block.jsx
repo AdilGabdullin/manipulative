@@ -11,7 +11,7 @@ export const Block = ({ id, x, y, size, label, events }) => {
   const depthStepY = sin(angle) * blockSize * 0.5;
   const depthX = depthStepX * sz;
   const depthY = depthStepY * sz;
-  const fill = blocks[label].color;
+  const { fill, dark } = blocks[label];
   const stroke = colors.black;
 
   const hPoints = [0, 0, width, 0];
@@ -48,9 +48,8 @@ export const Block = ({ id, x, y, size, label, events }) => {
         y={0}
         points={[width, 0, width + depthX, -depthY, depthX + width, height - depthY, width, height]}
         closed
-        fill={fill}
+        fill={dark}
       />
-
       {lines.map((props, i) => (
         <Line key={i} {...props} stroke={stroke} strokeWidth={1} />
       ))}

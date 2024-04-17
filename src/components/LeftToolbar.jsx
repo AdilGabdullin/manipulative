@@ -19,7 +19,7 @@ const LeftToolbar = () => {
     <>
       <Rect fill="#f3f9ff" x={0} y={0} width={leftToolbarWidth} height={state.height} />
       {blocks.map((props, i) => (
-        <ToolbarBlock {...props} />
+        <ToolbarBlock key={i} {...props} />
       ))}
     </>
   );

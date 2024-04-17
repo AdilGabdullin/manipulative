@@ -15,10 +15,10 @@ const config = {
   blockSize: 20,
   angle: 30,
   blocks: {
-    1: { size: [1, 1, 1], color: "#ffc107" , label: 1},
-    10: { size: [1, 10, 1], color: "#03a9f4" , label: 10},
-    100: { size: [10, 10, 1], color: "#ff5722" , label: 100},
-    1000: { size: [10, 10, 10], color: "#008d35" , label: 1000},
+    1: { size: [1, 1, 1], fill: "#ffc107", dark: "#ffa000", label: 1 },
+    10: { size: [1, 10, 1], fill: "#03a9f4", dark: "#0288d1", label: 10 },
+    100: { size: [10, 10, 1], fill: "#ff5722", dark: "#e44c1c", label: 100 },
+    1000: { size: [10, 10, 10], fill: "#39c669", dark: "#008d35", label: 1000 },
   },
 };
 
