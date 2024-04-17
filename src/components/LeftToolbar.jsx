@@ -11,7 +11,7 @@ const LeftToolbar = () => {
   return (
     <>
       <Rect fill="#f3f9ff" x={0} y={0} width={leftToolbarWidth} height={height} />
-      {createTiles(height, tileRows(showYTiles, ws == workspace.factors))}
+      {createTiles(height, tileRows(showYTiles, ws != workspace.factors))}
     </>
   );
 };
@@ -38,8 +38,9 @@ function createTiles(height, rows) {
   return tiles;
 }
 
-function tileRows(showY, hideNegative) {
-  const xRows = [
+// prettier-ignore
+function tileRows(showY, showNegative) {
+  const xRows = showNegative ? [
     [
       { text: "1", width: 1, height: 1, placeWidth: 1, placeHeight: 1, color: "#ffeb3b", borderColor: "#fdd835" },
       { text: "-1", width: 1, height: 1, placeWidth: 1, placeHeight: 1, color: "#ffeb3b", borderColor: "#fdd835" },
@@ -48,8 +49,12 @@ function tileRows(showY, hideNegative) {
     [{ text: "-x", width: 2.5, height: 1, placeWidth: 4, placeHeight: 1, color: "#4caf50", borderColor: "#388e3c" }],
     [{ text: "x²", width: 2.5, height: 2.5, placeWidth: 4, placeHeight: 4, color: "#2196f3", borderColor: "#1b7dd9" }],
     [{ text: "-x²", width: 2.5, height: 2.5, placeWidth: 4, placeHeight: 4, color: "#2196f3", borderColor: "#1b7dd9" }],
+  ]: [
+    [{ text: "1", width: 1, height: 1, placeWidth: 1, placeHeight: 1, color: "#ffeb3b", borderColor: "#fdd835" },],
+    [{ text: "x", width: 2.5, height: 1, placeWidth: 4, placeHeight: 1, color: "#4caf50", borderColor: "#388e3c" }],
+    [{ text: "x²", width: 2.5, height: 2.5, placeWidth: 4, placeHeight: 4, color: "#2196f3", borderColor: "#1b7dd9" }],
   ];
-  const yRows = [
+  const yRows = showNegative ? [
     [
       { text: "y", width: 2, height: 1, placeWidth: 3, placeHeight: 1, color: "#ff9800", borderColor: "#f57c00" },
       { text: "-y", width: 2, height: 1, placeWidth: 3, placeHeight: 1, color: "#ff9800", borderColor: "#f57c00" },
@@ -62,22 +67,12 @@ function tileRows(showY, hideNegative) {
       { text: "xy", width: 2, height: 3, placeWidth: 3, placeHeight: 4, color: "#e91e63", borderColor: "#c2185b" },
       { text: "-xy", width: 2, height: 3, placeWidth: 3, placeHeight: 4, color: "#e91e63", borderColor: "#c2185b" },
     ],
+  ] : [
+    [{ text: "y", width: 2, height: 1, placeWidth: 3, placeHeight: 1, color: "#ff9800", borderColor: "#f57c00" },],
+    [{ text: "y²", width: 2, height: 2, placeWidth: 3, placeHeight: 3, color: "#9c27b0", borderColor: "#7e25a5" },],
+    [{ text: "xy", width: 3, height: 2, placeWidth: 4, placeHeight: 3, color: "#e91e63", borderColor: "#c2185b" },],
   ];
-  const rows = showY ? [...xRows, ...yRows] : xRows;
-  if (!hideNegative) {
-    return rows;
-  }
-  const positive = [];
-  for (const row of rows) {
-    if (row.length == 1) {
-      if (!row[0].text.includes("-")) {
-        positive.push(row);
-      }
-    } else {
-      positive.push([row[0]]);
-    }
-  }
-  return positive;
+  return showY ? [...xRows, ...yRows] : xRows;
 }
 
 export function outOfToolbar(e) {

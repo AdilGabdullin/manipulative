@@ -198,13 +198,15 @@ export function magnetToAll(tile, elements, factorsRect) {
     if (pos) return pos;
   }
   if (factorsRect) {
-    const topPoint = { x: factorsRect.x + baseSize * 1.75, y: factorsRect.y + baseSize * 0.25 };
-    const leftPoint = { x: factorsRect.x + baseSize * 0.25, y: factorsRect.y + baseSize * 1.75, rotate: true };
-    if (pointsIsClose(tile, topPoint)) {
-      return topPoint;
-    }
-    if (pointsIsClose(tile, leftPoint)) {
-      return leftPoint;
+    const points = [
+      { x: factorsRect.x + baseSize * 1.75, y: factorsRect.y + baseSize * 0.25 },
+      { x: factorsRect.x + baseSize * 0.25, y: factorsRect.y + baseSize * 1.75, rotate: true },
+      { x: factorsRect.x + baseSize * 1.75, y: factorsRect.y + baseSize * 1.75 },
+    ];
+    for (const point of points) {
+      if (pointsIsClose(tile, point)) {
+        return point;
+      }
     }
   }
   return null;
