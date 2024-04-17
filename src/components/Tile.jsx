@@ -54,6 +54,7 @@ export const ToolbarTile = ({ x, y, text, width, height, placeWidth, placeHeight
   const state = useAppStore();
   const { origin, addElement, lastActiveElement, elements, multiColored } = state;
   const shadow = useRef();
+  const factorsRect = state.workspace == workspace.factors && solvingRectProps(state);
 
   const placeProps = (e) => {
     const { x, y } = getStageXY(e.target.getStage(), state);
@@ -90,7 +91,7 @@ export const ToolbarTile = ({ x, y, text, width, height, placeWidth, placeHeight
       const out = outOfToolbar(e);
       target.visible(!out);
       const place = placeProps(e);
-      const pos = magnetToAll(place, elements);
+      const pos = magnetToAll(place, elements, factorsRect);
       const x = origin.x + (pos ? pos.x : place.x);
       const y = origin.y + (pos ? pos.y : place.y);
       getBoardShadow(e).setAttrs({ x, y, visible: out });
@@ -104,7 +105,7 @@ export const ToolbarTile = ({ x, y, text, width, height, placeWidth, placeHeight
       getBoardShadow(e).visible(false);
       if (out) {
         const place = placeProps(e);
-        const pos = magnetToAll(place, elements);
+        const pos = magnetToAll(place, elements, factorsRect);
         addElement({
           type: tileType,
           x: pos ? pos.x : place.x,
@@ -164,13 +165,14 @@ export const BoardTile = (props) => {
     }
     if (rotate) animateRotate(groupRef.current, props, origin, multiColored);
   }, [annihilation, moveTo, invert, rotate]);
+  const factorsRect = state.workspace == workspace.factors && solvingRectProps(state);
 
   const events = {
     onDragStart: (e) => {},
     onDragMove: (e) => {
       const dx = e.target.x() - x;
       const dy = e.target.y() - y;
-      const pos = magnetToAll({ ...props, x: props.x + dx, y: props.y + dy }, elements);
+      const pos = magnetToAll({ ...props, x: props.x + dx, y: props.y + dy }, elements, factorsRect);
       if (pos) {
         e.target.setAttrs({ x: origin.x + pos.x, y: origin.y + pos.y });
       }
@@ -189,11 +191,21 @@ export const BoardTile = (props) => {
   );
 };
 
-export function magnetToAll(tile, elements) {
+export function magnetToAll(tile, elements, factorsRect) {
   for (const [id, element] of Object.entries(elements)) {
     if (tile.id == id || element.type != tileType) continue;
     const pos = magnetToOne(tile, element);
     if (pos) return pos;
+  }
+  if (factorsRect) {
+    const topPoint = { x: factorsRect.x + baseSize * 1.75, y: factorsRect.y + baseSize * 0.25 };
+    const leftPoint = { x: factorsRect.x + baseSize * 0.25, y: factorsRect.y + baseSize * 1.75, rotate: true };
+    if (pointsIsClose(tile, topPoint)) {
+      return topPoint;
+    }
+    if (pointsIsClose(tile, leftPoint)) {
+      return leftPoint;
+    }
   }
   return null;
 }
