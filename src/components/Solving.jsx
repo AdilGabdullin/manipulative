@@ -28,27 +28,33 @@ export const textProps = {
 
 const Solving = () => {
   const state = useAppStore();
-  const { elements, origin } = state;
-  const signs = ["=", ">", "≥", "<", "≤"];
-  const [signIndex, setSignIndex] = useState(0);
+  const { origin } = state;
   if (!state.width || state.workspace != workspace.solving) return null;
   const rect = solvingRectProps(state);
   const { x, y, width, height } = rect;
   const onCenterClick = (e) => {
-    setSignIndex((signIndex + 1) % signs.length);
+    state.nextSolvingSign();
   };
 
   return (
     <Group x={origin.x + x} y={origin.y + y}>
       <Rect x={0} y={0} width={width} height={height} {...commonProps} />
       <Line x={width / 2} y={0} points={[0, 0, 0, height]} {...commonProps} />
-      <CenterCircle x={width / 2} y={height / 2} value={signs[signIndex]} onPointerClick={onCenterClick} />
-      <Summary
-        x={width / 2}
-        y={height + margin}
-        text={generateExpression(elements, rect, signs[signIndex])}
-        visible={true}
-      />
+      <CenterCircle x={width / 2} y={height / 2} value={state.solvingSign} onPointerClick={onCenterClick} />
+    </Group>
+  );
+};
+
+export const SolvingSummary = () => {
+  const state = useAppStore();
+  const { elements, origin } = state;
+  if (!state.width || state.workspace != workspace.solving) return null;
+  const rect = solvingRectProps(state);
+  const { x, y, width, height } = rect;
+
+  return (
+    <Group x={origin.x + x} y={origin.y + y}>
+      <Summary x={width / 2} y={height + margin} text={generateExpression(elements, rect, "=")} visible={true} />
     </Group>
   );
 };
@@ -94,14 +100,10 @@ function pointInRect(point, rect) {
 }
 
 function generateExpression(elements, rect, sign) {
-  const tiles = Object.values(elements).filter((e) => e.type == tileType);
-  const width = rect.width / 2;
-  const leftSide = { ...rect, width };
-  const rightSide = { ...rect, x: rect.x + width, width };
-  const leftTiles = tiles.filter((tile) => boxesIntersect(tile, leftSide) && !pointInRect(center(tile), rightSide));
-  const rightTiles = tiles.filter((tile) => boxesIntersect(tile, rightSide) && !pointInRect(center(tile), leftSide));
+  const tiles = Object.values(elements).filter((e) => e.type == tileType && boxesIntersect(e, rect));
+  const leftTiles = tiles.filter((tile) => center(tile).x < 0);
+  const rightTiles = tiles.filter((tile) => center(tile).x >= 0);
   const expression = `${generateSum(leftTiles)} ${sign} ${generateSum(rightTiles)}`;
-  //   if (expression.match(/^0.*0$/)) return "";
   return expression;
 }
 

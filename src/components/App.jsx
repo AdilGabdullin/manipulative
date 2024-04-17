@@ -13,7 +13,7 @@ import FreeDrawing from "./FreeDrawing";
 import ImagePreloader from "./ImagePreloader";
 import { appSaveText } from "./TextElement";
 import Summary, { generateSum } from "./Summary";
-import Solving from "./Solving";
+import Solving, { SolvingSummary } from "./Solving";
 import { workspace } from "../config";
 
 const App = () => {
@@ -317,6 +317,7 @@ const App = () => {
               y={state.height - 80}
               visible={state.workspace == workspace.basic && state.showSummary}
             />
+            <SolvingSummary />
             <SelectedFrame findOne={findOne} />
           </Layer>
         )}

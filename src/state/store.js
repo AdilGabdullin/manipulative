@@ -323,6 +323,15 @@ export const useAppStore = create((set) => ({
         }
       })
     ),
+  solvingSign: "=",
+  nextSolvingSign: () =>
+    set(
+      produce((state) => {
+        const signs = ["=", ">", "≥", "<", "≤"];
+        const signIndex = signs.findIndex(state.solvingSign);
+        state.solvingSign = signs[(signIndex + 1) % signs.length];
+      })
+    ),
   action: () => set(produce((state) => {})),
 }));
 
