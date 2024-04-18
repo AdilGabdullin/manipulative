@@ -80,7 +80,7 @@ const SelectedFrame = (props) => {
     {
       text: "Break",
       active: !lockSelect,
-      show: selected.some((id) => elements[id].type == "block"),
+      show: selected.some((id) => elements[id].type == "block" && elements[id].label != "1"),
       onPointerClick: (e) => {
         state.breakSelected();
       },
