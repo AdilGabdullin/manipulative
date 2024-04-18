@@ -1,8 +1,10 @@
 import { Group, Line, Rect } from "react-konva";
 import config from "../config";
-import { cos, sin } from "../util";
+import { cos, getStageXY, sin } from "../util";
+import { useAppStore } from "../state/store";
+import { useRef } from "react";
 
-export const Block = ({ id, x, y, label, scale, events }) => {
+export const Block = ({ id, x, y, label, scale, visible, events }) => {
   const { colors } = config;
   const { angle, depthScale, options } = config.block;
   const option = options[label];
@@ -42,7 +44,7 @@ export const Block = ({ id, x, y, label, scale, events }) => {
   }
 
   return (
-    <Group id={id} x={x} y={y} {...events}>
+    <Group id={id} x={x} y={y} visible={visible} {...events}>
       <Rect width={width} height={height} fill={fill} />
       <Line x={0} y={0} points={[0, 0, depthX, -depthY, depthX + width, -depthY, width, 0]} closed fill={fill} />
       <Line
@@ -60,11 +62,128 @@ export const Block = ({ id, x, y, label, scale, events }) => {
 };
 
 export const ToolbarBlock = (props) => {
+  const state = useAppStore();
+  const { origin, addElement } = state;
+  const shadow = useRef();
+  const scale = config.block.size;
+
+  const outOfToolbar = (e) => e.target.getStage().getPointerPosition().x > config.leftToolbar.width;
+
+  const placeProps = (e) => {
+    const { x, y } = getStageXY(e.target.getStage(), state);
+    const w = props.width * scale;
+    const h = props.height * scale;
+    return { x: x - w / 2, y: y - h / 2, width: w, height: h };
+  };
+
+  let boardShadow = null;
+  const getBoardShadow = (e) => {
+    return boardShadow || (boardShadow = e.target.getStage().findOne("#shadow-block-" + props.label));
+  };
+
   const events = {
-    draggable: true,
+    onDragStart: (e) => {
+      shadow.current.visible(true);
+    },
     onDragMove: (e) => {
-      console.log("move");
+      const target = e.target;
+      const out = outOfToolbar(e);
+      target.visible(!out);
+      const place = placeProps(e);
+      // const pos = magnetToAll(place, elements, factorsRect);
+      const pos = null;
+      const x = origin.x + (pos ? pos.x : place.x);
+      const y = origin.y + (pos ? pos.y : place.y);
+      getBoardShadow(e).setAttrs({ x, y, visible: out });
+    },
+    onDragEnd: (e) => {
+      const target = e.target;
+      const out = outOfToolbar(e);
+      target.visible(!out);
+      shadow.current.visible(false);
+      target.setAttrs({ x: 0, y: 0, visible: true });
+      getBoardShadow(e).visible(false);
+      if (out) {
+        const place = placeProps(e);
+        // const pos = magnetToAll(place, elements, factorsRect);
+        const pos = null;
+        const { width, height, top, right } = props;
+        addElement({
+          ...props,
+          type: "block",
+          x: pos ? pos.x : place.x,
+          y: pos ? pos.y : place.y,
+          width: width * scale,
+          height: height * scale,
+          top: top * scale,
+          right: right * scale,
+          scale,
+        });
+      }
+    },
+    onPointerClick: (e) => {
+      // const { width, height } = placeProps(e);
+      // const pos = { x: -width / 2, y: -height / 2 };
+      // const last = elements[lastActiveElement];
+      // if (last) {
+      //   pos.x = last.x;
+      //   pos.y = last.y - height;
+      // }
+      // addElement({ type: tileType, width, height, text, color, borderColor, ...pos });
     },
   };
-  return <Block {...props} events={events} />;
+
+  return (
+    <>
+      <Group ref={shadow} visible={false}>
+        <Block {...props} />
+      </Group>
+      <Group draggable {...events}>
+        <Block {...props} />
+      </Group>
+    </>
+  );
+};
+
+export const BoardBlock = (props) => {
+  const state = useAppStore();
+  const { origin, selectIds, relocateElement, elements } = state;
+  const { id, locked } = props;
+  const x = props.x + origin.x;
+  const y = props.y + origin.y;
+  const groupRef = useRef();
+  // useEffect(() => {
+  //   if (annihilation) animateAnnihilation(groupRef.current);
+  //   if (moveTo) animateMove(groupRef.current, moveTo.x - props.x, moveTo.y - props.y);
+  //   if (invert) {
+  //     const inSolving = state.workspace == workspace.solving && boxesIntersect(props, solvingRectProps(state));
+  //     animateInvert(groupRef.current, props, origin, multiColored, inSolving);
+  //   }
+  //   if (rotate) animateRotate(groupRef.current, props, origin, multiColored);
+  // }, [annihilation, moveTo, invert, rotate]);
+
+  const events = {
+    draggable: true,
+    onDragStart: (e) => {},
+    onDragMove: (e) => {
+      const dx = e.target.x() - x;
+      const dy = e.target.y() - y;
+      // const pos = magnetToAll({ ...props, x: props.x + dx, y: props.y + dy }, elements, factorsRect);
+      const pos = null;
+      if (pos) {
+        e.target.setAttrs({ x: origin.x + pos.x, y: origin.y + pos.y });
+      }
+    },
+    onDragEnd: (e) => {
+      relocateElement(id, e.target.x() - x, e.target.y() - y);
+    },
+    onPointerClick: (e) => {
+      selectIds([id], locked);
+    },
+  };
+  return (
+    <Group x={0} y={0} ref={groupRef}>
+      <Block {...props} x={x} y={y} events={events} />
+    </Group>
+  );
 };

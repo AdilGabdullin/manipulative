@@ -119,6 +119,9 @@ export function elementBox(element) {
     case "line":
       return lineBox(element);
       break;
+    case "block":
+      return blockBox(element);
+      break;
   }
   return element;
 }
@@ -139,6 +142,11 @@ function lineBox(element) {
   const minY = Math.min(y, y + y2);
   const maxY = Math.max(y, y + y2);
   return { x: minX, y: minY, width: maxX - minX, height: maxY - minY };
+}
+
+function blockBox(element) {
+  const { x, y, width, height, right, top } = element;
+  return { x: x, y: y - top, width: width + right, height: height + top };
 }
 
 export function cos(rotation) {

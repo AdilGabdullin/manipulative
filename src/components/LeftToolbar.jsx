@@ -11,8 +11,8 @@ const LeftToolbar = () => {
   const scale = {
     1: 30,
     10: 20,
-    100: (width - 2 * padding) / options[100].width,
-    1000: (width - 2 * padding) / options[1000].width,
+    100: (width - 2 * padding) / (options[100].width + options[100].right),
+    1000: (width - 2 * padding) / (options[1000].width + options[1000].right),
   };
 
   const blocks = [];
@@ -22,14 +22,14 @@ const LeftToolbar = () => {
       scale: scale[label],
     });
   }
-  const totalHeight = blocks.reduce((sum, block) => sum + block.height * block.scale, 0);
+  const totalHeight = blocks.reduce((sum, { height, top, scale }) => sum + (height + top) * scale, 0);
   const gap = (state.height - totalHeight) / (blocks.length + 1);
   let y = gap;
   for (const block of blocks) {
-    const { width, height, scale } = block;
-    block.x = (config.leftToolbar.width - width * scale) / 2;
+    const { width, height, right, top, scale } = block;
+    block.x = (config.leftToolbar.width - (width + right) * scale) / 2;
     block.y = y;
-    y += height * scale + gap;
+    y += (height + top) * scale + gap;
   }
 
   return (

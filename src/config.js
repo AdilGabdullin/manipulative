@@ -19,16 +19,16 @@ const config = {
     angle: 30,
     depthScale: 0.5,
     options: {
-      1: { label: 1, size: [1, 1, 1], fill: "#ffc107", dark: "#ffa000", width: null, height: null, top: null },
-      10: { label: 10, size: [1, 10, 1], fill: "#03a9f4", dark: "#0288d1", width: null, height: null, top: null },
-      100: { label: 100, size: [10, 10, 1], fill: "#ff5722", dark: "#e44c1c", width: null, height: null, top: null },
-      1000: { label: 1000, size: [10, 10, 10], fill: "#39c669", dark: "#008d35", width: null, height: null, top: null },
+      1: { label: "1", size: [1, 1, 1], fill: "#ffc107", dark: "#ffa000" },
+      10: { label: "10", size: [1, 10, 1], fill: "#03a9f4", dark: "#0288d1" },
+      100: { label: "100", size: [10, 10, 1], fill: "#ff5722", dark: "#e44c1c" },
+      1000: { label: "1000", size: [10, 10, 10], fill: "#39c669", dark: "#008d35" },
     },
   },
   leftToolbar: {
     width: 180,
     padding: 20,
-  }
+  },
 };
 
 Object.values(config.block.options).forEach((option) => {
@@ -37,10 +37,9 @@ Object.values(config.block.options).forEach((option) => {
   const top = sin(angle) * sz * depthScale;
   const right = cos(angle) * sz * depthScale;
   option.top = top;
-  option.width = sx + right;
-  option.height = sy + top;
+  option.right = right;
+  option.width = sx;
+  option.height = sy;
 });
-
-
 
 export default config;
