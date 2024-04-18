@@ -2,7 +2,7 @@ import { Stage, Layer } from "react-konva";
 import { useEffect, useLayoutEffect, useRef } from "react";
 import SelectRect, { selectRectMove, selectRectStop } from "./SelectRect";
 import { useAppStore } from "../state/store";
-import LeftToolbar, { leftToolbarWidth } from "./LeftToolbar";
+import LeftToolbar  from "./LeftToolbar";
 import { getStageXY, pointsIsClose } from "../util";
 import TopToolbar, { topToolbarHeight } from "./TopToolbar";
 import Menu from "./Menu";
@@ -12,6 +12,7 @@ import Elements from "./Elements";
 import FreeDrawing from "./FreeDrawing";
 import ImagePreloader from "./ImagePreloader";
 import { appSaveText } from "./TextElement";
+import config from "../config";
 
 const App = () => {
   const state = useAppStore();
@@ -56,7 +57,7 @@ const App = () => {
     if (state.fdMode) {
       const { x, y } = getStageXY(stageRef.current, state);
       const pos = stageRef.current.getPointerPosition();
-      if (pos.x > leftToolbarWidth && pos.y < state.height - topToolbarHeight) {
+      if (pos.x > config.leftToolbar.width && pos.y < state.height - topToolbarHeight) {
         downPos = { x, y };
         findOne("fd-last-line").setAttrs({
           points: [x, y, x, y],

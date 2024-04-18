@@ -1,15 +1,15 @@
 import { Image, Line, Rect, Text } from "react-konva";
 import { useAppStore } from "../state/store";
-import { leftToolbarWidth } from "./LeftToolbar";
 import BrushMenu from "./BrushMenu";
 import { Fragment } from "react";
+import config from "../config";
 
 export const menuHeight = 50;
 
 const Menu = () => {
   const state = useAppStore();
   const { width, height, fdMode } = state;
-  const x = leftToolbarWidth;
+  const x = config.leftToolbar.width;
   const y = 0;
   return (
     <>
@@ -18,7 +18,7 @@ const Menu = () => {
       {fdMode ? (
         <BrushMenu x={x} y={y} height={menuHeight} />
       ) : (
-        <DefaultMenu x={x} y={y} height={menuHeight} width={width - leftToolbarWidth} />
+        <DefaultMenu x={x} y={y} height={menuHeight} width={width - config.leftToolbar.width} />
       )}
     </>
   );

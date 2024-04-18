@@ -1,6 +1,5 @@
 import { create } from "zustand";
 import { current, produce } from "immer";
-import { leftToolbarWidth } from "../components/LeftToolbar";
 import { clearSelected, elementBox, newId, numberBetween } from "../util";
 import { topToolbarHeight } from "../components/TopToolbar";
 import { maxOffset } from "../components/Scrolls";
@@ -297,6 +296,7 @@ export const useAppStore = create((set) => ({
 }));
 
 function keepOrigin(state) {
-  state.origin.x = ((state.width - leftToolbarWidth) / 2 + leftToolbarWidth) / state.scale;
+  const width = config.leftToolbar.width;
+  state.origin.x = ((state.width - width) / 2 + width) / state.scale;
   state.origin.y = state.height / 2 / state.scale;
 }

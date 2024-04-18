@@ -2,16 +2,18 @@ import { Group, Line, Rect } from "react-konva";
 import config from "../config";
 import { cos, sin } from "../util";
 
-export const Block = ({ id, x, y, size, label, events }) => {
-  const { blockSize, blocks, colors, angle } = config;
-  const [sx, sy, sz] = size;
-  const width = sx * blockSize;
-  const height = sy * blockSize;
-  const depthStepX = cos(angle) * blockSize * 0.5;
-  const depthStepY = sin(angle) * blockSize * 0.5;
+export const Block = ({ id, x, y, label, scale, events }) => {
+  const { colors } = config;
+  const { angle, depthScale, options } = config.block;
+  const option = options[label];
+  const { fill, dark } = option;
+  const [sx, sy, sz] = option.size;
+  const width = sx * scale;
+  const height = sy * scale;
+  const depthStepX = cos(angle) * scale * depthScale;
+  const depthStepY = sin(angle) * scale * depthScale;
   const depthX = depthStepX * sz;
   const depthY = depthStepY * sz;
-  const { fill, dark } = blocks[label];
   const stroke = colors.black;
 
   const hPoints = [0, 0, width, 0];
@@ -20,23 +22,23 @@ export const Block = ({ id, x, y, size, label, events }) => {
 
   const lines = [];
   for (let i = 0; i <= sy; i += 1) {
-    lines.push({ x: 0, y: blockSize * i, points: hPoints });
+    lines.push({ x: 0, y: scale * i, points: hPoints });
   }
   for (let i = 1; i <= sz; i += 1) {
     lines.push({ x: depthStepX * i, y: -depthStepY * i, points: hPoints });
   }
 
   for (let i = 0; i <= sx; i += 1) {
-    lines.push({ x: blockSize * i, y: 0, points: vPoints });
+    lines.push({ x: scale * i, y: 0, points: vPoints });
   }
   for (let i = 1; i <= sz; i += 1) {
     lines.push({ x: width + depthStepX * i, y: -depthStepY * i, points: vPoints });
   }
   for (let i = 0; i <= sx; i += 1) {
-    lines.push({ x: blockSize * i, y: 0, points: zPoints });
+    lines.push({ x: scale * i, y: 0, points: zPoints });
   }
   for (let i = 1; i <= sy; i += 1) {
-    lines.push({ x: width, y: blockSize * i, points: zPoints });
+    lines.push({ x: width, y: scale * i, points: zPoints });
   }
 
   return (
