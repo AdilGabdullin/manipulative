@@ -30,6 +30,10 @@ const config = {
     width: 180,
     padding: 20,
   },
+  summary: {
+    fontSize: 36,
+    height: 56,
+  },
   animationDuration: 400,
 };
 

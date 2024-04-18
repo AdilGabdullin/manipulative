@@ -13,6 +13,7 @@ import FreeDrawing from "./FreeDrawing";
 import ImagePreloader from "./ImagePreloader";
 import { appSaveText } from "./TextElement";
 import config from "../config";
+import Summary from "./Summary";
 
 const App = () => {
   const state = useAppStore();
@@ -308,6 +309,7 @@ const App = () => {
             <LeftToolbar findOne={findOne} />
             <Menu />
             <Scrolls />
+            <Summary />
             <SelectedFrame findOne={findOne} />
           </Layer>
         )}
