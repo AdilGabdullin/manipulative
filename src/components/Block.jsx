@@ -2,7 +2,8 @@ import { Group, Line, Rect } from "react-konva";
 import config from "../config";
 import { cos, getStageXY, pointsIsClose, sin } from "../util";
 import { useAppStore } from "../state/store";
-import { useRef } from "react";
+import { useEffect, useRef } from "react";
+import { Animation } from "konva/lib/Animation";
 
 export const Block = ({ id, x, y, size, label, scale, visible, events }) => {
   const { angle, depthScale, options, stroke } = config.block;
@@ -152,15 +153,10 @@ export const BoardBlock = (props) => {
   const x = props.x + origin.x;
   const y = props.y + origin.y;
   const groupRef = useRef();
-  // useEffect(() => {
-  //   if (annihilation) animateAnnihilation(groupRef.current);
-  //   if (moveTo) animateMove(groupRef.current, moveTo.x - props.x, moveTo.y - props.y);
-  //   if (invert) {
-  //     const inSolving = state.workspace == workspace.solving && boxesIntersect(props, solvingRectProps(state));
-  //     animateInvert(groupRef.current, props, origin, multiColored, inSolving);
-  //   }
-  //   if (rotate) animateRotate(groupRef.current, props, origin, multiColored);
-  // }, [annihilation, moveTo, invert, rotate]);
+  const { moveTo } = props;
+  useEffect(() => {
+    if (moveTo) animateMove(groupRef.current.children[0], x, y, moveTo.x + origin.x, moveTo.y + origin.y);
+  }, [moveTo]);
 
   const events = {
     draggable: true,
@@ -222,4 +218,21 @@ function magnetToOne(block, other) {
     if (pointsIsClose({ x: x + dx, y: y + dy }, other)) return { x: other.x - dx, y: other.y - dy };
   }
   return null;
+}
+
+function animateMove(node, xFrom, yFrom, xTo, yTo) {
+  const animation = new Animation(({ time }) => {
+    if (time > config.animationDuration) {
+      animation.stop();
+      // node.setAttrs({ x: 0, y: 0 });
+      return;
+    }
+    const t = time / config.animationDuration;
+    const k = (t * t) / (2 * (t * t - t) + 1);
+    node.setAttrs({
+      x: xFrom * (1 - k) + xTo * k,
+      y: yFrom * (1 - k) + yTo * k,
+    });
+  }, node.getLayer());
+  animation.start();
 }

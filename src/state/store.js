@@ -221,6 +221,39 @@ export const useAppStore = create((set) => ({
       })
     ),
 
+  breakSelected: () =>
+    set(
+      produce((state) => {
+        let selectedId;
+        const scale = config.block.size;
+        while ((selectedId = state.selected.pop())) {
+          const target = state.elements[selectedId];
+          for (let i = 0; i < 10; i += 1) {
+            const id = newId();
+            const props = config.block.options[1];
+            const { width, height, top, right } = props;
+            const sign = i % 2 == 0 ? -1 : 1;
+            state.elements[id] = {
+              ...props,
+              id,
+              type: "block",
+              x: target.x,
+              y: target.y + i * scale,
+              moveTo: { x: target.x + scale * sign, y: target.y + i * scale - (scale / 2) * sign },
+              width: width * scale,
+              height: height * scale,
+              top: top * scale,
+              right: right * scale,
+              scale,
+            };
+            state.lastActiveElement = id;
+          }
+          delete state.elements[selectedId];
+        }
+        state.lastActiveElement = null;
+        state.finishDelay = config.animationDuration;
+      })
+    ),
   deleteSelected: () =>
     set(
       produce((state) => {
@@ -301,6 +334,42 @@ export const useAppStore = create((set) => ({
           state.lastActiveElement = id;
         }
         state.fdMode = null;
+        clearSelected(state);
+        pushHistory(state);
+      })
+    ),
+
+  finishDelay: null,
+  finishAnimations: () =>
+    set(
+      produce((state) => {
+        for (const id in current(state.elements)) {
+          const element = state.elements[id];
+          if (element.moveTo) {
+            element.x = element.moveTo.x;
+            element.y = element.moveTo.y;
+            element.moveTo = null;
+          }
+          // if (element.delete) {
+          //   delete state.elements[id];
+          // }
+          // if (element.invert) {
+          //   if (state.workspace == workspace.solving && boxesIntersect(element, solvingRectProps(state))) {
+          //     element.x = -element.x - element.width;
+          //   }
+          //   element.text = invertText(element.text);
+          //   delete element.invert;
+          // }
+          // if (element.rotate) {
+          //   const { x, y, width, height } = element;
+          //   element.width = height;
+          //   element.height = width;
+          //   element.x = x + width / 2 - height / 2;
+          //   element.y = y + height / 2 - width / 2;
+          //   delete element.rotate;
+          // }
+        }
+        state.finishDelay = null;
         clearSelected(state);
         pushHistory(state);
       })

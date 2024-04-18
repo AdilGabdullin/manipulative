@@ -78,6 +78,14 @@ const SelectedFrame = (props) => {
       },
     },
     {
+      text: "Break",
+      active: !lockSelect,
+      show: selected.some((id) => elements[id].type == "block"),
+      onPointerClick: (e) => {
+        state.breakSelected();
+      },
+    },
+    {
       text: "Rotate",
       active: !lockSelect,
       show: selected.length == 1 && elements[selected[0]]?.type == "block" && elements[selected[0]]?.label == 10,

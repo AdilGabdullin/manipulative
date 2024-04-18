@@ -17,12 +17,16 @@ const elementList = {
 
 const Elements = () => {
   const state = useAppStore();
-  const { elements } = state;
+  const { elements, finishDelay, finishAnimations } = state;
+
+  if (finishDelay) {
+    setTimeout(finishAnimations, finishDelay + 50);
+  }
 
   return (
     <>
       {Object.values(elements)
-        .toSorted((e1, e2) => e1.x - e2.x - e1.y + e2.y)
+        .toSorted((e1, e2) => (e1.x - e2.x) * 10 - e1.y + e2.y)
         .map((element) => {
           const Element = elementList[element.type];
           return <Element key={element.id} {...element} />;

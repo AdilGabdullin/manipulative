@@ -30,6 +30,7 @@ const config = {
     width: 180,
     padding: 20,
   },
+  animationDuration: 400,
 };
 
 Object.values(config.block.options).forEach((option) => {
