@@ -198,6 +198,19 @@ export const useAppStore = create((set) => ({
       })
     ),
 
+  rotateBlock10: (id) =>
+    set(
+      produce((state) => {
+        const element = state.elements[id];
+        const size = element.size;
+        const { width, height } = current(element);
+        size[0] = size[0] == 1 ? 10 : 1;
+        size[1] = size[1] == 1 ? 10 : 1;
+        element.width = height;
+        element.height = width;
+      })
+    ),
+
   updateElement: (id, attrs, doPush = true) =>
     set(
       produce((state) => {

@@ -4,12 +4,11 @@ import { cos, getStageXY, pointsIsClose, sin } from "../util";
 import { useAppStore } from "../state/store";
 import { useRef } from "react";
 
-export const Block = ({ id, x, y, label, scale, visible, events }) => {
-  const { colors } = config;
+export const Block = ({ id, x, y, size, label, scale, visible, events }) => {
   const { angle, depthScale, options, stroke } = config.block;
   const option = options[label];
   const { fill, dark } = option;
-  const [sx, sy, sz] = option.size;
+  const [sx, sy, sz] = size || option.size;
   const width = sx * scale;
   const height = sy * scale;
   const depthStepX = cos(angle) * scale * depthScale;
@@ -80,6 +79,21 @@ export const ToolbarBlock = (props) => {
     return boardShadow || (boardShadow = e.target.getStage().findOne("#shadow-block-" + props.label));
   };
 
+  const add = (pos, place) => {
+    const { width, height, top, right } = props;
+    addElement({
+      ...props,
+      type: "block",
+      x: pos ? pos.x : place.x,
+      y: pos ? pos.y : place.y,
+      width: width * scale,
+      height: height * scale,
+      top: top * scale,
+      right: right * scale,
+      scale,
+    });
+  };
+
   const events = {
     onDragStart: (e) => {
       shadow.current.visible(true);
@@ -104,29 +118,18 @@ export const ToolbarBlock = (props) => {
       if (out) {
         const place = placeProps(e);
         const pos = magnetToAll(place, elements);
-        const { width, height, top, right } = props;
-        addElement({
-          ...props,
-          type: "block",
-          x: pos ? pos.x : place.x,
-          y: pos ? pos.y : place.y,
-          width: width * scale,
-          height: height * scale,
-          top: top * scale,
-          right: right * scale,
-          scale,
-        });
+        add(pos, place);
       }
     },
     onPointerClick: (e) => {
-      // const { width, height } = placeProps(e);
-      // const pos = { x: -width / 2, y: -height / 2 };
-      // const last = elements[lastActiveElement];
-      // if (last) {
-      //   pos.x = last.x;
-      //   pos.y = last.y - height;
-      // }
-      // addElement({ type: tileType, width, height, text, color, borderColor, ...pos });
+      const { width, height } = props;
+      const pos = { x: -width / 2, y: -height / 2 };
+      const last = elements[state.lastActiveElement];
+      if (last) {
+        pos.x = last.x;
+        pos.y = last.y - height * scale;
+      }
+      add(pos);
     },
   };
 

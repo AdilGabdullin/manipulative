@@ -78,9 +78,17 @@ const SelectedFrame = (props) => {
       },
     },
     {
+      text: "Rotate",
+      active: !lockSelect,
+      show: selected.length == 1 && elements[selected[0]]?.type == "block" && elements[selected[0]]?.label == 10,
+      onPointerClick: (e) => {
+        state.rotateBlock10(selected[0]);
+      },
+    },
+    {
       text: "Fill On/Off",
       active: !lockSelect,
-      show: selected.some((id) => elements[id].fill != undefined),
+      show: selected.some((id) => elements[id].fill != undefined && elements[id].type != "block"),
       onPointerClick: (e) => {
         state.toggleValueSelected("fill");
       },
