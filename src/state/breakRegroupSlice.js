@@ -3,6 +3,12 @@ import { arrayChunk, avg, clearSelected, cos, newId, sin } from "../util";
 import { pushHistory } from "./historySlice";
 import config from "../config";
 
+const { animationDuration } = config;
+const { size, depthScale, angle } = config.block;
+const scale = size;
+const depthStepX = cos(angle) * scale * depthScale;
+const depthStepY = sin(angle) * scale * depthScale;
+
 export const breakRegroupSlice = (set) => ({
   finishDelay: null,
   finishAnimations: () =>
@@ -49,7 +55,9 @@ export const breakRegroupSlice = (set) => ({
         let id;
         while ((id = state.selected.pop())) {
           const target = state.elements[id];
-          if (target.label == 10) {
+          if (target.label == 1) {
+            continue;
+          } else if (target.label == 10) {
             createBlocks1(state, target);
           } else if (target.label == 100) {
             createBlocks10(state, target);
@@ -59,28 +67,29 @@ export const breakRegroupSlice = (set) => ({
           delete state.elements[id];
         }
         state.lastActiveElement = null;
-        state.finishDelay = config.animationDuration;
+        state.finishDelay = animationDuration;
       })
     ),
   regroupSelected: () =>
     set(
       produce((state) => {
-        const scale = config.block.size;
         const entries = Object.entries(blocksByValue(current(state)));
         for (const [label, list] of entries) {
           for (const chunk of arrayChunk(list, 10)) {
             if (chunk.length < 10) continue;
-            const { x, y } = avgPos(chunk);
+            const { x, y } = avgPos(chunk, label);
             createBlock(state, label * 10, x, y, 0, 0, true);
             chunk.forEach(({ id }, i) => {
               const block = state.elements[id];
-              block.moveTo = { x, y: y + scale * i };
+              if (label == 1) block.moveTo = { x, y: y + scale * i };
+              if (label == 10) block.moveTo = { x: x + scale * i, y: y };
+              if (label == 100) block.moveTo = { x: x + depthStepX * i, y: y - depthStepY * i };
               block.deleteAfterMove = true;
               block.ignoreSum = true;
             });
           }
         }
-        state.finishDelay = config.animationDuration;
+        state.finishDelay = animationDuration;
         clearSelected(state);
       })
     ),
@@ -92,13 +101,28 @@ function blocksByValue(state) {
   return Object.groupBy(blocks, (e) => e.label);
 }
 
-function avgPos(blocks) {
-  const scale = config.block.size;
-  return { x: avg(blocks.map((d) => d.x)), y: avg(blocks.map((d) => d.y)) - scale * 4.5 };
+export function regroupPossible(state) {
+  return Object.values(blocksByValue(state)).some((arr) => arr.length >= 10);
+}
+
+function avgPos(blocks, label) {
+  const pos = { x: avg(blocks.map((d) => d.x)), y: avg(blocks.map((d) => d.y)) };
+  switch (label) {
+    case "1":
+      pos.y -= scale * 4.5;
+      break;
+    case "10":
+      pos.x -= scale * 4.5;
+      break;
+    case "100":
+      pos.x -= scale * 2;
+      pos.y += scale * 1.1;
+      break;
+  }
+  return pos;
 }
 
 function createBlocks1(state, { x, y }) {
-  const scale = config.block.size;
   for (let i = 0; i < 10; i += 1) {
     const sign = i % 2 == 0 ? -1 : 1;
     createBlock(state, 1, x, y + i * scale, scale * sign, -(scale / 2) * sign);
@@ -106,7 +130,6 @@ function createBlocks1(state, { x, y }) {
 }
 
 function createBlocks10(state, { x, y }) {
-  const scale = config.block.size;
   for (let i = 0; i < 10; i += 1) {
     const sign = i % 2 == 0 ? -1 : 1;
     createBlock(state, 10, x + i * scale, y, -(scale / 2) * sign, 5.5 * scale * sign);
@@ -114,10 +137,6 @@ function createBlocks10(state, { x, y }) {
 }
 
 function createBlocks100(state, { x, y }) {
-  const { size, depthScale, angle } = config.block;
-  const scale = size;
-  const depthStepX = cos(angle) * scale * depthScale;
-  const depthStepY = sin(angle) * scale * depthScale;
   for (let i = 0; i < 10; i += 1) {
     const sign = i < 5 == 0 ? 1 : -1;
     createBlock(state, 100, x + i * depthStepX, y - i * depthStepY, -2.5 * depthStepX * sign, -5.5 * scale * sign);
@@ -125,7 +144,6 @@ function createBlocks100(state, { x, y }) {
 }
 
 function createBlock(state, label, x, y, dx, dy, visibleAfterMove = false) {
-  const scale = config.block.size;
   const id = newId();
   const props = config.block.options[label];
   const { width, height, top, right } = props;

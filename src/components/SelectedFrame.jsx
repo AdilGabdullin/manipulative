@@ -1,9 +1,10 @@
 import { Rect, Text } from "react-konva";
-import { gridStep, useAppStore } from "../state/store";
+import { useAppStore } from "../state/store";
 import { Fragment, useEffect } from "react";
 import { elementBox, setVisibility, setVisibilityFrame } from "../util";
 import ShapeResizeHandles from "./ShapeResizeHandles";
 import { createTextArea } from "./TextElement";
+import { regroupPossible } from "../state/breakRegroupSlice";
 
 const SelectedFrame = (props) => {
   const state = useAppStore();
@@ -79,16 +80,16 @@ const SelectedFrame = (props) => {
     },
     {
       text: "Break",
-      active: !lockSelect,
-      show: selected.some((id) => elements[id].type == "block" && elements[id].label != "1"),
+      active: !lockSelect && selected.some((id) => elements[id].label != "1"),
+      show: selected.some((id) => elements[id].type == "block"),
       onPointerClick: (e) => {
         state.breakSelected();
       },
     },
     {
       text: "Regroup",
-      active: !lockSelect,
-      show: selected.some((id) => elements[id].type == "block" && true),
+      active: !lockSelect && regroupPossible(state),
+      show: selected.some((id) => elements[id].type == "block"),
       onPointerClick: (e) => {
         state.regroupSelected();
       },
