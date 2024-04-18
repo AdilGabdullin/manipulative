@@ -18,6 +18,7 @@ const config = {
     size: 20,
     angle: 30,
     depthScale: 0.5,
+    stroke: "white",
     options: {
       1: { label: "1", size: [1, 1, 1], fill: "#ffc107", dark: "#ffa000" },
       10: { label: "10", size: [1, 10, 1], fill: "#03a9f4", dark: "#0288d1" },

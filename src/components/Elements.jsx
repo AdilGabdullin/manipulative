@@ -19,13 +19,14 @@ const Elements = () => {
   const state = useAppStore();
   const { elements } = state;
 
-  const list = sortedElements(elements);
   return (
     <>
-      {list.map((element) => {
-        const Element = elementList[element.type];
-        return <Element key={element.id} {...element} />;
-      })}
+      {Object.values(elements)
+        .toSorted((e1, e2) => e1.x - e2.x - e1.y + e2.y)
+        .map((element) => {
+          const Element = elementList[element.type];
+          return <Element key={element.id} {...element} />;
+        })}
       <Rect id="shadow-rect" visible={false} />
       <Ellipse id="shadow-ellipse" visible={false} />
       <Line id="shadow-line" visible={false} lineCap={"round"} lineJoin={"round"} />
@@ -37,9 +38,5 @@ const Elements = () => {
     </>
   );
 };
-
-function sortedElements(elements) {
-  return Object.values(elements);
-}
 
 export default Elements;

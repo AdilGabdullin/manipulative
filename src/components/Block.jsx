@@ -1,12 +1,12 @@
 import { Group, Line, Rect } from "react-konva";
 import config from "../config";
-import { cos, getStageXY, sin } from "../util";
+import { cos, getStageXY, pointsIsClose, sin } from "../util";
 import { useAppStore } from "../state/store";
 import { useRef } from "react";
 
 export const Block = ({ id, x, y, label, scale, visible, events }) => {
   const { colors } = config;
-  const { angle, depthScale, options } = config.block;
+  const { angle, depthScale, options, stroke } = config.block;
   const option = options[label];
   const { fill, dark } = option;
   const [sx, sy, sz] = option.size;
@@ -16,7 +16,6 @@ export const Block = ({ id, x, y, label, scale, visible, events }) => {
   const depthStepY = sin(angle) * scale * depthScale;
   const depthX = depthStepX * sz;
   const depthY = depthStepY * sz;
-  const stroke = colors.black;
 
   const hPoints = [0, 0, width, 0];
   const vPoints = [0, 0, 0, height];
@@ -63,7 +62,7 @@ export const Block = ({ id, x, y, label, scale, visible, events }) => {
 
 export const ToolbarBlock = (props) => {
   const state = useAppStore();
-  const { origin, addElement } = state;
+  const { origin, elements, addElement } = state;
   const shadow = useRef();
   const scale = config.block.size;
 
@@ -90,8 +89,7 @@ export const ToolbarBlock = (props) => {
       const out = outOfToolbar(e);
       target.visible(!out);
       const place = placeProps(e);
-      // const pos = magnetToAll(place, elements, factorsRect);
-      const pos = null;
+      const pos = magnetToAll(place, elements);
       const x = origin.x + (pos ? pos.x : place.x);
       const y = origin.y + (pos ? pos.y : place.y);
       getBoardShadow(e).setAttrs({ x, y, visible: out });
@@ -105,8 +103,7 @@ export const ToolbarBlock = (props) => {
       getBoardShadow(e).visible(false);
       if (out) {
         const place = placeProps(e);
-        // const pos = magnetToAll(place, elements, factorsRect);
-        const pos = null;
+        const pos = magnetToAll(place, elements);
         const { width, height, top, right } = props;
         addElement({
           ...props,
@@ -168,8 +165,7 @@ export const BoardBlock = (props) => {
     onDragMove: (e) => {
       const dx = e.target.x() - x;
       const dy = e.target.y() - y;
-      // const pos = magnetToAll({ ...props, x: props.x + dx, y: props.y + dy }, elements, factorsRect);
-      const pos = null;
+      const pos = magnetToAll({ ...props, x: props.x + dx, y: props.y + dy }, elements);
       if (pos) {
         e.target.setAttrs({ x: origin.x + pos.x, y: origin.y + pos.y });
       }
@@ -187,3 +183,40 @@ export const BoardBlock = (props) => {
     </Group>
   );
 };
+
+export function magnetToAll(block, elements) {
+  for (const [id, element] of Object.entries(elements)) {
+    if (block.id == id || element.type != "block") continue;
+    const pos = magnetToOne(block, element);
+    if (pos) return pos;
+  }
+  return null;
+}
+
+function magnetToOne(block, other) {
+  const { x, y, width, height } = block;
+
+  const options = [
+    [0, 0],
+    [width, 0],
+    [0, height],
+    [width, height],
+    [-other.width, 0],
+    [-other.width + width, 0],
+    [-other.width + 0, height],
+    [-other.width + width, height],
+    [0, 0 - other.height],
+    [width, 0 - other.height],
+    [0, height - other.height],
+    [width, height - other.height],
+    [-other.width + 0, 0 - other.height],
+    [-other.width + width, 0 - other.height],
+    [-other.width + 0, height - other.height],
+    [-other.width + width, height - other.height],
+  ];
+
+  for (const [dx, dy] of options) {
+    if (pointsIsClose({ x: x + dx, y: y + dy }, other)) return { x: other.x - dx, y: other.y - dy };
+  }
+  return null;
+}
