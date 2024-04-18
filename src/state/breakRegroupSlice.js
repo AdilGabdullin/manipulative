@@ -1,5 +1,5 @@
 import { current, produce } from "immer";
-import { clearSelected, cos, newId, sin } from "../util";
+import { arrayChunk, avg, clearSelected, cos, newId, sin } from "../util";
 import { pushHistory } from "./historySlice";
 import config from "../config";
 
@@ -15,9 +15,13 @@ export const breakRegroupSlice = (set) => ({
             element.y = element.moveTo.y;
             element.moveTo = null;
           }
-          // if (element.delete) {
-          //   delete state.elements[id];
-          // }
+          if (element.deleteAfterMove) {
+            delete state.elements[id];
+          }
+          if (element.visibleAfterMove) {
+            state.elements[id].visibleAfterMove = null;
+            state.elements[id].visible = true;
+          }
           // if (element.invert) {
           //   if (state.workspace == workspace.solving && boxesIntersect(element, solvingRectProps(state))) {
           //     element.x = -element.x - element.width;
@@ -58,7 +62,40 @@ export const breakRegroupSlice = (set) => ({
         state.finishDelay = config.animationDuration;
       })
     ),
+  regroupSelected: () =>
+    set(
+      produce((state) => {
+        const scale = config.block.size;
+        const entries = Object.entries(blocksByValue(current(state)));
+        for (const [label, list] of entries) {
+          for (const chunk of arrayChunk(list, 10)) {
+            if (chunk.length < 10) continue;
+            const { x, y } = avgPos(chunk);
+            createBlock(state, label * 10, x, y, 0, 0, true);
+            chunk.forEach(({ id }, i) => {
+              const block = state.elements[id];
+              block.moveTo = { x, y: y + scale * i };
+              block.deleteAfterMove = true;
+              block.ignoreSum = true;
+            });
+          }
+        }
+        state.finishDelay = config.animationDuration;
+        clearSelected(state);
+      })
+    ),
 });
+
+function blocksByValue(state) {
+  const { elements, selected } = state;
+  const blocks = Object.values(elements).filter((e) => e.type == "block" && selected.includes(e.id));
+  return Object.groupBy(blocks, (e) => e.label);
+}
+
+function avgPos(blocks) {
+  const scale = config.block.size;
+  return { x: avg(blocks.map((d) => d.x)), y: avg(blocks.map((d) => d.y)) - scale * 4.5 };
+}
 
 function createBlocks1(state, { x, y }) {
   const scale = config.block.size;
@@ -87,7 +124,7 @@ function createBlocks100(state, { x, y }) {
   }
 }
 
-function createBlock(state, label, x, y, dx, dy) {
+function createBlock(state, label, x, y, dx, dy, visibleAfterMove = false) {
   const scale = config.block.size;
   const id = newId();
   const props = config.block.options[label];
@@ -104,6 +141,9 @@ function createBlock(state, label, x, y, dx, dy) {
     top: top * scale,
     right: right * scale,
     scale,
+    visible: !visibleAfterMove,
+    visibleAfterMove,
+    locked: false,
   };
   state.lastActiveElement = id;
 }

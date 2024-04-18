@@ -86,6 +86,14 @@ const SelectedFrame = (props) => {
       },
     },
     {
+      text: "Regroup",
+      active: !lockSelect,
+      show: selected.some((id) => elements[id].type == "block" && true),
+      onPointerClick: (e) => {
+        state.regroupSelected();
+      },
+    },
+    {
       text: "Rotate",
       active: !lockSelect,
       show: selected.length == 1 && elements[selected[0]]?.type == "block" && elements[selected[0]]?.label == 10,

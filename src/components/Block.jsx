@@ -6,6 +6,8 @@ import { useEffect, useRef } from "react";
 import { Animation } from "konva/lib/Animation";
 
 export const Block = ({ id, x, y, size, label, scale, visible, events }) => {
+  x = Math.round(x) || 0;
+  y = Math.round(y) || 0;
   const { angle, depthScale, options, stroke } = config.block;
   const option = options[label];
   const { fill, dark } = option;
@@ -124,7 +126,7 @@ export const ToolbarBlock = (props) => {
     },
     onPointerClick: (e) => {
       const { width, height } = props;
-      const pos = { x: -width / 2, y: -height / 2 };
+      const pos = { x: (-width / 2) * scale, y: (-height / 2) * scale };
       const last = elements[state.lastActiveElement];
       if (last) {
         pos.x = last.x;
