@@ -1,8 +1,8 @@
-import { Image, Line, Rect, Text } from "react-konva";
+import { Group, Line, Rect, Text } from "react-konva";
 import { useAppStore } from "../state/store";
 import { leftToolbarWidth } from "./LeftToolbar";
 import BrushMenu from "./BrushMenu";
-import { Fragment } from "react";
+import { colors } from "../config";
 
 export const menuHeight = 50;
 
@@ -26,73 +26,57 @@ const Menu = () => {
 
 const DefaultMenu = (props) => {
   const state = useAppStore();
-  const { x, y } = props;
+  let { x, y } = props;
 
-  let buttons = [
-    // {
-    //   text: "Whole Numbers",
-    //   field: "mode",
-    //   fill: state.mode == "Whole Numbers",
-    //   image: null,
-    //   width: 118,
-    //   shift: 0,
-    // },
-    // {
-    //   text: "Decimals",
-    //   field: "mode",
-    //   fill: state.mode == "Decimals",
-    //   image: null,
-    //   width: 65,
-    //   shift: 35,
-    // },
+  const buttons = [
+    {
+      text: "Summary",
+      field: "showSummary",
+      fill: state.showSummary,
+      width: 70,
+      onClick: () => state.setValue("showSummary", !state.showSummary),
+    },
+    {
+      text: "Multi-colored",
+      field: "multiColored",
+      fill: state.multiColored,
+      width: 100,
+      onClick: () => state.setValue("multiColored", !state.multiColored),
+    },
   ];
   const padding = 8;
   const buttonHeight = 20;
-  const buttonWidth = 110;
 
-  const onPointerClick = (field, text) => (e) => {
-    e.cancelBubble = true;
-    // if (field == "mode") {
-    //   state.setMode(text);
-    // } else {
-    //   state.toggleGlobal(field);
-    // }
-  };
-
+  x += padding;
   return (
     <>
-      {buttons.map(({ text, field, image, width, shift, fill }, i) => {
+      {buttons.map(({ text, field, width, fill, onClick }, i) => {
+        x += width + padding * 3;
         return (
-          <Fragment key={text}>
+          <Group
+            key={text}
+            onPointerClick={(e) => {
+              e.cancelBubble = true;
+              onClick();
+            }}
+          >
             <Rect
-              x={x + padding + buttonWidth * i + shift}
+              x={x - width - padding * 3}
               y={y + padding}
               width={width + padding * 2}
               height={buttonHeight + padding * 2}
               cornerRadius={5}
-              fill={fill ? "#e8f4fe" : "#ffffff"}
-              onPointerClick={onPointerClick(field, text)}
+              fill={fill ? colors.solitude : colors.white}
             />
-            {image && (
-              <Image
-                image={image}
-                x={x + padding + buttonWidth * i + 4 + shift}
-                y={y + padding + 4}
-                width={30}
-                height={(image.height / image.width) * 30}
-                onPointerClick={onPointerClick(field, text)}
-              />
-            )}
             <Text
-              x={x + padding * 2 + buttonWidth * i + (image ? 33 : 0) + shift}
+              x={x - width - padding * 2}
               y={y + padding * 2}
               text={text}
               fill={"black"}
               fontSize={18}
               fontFamily="Calibri"
-              onPointerClick={onPointerClick(field, text)}
             />
-          </Fragment>
+          </Group>
         );
       })}
     </>
