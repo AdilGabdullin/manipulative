@@ -29,7 +29,10 @@ export const useAppStore = create((set) => ({
   origin: { x: 0, y: 0 },
   selected: [],
   lockSelect: false,
-  showSummary: true,
+  
+  showLabels: false,
+  showSummary: false,
+  multiColored: true,
 
   fullscreen: true,
   toggleGlobal: (field) =>

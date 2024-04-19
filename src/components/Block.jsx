@@ -6,11 +6,12 @@ import { useEffect, useRef } from "react";
 import { Animation } from "konva/lib/Animation";
 
 export const Block = ({ id, x, y, size, label, scale, visible, events }) => {
+  const multiColored = useAppStore((state) => state.multiColored);
   x = Math.round(x) || 0;
   y = Math.round(y) || 0;
   const { angle, depthScale, options, stroke } = config.block;
   const option = options[label];
-  const { fill, dark } = option;
+  const { fill, dark } = multiColored ? option : options[10];
   const [sx, sy, sz] = size || option.size;
   const width = sx * scale;
   const height = sy * scale;

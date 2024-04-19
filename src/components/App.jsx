@@ -2,7 +2,7 @@ import { Stage, Layer } from "react-konva";
 import { useEffect, useLayoutEffect, useRef } from "react";
 import SelectRect, { selectRectMove, selectRectStop } from "./SelectRect";
 import { useAppStore } from "../state/store";
-import LeftToolbar  from "./LeftToolbar";
+import LeftToolbar from "./LeftToolbar";
 import { getStageXY, pointsIsClose } from "../util";
 import TopToolbar, { topToolbarHeight } from "./TopToolbar";
 import Menu from "./Menu";
@@ -309,7 +309,7 @@ const App = () => {
             <LeftToolbar findOne={findOne} />
             <Menu />
             <Scrolls />
-            <Summary />
+            {state.showSummary && <Summary />}
             <SelectedFrame findOne={findOne} />
           </Layer>
         )}
