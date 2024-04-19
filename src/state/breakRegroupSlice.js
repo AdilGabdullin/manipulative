@@ -54,15 +54,15 @@ export const breakRegroupSlice = (set) => ({
       produce((state) => {
         let id;
         while ((id = state.selected.pop())) {
-          const target = state.elements[id];
-          if (target.label == 1) {
+          const block = state.elements[id];
+          if (block.label == 1) {
             continue;
-          } else if (target.label == 10) {
-            createBlocks1(state, target);
-          } else if (target.label == 100) {
-            createBlocks10(state, target);
-          } else if (target.label == 1000) {
-            createBlocks100(state, target);
+          } else if (block.label == 10) {
+            createBlocks1(state, block);
+          } else if (block.label == 100) {
+            createBlocks10(state, block);
+          } else if (block.label == 1000) {
+            createBlocks100(state, block);
           }
           delete state.elements[id];
         }
@@ -122,10 +122,18 @@ function avgPos(blocks, label) {
   return pos;
 }
 
-function createBlocks1(state, { x, y }) {
-  for (let i = 0; i < 10; i += 1) {
-    const sign = i % 2 == 0 ? -1 : 1;
-    createBlock(state, 1, x, y + i * scale, scale * sign, -(scale / 2) * sign);
+function createBlocks1(state, { x, y, size }) {
+  const isVertical = size[0] < size[1];
+  if (isVertical) {
+    for (let i = 0; i < 10; i += 1) {
+      const sign = i % 2 == 0 ? -1 : 1;
+      createBlock(state, 1, x, y + i * scale, scale * sign, -(scale / 2) * sign);
+    }
+  } else {
+    for (let i = 0; i < 10; i += 1) {
+      const sign = i % 2 == 0 ? -1 : 1;
+      createBlock(state, 1, x + i * scale, y, -(scale / 2) * sign, scale * sign);
+    }
   }
 }
 

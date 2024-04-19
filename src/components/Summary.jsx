@@ -40,7 +40,7 @@ const Summary = () => {
   }
   const { elements } = state;
   const text = Object.values(elements)
-    .filter((e) => e.type == "block")
+    .filter((e) => e.type == "block" && e.visible)
     .reduce((sum, e) => sum + parseInt(e.label), 0)
     .toString();
   return <BasicSummary text={text} x={(state.width + config.leftToolbar.width) / 2} y={state.height - 80} />;
