@@ -25,12 +25,13 @@ export const useAppStore = create((set) => ({
   fullscreen: false,
   workspace: config.workspace.basic,
   numberSet: config.numberSet.whole,
+  blockSet: config.blockSet.cubes,
   width: 0,
   height: 0,
   origin: { x: 0, y: 0 },
   selected: [],
   lockSelect: false,
-  
+
   showLabels: false,
   showSummary: true,
   multiColored: true,
@@ -52,6 +53,16 @@ export const useAppStore = create((set) => ({
     set(
       produce((state) => {
         state[field] = value;
+        const elements = state.elements;
+        const { cubes, rods } = config.blockSet;
+        if (field == "blockSet") {
+          const toDelete = (block) => (block.label == 100 && value == rods) || (block.label == 1000 && value != cubes);
+          for (const id in current(elements)) {
+            if (elements[id].type == "block" && toDelete(elements[id])) {
+              delete elements[id];
+            }
+          }
+        }
       })
     ),
   setSize: () =>

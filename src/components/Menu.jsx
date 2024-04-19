@@ -29,43 +29,34 @@ const DefaultMenu = (props) => {
   const { x, y } = props;
   const { padding } = config.menu;
 
-  const width = [120, 86, 120];
+  const width = [110, 90, 86, 120];
   const xs = [];
   width.forEach((w, i) => {
-    let sum = 0;
+    let sumWidth = 0;
     for (let k = 0; k < i; k += 1) {
-      sum += width[k];
+      sumWidth += width[k];
     }
-    xs.push(x + padding * (i + 1) + sum);
+    xs.push(x + padding * (i + 1) + sumWidth);
   });
 
   return (
     <>
-      <SelectButton
-        x={xs[0]}
-        y={y + padding}
-        width={width[0]}
-        active={state.numberSet}
-        text="Number Set"
-        options={config.numberSet}
-        onSelect={(value) => {
-          state.setValue("numberSet", value);
-        }}
-      />
-      <ToggleButton
-        x={xs[1]}
-        y={y + padding}
-        fill={state.showSummary}
-        text="Summary"
-        width={width[1]}
-        onClick={() => state.toggle("showSummary")}
-      />
+      <SelectButton x={xs[0]} y={y + padding} width={width[0]} dropWidth={150} text="Number Set" field="numberSet" />
+      <SelectButton x={xs[1]} y={y + padding} width={width[1]} dropWidth={90} text="Block Set" field="blockSet" />
       <ToggleButton
         x={xs[2]}
         y={y + padding}
+        width={width[2]}
+        fill={state.showSummary}
+        text="Summary"
+        onClick={() => state.toggle("showSummary")}
+      />
+      <ToggleButton
+        x={xs[3]}
+        y={y + padding}
+        width={width[3]}
         fill={state.multiColored}
         text="Multi-colored"
-        width={width[2]}
         onClick={() => state.toggle("multiColored")}
       />
     </>
@@ -93,10 +84,17 @@ const ToggleButton = ({ x, y, text, width, fill, onClick }) => {
   );
 };
 
-const SelectButton = ({ x, y, width, active, text, options, onSelect }) => {
+const SelectButton = ({ x, y, width, dropWidth, text, field }) => {
+  const state = useAppStore();
   const [open, setOpen] = useState(false);
   const colors = config.colors;
   const { padding, height } = config.menu;
+
+  const active = state[field];
+  const options = config[field];
+  const onSelect = (value) => {
+    state.setValue(field, value);
+  };
 
   return (
     <Group
@@ -117,9 +115,9 @@ const SelectButton = ({ x, y, width, active, text, options, onSelect }) => {
         align="center"
       />
       <SelectOptions
-        x={x + (width - 160) / 2}
+        x={x + (width - dropWidth) / 2}
         y={y + height + 2 * padding}
-        width={160}
+        width={dropWidth}
         options={Object.values(options)}
         active={active}
         visible={open}

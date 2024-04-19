@@ -9,6 +9,11 @@ const config = {
     whole: "Whole Numbers",
     decimal: "Decimals",
   },
+  blockSet: {
+    cubes: "Cubes",
+    flats: "Flats",
+    rods: "Rods",
+  },
   colors: {
     black: "#000000",
     blue: "#2196f3",

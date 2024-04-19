@@ -7,13 +7,23 @@ import { Fragment } from "react";
 const LeftToolbar = () => {
   const state = useAppStore();
   const { width, padding } = config.leftToolbar;
-  const options = config.block.options;
+  const options = { ...config.block.options };
+  const { flats, rods } = config.blockSet;
+
   const scale = {
     1: 30,
     10: 20,
     100: (width - 2 * padding) / (options[100].width + options[100].right),
     1000: (width - 2 * padding) / (options[1000].width + options[1000].right),
   };
+
+  if (state.blockSet == flats) {
+    delete options[1000];
+  }
+  if (state.blockSet == rods) {
+    delete options[1000];
+    delete options[100];
+  }
 
   const blocks = [];
   for (const label in options) {
@@ -38,13 +48,6 @@ const LeftToolbar = () => {
       {blocks.map((block, i) => (
         <Fragment key={i}>
           <ToolbarBlock key={i} {...block} y={block.y + block.top * block.scale} />
-          {/* <Rect
-            x={block.x}
-            y={block.y}
-            width={block.width * block.scale}
-            height={block.height * block.scale}
-            stroke={"black"}
-          /> */}
         </Fragment>
       ))}
     </>
