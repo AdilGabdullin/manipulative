@@ -3,6 +3,7 @@ import { useAppStore } from "../state/store";
 import TextElement from "./TextElement";
 import RectElement from "./RectElement";
 import EllipseElement from "./EllipseElement";
+import LineElement from "./LineElement";
 import { BoardTile, Tile, tileType } from "./Tile";
 
 const Elements = () => {

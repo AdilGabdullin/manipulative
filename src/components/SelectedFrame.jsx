@@ -53,13 +53,18 @@ const SelectedFrame = (props) => {
     setVisibility(e, false);
   };
 
+  const others = {...elements};
+  for (const id of selected) {
+    delete others[id];
+  }
+
   const onDragMove = (e) => {
     let dx = (e.target.x() - x) / state.scale;
     let dy = (e.target.y() - y) / state.scale;
     for (const id of selected) {
       const tile = elements[id];
       if (tile.type != tileType) continue;
-      const pos = magnetToAll({ ...tile, x: tile.x + dx, y: tile.y + dy }, elements);
+      const pos = magnetToAll({ ...tile, x: tile.x + dx, y: tile.y + dy }, others);
       if (pos) {
         dx = pos.x - tile.x;
         dy = pos.y - tile.y;

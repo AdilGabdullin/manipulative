@@ -123,8 +123,8 @@ export const ToolbarTile = ({ x, y, text, width, height, placeWidth, placeHeight
       const pos = { x: -width / 2, y: -height / 2 };
       const last = elements[lastActiveElement];
       if (last) {
-        pos.x = last.x;
-        pos.y = last.y - height;
+        pos.x = last.x + last.width;
+        pos.y = last.y;
       }
       addElement({ type: tileType, width, height, text, color, borderColor, ...pos });
     },
