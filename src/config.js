@@ -5,6 +5,10 @@ const config = {
     basic: "Basic",
     other: "Other",
   },
+  numberSet: {
+    whole: "Whole Numbers",
+    decimal: "Decimals",
+  },
   colors: {
     black: "#000000",
     blue: "#2196f3",
@@ -34,6 +38,15 @@ const config = {
   summary: {
     fontSize: 36,
     height: 56,
+  },
+  menu: {
+    padding: 8,
+    height: 36,
+    dropdown: {
+      fontSize: 18,
+      margin: 5,
+      padding: 2,
+    },
   },
   animationDuration: 400,
 };

@@ -24,6 +24,7 @@ export const useAppStore = create((set) => ({
   scale: 1.0,
   fullscreen: false,
   workspace: config.workspace.basic,
+  numberSet: config.numberSet.whole,
   width: 0,
   height: 0,
   origin: { x: 0, y: 0 },
@@ -31,7 +32,7 @@ export const useAppStore = create((set) => ({
   lockSelect: false,
   
   showLabels: false,
-  showSummary: false,
+  showSummary: true,
   multiColored: true,
 
   fullscreen: true,
@@ -76,7 +77,7 @@ export const useAppStore = create((set) => ({
   toggle: (field) =>
     set(
       produce((state) => {
-        state.field = !state.field;
+        state[field] = !state[field];
       })
     ),
 

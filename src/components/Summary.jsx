@@ -39,10 +39,11 @@ const Summary = () => {
     return null;
   }
   const { elements } = state;
-  const text = Object.values(elements)
-    .filter((e) => e.type == "block" && e.visible)
-    .reduce((sum, e) => sum + parseInt(e.label), 0)
-    .toString();
+  const sum = Object.values(elements)
+    .filter((e) => e.type == "block" && !e.visibleAfterMove)
+    .reduce((sum, e) => sum + parseInt(e.label), 0);
+
+  const text = state.numberSet == config.numberSet.whole ? sum.toString() : (sum / 100).toFixed(2);
   return <BasicSummary text={text} x={(state.width + config.leftToolbar.width) / 2} y={state.height - 80} />;
 };
 
