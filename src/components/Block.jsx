@@ -1,6 +1,6 @@
 import { Group, Line, Rect } from "react-konva";
 import config from "../config";
-import { cos, getStageXY, pointsIsClose, sin } from "../util";
+import { cos, getStageXY, pointsIsClose, setVisibility, sin } from "../util";
 import { useAppStore } from "../state/store";
 import { useEffect, useRef } from "react";
 import { Animation } from "konva/lib/Animation";
@@ -163,7 +163,9 @@ export const BoardBlock = (props) => {
 
   const events = {
     draggable: true,
-    onDragStart: (e) => {},
+    onDragStart: (e) => {
+      setVisibility(e, false);
+    },
     onDragMove: (e) => {
       const dx = e.target.x() - x;
       const dy = e.target.y() - y;
@@ -173,6 +175,7 @@ export const BoardBlock = (props) => {
       }
     },
     onDragEnd: (e) => {
+      setVisibility(e, true);
       relocateElement(id, e.target.x() - x, e.target.y() - y);
     },
     onPointerClick: (e) => {

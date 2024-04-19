@@ -30,6 +30,7 @@ const config = {
     depthScale: 0.5,
     stroke: "white",
     options: {
+      // top, right, width, height evaluated below
       1: { label: "1", size: [1, 1, 1], fill: "#ffc107", dark: "#ffa000" },
       10: { label: "10", size: [1, 10, 1], fill: "#03a9f4", dark: "#0288d1" },
       100: { label: "100", size: [10, 10, 1], fill: "#ff5722", dark: "#e44c1c" },
@@ -53,6 +54,7 @@ const config = {
       padding: 2,
     },
   },
+  intl: new Intl.NumberFormat("en-US"),
   animationDuration: 400,
 };
 

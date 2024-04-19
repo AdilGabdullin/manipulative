@@ -39,12 +39,17 @@ const Summary = () => {
     return null;
   }
   const { elements } = state;
-  const sum = Object.values(elements)
+  let sum = Object.values(elements)
     .filter((e) => e.type == "block" && !e.visibleAfterMove)
     .reduce((sum, e) => sum + parseInt(e.label), 0);
-
-  const text = state.numberSet == config.numberSet.whole ? sum.toString() : (sum / 100).toFixed(2);
-  return <BasicSummary text={text} x={(state.width + config.leftToolbar.width) / 2} y={state.height - 80} />;
+  if (state.numberSet == config.numberSet.decimal) sum = sum / 100;
+  return (
+    <BasicSummary
+      text={config.intl.format(sum)}
+      x={(state.width + config.leftToolbar.width) / 2}
+      y={state.height - 80}
+    />
+  );
 };
 
 export default Summary;

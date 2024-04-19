@@ -202,3 +202,4 @@ export function sum(xs) {
 export function avg(xs) {
   return sum(xs) / xs.length;
 }
+
