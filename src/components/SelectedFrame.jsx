@@ -5,6 +5,7 @@ import { elementBox, setVisibility, setVisibilityFrame } from "../util";
 import ShapeResizeHandles from "./ShapeResizeHandles";
 import { createTextArea } from "./TextElement";
 import { regroupPossible } from "../state/breakRegroupSlice";
+import { magnetToAll } from "./Block";
 
 const SelectedFrame = (props) => {
   const state = useAppStore();
@@ -52,11 +53,25 @@ const SelectedFrame = (props) => {
     setVisibility(e, false);
   };
 
+  const others = {...elements};
+  for (const id of selected) {
+    delete others[id];
+  }
   const onDragMove = (e) => {
     let dx = (e.target.x() - x) / state.scale;
     let dy = (e.target.y() - y) / state.scale;
-    selectedTargets.forEach(({ point, node, x, y }) => {
-      if (point) return;
+
+    for (const id of selected) {
+      const block = elements[id];
+      if (block.type != "block") continue;
+      const pos = magnetToAll({ ...block, x: block.x + dx, y: block.y + dy }, others);
+      if (pos) {
+        dx = pos.x - block.x;
+        dy = pos.y - block.y;
+        break;
+      }
+    }
+    selectedTargets.forEach(({ node, x, y }) => {
       node.setAttrs({ x: x + dx, y: y + dy });
     });
     e.target.setAttrs({ x: x + dx * scale, y: y + dy * scale });

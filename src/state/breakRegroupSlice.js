@@ -97,7 +97,7 @@ export const breakRegroupSlice = (set) => ({
 
 function blocksByValue(state) {
   const { elements, selected } = state;
-  const blocks = Object.values(elements).filter((e) => e.type == "block" && selected.includes(e.id));
+  const blocks = Object.values(elements).filter((e) => e.type == "block" && e.label != 1000 && selected.includes(e.id));
   return Object.groupBy(blocks, (e) => e.label);
 }
 

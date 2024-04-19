@@ -25,50 +25,38 @@ const Menu = () => {
 };
 
 const DefaultMenu = (props) => {
-  const state = useAppStore();
   const { x, y } = props;
   const { padding } = config.menu;
 
-  const width = [110, 90, 86, 120];
+  const widths = [110, 90, 65, 86, 120];
   const xs = [];
-  width.forEach((w, i) => {
+  widths.forEach((w, i) => {
     let sumWidth = 0;
     for (let k = 0; k < i; k += 1) {
-      sumWidth += width[k];
+      sumWidth += widths[k];
     }
     xs.push(x + padding * (i + 1) + sumWidth);
   });
 
   return (
     <>
-      <SelectButton x={xs[0]} y={y + padding} width={width[0]} dropWidth={150} text="Number Set" field="numberSet" />
-      <SelectButton x={xs[1]} y={y + padding} width={width[1]} dropWidth={90} text="Block Set" field="blockSet" />
-      <ToggleButton
-        x={xs[2]}
-        y={y + padding}
-        width={width[2]}
-        fill={state.showSummary}
-        text="Summary"
-        onClick={() => state.toggle("showSummary")}
-      />
-      <ToggleButton
-        x={xs[3]}
-        y={y + padding}
-        width={width[3]}
-        fill={state.multiColored}
-        text="Multi-colored"
-        onClick={() => state.toggle("multiColored")}
-      />
+      <SelectButton x={xs[0]} y={y + padding} width={widths[0]} dropWidth={150} text="Number Set" field="numberSet" />
+      <SelectButton x={xs[1]} y={y + padding} width={widths[1]} dropWidth={90} text="Block Set" field="blockSet" />
+      <ToggleButton x={xs[2]} y={y + padding} width={widths[2]} text="Labels" field="showLabels" />
+      <ToggleButton x={xs[3]} y={y + padding} width={widths[3]} text="Summary" field="showSummary" />
+      <ToggleButton x={xs[4]} y={y + padding} width={widths[4]} text="Multi-colored" field="multiColored" />
     </>
   );
 };
 
-const ToggleButton = ({ x, y, text, width, fill, onClick }) => {
+const ToggleButton = ({ x, y, text, width, field }) => {
+  const state = useAppStore();
   const colors = config.colors;
   const { padding, height } = config.menu;
+  const fill = state[field];
 
   return (
-    <Group key={text} onPointerClick={onClick}>
+    <Group key={text} onPointerClick={() => state.toggle(field)}>
       <Rect x={x} y={y} width={width} height={height} cornerRadius={5} fill={fill ? colors.solitude : colors.white} />
       <Text
         width={width - 2 * padding}
