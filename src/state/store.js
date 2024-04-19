@@ -36,7 +36,7 @@ export const useAppStore = create((set) => ({
   showSummary: true,
   multiColored: true,
 
-  fullscreen: true,
+  // fullscreen: true,
   toggleGlobal: (field) =>
     set(
       produce((state) => {
