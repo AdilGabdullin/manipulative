@@ -3,6 +3,7 @@ import { useAppStore } from "../state/store";
 import config from "../config";
 import { BasicSummary } from "./Summary";
 import { Fragment } from "react";
+import { boxesIntersect } from "../util";
 
 const margin = 10;
 const summaryHeight = config.summary.height;
@@ -16,28 +17,24 @@ const commonProps = {
 
 const PlaceValue = () => {
   const state = useAppStore();
-  const { origin, width } = state;
-  if (!width) return null;
-  const totalWidth = getTotalWidth(state);
-  const totalHeight = getTotalHeight(state);
+  if (!state.width) return null;
+  const { x, y, totalWidth, mainHeight, columns, columnWidth, rects } = placeValueProps(state);
 
-  const mainHeight = totalHeight - summaryHeight - margin;
-  const x = origin.x - (totalWidth + scrollSize) / 2;
-  const y = origin.y - (totalHeight + scrollSize) / 2;
-  const columns = getColumns(state);
-  const columnWidth = totalWidth / Object.values(columns).length;
+  const sum = Object.values(state.elements)
+    .filter((block) => block.type == "block" && boxesIntersect(block, rects.all))
+    .reduce((sum, block) => sum + parseInt(block.label), 0);
 
   return (
     <Group x={x} y={y}>
       <Rect x={0} y={0} width={totalWidth} height={mainHeight} {...commonProps} cornerRadius={0} />
       {columns.map((column, i) => (
         <Fragment key={i}>
-          {i > 0 && <Line key={x} x={i * columnWidth} y={0} points={[0, 0, 0, mainHeight]} {...commonProps} />}
-          <Head key={i} x={i * columnWidth} column={column} width={columnWidth} height={summaryHeight + 2 * margin} />
+          {i > 0 && <Line x={i * columnWidth} y={0} points={[0, 0, 0, mainHeight]} {...commonProps} />}
+          <Head x={i * columnWidth} column={column.name} width={columnWidth} height={summaryHeight + 2 * margin} />
         </Fragment>
       ))}
 
-      <BasicSummary x={totalWidth / 2} y={mainHeight + margin} text={"111"} />
+      <BasicSummary x={totalWidth / 2} y={mainHeight + margin} text={sum} />
     </Group>
   );
 };
@@ -65,6 +62,32 @@ const Head = ({ x, width, height, column }) => {
   );
 };
 
+export function placeValueProps(state) {
+  const totalWidth = Math.min(state.width - config.leftToolbar.width - 45, 1200);
+  const totalHeight = getTotalHeight(state);
+  const mainHeight = totalHeight - summaryHeight - margin;
+  const x = state.origin.x - (totalWidth + scrollSize) / 2;
+  const y = state.origin.y - (totalHeight + scrollSize) / 2;
+  const columns = Object.values(getColumns(state)).toReversed();
+  const columnWidth = totalWidth / columns.length;
+  const rects = {};
+  columns.forEach((column, i) => {
+    rects[column.label] = {
+      x: x + columnWidth * i,
+      y: y,
+      width: columnWidth,
+      height: mainHeight,
+    };
+  });
+  rects.all = {
+    x: -(totalWidth + scrollSize) / 2,
+    y: -(totalHeight + scrollSize) / 2,
+    width: totalWidth,
+    height: mainHeight,
+  };
+  return { x, y, totalWidth, mainHeight, columns, columnWidth, rects };
+}
+
 function getColumns(state) {
   const options = { ...config.block.options };
   if (state.blockSet == config.blockSet.flats) {
@@ -74,13 +97,7 @@ function getColumns(state) {
     delete options[1000];
     delete options[100];
   }
-  return Object.values(options)
-    .map((op) => op.column)
-    .toReversed();
-}
-
-function getTotalWidth(state) {
-  return Math.min(state.width - config.leftToolbar.width - 45, 1200);
+  return options;
 }
 
 function getTotalHeight(state) {
@@ -91,46 +108,24 @@ function getTotalHeight(state) {
   return totalHeight;
 }
 
-export function getValueRects(state) {
-  const { minValue, maxValue } = state;
-  const totalWidth = getTotalWidth(state);
-  const totalHeight = getTotalHeight(state);
-  const headHeight = summaryHeight + 2 * margin;
-  const mainHeight = totalHeight - summaryHeight - margin - headHeight;
-  const x0 = -(totalWidth + scrollSize) / 2;
-  const y0 = -(totalHeight + scrollSize) / 2 + headHeight;
-  const columns = Math.log10(maxValue / minValue) + 1;
-  const columnWidth = totalWidth / columns;
-  const rects = {};
-  for (let x = 0, value = maxValue; value >= minValue; x += columnWidth, value /= 10) {
-    rects[value] = { x: x0 + x, y: y0, width: columnWidth, height: mainHeight };
-  }
-  rects.all = {
-    x: x0,
-    y: y0,
-    width: totalWidth,
-    height: mainHeight,
-  };
-  return rects;
+function center({ x, y, width, height }) {
+  return { x: x + width / 2, y: y + height / 2 };
 }
 
-export function diskInWrongColumn(state, e) {
-  const rects = getValueRects(state);
+export function elementInWrongColumn(rects, element) {
   return (
-    ["Place Value", "Subtraction"].includes(state.workspace) &&
-    e.type == "disk" &&
-    isPointInRect(e, rects.all) &&
-    !isPointInRect(e, rects[e.value])
+    state.workspace == config.workspace.placeValue &&
+    element.type == "block" &&
+    boxesIntersect(element, rects.all) &&
+    !isPointInRect(center(element), rects[element.label])
   );
 }
 
-export function diskInBreakColumn(state, e) {
-  const rects = getValueRects(state);
+export function diskInBreakColumn(rects, element) {
   return (
-    ["Place Value", "Subtraction"].includes(state.workspace) &&
-    e.type == "disk" &&
-    isPointInRect(e, rects.all) &&
-    isPointInRect(e, rects[e.value / 10])
+    state.workspace == config.workspace.placeValue &&
+    element.type == "block" &&
+    isPointInRect(center(element), rects[e.label / 10])
   );
 }
 

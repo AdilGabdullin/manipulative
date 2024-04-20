@@ -3,6 +3,7 @@ import config from "../config";
 import { useAppStore } from "../state/store";
 
 export const BasicSummary = ({ text, x, y, align }) => {
+  text = text.toString();
   const { fontSize, height } = config.summary;
   const colors = config.colors;
   const width = text.length * 15 + 32;

@@ -60,30 +60,6 @@ export function numbersClose(a, b, sens = 12) {
   return Math.abs(a - b) < sens;
 }
 
-function vectorMagnitude(vector) {
-  return Math.sqrt(vector[0] ** 2 + vector[1] ** 2);
-}
-
-function dotProduct(vector1, vector2) {
-  return vector1[0] * vector2[0] + vector1[1] * vector2[1];
-}
-
-function angleBetweenVectors(A, B, C) {
-  const vector1 = [A.x - B.x, A.y - B.y];
-  const vector2 = [C.x - B.x, C.y - B.y];
-  const mag1 = vectorMagnitude(vector1);
-  const mag2 = vectorMagnitude(vector2);
-  const dot = dotProduct(vector1, vector2);
-  if (mag1 === 0 || mag2 === 0) {
-    console.error("Invalid angle");
-    return NaN;
-  }
-  const cosTheta = dot / (mag1 * mag2);
-  const theta = (Math.acos(cosTheta) * 180) / Math.PI;
-  const sinTheta = vector1[0] * vector2[1] - vector1[1] * vector2[0];
-  const sign = Math.sign(sinTheta);
-  return theta * sign;
-}
 
 export function setVisibility(e, value) {
   e.target
@@ -203,3 +179,15 @@ export function avg(xs) {
   return sum(xs) / xs.length;
 }
 
+export function boxesIntersect({ x, y, width, height }, other) {
+  return (
+    (numberBetween(x, other.x, other.x + other.width) ||
+      numberBetween(x + width, other.x, other.x + other.width) ||
+      numberBetween(other.x, x, x + width) ||
+      numberBetween(other.x + other.width, x, x + width)) &&
+    (numberBetween(y, other.y, other.y + other.height) ||
+      numberBetween(y + height, other.y, other.y + other.height) ||
+      numberBetween(other.y, y, y + height) ||
+      numberBetween(other.y + other.height, y, y + height))
+  );
+}
