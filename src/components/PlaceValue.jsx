@@ -2,11 +2,12 @@ import { Group, Line, Rect, Text } from "react-konva";
 import { useAppStore } from "../state/store";
 import config from "../config";
 import { BasicSummary } from "./Summary";
+import { Fragment } from "react";
 
 const margin = 10;
 const summaryHeight = config.summary.height;
 const scrollSize = 14;
-const stroke = "grey";
+const stroke = config.colors.darkGrey;
 const commonProps = {
   cornerRadius: 6,
   stroke: stroke,
@@ -23,31 +24,17 @@ const PlaceValue = () => {
   const mainHeight = totalHeight - summaryHeight - margin;
   const x = origin.x - (totalWidth + scrollSize) / 2;
   const y = origin.y - (totalHeight + scrollSize) / 2;
-  const columns = 4;
-  const columnWidth = totalWidth / columns;
-  const allOptions = [
-    { color: "purple", text: "Thousands" },
-    { color: "purple", text: "Hundreds" },
-    { color: "purple", text: "Tens" },
-    { color: "purple", text: "Ones" },
-  ];
-  const heads = [];
-  const lines = [];
-  for (let x = 0, i = 0; i < 4; i += 1) {
-    heads.push({ x, ...allOptions[i] });
-    if (x > 0) lines.push(x);
-    x += columnWidth;
-  }
+  const columns = getColumns(state);
+  const columnWidth = totalWidth / Object.values(columns).length;
 
   return (
     <Group x={x} y={y}>
       <Rect x={0} y={0} width={totalWidth} height={mainHeight} {...commonProps} cornerRadius={0} />
-      {lines.map((x) => (
-        <Line key={x} x={x} y={0} points={[0, 0, 0, mainHeight]} {...commonProps} />
-      ))}
-
-      {heads.map((props, i) => (
-        <Head key={i} {...props} width={columnWidth} height={summaryHeight + 2 * margin} />
+      {columns.map((column, i) => (
+        <Fragment key={i}>
+          {i > 0 && <Line key={x} x={i * columnWidth} y={0} points={[0, 0, 0, mainHeight]} {...commonProps} />}
+          <Head key={i} x={i * columnWidth} column={column} width={columnWidth} height={summaryHeight + 2 * margin} />
+        </Fragment>
       ))}
 
       <BasicSummary x={totalWidth / 2} y={mainHeight + margin} text={"111"} />
@@ -55,9 +42,10 @@ const PlaceValue = () => {
   );
 };
 
-const Head = ({ x, width, height, color, text }) => {
+const Head = ({ x, width, height, column }) => {
+  const color = "purple";
   const fontSize = 28;
-  const shift = text.includes("\n") ? fontSize : fontSize / 2;
+  const shift = column.includes("\n") ? fontSize : fontSize / 2;
   return (
     <Group x={x} y={0}>
       <Rect {...commonProps} x={0} y={0} width={width} height={height} fill={color} cornerRadius={0} />
@@ -66,7 +54,7 @@ const Head = ({ x, width, height, color, text }) => {
         x={margin}
         y={margin + summaryHeight / 2 - shift}
         width={width - margin * 2}
-        text={text}
+        text={column}
         fontSize={fontSize}
         fill={"#333"}
         stroke={"#333"}
@@ -76,6 +64,20 @@ const Head = ({ x, width, height, color, text }) => {
     </Group>
   );
 };
+
+function getColumns(state) {
+  const options = { ...config.block.options };
+  if (state.blockSet == config.blockSet.flats) {
+    delete options[1000];
+  }
+  if (state.blockSet == config.blockSet.rods) {
+    delete options[1000];
+    delete options[100];
+  }
+  return Object.values(options)
+    .map((op) => op.column)
+    .toReversed();
+}
 
 function getTotalWidth(state) {
   return Math.min(state.width - config.leftToolbar.width - 45, 1200);
