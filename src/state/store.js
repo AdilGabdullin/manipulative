@@ -6,7 +6,8 @@ import { maxOffset } from "../components/Scrolls";
 import { freeDrawingSlice } from "./freeDrawingSlice";
 import { historySlice, pushHistory } from "./historySlice";
 import config from "../config";
-import { breakRegroupSlice } from "./breakRegroupSlice";
+import { breakBlock, breakRegroupSlice } from "./breakRegroupSlice";
+import { elementInBreakColumn, elementInWrongColumn } from "../components/PlaceValue";
 
 export const gridStep = 60;
 export const boardSize = {
@@ -183,13 +184,25 @@ export const useAppStore = create((set) => ({
   relocateSelected: (dx, dy) =>
     set(
       produce((state) => {
+        let doClear = false;
         for (const id of state.selected) {
           const element = state.elements[id];
           if (!element) continue;
           element.x += dx;
           element.y += dy;
+          if (elementInBreakColumn(state, element)) {
+            breakBlock(state, element);
+            delete state.elements[id];
+            doClear = true;
+          } else if (elementInWrongColumn(state, element)) {
+            element.x -= dx;
+            element.y -= dy;
+            cancelMove(state, id, dx, dy);
+            doClear = true;
+          }
           state.lastActiveElement = id;
         }
+        if (doClear) clearSelected(state);
         pushHistory(state);
       })
     ),
@@ -328,11 +341,7 @@ export const useAppStore = create((set) => ({
   cancelMove: (id, dx, dy) =>
     set(
       produce((state) => {
-        const block = state.elements[id];
-        block.moveTo = { x: block.x, y: block.y };
-        block.x += dx;
-        block.y += dy;
-        state.finishDelay = config.animationDuration;
+        cancelMove(state, id, dx, dy);
       })
     ),
   action: () => set(produce((state) => {})),
@@ -343,4 +352,12 @@ function keepOrigin(state) {
   const width = config.leftToolbar.width;
   state.origin.x = ((state.width - width) / 2 + width) / state.scale;
   state.origin.y = ((state.height - menuHeight) / 2 + menuHeight) / state.scale;
+}
+
+function cancelMove(state, id, dx, dy) {
+  const block = state.elements[id];
+  block.moveTo = { x: block.x, y: block.y };
+  block.x += dx;
+  block.y += dy;
+  state.finishDelay = config.animationDuration;
 }

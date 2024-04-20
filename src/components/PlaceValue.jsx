@@ -113,23 +113,17 @@ function center({ x, y, width, height }) {
 }
 
 export function elementInWrongColumn(state, element) {
-  const { rects } = placeValueProps(state);
-  return (
-    state.workspace == config.workspace.placeValue &&
-    element.type == "block" &&
-    boxesIntersect(element, rects.all) &&
-    !pointInRect(center(element), rects[element.label])
-  );
+  if (state.workspace == config.workspace.placeValue && element.type == "block") {
+    const { rects } = placeValueProps(state);
+    return boxesIntersect(element, rects.all) && !pointInRect(center(element), rects[element.label]);
+  }
 }
 
 export function elementInBreakColumn(state, element) {
-  const { rects } = placeValueProps(state);
-  return (
-    state.workspace == config.workspace.placeValue &&
-    element.type == "block" &&
-    element.label != "1" &&
-    pointInRect(center(element), rects[parseInt(element.label) / 10])
-  );
+  if (state.workspace == config.workspace.placeValue && element.type == "block") {
+    const { rects } = placeValueProps(state);
+    return element.label != "1" && pointInRect(center(element), rects[parseInt(element.label) / 10]);
+  }
 }
 
 export default PlaceValue;

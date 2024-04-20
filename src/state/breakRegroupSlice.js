@@ -43,16 +43,7 @@ export const breakRegroupSlice = (set) => ({
       produce((state) => {
         let id;
         while ((id = state.selected.pop())) {
-          const block = state.elements[id];
-          if (block.label == 1) {
-            continue;
-          } else if (block.label == 10) {
-            createBlocks1(state, block);
-          } else if (block.label == 100) {
-            createBlocks10(state, block);
-          } else if (block.label == 1000) {
-            createBlocks100(state, block);
-          }
+          breakBlock(state, state.elements[id]);
           delete state.elements[id];
         }
         state.lastActiveElement = null;
@@ -62,17 +53,7 @@ export const breakRegroupSlice = (set) => ({
   breakPlaced: (block) =>
     set(
       produce((state) => {
-        if (block.label == 1) {
-          return;
-        } else if (block.label == 10) {
-          createBlocks1(state, block);
-        } else if (block.label == 100) {
-          createBlocks10(state, block);
-        } else if (block.label == 1000) {
-          createBlocks100(state, block);
-        }
-        state.lastActiveElement = null;
-        state.finishDelay = animationDuration;
+        breakBlock(state, block);
       })
     ),
   relocateAndBreak: (id, dx, dy) =>
@@ -197,4 +178,18 @@ function createBlock(state, label, x, y, dx, dy, visibleAfterMove = false) {
     locked: false,
   };
   state.lastActiveElement = id;
+}
+
+export function breakBlock(state, block) {
+  if (block.label == 1) {
+    return;
+  } else if (block.label == 10) {
+    createBlocks1(state, block);
+  } else if (block.label == 100) {
+    createBlocks10(state, block);
+  } else if (block.label == 1000) {
+    createBlocks100(state, block);
+  }
+  state.lastActiveElement = null;
+  state.finishDelay = animationDuration;
 }

@@ -81,8 +81,8 @@ const SelectedFrame = (props) => {
   const onDragEnd = (e) => {
     const dx = (e.target.x() - x) / state.scale;
     const dy = (e.target.y() - y) / state.scale;
-    state.relocateSelected(dx, dy);
     setVisibilityFrame(e, true);
+    state.relocateSelected(dx, dy);
   };
 
   let menuButtons = [
