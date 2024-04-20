@@ -3,7 +3,7 @@ import { cos, sin } from "./util";
 const config = {
   workspace: {
     basic: "Basic",
-    other: "Other",
+    placeValue: "Place Value",
   },
   numberSet: {
     whole: "Whole Numbers",

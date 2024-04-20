@@ -57,7 +57,7 @@ const WorkspaceSelector = () => {
       <label className="workspace-selector-label">Workspace</label>
       <select onChange={(e) => state.setWorkspace(e.target.value)} value={state.workspace}>
         {Object.entries(config.workspace).map(([key,option]) => (
-          <option key={key} value={key}>
+          <option key={key} value={option}>
             {option}
           </option>
         ))}

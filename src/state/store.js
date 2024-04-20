@@ -37,6 +37,7 @@ export const useAppStore = create((set) => ({
   multiColored: true,
 
   // fullscreen: true,
+  workspace: config.workspace.placeValue,
   toggleGlobal: (field) =>
     set(
       produce((state) => {
@@ -328,7 +329,8 @@ export const useAppStore = create((set) => ({
 }));
 
 function keepOrigin(state) {
+  const menuHeight = config.menu.height;
   const width = config.leftToolbar.width;
   state.origin.x = ((state.width - width) / 2 + width) / state.scale;
-  state.origin.y = state.height / 2 / state.scale;
+  state.origin.y = ((state.height - menuHeight) / 2 + menuHeight) / state.scale;
 }

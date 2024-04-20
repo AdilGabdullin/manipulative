@@ -15,6 +15,7 @@ import { appSaveText } from "./TextElement";
 import config from "../config";
 import Summary from "./Summary";
 import GroupLabels from "./GroupLabels";
+import PlaceValue from "./PlaceValue";
 
 const App = () => {
   const state = useAppStore();
@@ -293,6 +294,7 @@ const App = () => {
           scaleX={state.scale}
           scaleY={state.scale}
         >
+          {state.workspace == config.workspace.placeValue && <PlaceValue />}
           <Elements />
           <GroupLabels />
           <SelectRect />
