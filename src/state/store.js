@@ -184,7 +184,7 @@ export const useAppStore = create((set) => ({
   relocateSelected: (dx, dy) =>
     set(
       produce((state) => {
-        let doClear = false;
+        let haveAnimation = false;
         for (const id of state.selected) {
           const element = state.elements[id];
           if (!element) continue;
@@ -193,17 +193,20 @@ export const useAppStore = create((set) => ({
           if (elementInBreakColumn(state, element)) {
             breakBlock(state, element);
             delete state.elements[id];
-            doClear = true;
+            haveAnimation = true;
           } else if (elementInWrongColumn(state, element)) {
             element.x -= dx;
             element.y -= dy;
             cancelMove(state, id, dx, dy);
-            doClear = true;
+            haveAnimation = true;
           }
           state.lastActiveElement = id;
         }
-        if (doClear) clearSelected(state);
-        pushHistory(state);
+        if (haveAnimation) {
+          clearSelected(state);
+        } else {
+          pushHistory(state);
+        }
       })
     ),
 

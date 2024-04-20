@@ -20,9 +20,10 @@ const PlaceValue = () => {
   if (!state.width) return null;
   const { x, y, totalWidth, mainHeight, columns, columnWidth, rects } = placeValueProps(state);
 
-  const sum = Object.values(state.elements)
+  let sum = Object.values(state.elements)
     .filter((block) => block.type == "block" && boxesIntersect(block, rects.all))
     .reduce((sum, block) => sum + parseInt(block.label), 0);
+  if (state.numberSet == config.numberSet.decimal) sum = sum / 100;
 
   return (
     <Group x={state.origin.x + x} y={state.origin.y + y}>
@@ -34,7 +35,7 @@ const PlaceValue = () => {
         </Fragment>
       ))}
 
-      <BasicSummary x={totalWidth / 2} y={mainHeight + margin} text={sum} />
+      {state.showSummary && <BasicSummary x={totalWidth / 2} y={mainHeight + margin} text={sum} />}
     </Group>
   );
 };
