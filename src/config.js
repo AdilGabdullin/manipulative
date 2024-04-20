@@ -1,5 +1,3 @@
-import { cos, sin } from "./util";
-
 const config = {
   workspace: {
     basic: "Basic",
@@ -25,17 +23,58 @@ const config = {
     darkGrey: "grey",
     solitude: "#e8f4fe",
   },
+  intl: new Intl.NumberFormat("en-US"),
+  animationDuration: 400,
   block: {
     size: 20,
     angle: 30,
     depthScale: 0.5,
     stroke: "white",
     options: {
-      // top, right, width, height evaluated below
-      1: { name: "Ones", label: "1", size: [1, 1, 1], fill: "#ffc107", dark: "#ffa000" },
-      10: { name: "Tens", label: "10", size: [1, 10, 1], fill: "#03a9f4", dark: "#0288d1" },
-      100: { name: "Hundreds", label: "100", size: [10, 10, 1], fill: "#ff5722", dark: "#e44c1c" },
-      1000: { name: "Thousands", label: "1000", size: [10, 10, 10], fill: "#39c669", dark: "#008d35" },
+      1: {
+        name: "Ones",
+        label: "1",
+        size: [1, 1, 1],
+        fill: "#ffc107",
+        dark: "#ffa000",
+        top: 0.24999999999999997,
+        right: 0.43301270189221935,
+        width: 1,
+        height: 1,
+      },
+      10: {
+        name: "Tens",
+        label: "10",
+        size: [1, 10, 1],
+        fill: "#03a9f4",
+        dark: "#0288d1",
+        top: 0.24999999999999997,
+        right: 0.43301270189221935,
+        width: 1,
+        height: 10,
+      },
+      100: {
+        name: "Hundreds",
+        label: "100",
+        size: [10, 10, 1],
+        fill: "#ff5722",
+        dark: "#e44c1c",
+        top: 0.24999999999999997,
+        right: 0.43301270189221935,
+        width: 10,
+        height: 10,
+      },
+      1000: {
+        name: "Thousands",
+        label: "1000",
+        size: [10, 10, 10],
+        fill: "#39c669",
+        dark: "#008d35",
+        top: 2.4999999999999996,
+        right: 4.330127018922194,
+        width: 10,
+        height: 10,
+      },
     },
   },
   leftToolbar: {
@@ -55,19 +94,6 @@ const config = {
       padding: 2,
     },
   },
-  intl: new Intl.NumberFormat("en-US"),
-  animationDuration: 400,
 };
-
-Object.values(config.block.options).forEach((option) => {
-  const [sx, sy, sz] = option.size;
-  const { angle, depthScale } = config.block;
-  const top = sin(angle) * sz * depthScale;
-  const right = cos(angle) * sz * depthScale;
-  option.top = top;
-  option.right = right;
-  option.width = sx;
-  option.height = sy;
-});
 
 export default config;
