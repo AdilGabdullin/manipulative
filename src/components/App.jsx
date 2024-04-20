@@ -313,7 +313,7 @@ const App = () => {
             <LeftToolbar findOne={findOne} />
             <Menu />
             <Scrolls />
-            {state.showSummary && <Summary />}
+            {state.showSummary && state.workspace == config.workspace.basic && <Summary />}
             <SelectedFrame findOne={findOne} />
           </Layer>
         )}

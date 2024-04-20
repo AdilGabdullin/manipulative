@@ -31,10 +31,10 @@ const config = {
     stroke: "white",
     options: {
       // top, right, width, height evaluated below
-      1: { label: "1", size: [1, 1, 1], fill: "#ffc107", dark: "#ffa000" },
-      10: { label: "10", size: [1, 10, 1], fill: "#03a9f4", dark: "#0288d1" },
-      100: { label: "100", size: [10, 10, 1], fill: "#ff5722", dark: "#e44c1c" },
-      1000: { label: "1000", size: [10, 10, 10], fill: "#39c669", dark: "#008d35" },
+      1: { column: "Ones", label: "1", size: [1, 1, 1], fill: "#ffc107", dark: "#ffa000" },
+      10: { column: "Tens", label: "10", size: [1, 10, 1], fill: "#03a9f4", dark: "#0288d1" },
+      100: { column: "Hundreds", label: "100", size: [10, 10, 1], fill: "#ff5722", dark: "#e44c1c" },
+      1000: { column: "Thousands", label: "1000", size: [10, 10, 10], fill: "#39c669", dark: "#008d35" },
     },
   },
   leftToolbar: {

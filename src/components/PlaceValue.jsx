@@ -1,27 +1,16 @@
 import { Group, Line, Rect, Text } from "react-konva";
-// import { allOptions, leftToolbarWidth } from "./LeftToolbar";
-// import { Button, buttonHeight, buttonWidth, commonProps, margin, scrollSize, sumInRect } from "./Comparing";
 import { useAppStore } from "../state/store";
 import config from "../config";
-// import { isPointInRect } from "../util";
-
-// const subtractorSize = buttonHeight;
+import { BasicSummary } from "./Summary";
 
 const margin = 10;
-const buttonHeight = 64;
-const buttonWidth = 140;
+const summaryHeight = config.summary.height;
 const scrollSize = 14;
 const stroke = "grey";
 const commonProps = {
   cornerRadius: 6,
   stroke: stroke,
   strokeWidth: 2,
-};
-const textProps = {
-  stroke: "#299af3",
-  fill: "#299af3",
-  align: "center",
-  fontFamily: "Calibri",
 };
 
 const PlaceValue = () => {
@@ -31,7 +20,7 @@ const PlaceValue = () => {
   const totalWidth = getTotalWidth(state);
   const totalHeight = getTotalHeight(state);
 
-  const mainHeight = totalHeight - buttonHeight - margin;
+  const mainHeight = totalHeight - summaryHeight - margin;
   const x = origin.x - (totalWidth + scrollSize) / 2;
   const y = origin.y - (totalHeight + scrollSize) / 2;
   const columns = 4;
@@ -58,8 +47,10 @@ const PlaceValue = () => {
       ))}
 
       {heads.map((props, i) => (
-        <Head key={i} {...props} width={columnWidth} height={buttonHeight + 2 * margin} />
+        <Head key={i} {...props} width={columnWidth} height={summaryHeight + 2 * margin} />
       ))}
+
+      <BasicSummary x={totalWidth / 2} y={mainHeight + margin} text={"111"} />
     </Group>
   );
 };
@@ -70,10 +61,10 @@ const Head = ({ x, width, height, color, text }) => {
   return (
     <Group x={x} y={0}>
       <Rect {...commonProps} x={0} y={0} width={width} height={height} fill={color} cornerRadius={0} />
-      <Rect {...commonProps} x={margin} y={margin} width={width - margin * 2} height={buttonHeight} fill="white" />
+      <Rect {...commonProps} x={margin} y={margin} width={width - margin * 2} height={summaryHeight} fill="white" />
       <Text
         x={margin}
-        y={margin + buttonHeight / 2 - shift}
+        y={margin + summaryHeight / 2 - shift}
         width={width - margin * 2}
         text={text}
         fontSize={fontSize}
@@ -102,8 +93,8 @@ export function getValueRects(state) {
   const { minValue, maxValue } = state;
   const totalWidth = getTotalWidth(state);
   const totalHeight = getTotalHeight(state);
-  const headHeight = buttonHeight + 2 * margin;
-  const mainHeight = totalHeight - buttonHeight - margin - headHeight;
+  const headHeight = summaryHeight + 2 * margin;
+  const mainHeight = totalHeight - summaryHeight - margin - headHeight;
   const x0 = -(totalWidth + scrollSize) / 2;
   const y0 = -(totalHeight + scrollSize) / 2 + headHeight;
   const columns = Math.log10(maxValue / minValue) + 1;
