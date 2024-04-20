@@ -4,6 +4,7 @@ import { cos, getStageXY, pointsIsClose, setVisibility, sin } from "../util";
 import { useAppStore } from "../state/store";
 import { useEffect, useRef } from "react";
 import { Animation } from "konva/lib/Animation";
+import { elementInWrongColumn } from "./PlaceValue";
 
 export const Block = ({ id, x, y, size, label, scale, visible, events }) => {
   const multiColored = useAppStore((state) => state.multiColored);
@@ -85,7 +86,7 @@ export const ToolbarBlock = (props) => {
 
   const add = (pos, place) => {
     const { width, height, top, right } = props;
-    addElement({
+    const block = {
       ...props,
       type: "block",
       x: pos ? pos.x : place.x,
@@ -95,7 +96,10 @@ export const ToolbarBlock = (props) => {
       top: top * scale,
       right: right * scale,
       scale,
-    });
+    };
+    if (!elementInWrongColumn(state, block)) {
+      addElement(block);
+    }
   };
 
   const events = {
@@ -151,7 +155,7 @@ export const ToolbarBlock = (props) => {
 
 export const BoardBlock = (props) => {
   const state = useAppStore();
-  const { origin, selectIds, relocateElement, elements } = state;
+  const { origin, selectIds, relocateElement, cancelMove, elements } = state;
   const { id, locked } = props;
   const x = props.x + origin.x;
   const y = props.y + origin.y;
@@ -175,8 +179,14 @@ export const BoardBlock = (props) => {
       }
     },
     onDragEnd: (e) => {
+      const dx = e.target.x() - x;
+      const dy = e.target.y() - y;
       setVisibility(e, true);
-      relocateElement(id, e.target.x() - x, e.target.y() - y);
+      if (elementInWrongColumn(state, { ...props, x: props.x + dx, y: props.y + dy })) {
+        cancelMove(id, dx, dy);
+      } else {
+        relocateElement(id, dx, dy);
+      }
     },
     onPointerClick: (e) => {
       selectIds([id], locked);

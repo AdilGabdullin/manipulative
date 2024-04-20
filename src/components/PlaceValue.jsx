@@ -3,7 +3,7 @@ import { useAppStore } from "../state/store";
 import config from "../config";
 import { BasicSummary } from "./Summary";
 import { Fragment } from "react";
-import { boxesIntersect } from "../util";
+import { boxesIntersect, pointInRect } from "../util";
 
 const margin = 10;
 const summaryHeight = config.summary.height;
@@ -25,7 +25,7 @@ const PlaceValue = () => {
     .reduce((sum, block) => sum + parseInt(block.label), 0);
 
   return (
-    <Group x={x} y={y}>
+    <Group x={state.origin.x + x} y={state.origin.y + y}>
       <Rect x={0} y={0} width={totalWidth} height={mainHeight} {...commonProps} cornerRadius={0} />
       {columns.map((column, i) => (
         <Fragment key={i}>
@@ -66,8 +66,8 @@ export function placeValueProps(state) {
   const totalWidth = Math.min(state.width - config.leftToolbar.width - 45, 1200);
   const totalHeight = getTotalHeight(state);
   const mainHeight = totalHeight - summaryHeight - margin;
-  const x = state.origin.x - (totalWidth + scrollSize) / 2;
-  const y = state.origin.y - (totalHeight + scrollSize) / 2;
+  const x = -(totalWidth + scrollSize) / 2;
+  const y = -(totalHeight + scrollSize) / 2;
   const columns = Object.values(getColumns(state)).toReversed();
   const columnWidth = totalWidth / columns.length;
   const rects = {};
@@ -80,8 +80,8 @@ export function placeValueProps(state) {
     };
   });
   rects.all = {
-    x: -(totalWidth + scrollSize) / 2,
-    y: -(totalHeight + scrollSize) / 2,
+    x,
+    y,
     width: totalWidth,
     height: mainHeight,
   };
@@ -112,20 +112,22 @@ function center({ x, y, width, height }) {
   return { x: x + width / 2, y: y + height / 2 };
 }
 
-export function elementInWrongColumn(rects, element) {
+export function elementInWrongColumn(state, element) {
+  const { rects } = placeValueProps(state);
   return (
     state.workspace == config.workspace.placeValue &&
     element.type == "block" &&
     boxesIntersect(element, rects.all) &&
-    !isPointInRect(center(element), rects[element.label])
+    !pointInRect(center(element), rects[element.label])
   );
 }
 
-export function diskInBreakColumn(rects, element) {
+export function elementInBreakColumn(state, element) {
+  const { rects } = placeValueProps(state);
   return (
     state.workspace == config.workspace.placeValue &&
     element.type == "block" &&
-    isPointInRect(center(element), rects[e.label / 10])
+    pointInRect(center(element), rects[e.label / 10])
   );
 }
 

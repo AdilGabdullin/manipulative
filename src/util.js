@@ -191,3 +191,7 @@ export function boxesIntersect({ x, y, width, height }, other) {
       numberBetween(other.y + other.height, y, y + height))
   );
 }
+
+export function pointInRect(point, rect) {
+  return numberBetween(point.x, rect.x, rect.x + rect.width) && numberBetween(point.y, rect.y, rect.y + rect.height);
+}

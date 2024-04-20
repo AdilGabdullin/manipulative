@@ -28,21 +28,6 @@ export const breakRegroupSlice = (set) => ({
             state.elements[id].visibleAfterMove = null;
             state.elements[id].visible = true;
           }
-          // if (element.invert) {
-          //   if (state.workspace == workspace.solving && boxesIntersect(element, solvingRectProps(state))) {
-          //     element.x = -element.x - element.width;
-          //   }
-          //   element.text = invertText(element.text);
-          //   delete element.invert;
-          // }
-          // if (element.rotate) {
-          //   const { x, y, width, height } = element;
-          //   element.width = height;
-          //   element.height = width;
-          //   element.x = x + width / 2 - height / 2;
-          //   element.y = y + height / 2 - width / 2;
-          //   delete element.rotate;
-          // }
         }
         state.finishDelay = null;
         clearSelected(state);
@@ -85,7 +70,6 @@ export const breakRegroupSlice = (set) => ({
               if (label == 10) block.moveTo = { x: x + scale * i, y: y };
               if (label == 100) block.moveTo = { x: x + depthStepX * i, y: y - depthStepY * i };
               block.deleteAfterMove = true;
-              block.ignoreSum = true;
             });
           }
         }

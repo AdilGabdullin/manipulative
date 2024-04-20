@@ -31,13 +31,13 @@ export const useAppStore = create((set) => ({
   origin: { x: 0, y: 0 },
   selected: [],
   lockSelect: false,
-
   showLabels: false,
   showSummary: true,
   multiColored: true,
 
-  // fullscreen: true,
+  fullscreen: true,
   workspace: config.workspace.placeValue,
+
   toggleGlobal: (field) =>
     set(
       produce((state) => {
@@ -325,6 +325,16 @@ export const useAppStore = create((set) => ({
       })
     ),
 
+  cancelMove: (id, dx, dy) =>
+    set(
+      produce((state) => {
+        const block = state.elements[id];
+        block.moveTo = { x: block.x, y: block.y };
+        block.x += dx;
+        block.y += dy;
+        state.finishDelay = config.animationDuration;
+      })
+    ),
   action: () => set(produce((state) => {})),
 }));
 
