@@ -85,6 +85,12 @@ export const useAppStore = create((set) => ({
     set(
       produce((state) => {
         state.workspace = workspace;
+        for (const id in state.elements) {
+          if (state.elements[id].type == "block") {
+            delete state.elements[id];
+          }
+        }
+        pushHistory(state);
       })
     ),
   toggle: (field) =>

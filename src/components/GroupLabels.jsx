@@ -8,7 +8,11 @@ const GroupLabels = ({}) => {
   if (!showLabels) return null;
   const groups = [];
 
-  for (const block of Object.values(elements).toSorted((a, b) => a.x + a.y - b.x - b.y)) {
+  const blocks = Object.values(elements)
+    .filter((block) => !block.moveTo && !block.deleteAfterMove && !block.visibleAfterMove)
+    .toSorted((a, b) => a.x + a.y - b.x - b.y);
+
+  for (const block of blocks) {
     if (block.type != "block") continue;
     let inGroup = false;
     for (const group of groups) {
@@ -73,7 +77,6 @@ function intersect({ x, y, width, height }, other) {
 }
 
 function addTopRight(block) {
-  const scale = config.block.size;
   const { x, y, width, height, top, right } = block;
   return { x: x, y: y - top, width: width + right, height: height + top };
 }
