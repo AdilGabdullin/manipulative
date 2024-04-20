@@ -127,7 +127,8 @@ export function elementInBreakColumn(state, element) {
   return (
     state.workspace == config.workspace.placeValue &&
     element.type == "block" &&
-    pointInRect(center(element), rects[e.label / 10])
+    element.label != "1" &&
+    pointInRect(center(element), rects[parseInt(element.label) / 10])
   );
 }
 

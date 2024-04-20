@@ -4,7 +4,7 @@ import { cos, getStageXY, pointsIsClose, setVisibility, sin } from "../util";
 import { useAppStore } from "../state/store";
 import { useEffect, useRef } from "react";
 import { Animation } from "konva/lib/Animation";
-import { elementInWrongColumn } from "./PlaceValue";
+import { elementInBreakColumn, elementInWrongColumn } from "./PlaceValue";
 
 export const Block = ({ id, x, y, size, label, scale, visible, events }) => {
   const multiColored = useAppStore((state) => state.multiColored);
@@ -66,7 +66,7 @@ export const Block = ({ id, x, y, size, label, scale, visible, events }) => {
 
 export const ToolbarBlock = (props) => {
   const state = useAppStore();
-  const { origin, elements, addElement } = state;
+  const { origin, elements, addElement, breakPlaced } = state;
   const shadow = useRef();
   const scale = config.block.size;
 
@@ -97,7 +97,9 @@ export const ToolbarBlock = (props) => {
       right: right * scale,
       scale,
     };
-    if (!elementInWrongColumn(state, block)) {
+    if (elementInBreakColumn(state, block)) {
+      breakPlaced(block);
+    } else if (!elementInWrongColumn(state, block)) {
       addElement(block);
     }
   };
@@ -155,7 +157,7 @@ export const ToolbarBlock = (props) => {
 
 export const BoardBlock = (props) => {
   const state = useAppStore();
-  const { origin, selectIds, relocateElement, cancelMove, elements } = state;
+  const { origin, selectIds, elements } = state;
   const { id, locked } = props;
   const x = props.x + origin.x;
   const y = props.y + origin.y;
@@ -181,11 +183,14 @@ export const BoardBlock = (props) => {
     onDragEnd: (e) => {
       const dx = e.target.x() - x;
       const dy = e.target.y() - y;
+      const block = { ...props, x: props.x + dx, y: props.y + dy };
       setVisibility(e, true);
-      if (elementInWrongColumn(state, { ...props, x: props.x + dx, y: props.y + dy })) {
-        cancelMove(id, dx, dy);
+      if (elementInBreakColumn(state, block)) {
+        state.relocateAndBreak(id, dx, dy);
+      } else if (elementInWrongColumn(state, block)) {
+        state.cancelMove(id, dx, dy);
       } else {
-        relocateElement(id, dx, dy);
+        state.relocateElement(id, dx, dy);
       }
     },
     onPointerClick: (e) => {

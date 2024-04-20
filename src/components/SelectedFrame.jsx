@@ -6,6 +6,7 @@ import ShapeResizeHandles from "./ShapeResizeHandles";
 import { createTextArea } from "./TextElement";
 import { regroupPossible } from "../state/breakRegroupSlice";
 import { magnetToAll } from "./Block";
+import config from "../config";
 
 const SelectedFrame = (props) => {
   const state = useAppStore();
@@ -53,7 +54,7 @@ const SelectedFrame = (props) => {
     setVisibility(e, false);
   };
 
-  const others = {...elements};
+  const others = { ...elements };
   for (const id of selected) {
     delete others[id];
   }
@@ -96,7 +97,7 @@ const SelectedFrame = (props) => {
     {
       text: "Break",
       active: !lockSelect && selected.some((id) => elements[id].label != "1"),
-      show: selected.some((id) => elements[id].type == "block"),
+      show: state.workspace != config.workspace.placeValue && selected.some((id) => elements[id].type == "block"),
       onPointerClick: (e) => {
         state.breakSelected();
       },
@@ -104,7 +105,7 @@ const SelectedFrame = (props) => {
     {
       text: "Regroup",
       active: !lockSelect && regroupPossible(state),
-      show: selected.some((id) => elements[id].type == "block"),
+      show: state.workspace != config.workspace.placeValue && selected.some((id) => elements[id].type == "block"),
       onPointerClick: (e) => {
         state.regroupSelected();
       },

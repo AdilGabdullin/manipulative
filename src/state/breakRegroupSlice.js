@@ -14,24 +14,28 @@ export const breakRegroupSlice = (set) => ({
   finishAnimations: () =>
     set(
       produce((state) => {
+        let doPush = false;
         for (const id in current(state.elements)) {
           const element = state.elements[id];
           if (element.moveTo) {
             element.x = element.moveTo.x;
             element.y = element.moveTo.y;
             element.moveTo = null;
+            doPush = true;
           }
           if (element.deleteAfterMove) {
             delete state.elements[id];
+            doPush = true;
           }
           if (element.visibleAfterMove) {
             state.elements[id].visibleAfterMove = null;
             state.elements[id].visible = true;
+            doPush = true;
           }
         }
         state.finishDelay = null;
         clearSelected(state);
-        pushHistory(state);
+        if (doPush) pushHistory(state);
       })
     ),
   breakSelected: () =>
@@ -51,6 +55,43 @@ export const breakRegroupSlice = (set) => ({
           }
           delete state.elements[id];
         }
+        state.lastActiveElement = null;
+        state.finishDelay = animationDuration;
+      })
+    ),
+  breakPlaced: (block) =>
+    set(
+      produce((state) => {
+        if (block.label == 1) {
+          return;
+        } else if (block.label == 10) {
+          createBlocks1(state, block);
+        } else if (block.label == 100) {
+          createBlocks10(state, block);
+        } else if (block.label == 1000) {
+          createBlocks100(state, block);
+        }
+        state.lastActiveElement = null;
+        state.finishDelay = animationDuration;
+      })
+    ),
+  relocateAndBreak: (id, dx, dy) =>
+    set(
+      produce((state) => {
+        const block = state.elements[id];
+        if (!block) return;
+        block.x += dx;
+        block.y += dy;
+        if (block.label == 1) {
+          return;
+        } else if (block.label == 10) {
+          createBlocks1(state, block);
+        } else if (block.label == 100) {
+          createBlocks10(state, block);
+        } else if (block.label == 1000) {
+          createBlocks100(state, block);
+        }
+        delete state.elements[id];
         state.lastActiveElement = null;
         state.finishDelay = animationDuration;
       })
