@@ -47,7 +47,7 @@ const config = {
   },
   menu: {
     padding: 8,
-    height: 36,
+    height: 52,
     dropdown: {
       fontSize: 18,
       margin: 5,

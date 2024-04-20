@@ -4,13 +4,12 @@ import BrushMenu from "./BrushMenu";
 import config from "../config";
 import { useRef, useState } from "react";
 
-export const menuHeight = 50;
-
 const Menu = () => {
   const width = useAppStore((s) => s.width);
   const fdMode = useAppStore((s) => s.fdMode);
   const x = config.leftToolbar.width;
   const y = 0;
+  const menuHeight = config.menu.height;
   return (
     <>
       <Line id="bottom-menu-line" points={[x, y + menuHeight, width, y + menuHeight]} stroke="#c0c0c0" />
@@ -57,7 +56,14 @@ const ToggleButton = ({ x, y, text, width, field }) => {
 
   return (
     <Group key={text} onPointerClick={() => state.toggle(field)}>
-      <Rect x={x} y={y} width={width} height={height} cornerRadius={5} fill={fill ? colors.solitude : colors.white} />
+      <Rect
+        x={x}
+        y={y}
+        width={width}
+        height={height - 2 * padding}
+        cornerRadius={5}
+        fill={fill ? colors.solitude : colors.white}
+      />
       <Text
         width={width - 2 * padding}
         x={x + padding}
@@ -91,7 +97,14 @@ const SelectButton = ({ x, y, width, dropWidth, text, field }) => {
         setOpen(!open);
       }}
     >
-      <Rect x={x} y={y} width={width} height={height} cornerRadius={5} fill={open ? colors.solitude : colors.white} />
+      <Rect
+        x={x}
+        y={y}
+        width={width}
+        height={height - 2 * padding}
+        cornerRadius={5}
+        fill={open ? colors.solitude : colors.white}
+      />
       <Text
         width={width - 2 * padding}
         x={x + padding}
@@ -104,7 +117,7 @@ const SelectButton = ({ x, y, width, dropWidth, text, field }) => {
       />
       <SelectOptions
         x={x + (width - dropWidth) / 2}
-        y={y + height + 2 * padding}
+        y={y + height}
         width={dropWidth}
         options={Object.values(options)}
         active={active}

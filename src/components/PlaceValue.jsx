@@ -1,7 +1,6 @@
 import { Group, Line, Rect, Text } from "react-konva";
 // import { allOptions, leftToolbarWidth } from "./LeftToolbar";
 // import { Button, buttonHeight, buttonWidth, commonProps, margin, scrollSize, sumInRect } from "./Comparing";
-import { menuHeight } from "./Menu";
 import { useAppStore } from "../state/store";
 import config from "../config";
 // import { isPointInRect } from "../util";
@@ -92,7 +91,7 @@ function getTotalWidth(state) {
 }
 
 function getTotalHeight(state) {
-  let totalHeight = state.height - margin * 2 - menuHeight - scrollSize;
+  let totalHeight = state.height - margin * 2 - config.menu.height - scrollSize;
   if (state.fullscreen) {
     totalHeight = Math.min(totalHeight, 600);
   }
