@@ -85,7 +85,10 @@ const SelectButton = ({ x, y, width, dropWidth, text, field }) => {
   const { padding, height } = config.menu;
 
   const active = state[field];
-  const options = config[field];
+  const options = { ...config[field] };
+  if ((state.workspace == config.workspace.factors)) {
+    delete options.cubes;
+  }
   const onSelect = (value) => {
     state.setValue(field, value);
   };

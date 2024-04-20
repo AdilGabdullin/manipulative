@@ -6,38 +6,14 @@ import { Fragment } from "react";
 
 const LeftToolbar = () => {
   const state = useAppStore();
-  const { width, padding } = config.leftToolbar;
-  const options = { ...config.block.options };
-  const { flats, rods } = config.blockSet;
-
-  const scale = {
-    1: 30,
-    10: 20,
-    100: (width - 2 * padding) / (options[100].width + options[100].right),
-    1000: (width - 2 * padding) / (options[1000].width + options[1000].right),
-  };
-
-  if (state.blockSet == flats) {
-    delete options[1000];
-  }
-  if (state.blockSet == rods) {
-    delete options[1000];
-    delete options[100];
-  }
-
-  const blocks = [];
-  for (const label in options) {
-    blocks.push({
-      ...options[label],
-      scale: scale[label],
-    });
-  }
+  const { width } = config.leftToolbar;
+  const blocks = getBlocks(state);
   const totalHeight = blocks.reduce((sum, { height, top, scale }) => sum + (height + top) * scale, 0);
   const gap = (state.height - totalHeight) / (blocks.length + 1);
   let y = gap;
   for (const block of blocks) {
-    const { width, height, right, top, scale } = block;
-    block.x = (config.leftToolbar.width - (width + right) * scale) / 2;
+    const { height, right, top, scale } = block;
+    block.x = (width - (block.width + right) * scale) / 2;
     block.y = y;
     y += (height + top) * scale + gap;
   }
@@ -53,5 +29,36 @@ const LeftToolbar = () => {
     </>
   );
 };
+
+function getBlocks(state) {
+  const { block, blockSet, workspace, leftToolbar } = config;
+  const blocks = { ...block.options };
+  const { width, padding } = leftToolbar;
+  blocks[1].scale = 30;
+  blocks[10].scale = 16;
+  blocks[100].scale = (width - 2 * padding) / (blocks[100].width + blocks[100].right);
+  blocks[1000].scale = (width - 2 * padding) / (blocks[1000].width + blocks[1000].right);
+
+  if (state.blockSet == blockSet.flats) {
+    delete blocks[1000];
+  }
+  if (state.blockSet == blockSet.rods) {
+    delete blocks[1000];
+    delete blocks[100];
+  }
+  if (state.workspace == workspace.factors) {
+    delete blocks[1000];
+    const horizontalBlock10 = { ...blocks[10] };
+    const { width, height } = horizontalBlock10;
+    blocks[20] = {
+      ...horizontalBlock10,
+      width: height,
+      height: width,
+      size: [10, 1, 1],
+      shadowId: "#shadow-block-10-h",
+    };
+  }
+  return Object.values(blocks);
+}
 
 export default LeftToolbar;

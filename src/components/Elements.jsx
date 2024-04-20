@@ -37,6 +37,7 @@ const Elements = () => {
       <Text id="shadow-text" visible={false} fill={"black"} fontSize={36} text="Text" fontFamily="Calibri" />
       <Block id="shadow-block-1" visible={false} label={"1"} scale={config.block.size} />
       <Block id="shadow-block-10" visible={false} label={"10"} scale={config.block.size} />
+      <Block id="shadow-block-10-h" visible={false} size={[10, 1, 1]} label={"10"} scale={config.block.size} />
       <Block id="shadow-block-100" visible={false} label={"100"} scale={config.block.size} />
       <Block id="shadow-block-1000" visible={false} label={"1000"} scale={config.block.size} />
     </>

@@ -37,7 +37,7 @@ export const useAppStore = create((set) => ({
   multiColored: true,
 
   fullscreen: true,
-  workspace: config.workspace.placeValue,
+  workspace: config.workspace.factors,
 
   toggleGlobal: (field) =>
     set(
@@ -90,6 +90,7 @@ export const useAppStore = create((set) => ({
             delete state.elements[id];
           }
         }
+        state.blockSet = workspace == config.workspace.factors ? config.blockSet.flats : config.blockSet.cubes;
         pushHistory(state);
       })
     ),

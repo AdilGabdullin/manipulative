@@ -2,6 +2,7 @@ const config = {
   workspace: {
     basic: "Basic",
     placeValue: "Place Value",
+    factors: "Factors",
   },
   numberSet: {
     whole: "Whole Numbers",
@@ -34,6 +35,7 @@ const config = {
       1: {
         name: "Ones",
         label: "1",
+        shadowId: "#shadow-block-1",
         size: [1, 1, 1],
         fill: "#ffc107",
         dark: "#ffa000",
@@ -45,6 +47,7 @@ const config = {
       10: {
         name: "Tens",
         label: "10",
+        shadowId: "#shadow-block-10",
         size: [1, 10, 1],
         fill: "#03a9f4",
         dark: "#0288d1",
@@ -56,6 +59,7 @@ const config = {
       100: {
         name: "Hundreds",
         label: "100",
+        shadowId: "#shadow-block-100",
         size: [10, 10, 1],
         fill: "#ff5722",
         dark: "#e44c1c",
@@ -67,6 +71,7 @@ const config = {
       1000: {
         name: "Thousands",
         label: "1000",
+        shadowId: "#shadow-block-1000",
         size: [10, 10, 10],
         fill: "#39c669",
         dark: "#008d35",

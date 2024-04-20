@@ -81,7 +81,7 @@ export const ToolbarBlock = (props) => {
 
   let boardShadow = null;
   const getBoardShadow = (e) => {
-    return boardShadow || (boardShadow = e.target.getStage().findOne("#shadow-block-" + props.label));
+    return boardShadow || (boardShadow = e.target.getStage().findOne(props.shadowId));
   };
 
   const add = (pos, place) => {
