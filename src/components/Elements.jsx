@@ -3,31 +3,30 @@ import { useAppStore } from "../state/store";
 import TextElement from "./TextElement";
 import RectElement from "./RectElement";
 import EllipseElement from "./EllipseElement";
+import LineElement from "./LineElement";
+
+const elementList = {
+  text: TextElement,
+  rect: RectElement,
+  ellipse: EllipseElement,
+  line: LineElement,
+};
 
 const Elements = () => {
   const state = useAppStore();
-  const { elements } = state;
+  const { elements, finishDelay, finishAnimations } = state;
 
-  const list = sortedElements(elements);
+  if (finishDelay) {
+    setTimeout(finishAnimations, finishDelay + 50);
+  }
   return (
     <>
-      {list.map((element) => {
-        const id = element.id;
-        switch (element.type) {
-          case "text":
-            return <TextElement key={id} {...element} />;
-            break;
-          case "rect":
-            return <RectElement key={id} {...element} />;
-            break;
-          case "ellipse":
-            return <EllipseElement key={id} {...element} />;
-            break;
-          case "line":
-            return <LineElement key={id} {...element} />;
-            break;
-        }
-      })}
+      {Object.values(elements)
+        .toSorted((e1, e2) => e1.x - e2.x - (e1.y - e2.y) * 100)
+        .map((element) => {
+          const Element = elementList[element.type];
+          return <Element key={element.id} {...element} />;
+        })}
       <Rect id="shadow-rect" visible={false} />
       <Ellipse id="shadow-ellipse" visible={false} />
       <Line id="shadow-line" visible={false} lineCap={"round"} lineJoin={"round"} />
@@ -35,9 +34,5 @@ const Elements = () => {
     </>
   );
 };
-
-function sortedElements(elements) {
-  return Object.values(elements);
-}
 
 export default Elements;
