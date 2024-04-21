@@ -81,7 +81,7 @@ export const ToolbarTile = (props) => {
     },
     onPointerClick: (e) => {
       const size = config.tile.size;
-      const pos = { x: -size / 2, y: -size / 2 };
+      const pos = { x: -size, y: -size };
       const last = elements[state.lastActiveElement];
       if (last) {
         pos.x = last.x + size;
