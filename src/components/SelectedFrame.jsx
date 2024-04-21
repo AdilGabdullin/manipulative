@@ -71,7 +71,7 @@ const SelectedFrame = (props) => {
       }
     }
     selectedTargets.forEach(({ node, x, y }) => {
-      node.setAttrs({ x: x + dx , y: y + dy  });
+      node.setAttrs({ x: x + dx, y: y + dy });
     });
     e.target.setAttrs({ x: x + dx * state.scale, y: y + dy * state.scale });
   };
@@ -95,7 +95,7 @@ const SelectedFrame = (props) => {
     {
       text: "Fill On/Off",
       active: !lockSelect,
-      show: selected.some((id) => elements[id].fill != undefined),
+      show: selected.some((id) => elements[id].type == "tile" || elements[id].fill != undefined),
       onPointerClick: (e) => {
         state.toggleValueSelected("fill");
       },

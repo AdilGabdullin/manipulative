@@ -230,7 +230,13 @@ export const useAppStore = create((set) => ({
       produce((state) => {
         for (const id of current(state).selected) {
           const element = state.elements[id];
-          if (element && element[field] !== undefined) {
+          if (field == "fill" && element?.type == "tile") {
+            if (element.fill) {
+              element.fill = null;
+            } else {
+              element.fill = element.fillColor;
+            }
+          } else if (element && element[field] !== undefined) {
             element[field] = !element[field];
           }
         }

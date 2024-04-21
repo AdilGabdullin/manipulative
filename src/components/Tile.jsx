@@ -1,6 +1,6 @@
 import { Group, Rect } from "react-konva";
 import { config } from "../config";
-import { getStageXY, halfPixel, numberBetween, pointsIsClose, setVisibility } from "../util";
+import { getStageXY, halfPixel, pointsIsClose, setVisibility } from "../util";
 import { useAppStore } from "../state/store";
 import { useEffect, useRef } from "react";
 import { Animation } from "konva/lib/Animation";
@@ -45,6 +45,7 @@ export const ToolbarTile = (props) => {
       width: size,
       height: size,
       fill: props.fill,
+      fillColor: props.fill,
       stroke: props.stroke,
     });
   };
