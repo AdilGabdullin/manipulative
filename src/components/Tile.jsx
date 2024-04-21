@@ -35,24 +35,17 @@ export const ToolbarTile = (props) => {
   };
 
   const add = (pos, place) => {
-    return;
-    const { width, height, top, right } = props;
-    const block = {
+    addElement({
       ...props,
-      type: "block",
+      type: "tile",
       x: pos ? pos.x : place.x,
       y: pos ? pos.y : place.y,
-      width: width * scale,
-      height: height * scale,
-      top: top * scale,
-      right: right * scale,
-      scale,
-    };
-    if (elementInBreakColumn(state, block)) {
-      breakPlaced(block);
-    } else if (!elementInWrongColumn(state, block)) {
-      addElement(block);
-    }
+      size: size,
+      width: size,
+      height: size,
+      fill: props.fill,
+      stroke: props.stroke,
+    });
   };
 
   const events = {
@@ -153,7 +146,7 @@ export const BoardTile = (props) => {
   };
   return (
     <Group x={0} y={0} ref={groupRef}>
-      <Block {...props} x={x} y={y} events={events} />
+      <Tile {...props} x={x} y={y} events={events} />
     </Group>
   );
 };
