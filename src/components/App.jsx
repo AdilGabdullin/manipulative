@@ -3,7 +3,7 @@ import { useEffect, useLayoutEffect, useRef } from "react";
 import SelectRect, { selectRectMove, selectRectStop } from "./SelectRect";
 import { useAppStore } from "../state/store";
 import LeftToolbar, { leftToolbarWidth } from "./LeftToolbar";
-import { getStageXY, pointsIsClose } from "../util";
+import { getStageXY } from "../util";
 import TopToolbar, { topToolbarHeight } from "./TopToolbar";
 import Menu from "./Menu";
 import Scrolls from "./Scrolls";
@@ -14,6 +14,7 @@ import ImagePreloader from "./ImagePreloader";
 import { appSaveText } from "./TextElement";
 import Grid from "./Grid";
 import Summary from "./Summary";
+import GroupLabels from "./GroupLabels";
 
 const App = () => {
   const state = useAppStore();
@@ -310,6 +311,7 @@ const App = () => {
             <LeftToolbar findOne={findOne} />
             <Menu />
             <Summary />
+            <GroupLabels />
             <Scrolls />
             <SelectedFrame findOne={findOne} />
           </Layer>
