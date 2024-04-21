@@ -170,6 +170,7 @@ export const BoardBlock = (props) => {
     if (moveTo) animateMove(groupRef.current.children[0], x, y, moveTo.x + origin.x, moveTo.y + origin.y);
   }, [moveTo]);
 
+  const factorsRect = state.workspace == config.workspace.factors && rectProps(state);
   const events = {
     draggable: true,
     onDragStart: (e) => {
@@ -178,9 +179,10 @@ export const BoardBlock = (props) => {
     onDragMove: (e) => {
       const dx = e.target.x() - x;
       const dy = e.target.y() - y;
-      const pos = magnetToAll({ ...props, x: props.x + dx, y: props.y + dy }, elements);
+      const block = { ...props, x: props.x + dx, y: props.y + dy };
+      const pos = magnetToAll(block, elements, factorsRect);
       if (pos) {
-        e.target.setAttrs({ x: origin.x + pos.x, y: origin.y + pos.y });
+        e.target.setAttrs({ x: halfPixel(origin.x + pos.x), y: halfPixel(origin.y + pos.y) });
       }
     },
     onDragEnd: (e) => {
@@ -220,9 +222,9 @@ export function magnetToAll(block, elements, factorsRect) {
       { x: factorsRect.x + 0.3 * size, y: factorsRect.y + 2.5 * size },
       { x: factorsRect.x + 2.3 * size, y: factorsRect.y + 2.5 * size },
     ];
-    for (const point of points) {
-      if (pointsIsClose(block, point)) {
-        return point;
+    for (const pos of points) {
+      if (pointsIsClose(block, pos)) {
+        return pos;
       }
     }
   }

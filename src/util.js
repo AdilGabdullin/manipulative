@@ -200,5 +200,5 @@ export function center({ x, y, width, height }) {
 }
 
 export function halfPixel(x) {
-  return Math.round(x || 0) + 0.5;
+  return Math.floor(x || 0) + 0.5;
 }

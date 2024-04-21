@@ -31,13 +31,12 @@ const LeftToolbar = () => {
 };
 
 function getBlocks(state) {
-  const { block, blockSet, workspace, leftToolbar } = config;
+  const { block, blockSet, workspace } = config;
   const blocks = { ...block.options };
-  const { width, padding } = leftToolbar;
   blocks[1].scale = 30;
   blocks[10].scale = 16;
-  blocks[100].scale = (width - 2 * padding) / (blocks[100].width + blocks[100].right);
-  blocks[1000].scale = (width - 2 * padding) / (blocks[1000].width + blocks[1000].right);
+  blocks[100].scale = 13;
+  blocks[1000].scale = 10;
 
   if (state.blockSet == blockSet.flats) {
     delete blocks[1000];
