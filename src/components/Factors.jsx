@@ -22,7 +22,7 @@ const Factors = () => {
   if (!state.width || state.workspace != config.workspace.factors) return null;
   const rect = rectProps(state);
   const { x, y, width, height } = rect;
-  const sums = generateSums(rect, state.elements);
+  const sums = generateSums(rect, state.elements, state.numberSet == config.numberSet.whole);
 
   return (
     <Group x={Math.round(origin.x + x)} y={Math.round(origin.y + y)}>
@@ -30,16 +30,16 @@ const Factors = () => {
       <Line x={0} y={factorsSize} points={[0, 0, width, 0]} {...commonProps} />
       <Line x={0} y={0} points={[0, -1, 0, height]} {...commonProps} />
       <Line x={factorsSize} y={0} points={[0, 0, 0, height]} {...commonProps} />
-      {showSummary && sums.left != "0" && (
+      {showSummary && +sums.left != 0 && (
         <BasicSummary text={sums.left} x={-margin} align={true} y={(height - fontSize) / 2} />
       )}
-      {showSummary && sums.top != "0" && <BasicSummary text={sums.top} x={width / 2} y={-56 - margin} />}
-      {showSummary && sums.main != "0" && <BasicSummary text={sums.main} x={width / 2} y={height - 56 - margin} />}
+      {showSummary && +sums.top != 0 && <BasicSummary text={sums.top} x={width / 2} y={-56 - margin} />}
+      {showSummary && +sums.main != 0 && <BasicSummary text={sums.main} x={width / 2} y={height - 56 - margin} />}
     </Group>
   );
 };
 
-function generateSums(rect, elements) {
+function generateSums(rect, elements, whole) {
   const blocks = Object.values(elements).filter((e) => e.type == "block" && !e.visibleAfterMove);
   const { x, y, width, height } = rect;
   const leftArea = {
@@ -68,7 +68,11 @@ function generateSums(rect, elements) {
     if (pointInRect(center(block), topArea)) top += parseInt(block.label);
     if (pointInRect(center(block), mainArea)) main += parseInt(block.label);
   }
-  return { left, top, main };
+  if (whole) {
+    return { left, top, main };
+  } else {
+    return { left: (left / 100).toFixed(2), top: (top / 100).toFixed(2), main: (main / 100).toFixed(2) };
+  }
 }
 
 export function rectProps(state) {

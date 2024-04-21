@@ -1,12 +1,13 @@
 import { Rect, Text } from "react-konva";
 import { useAppStore } from "../state/store";
 import { Fragment, useEffect } from "react";
-import { elementBox, setVisibility, setVisibilityFrame } from "../util";
+import { elementBox, halfPixel, setVisibility, setVisibilityFrame } from "../util";
 import ShapeResizeHandles from "./ShapeResizeHandles";
 import { createTextArea } from "./TextElement";
 import { regroupPossible } from "../state/breakRegroupSlice";
 import { magnetToAll } from "./Block";
 import config from "../config";
+import { rectProps } from "./Factors";
 
 const SelectedFrame = (props) => {
   const state = useAppStore();
@@ -54,6 +55,7 @@ const SelectedFrame = (props) => {
     setVisibility(e, false);
   };
 
+  const factorsRect = state.workspace == config.workspace.factors && rectProps(state);
   const others = { ...elements };
   for (const id of selected) {
     delete others[id];
@@ -65,7 +67,7 @@ const SelectedFrame = (props) => {
     for (const id of selected) {
       const block = elements[id];
       if (block.type != "block") continue;
-      const pos = magnetToAll({ ...block, x: block.x + dx, y: block.y + dy }, others);
+      const pos = magnetToAll({ ...block, x: block.x + dx, y: block.y + dy }, others, factorsRect);
       if (pos) {
         dx = pos.x - block.x;
         dy = pos.y - block.y;
@@ -73,9 +75,9 @@ const SelectedFrame = (props) => {
       }
     }
     selectedTargets.forEach(({ node, x, y }) => {
-      node.setAttrs({ x: x + dx, y: y + dy });
+      node.setAttrs({ x: halfPixel(x + dx), y: halfPixel(y + dy) });
     });
-    e.target.setAttrs({ x: x + dx * scale, y: y + dy * scale });
+    e.target.setAttrs({ x: halfPixel(x + dx * scale), y: halfPixel(y + dy * scale) });
   };
 
   const onDragEnd = (e) => {
