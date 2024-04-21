@@ -1,7 +1,7 @@
 import { Line } from "react-konva";
-import { boardSize, useAppStore } from "../state/store";
-import { menuHeight } from "./Menu";
+import { useAppStore } from "../state/store";
 import { leftToolbarWidth } from "./LeftToolbar";
+import { config } from "../config";
 
 export const maxOffset = 500;
 
@@ -15,7 +15,7 @@ const Scrolls = () => {
   const xProgress = (offset.x + maxOffset) / 2 / maxOffset;
   const hx = xMin * (1 - xProgress) + xMax * xProgress;
   const hy = height - 12;
-  const yMin = menuHeight + 12;
+  const yMin = config.menu.height + 12;
   const yMax = height - scrollHeight - 18;
   const yProgress = (offset.y + maxOffset) / 2 / maxOffset;
   const vx = width - 12;

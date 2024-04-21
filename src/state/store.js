@@ -6,8 +6,7 @@ import { topToolbarHeight } from "../components/TopToolbar";
 import { maxOffset } from "../components/Scrolls";
 import { freeDrawingSlice } from "./freeDrawingSlice";
 import { historySlice, pushHistory } from "./historySlice";
-import { workspace } from "../config";
-import { menuHeight } from "../components/Menu";
+import { workspace, config } from "../config";
 
 export const gridStep = 60;
 export const boardSize = {
@@ -29,6 +28,8 @@ export const useAppStore = create((set) => ({
   origin: { x: 0, y: 0 },
   selected: [],
   lockSelect: false,
+  showLabels: true,
+  showSummary: true,
 
   fullscreen: true,
   toggleGlobal: (field) =>
@@ -72,7 +73,7 @@ export const useAppStore = create((set) => ({
   toggle: (field) =>
     set(
       produce((state) => {
-        state.field = !state.field;
+        state[field] = !state[field];
       })
     ),
 
@@ -299,5 +300,5 @@ export const useAppStore = create((set) => ({
 
 function keepOrigin(state) {
   state.origin.x = ((state.width - leftToolbarWidth) / 2 + leftToolbarWidth) / state.scale;
-  state.origin.y = ((state.height - menuHeight) / 2 + menuHeight) / state.scale;
+  state.origin.y = ((state.height - config.menu.height) / 2 + config.menu.height) / state.scale;
 }
