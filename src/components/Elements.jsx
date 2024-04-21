@@ -5,6 +5,7 @@ import RectElement from "./RectElement";
 import EllipseElement from "./EllipseElement";
 import LineElement from "./LineElement";
 import { BoardTile, Tile, getSize } from "./Tile";
+import { config } from "../config";
 
 const elementList = {
   text: TextElement,
@@ -33,7 +34,7 @@ const Elements = () => {
       <Ellipse id="shadow-ellipse" visible={false} />
       <Line id="shadow-line" visible={false} lineCap={"round"} lineJoin={"round"} />
       <Text id="shadow-text" visible={false} fill={"black"} fontSize={36} text="Text" fontFamily="Calibri" />
-      <Tile id="shadow-tile" visible={true} size={getSize(state)} />
+      <Tile id="shadow-tile" visible={true} size={config.tile.size} />
     </>
   );
 };

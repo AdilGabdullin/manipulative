@@ -1,9 +1,10 @@
 import { Rect, Text } from "react-konva";
-import { gridStep, useAppStore } from "../state/store";
+import { useAppStore } from "../state/store";
 import { Fragment, useEffect } from "react";
-import { elementBox, setVisibility, setVisibilityFrame } from "../util";
+import { elementBox, halfPixel, setVisibility, setVisibilityFrame } from "../util";
 import ShapeResizeHandles from "./ShapeResizeHandles";
 import { createTextArea } from "./TextElement";
+import { magnetToAll } from "./Tile";
 
 const SelectedFrame = (props) => {
   const state = useAppStore();
@@ -40,10 +41,10 @@ const SelectedFrame = (props) => {
   }
 
   const { xMin, yMin, xMax, yMax } = getBounds(state);
-  const x = (origin.x + xMin - 7 - offset.x) * scale - 1;
-  const y = (origin.y + yMin - 7 - offset.y) * scale - 1;
-  const width = (xMax - xMin + 7 * 2) * scale + 2;
-  const height = (yMax - yMin + 7 * 2) * scale + 2;
+  const x = Math.round((origin.x + xMin - 7 - offset.x) * scale - 1);
+  const y = Math.round((origin.y + yMin - 7 - offset.y) * scale - 1);
+  const width = Math.round((xMax - xMin + 7 * 2) * scale + 2);
+  const height = Math.round((yMax - yMin + 7 * 2) * scale + 2);
 
   const onPointerDown = (e) => {};
 
@@ -51,14 +52,28 @@ const SelectedFrame = (props) => {
     setVisibility(e, false);
   };
 
+  const others = { ...elements };
+  for (const id of selected) {
+    delete others[id];
+  }
   const onDragMove = (e) => {
-    let dx = (e.target.x() - x) / state.scale;
-    let dy = (e.target.y() - y) / state.scale;
-    selectedTargets.forEach(({ point, node, x, y }) => {
-      if (point) return;
-      node.setAttrs({ x: x + dx, y: y + dy });
+    let dx = Math.round((e.target.x() - x) / state.scale);
+    let dy = Math.round((e.target.y() - y) / state.scale);
+
+    for (const id of selected) {
+      const tile = elements[id];
+      if (tile.type != "tile") continue;
+      const pos = magnetToAll({ ...tile, x: tile.x + dx, y: tile.y + dy }, others);
+      if (pos) {
+        dx = pos.x - tile.x;
+        dy = pos.y - tile.y;
+        break;
+      }
+    }
+    selectedTargets.forEach(({ node, x, y }) => {
+      node.setAttrs({ x: x + dx , y: y + dy  });
     });
-    e.target.setAttrs({ x: x + dx * scale, y: y + dy * scale });
+    e.target.setAttrs({ x: x + dx * state.scale, y: y + dy * state.scale });
   };
 
   const onDragEnd = (e) => {

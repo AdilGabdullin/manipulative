@@ -8,7 +8,7 @@ import { Animation } from "konva/lib/Animation";
 export const Tile = ({ id, x, y, size, fill, stroke, visible, events }) => {
   x = halfPixel(x);
   y = halfPixel(y);
-  size = Math.round(size);
+  size = Math.round(size) - 1;
   return (
     <Group id={id} x={x} y={y} visible={visible} {...events}>
       <Rect width={size} height={size} fill={fill} stroke={stroke} strokeWidth={1} />
@@ -18,7 +18,7 @@ export const Tile = ({ id, x, y, size, fill, stroke, visible, events }) => {
 
 export const ToolbarTile = (props) => {
   const state = useAppStore();
-  const { origin, elements, addElement, breakPlaced } = state;
+  const { origin, elements, addElement } = state;
   const shadow = useRef();
   const size = getSize(state);
 
@@ -35,6 +35,7 @@ export const ToolbarTile = (props) => {
   };
 
   const add = (pos, place) => {
+    const size = config.tile.size;
     addElement({
       ...props,
       type: "tile",
@@ -78,11 +79,11 @@ export const ToolbarTile = (props) => {
       }
     },
     onPointerClick: (e) => {
-      const { width, height } = props;
-      const pos = { x: (-width / 2) * scale, y: (-height / 2) * scale };
+      const size = config.tile.size;
+      const pos = { x: size / 2, y: size / 2 };
       const last = elements[state.lastActiveElement];
       if (last) {
-        pos.x = last.x + width * scale;
+        pos.x = last.x + size;
         pos.y = last.y;
       }
       add(pos);
@@ -121,8 +122,7 @@ export const BoardTile = (props) => {
     onDragMove: (e) => {
       const dx = e.target.x() - x;
       const dy = e.target.y() - y;
-      const block = { ...props, x: props.x + dx, y: props.y + dy };
-      const pos = magnetToAll(block, elements);
+      const pos = magnetToAll({ ...props, x: props.x + dx, y: props.y + dy }, elements);
       if (pos) {
         e.target.setAttrs({ x: halfPixel(origin.x + pos.x), y: halfPixel(origin.y + pos.y) });
       }
@@ -130,15 +130,8 @@ export const BoardTile = (props) => {
     onDragEnd: (e) => {
       const dx = e.target.x() - x;
       const dy = e.target.y() - y;
-      const block = { ...props, x: props.x + dx, y: props.y + dy };
       setVisibility(e, true);
-      if (elementInBreakColumn(state, block)) {
-        state.relocateAndBreak(id, dx, dy);
-      } else if (elementInWrongColumn(state, block)) {
-        state.cancelMove(id, dx, dy);
-      } else {
-        state.relocateElement(id, dx, dy);
-      }
+      state.relocateElement(id, dx, dy);
     },
     onPointerClick: (e) => {
       selectIds([id], locked);
@@ -151,37 +144,29 @@ export const BoardTile = (props) => {
   );
 };
 
-export function magnetToAll(block, elements) {
+export function magnetToAll(tile, elements) {
   for (const [id, element] of Object.entries(elements)) {
-    if (block.id == id || element.type != "block") continue;
-    const pos = magnetToOne(block, element);
+    if (tile.id == id || element.type != "tile") continue;
+    const pos = magnetToOne(tile, element);
     if (pos) return pos;
   }
   return null;
 }
 
-function magnetToOne(block, other) {
-  const { x, y, width, height } = block;
-
+function magnetToOne(tile, other) {
+  const size = other.size;
+  const { x, y } = tile;
   const options = [
+    [-size, -size],
+    [0, -size],
+    [size, -size],
+    [-size, 0],
     [0, 0],
-    [width, 0],
-    [0, height],
-    [width, height],
-    [-other.width, 0],
-    [-other.width + width, 0],
-    [-other.width + 0, height],
-    [-other.width + width, height],
-    [0, 0 - other.height],
-    [width, 0 - other.height],
-    [0, height - other.height],
-    [width, height - other.height],
-    [-other.width + 0, 0 - other.height],
-    [-other.width + width, 0 - other.height],
-    [-other.width + 0, height - other.height],
-    [-other.width + width, height - other.height],
+    [size, 0],
+    [-size, size],
+    [0, size],
+    [size, size],
   ];
-
   for (const [dx, dy] of options) {
     if (pointsIsClose({ x: x + dx, y: y + dy }, other)) return { x: other.x - dx, y: other.y - dy };
   }
