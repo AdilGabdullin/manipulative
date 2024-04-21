@@ -38,4 +38,16 @@ export const config = {
     },
   },
   colors,
+  tile: {
+    size: 20,
+    options: [
+      { fill: "yellow", stroke: "yellow", name: "Yellow" },
+      { fill: "red", stroke: "red", name: "Red" },
+      { fill: "green", stroke: "green", name: "Green" },
+      { fill: "blue", stroke: "blue", name: "Blue" },
+      { fill: "pink", stroke: "pink", name: "Pink" },
+      { fill: "purple", stroke: "purple", name: "Purple" },
+      { fill: "orange", stroke: "orange", name: "Orange" },
+    ],
+  },
 };

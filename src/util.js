@@ -194,3 +194,28 @@ export function sum(xs) {
 export function avg(xs) {
   return sum(xs) / xs.length;
 }
+
+export function boxesIntersect({ x, y, width, height }, other) {
+  return (
+    (numberBetween(x, other.x, other.x + other.width) ||
+      numberBetween(x + width, other.x, other.x + other.width) ||
+      numberBetween(other.x, x, x + width) ||
+      numberBetween(other.x + other.width, x, x + width)) &&
+    (numberBetween(y, other.y, other.y + other.height) ||
+      numberBetween(y + height, other.y, other.y + other.height) ||
+      numberBetween(other.y, y, y + height) ||
+      numberBetween(other.y + other.height, y, y + height))
+  );
+}
+
+export function pointInRect(point, rect) {
+  return numberBetween(point.x, rect.x, rect.x + rect.width) && numberBetween(point.y, rect.y, rect.y + rect.height);
+}
+
+export function center({ x, y, width, height }) {
+  return { x: x + width / 2, y: y + height / 2 };
+}
+
+export function halfPixel(x) {
+  return Math.floor(x || 0) + 0.5;
+}
