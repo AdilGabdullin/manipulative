@@ -28,6 +28,7 @@ export const useAppStore = create((set) => ({
   origin: { x: 0, y: 0 },
   selected: [],
   lockSelect: false,
+  showGrid: true,
   showLabels: true,
   showSummary: true,
 
@@ -121,6 +122,7 @@ export const useAppStore = create((set) => ({
   setOffsetX: (offset) =>
     set(
       produce((state) => {
+        offset = Math.round(offset);
         state.offset.x = offset < -maxOffset ? -maxOffset : offset > maxOffset ? maxOffset : offset;
       })
     ),
@@ -128,6 +130,7 @@ export const useAppStore = create((set) => ({
   setOffsetY: (offset) =>
     set(
       produce((state) => {
+        offset = Math.round(offset);
         state.offset.y = offset < -maxOffset ? -maxOffset : offset > maxOffset ? maxOffset : offset;
       })
     ),
@@ -299,6 +302,6 @@ export const useAppStore = create((set) => ({
 }));
 
 function keepOrigin(state) {
-  state.origin.x = ((state.width - leftToolbarWidth) / 2 + leftToolbarWidth) / state.scale;
-  state.origin.y = ((state.height - config.menu.height) / 2 + config.menu.height) / state.scale;
+  state.origin.x = Math.round(((state.width - leftToolbarWidth) / 2 + leftToolbarWidth) / state.scale);
+  state.origin.y = Math.round(((state.height - config.menu.height) / 2 + config.menu.height) / state.scale);
 }

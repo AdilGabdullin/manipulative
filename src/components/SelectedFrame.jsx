@@ -63,7 +63,7 @@ const SelectedFrame = (props) => {
     for (const id of selected) {
       const tile = elements[id];
       if (tile.type != "tile") continue;
-      const pos = magnetToAll({ ...tile, x: tile.x + dx, y: tile.y + dy }, others);
+      const pos = magnetToAll({ ...tile, x: tile.x + dx, y: tile.y + dy }, others, state);
       if (pos) {
         dx = pos.x - tile.x;
         dy = pos.y - tile.y;

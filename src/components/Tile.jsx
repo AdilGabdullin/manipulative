@@ -1,6 +1,6 @@
 import { Group, Rect } from "react-konva";
 import { config } from "../config";
-import { getStageXY, halfPixel, pointsIsClose, setVisibility } from "../util";
+import { getStageXY, halfPixel, numberBetween, pointsIsClose, setVisibility } from "../util";
 import { useAppStore } from "../state/store";
 import { useEffect, useRef } from "react";
 import { Animation } from "konva/lib/Animation";
@@ -58,7 +58,7 @@ export const ToolbarTile = (props) => {
       const out = outOfToolbar(e);
       target.visible(!out);
       const place = placeProps(e);
-      const pos = magnetToAll(place, elements);
+      const pos = magnetToAll(place, elements, state);
       const x = halfPixel(origin.x + (pos ? pos.x : place.x));
       const y = halfPixel(origin.y + (pos ? pos.y : place.y));
       const boardShadow = getBoardShadow(e);
@@ -74,13 +74,13 @@ export const ToolbarTile = (props) => {
       getBoardShadow(e).visible(false);
       if (out) {
         const place = placeProps(e);
-        const pos = magnetToAll(place, elements);
+        const pos = magnetToAll(place, elements, state);
         add(pos, place);
       }
     },
     onPointerClick: (e) => {
       const size = config.tile.size;
-      const pos = { x: size / 2, y: size / 2 };
+      const pos = { x: -size / 2, y: -size / 2 };
       const last = elements[state.lastActiveElement];
       if (last) {
         pos.x = last.x + size;
@@ -122,7 +122,7 @@ export const BoardTile = (props) => {
     onDragMove: (e) => {
       const dx = e.target.x() - x;
       const dy = e.target.y() - y;
-      const pos = magnetToAll({ ...props, x: props.x + dx, y: props.y + dy }, elements);
+      const pos = magnetToAll({ ...props, x: props.x + dx, y: props.y + dy }, elements, state);
       if (pos) {
         e.target.setAttrs({ x: halfPixel(origin.x + pos.x), y: halfPixel(origin.y + pos.y) });
       }
@@ -144,7 +144,12 @@ export const BoardTile = (props) => {
   );
 };
 
-export function magnetToAll(tile, elements) {
+export function magnetToAll(tile, elements, state) {
+  if (state.showGrid) {
+    const size = config.tile.size;
+    const { x, y } = tile;
+    return { x: x - (x % size), y: y - (y % size) };
+  }
   for (const [id, element] of Object.entries(elements)) {
     if (tile.id == id || element.type != "tile") continue;
     const pos = magnetToOne(tile, element);
