@@ -3,7 +3,7 @@ import { useEffect, useLayoutEffect, useRef } from "react";
 import SelectRect, { selectRectMove, selectRectStop } from "./SelectRect";
 import { useAppStore } from "../state/store";
 import LeftToolbar from "./LeftToolbar";
-import { getStageXY, pointsIsClose } from "../util";
+import { getStageXY } from "../util";
 import TopToolbar, { topToolbarHeight } from "./TopToolbar";
 import Menu from "./Menu";
 import Scrolls from "./Scrolls";
@@ -300,7 +300,7 @@ const App = () => {
           {state.workspace == config.workspace.placeValue && <PlaceValue />}
           {state.workspace == config.workspace.factors && <Factors />}
           {state.workspace == config.workspace.comparing && <Comparing />}
-          {state.workspace == config.workspace.addition && <Addition />}
+          {[config.workspace.addition, config.workspace.subtraction].includes(state.workspace) && <Addition />}
           <Elements />
           <GroupLabels />
           <SelectRect />

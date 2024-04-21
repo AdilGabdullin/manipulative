@@ -1,11 +1,8 @@
-import { Group, Line, Rect } from "react-konva";
+import { Circle, Group, Line, Rect } from "react-konva";
 import { useAppStore } from "../state/store";
 import config from "../config";
-import { BasicSummary } from "./Summary";
-import { center, pointInRect } from "../util";
 
 const baseSize = config.block.size;
-const factorsSize = Math.round(baseSize * 2);
 
 const commonProps = {
   strokeWidth: 2,
@@ -17,19 +14,24 @@ const margin = 10;
 
 const Addition = () => {
   const state = useAppStore();
-  const { origin, showSummary } = state;
+  const { origin } = state;
   if (!state.width) return null;
   const rect = rectProps(state);
   const totalWidth = rect.width;
   const mainHeight = rect.height + config.summary.height;
   const x = Math.round(origin.x + rect.x);
   const y = Math.round(origin.y + rect.y - config.summary.height - margin);
+  const r = 20;
+  const l = r * 0.4;
 
   return (
     <Group x={x} y={y}>
       <Rect x={0} y={0} width={totalWidth} height={mainHeight} {...commonProps} />
       <Line x={0} y={Math.round(mainHeight / 3)} points={[0, 0, totalWidth, 0]} {...commonProps} />
       <Line x={0} y={Math.round((mainHeight / 3) * 2)} points={[0, 0, totalWidth, 0]} {...commonProps} />
+      <Circle x={0} y={mainHeight / 2} radius={r} {...commonProps} />
+      <Line x={0} y={mainHeight / 2} points={[-l, 0, l, 0]} {...commonProps} strokeWidth={4} />
+      {state.workspace == config.workspace.addition && <Line x={0} y={mainHeight / 2} points={[0, -l, 0, l]} {...commonProps} strokeWidth={4} />}
     </Group>
   );
 };
