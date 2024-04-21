@@ -37,7 +37,7 @@ export const useAppStore = create((set) => ({
   multiColored: true,
 
   fullscreen: true,
-  workspace: config.workspace.factors,
+  workspace: config.workspace.comparing,
 
   toggleGlobal: (field) =>
     set(

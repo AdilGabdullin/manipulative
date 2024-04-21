@@ -3,6 +3,7 @@ const config = {
     basic: "Basic",
     placeValue: "Place Value",
     factors: "Factors",
+    comparing: "Comparing",
   },
   numberSet: {
     whole: "Whole Numbers",

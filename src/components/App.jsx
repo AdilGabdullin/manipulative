@@ -17,6 +17,7 @@ import Summary from "./Summary";
 import GroupLabels from "./GroupLabels";
 import PlaceValue from "./PlaceValue";
 import Factors from "./Factors";
+import Comparing from "./Comparing";
 
 const App = () => {
   const state = useAppStore();
@@ -297,6 +298,7 @@ const App = () => {
         >
           {state.workspace == config.workspace.placeValue && <PlaceValue />}
           {state.workspace == config.workspace.factors && <Factors />}
+          {state.workspace == config.workspace.comparing && <Comparing />}
           <Elements />
           <GroupLabels />
           <SelectRect />

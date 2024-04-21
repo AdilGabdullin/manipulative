@@ -22,7 +22,7 @@ export const BasicSummary = ({ text, x, y, align }) => {
       />
       <Text
         x={x}
-        y={y + height / 2 - fontSize / 2}
+        y={y + height / 2 - fontSize / 2 + 2}
         text={text}
         fontSize={fontSize}
         stroke={colors.blue}

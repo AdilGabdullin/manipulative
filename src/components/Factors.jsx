@@ -7,7 +7,6 @@ import { center, pointInRect } from "../util";
 const baseSize = config.block.size;
 const factorsSize = Math.round(baseSize * 2);
 
-const fontSize = 36;
 const commonProps = {
   strokeWidth: 2,
   cornerRadius: 8,
@@ -19,7 +18,7 @@ const margin = 10;
 const Factors = () => {
   const state = useAppStore();
   const { origin, showSummary } = state;
-  if (!state.width || state.workspace != config.workspace.factors) return null;
+  if (!state.width) return null;
   const rect = rectProps(state);
   const { x, y, width, height } = rect;
   const sums = generateSums(rect, state.elements, state.numberSet == config.numberSet.whole);
@@ -31,7 +30,7 @@ const Factors = () => {
       <Line x={0} y={0} points={[0, -1, 0, height]} {...commonProps} />
       <Line x={factorsSize} y={0} points={[0, 0, 0, height]} {...commonProps} />
       {showSummary && +sums.left != 0 && (
-        <BasicSummary text={sums.left} x={-margin} align={true} y={(height - fontSize) / 2} />
+        <BasicSummary text={sums.left} x={-margin} align={true} y={(height - config.summary.fontSize) / 2} />
       )}
       {showSummary && +sums.top != 0 && <BasicSummary text={sums.top} x={width / 2} y={-56 - margin} />}
       {showSummary && +sums.main != 0 && <BasicSummary text={sums.main} x={width / 2} y={height - 56 - margin} />}
