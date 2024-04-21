@@ -69,7 +69,9 @@ export const ToolbarBlock = (props) => {
   const state = useAppStore();
   const { origin, elements, addElement, breakPlaced } = state;
   const shadow = useRef();
-  const scale = config.block.size;
+  const scale = [config.workspace.addition, config.workspace.subtraction].includes(state.workspace)
+    ? config.block.size / 2
+    : config.block.size;
 
   const outOfToolbar = (e) => e.target.getStage().getPointerPosition().x > config.leftToolbar.width;
 
@@ -274,4 +276,13 @@ function animateMove(node, xFrom, yFrom, xTo, yTo) {
     });
   }, node.getLayer());
   animation.start();
+}
+
+export function getSizes(state) {
+  const { workspace, block } = config;
+  const { size, depthScale, angle } = block;
+  const scale = [workspace.addition, workspace.subtraction].includes(state.workspace) ? size / 2 : size;
+  const depthStepX = cos(angle) * scale * depthScale;
+  const depthStepY = sin(angle) * scale * depthScale;
+  return { scale, depthStepX, depthStepY };
 }

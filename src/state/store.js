@@ -36,8 +36,8 @@ export const useAppStore = create((set) => ({
   showSummary: true,
   multiColored: true,
 
-  fullscreen: true,
-  workspace: config.workspace.addition,
+  // fullscreen: true,
+  // workspace: config.workspace.addition,
 
   toggleGlobal: (field) =>
     set(
