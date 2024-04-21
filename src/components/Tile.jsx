@@ -149,7 +149,7 @@ export function magnetToAll(tile, elements, state) {
   if (state.showGrid) {
     const size = config.tile.size;
     const { x, y } = tile;
-    return { x: x - (x % size), y: y - (y % size) };
+    return { x: Math.round(x / size) * size, y: Math.round(y / size) * size };
   }
   for (const [id, element] of Object.entries(elements)) {
     if (tile.id == id || element.type != "tile") continue;

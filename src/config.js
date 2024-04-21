@@ -14,7 +14,7 @@ export const colors = {
 
 export const workspace = {
   basic: "Basic",
-  solving: "Solving",
+  // solving: "Solving",
 };
 
 export const config = {
@@ -25,7 +25,6 @@ export const config = {
     padding: 20,
   },
   summary: {
-    fontSize: 36,
     height: 56,
   },
   menu: {
