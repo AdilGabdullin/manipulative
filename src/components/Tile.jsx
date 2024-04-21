@@ -1,16 +1,16 @@
-import { Group, Line, Rect } from "react-konva";
+import { Group, Rect } from "react-konva";
 import { config } from "../config";
-import { cos, getStageXY, halfPixel, pointsIsClose, setVisibility, sin } from "../util";
+import { getStageXY, halfPixel, pointsIsClose, setVisibility } from "../util";
 import { useAppStore } from "../state/store";
 import { useEffect, useRef } from "react";
 import { Animation } from "konva/lib/Animation";
 
-export const Tile = ({ id, x, y, size, fill, stroke, events }) => {
+export const Tile = ({ id, x, y, size, fill, stroke, visible, events }) => {
   x = halfPixel(x);
   y = halfPixel(y);
   size = Math.round(size);
   return (
-    <Group id={id} x={x} y={y} {...events}>
+    <Group id={id} x={x} y={y} visible={visible} {...events}>
       <Rect width={size} height={size} fill={fill} stroke={stroke} strokeWidth={1} />
     </Group>
   );
@@ -26,15 +26,16 @@ export const ToolbarTile = (props) => {
 
   const placeProps = (e) => {
     const { x, y } = getStageXY(e.target.getStage(), state);
-    return { x: x - size / 2, y: size - h / 2, width: size, height: size };
+    return { x: x - size / 2, y: y - size / 2 };
   };
 
   let boardShadow = null;
   const getBoardShadow = (e) => {
-    return boardShadow || (boardShadow = e.target.getStage().findOne(props.shadowId));
+    return boardShadow || (boardShadow = e.target.getStage().findOne("#shadow-tile"));
   };
 
   const add = (pos, place) => {
+    return;
     const { width, height, top, right } = props;
     const block = {
       ...props,
@@ -66,7 +67,9 @@ export const ToolbarTile = (props) => {
       const pos = magnetToAll(place, elements);
       const x = halfPixel(origin.x + (pos ? pos.x : place.x));
       const y = halfPixel(origin.y + (pos ? pos.y : place.y));
-      getBoardShadow(e).setAttrs({ x, y, visible: out });
+      const boardShadow = getBoardShadow(e);
+      boardShadow.setAttrs({ x, y, visible: out });
+      boardShadow.children[0].setAttrs({ fill: props.fill, stroke: props.stroke });
     },
     onDragEnd: (e) => {
       const target = e.target;

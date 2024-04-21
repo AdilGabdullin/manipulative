@@ -39,7 +39,7 @@ export const config = {
   },
   colors,
   tile: {
-    size: 20,
+    size: 50,
     options: [
       { fill: "#ffeb3b", stroke: "black", name: "Yellow" },
       { fill: "#f44336", stroke: "black", name: "Red" },
