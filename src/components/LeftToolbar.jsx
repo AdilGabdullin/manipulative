@@ -7,13 +7,20 @@ export const leftToolbarWidth = 180;
 
 const LeftToolbar = () => {
   const state = useAppStore();
+  const { tile, leftToolbar } = config;
+  const width = leftToolbar.width;
+  const { height, fullscreen } = state;
+  const options = tile.options;
+  const count = options.length;
+  const size = fullscreen ? 60 : 50;
+  const left = (width - size) / 2;
+  const margin = (height - size * count) / (count + 1);
 
   return (
     <>
-      <Rect fill="#f3f9ff" x={0} y={0} width={leftToolbarWidth} height={state.height} />
-
-      {config.tile.options.map(({ fill, stroke }, i) => (
-        <ToolbarTile key={i} fill={fill} stroke={stroke} x={20} y={i * 50} />
+      <Rect fill="#f3f9ff" x={0} y={0} width={width} height={height} />
+      {options.map(({ fill, stroke }, i) => (
+        <ToolbarTile key={i} x={left} y={(margin + size) * i + margin} size={size} fill={fill} stroke={stroke} />
       ))}
     </>
   );

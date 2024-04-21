@@ -1,16 +1,16 @@
 import { Group, Line, Rect } from "react-konva";
-import {config} from "../config";
+import { config } from "../config";
 import { cos, getStageXY, halfPixel, pointsIsClose, setVisibility, sin } from "../util";
 import { useAppStore } from "../state/store";
 import { useEffect, useRef } from "react";
 import { Animation } from "konva/lib/Animation";
 
-export const Tile = ({ id, x, y, fill, stroke, events }) => {
-  const state = useAppStore();
-  const size = getSize(state);
-
+export const Tile = ({ id, x, y, size, fill, stroke, events }) => {
+  x = halfPixel(x);
+  y = halfPixel(y);
+  size = Math.round(size);
   return (
-    <Group id={id} x={halfPixel(x)} y={halfPixel(y)} {...events}>
+    <Group id={id} x={x} y={y} {...events}>
       <Rect width={size} height={size} fill={fill} stroke={stroke} strokeWidth={1} />
     </Group>
   );
