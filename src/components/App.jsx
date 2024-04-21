@@ -16,6 +16,7 @@ import config from "../config";
 import Summary from "./Summary";
 import GroupLabels from "./GroupLabels";
 import PlaceValue from "./PlaceValue";
+import Factors from "./Factors";
 
 const App = () => {
   const state = useAppStore();
@@ -295,6 +296,7 @@ const App = () => {
           scaleY={state.scale}
         >
           {state.workspace == config.workspace.placeValue && <PlaceValue />}
+          {state.workspace == config.workspace.factors && <Factors />}
           <Elements />
           <GroupLabels />
           <SelectRect />

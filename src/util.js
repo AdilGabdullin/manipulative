@@ -60,7 +60,6 @@ export function numbersClose(a, b, sens = 12) {
   return Math.abs(a - b) < sens;
 }
 
-
 export function setVisibility(e, value) {
   e.target
     .getStage()
@@ -194,4 +193,8 @@ export function boxesIntersect({ x, y, width, height }, other) {
 
 export function pointInRect(point, rect) {
   return numberBetween(point.x, rect.x, rect.x + rect.width) && numberBetween(point.y, rect.y, rect.y + rect.height);
+}
+
+export function center({ x, y, width, height }) {
+  return { x: x + width / 2, y: y + height / 2 };
 }

@@ -3,7 +3,7 @@ import { useAppStore } from "../state/store";
 import config from "../config";
 import { BasicSummary } from "./Summary";
 import { Fragment } from "react";
-import { boxesIntersect, pointInRect } from "../util";
+import { boxesIntersect, center, pointInRect } from "../util";
 
 const margin = 10;
 const summaryHeight = config.summary.height;
@@ -107,10 +107,6 @@ function getTotalHeight(state) {
     totalHeight = Math.min(totalHeight, 600);
   }
   return totalHeight;
-}
-
-function center({ x, y, width, height }) {
-  return { x: x + width / 2, y: y + height / 2 };
 }
 
 export function elementInWrongColumn(state, element) {
