@@ -198,3 +198,7 @@ export function pointInRect(point, rect) {
 export function center({ x, y, width, height }) {
   return { x: x + width / 2, y: y + height / 2 };
 }
+
+export function halfPixel(x) {
+  return Math.round(x || 0) + 0.5;
+}

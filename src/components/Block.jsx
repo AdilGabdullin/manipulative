@@ -1,15 +1,16 @@
 import { Group, Line, Rect } from "react-konva";
 import config from "../config";
-import { cos, getStageXY, pointsIsClose, setVisibility, sin } from "../util";
+import { cos, getStageXY, halfPixel, pointsIsClose, setVisibility, sin } from "../util";
 import { useAppStore } from "../state/store";
 import { useEffect, useRef } from "react";
 import { Animation } from "konva/lib/Animation";
 import { elementInBreakColumn, elementInWrongColumn } from "./PlaceValue";
+import { rectProps } from "./Factors";
 
 export const Block = ({ id, x, y, size, label, scale, visible, events }) => {
+  x = halfPixel(x);
+  y = halfPixel(y);
   const multiColored = useAppStore((state) => state.multiColored);
-  x = Math.round(x) || 0;
-  y = Math.round(y) || 0;
   const { angle, depthScale, options, stroke } = config.block;
   const option = options[label];
   const { fill, dark } = multiColored ? option : options[10];
@@ -104,6 +105,8 @@ export const ToolbarBlock = (props) => {
     }
   };
 
+  const factorsRect = state.workspace == config.workspace.factors && rectProps(state);
+
   const events = {
     onDragStart: (e) => {
       shadow.current.visible(true);
@@ -113,9 +116,9 @@ export const ToolbarBlock = (props) => {
       const out = outOfToolbar(e);
       target.visible(!out);
       const place = placeProps(e);
-      const pos = magnetToAll(place, elements);
-      const x = origin.x + (pos ? pos.x : place.x);
-      const y = origin.y + (pos ? pos.y : place.y);
+      const pos = magnetToAll(place, elements, factorsRect);
+      const x = halfPixel(origin.x + (pos ? pos.x : place.x));
+      const y = halfPixel(origin.y + (pos ? pos.y : place.y));
       getBoardShadow(e).setAttrs({ x, y, visible: out });
     },
     onDragEnd: (e) => {
@@ -127,7 +130,7 @@ export const ToolbarBlock = (props) => {
       getBoardShadow(e).visible(false);
       if (out) {
         const place = placeProps(e);
-        const pos = magnetToAll(place, elements);
+        const pos = magnetToAll(place, elements, factorsRect);
         add(pos, place);
       }
     },
@@ -204,11 +207,24 @@ export const BoardBlock = (props) => {
   );
 };
 
-export function magnetToAll(block, elements) {
+export function magnetToAll(block, elements, factorsRect) {
   for (const [id, element] of Object.entries(elements)) {
     if (block.id == id || element.type != "block") continue;
     const pos = magnetToOne(block, element);
     if (pos) return pos;
+  }
+  if (factorsRect) {
+    const size = config.block.size;
+    const points = [
+      { x: factorsRect.x + 2.3 * size, y: factorsRect.y + 0.6 * size },
+      { x: factorsRect.x + 0.3 * size, y: factorsRect.y + 2.5 * size },
+      { x: factorsRect.x + 2.3 * size, y: factorsRect.y + 2.5 * size },
+    ];
+    for (const point of points) {
+      if (pointsIsClose(block, point)) {
+        return point;
+      }
+    }
   }
   return null;
 }
