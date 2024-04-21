@@ -30,8 +30,8 @@ const Comparing = () => {
 
   const totalWidth = rect.width;
   const mainHeight = rect.height - margin;
-  const x = origin.x + rect.x;
-  const y = origin.y + rect.y - config.summary.height - margin;
+  const x = Math.round(origin.x + rect.x);
+  const y = Math.round(origin.y + rect.y - config.summary.height - margin);
   const left = sumInRect(state, x, y, totalWidth / 2, mainHeight);
   const right = sumInRect(state, x + totalWidth / 2, y, totalWidth / 2, mainHeight);
   const sign = left < right ? "<" : left > right ? ">" : "=";
@@ -70,6 +70,8 @@ const CenterCircle = ({ x, y, value }) => {
 };
 
 export const Button = ({ x, y, value }) => {
+  x = Math.round(x);
+  y = Math.round(y);
   const [visible, setVisible] = useState(true);
   const fontSize = 32;
   const rectRef = useRef();
@@ -110,7 +112,7 @@ export function sumInRect(state, x, y, width, height) {
       return block.type == "block" && !block.visibleAfterMove && boxesIntersect(block, rect);
     })
     .reduce((sum, block) => sum + parseInt(block.label), 0);
-  return state.numberSet == config.numberSet.decimal ? (sum / 100).toFixed(2) : sum.toString();
+  return state.numberSet == config.numberSet.decimal ? (sum / 100).toFixed(2) : config.intl.format(sum);
 }
 
 export default Comparing;

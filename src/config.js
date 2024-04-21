@@ -4,6 +4,8 @@ const config = {
     placeValue: "Place Value",
     factors: "Factors",
     comparing: "Comparing",
+    addition: "Addition",
+    subtraction: "Subtraction",
   },
   numberSet: {
     whole: "Whole Numbers",
