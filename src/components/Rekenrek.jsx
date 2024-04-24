@@ -8,11 +8,11 @@ export const rekenrekWidth = 900;
 export const rekenrekHeight = 80;
 export const strokeWidth1 = 8;
 export const strokeWidth2 = 4;
-export const blue = "#3296f3";
+export const blue = "green";
 export const colors = {
-  line: "#54575a",
-  red: { main: "#f44336", highlight: "#ffffff", shadow: "#d32f2f" },
-  white: { main: "#fafafa", highlight: "#bdbdbd", shadow: "#cdd4da" },
+  line: "#892201",
+  red: { main: "#eb3424", highlight: "#fca8a4", shadow: "#d32f2f" },
+  white: { main: "#ededed", highlight: "#d3d3d3", shadow: "#cdd4da" },
 };
 
 const Rekenrek = (props) => {

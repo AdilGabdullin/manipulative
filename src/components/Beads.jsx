@@ -16,8 +16,7 @@ const Beads = (props) => {
     const stage = e.target.getStage();
     nodes = [];
     for (let i = 0; i < beadNumber; i += 1) {
-      const ids = `#${id}-${i}-0,#${id}-${i}-1,#${id}-${i}-2,#${id}-${i}-3`;
-      nodes.push(stage.find(ids));
+      nodes.push(stage.findOne(`#${id}-${i}`));
     }
     return nodes;
   };
@@ -32,33 +31,30 @@ const Beads = (props) => {
     return labelNodes;
   };
 
-  const setAttrs = (nodes, attrs) => {
-    nodes.forEach((node) => node.setAttrs(attrs));
-  };
-
   const start = (i) => xMin + i * d;
   const stop = (i) => xMax - (beadNumber - 1 - i) * d;
 
-  const onDragStart = (i) => (e) => {};
   const onDragMove = (i) => (e) => {
     const nodes = getNodes(e);
     const x = Math.min(Math.max(e.target.x(), start(i)), stop(i));
-    setAttrs(nodes[i], { x, y });
+    nodes[i].setAttrs({ x, y });
     for (let k = 0; k < i; k += 1) {
-      setAttrs(nodes[k], { x: Math.min(nodes[k][1].x(), x - d * (i - k)) });
+      nodes[k].setAttrs({ x: Math.min(nodes[k].x(), x - d * (i - k)) });
     }
     for (let k = i + 1; k < beadNumber; k += 1) {
-      setAttrs(nodes[k], { x: Math.max(nodes[k][1].x(), x - d * (i - k)) });
+      nodes[k].setAttrs({ x: Math.max(nodes[k].x(), x - d * (i - k)) });
     }
     if (showBeadGroups) {
+
       for (let k = 0; k < beadNumber; k += 1) {
-        nodes[k][0].visible(nodes[k][0].x() < stop(k));
+        const label = nodes[k].children[0];
+        label.visible(label < stop(k));
       }
       const labels = createBeadLabels(
         beadNumber,
         beadRadius,
         xMax,
-        nodes.map((node) => node[0].x())
+        nodes.map((node) => node.x())
       );
       getLabelNodes(e).forEach((labelNode, i) => {
         labelNode.setAttrs(labels[i]);
@@ -68,7 +64,7 @@ const Beads = (props) => {
   const onDragEnd = (i) => (e) => {
     state.updateBeads(
       id,
-      getNodes(e).map((node) => node[0].x() - origin.x)
+      getNodes(e).map((node) => node.x() - origin.x)
     );
   };
 
@@ -86,7 +82,6 @@ const Beads = (props) => {
             x={origin.x + x}
             y={y}
             color={color}
-            onDragStart={onDragStart(i)}
             onDragMove={onDragMove(i)}
             onDragEnd={onDragEnd(i)}
             stop={stop(i)}

@@ -30,6 +30,11 @@ export const useAppStore = create((set) => ({
   lockSelect: false,
   showBeadGroups: false,
   showRackGroups: false,
+
+  function: true,
+  showBeadGroups: true,
+  showRackGroups: true,
+
   toggleGlobal: (field) =>
     set(
       produce((state) => {
