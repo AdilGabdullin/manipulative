@@ -261,3 +261,28 @@ export function sum(xs) {
 export function avg(xs) {
   return sum(xs) / xs.length;
 }
+
+export function hexToRgb(hex) {
+  const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+  return result
+    ? {
+        r: parseInt(result[1], 16),
+        g: parseInt(result[2], 16),
+        b: parseInt(result[3], 16),
+      }
+    : null;
+}
+
+function componentToHex(c) {
+  const hex = Math.round(c).toString(16);
+  return hex.length == 1 ? "0" + hex : hex;
+}
+
+export function rgbToHex(r, g, b) {
+  return "#" + componentToHex(r) + componentToHex(g) + componentToHex(b);
+}
+
+export function darkenColor(hex, k = 0.9) {
+  const { r, g, b } = hexToRgb(hex);
+  return rgbToHex(r * k, g * k, b * k);
+}

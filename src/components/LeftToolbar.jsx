@@ -2,22 +2,22 @@ import { Circle, Group, Rect, Text } from "react-konva";
 import { useAppStore } from "../state/store";
 import { fontSize, format, magnet, radius } from "./Disk";
 import { Fragment } from "react";
-import { fromStageXY, toStageXY } from "../util";
+import { darkenColor, fromStageXY, toStageXY } from "../util";
 import { getValueRects } from "./PlaceValue";
 
 export const leftToolbarWidth = 180;
 
 export const allOptions = {
-  1_000_000: { value: 1_000_000, color: "#c2185b", text: "Millions" },
-  100_000: { value: 100_000, color: "#afb42b", text: "Hundred\nThousands" },
-  10_000: { value: 10_000, color: "#3f51b5", text: "Ten\nThousands" },
-  1000: { value: 1000, color: "#9c27b0", text: "Thousands" },
-  100: { value: 100, color: "#8bc34a", text: "Hundreds" },
-  10: { value: 10, color: "#e91e63", text: "Tens" },
-  1: { value: 1, color: "#2196f3", text: "Ones" },
-  0.1: { value: 0.1, color: "#795548", text: "Tenths" },
-  0.01: { value: 0.01, color: "#009688", text: "Hundredths" },
-  0.001: { value: 0.001, color: "#ffa000", text: "Thousandths" },
+  1_000_000: { value: 1_000_000, color: darkenColor("#c2185b"), text: "Millions" },
+  100_000: { value: 100_000, color: darkenColor("#afb42b"), text: "Hundred\nThousands" },
+  10_000: { value: 10_000, color: darkenColor("#3f51b5"), text: "Ten\nThousands" },
+  1000: { value: 1000, color: darkenColor("#9c27b0"), text: "Thousands" },
+  100: { value: 100, color: darkenColor("#8bc34a"), text: "Hundreds" },
+  10: { value: 10, color: darkenColor("#e91e63"), text: "Tens" },
+  1: { value: 1, color: darkenColor("#2196f3"), text: "Ones" },
+  0.1: { value: 0.1, color: darkenColor("#795548"), text: "Tenths" },
+  0.01: { value: 0.01, color: darkenColor("#009688"), text: "Hundredths" },
+  0.001: { value: 0.001, color: darkenColor("#ffa000"), text: "Thousandths" },
 };
 
 export function getColor(value) {
