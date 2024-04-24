@@ -135,7 +135,7 @@ export const useAppStore = create((set) => ({
       })
     ),
 
-  clearSelect: () => set((state) => ({ ...state, selected: [], lockSelect: false })),
+  clearSelect: () => set((state) => ({ ...state, selected: [], lockSelect: false, colorMenuVisible: false })),
 
   select: (downPos, upPos) =>
     set((state) => {
@@ -162,10 +162,10 @@ export const useAppStore = create((set) => ({
           }
         }
       });
-      return { ...state, selected, lockSelect: false };
+      return { ...state, selected, lockSelect: false, colorMenuVisible: false };
     }),
 
-  selectIds: (ids, lockSelect) => set((state) => ({ ...state, selected: ids, lockSelect })),
+  selectIds: (ids, lockSelect) => set((state) => ({ ...state, selected: ids, lockSelect, colorMenuVisible: false })),
 
   relocateSelected: (dx, dy) =>
     set(
@@ -302,6 +302,29 @@ export const useAppStore = create((set) => ({
         state.fdMode = null;
         clearSelected(state);
         pushHistory(state);
+      })
+    ),
+  openColorMenu: () =>
+    set(
+      produce((state) => {
+        state.colorMenuVisible = true;
+      })
+    ),
+  setColor: (colorIndex) =>
+    set(
+      produce((state) => {
+        const { fill, stroke } = config.tile.options[colorIndex];
+        current(state.selected).forEach((id) => {
+          const element = state.elements[id];
+          if (element.type != "tile") {
+            return;
+          }
+          element.fillColor = fill;
+          element.stroke = stroke;
+          if (element.fill != null) {
+            element.fill = fill;
+          }
+        });
       })
     ),
   action: () => set(produce((state) => {})),

@@ -5,6 +5,7 @@ import { elementBox, halfPixel, setVisibility, setVisibilityFrame } from "../uti
 import ShapeResizeHandles from "./ShapeResizeHandles";
 import { createTextArea } from "./TextElement";
 import { magnetToAll } from "./Tile";
+import { config } from "../config";
 
 const SelectedFrame = (props) => {
   const state = useAppStore();
@@ -93,6 +94,14 @@ const SelectedFrame = (props) => {
       },
     },
     {
+      text: "Color",
+      active: !lockSelect,
+      show: selected.some((id) => elements[id].type == "tile"),
+      onPointerClick: (e) => {
+        state.openColorMenu();
+      },
+    },
+    {
       text: "Fill On/Off",
       active: !lockSelect,
       show: selected.some((id) => elements[id].type == "tile" || elements[id].fill != undefined),
@@ -130,11 +139,11 @@ const SelectedFrame = (props) => {
   menuButtons = menuButtons.filter((button) => button.show);
 
   const buttonHeight = 20;
-  const buttonWidth = 110;
+  const buttonWidth = 100;
   const padding = 8;
 
   const onMouseEnter = (e, i) => {
-    if (!menuButtons[i].active) {
+    if (menuButtons[i] && !menuButtons[i].active) {
       return;
     }
     e.target
@@ -146,7 +155,7 @@ const SelectedFrame = (props) => {
   };
 
   const onMouseLeave = (e, i) => {
-    if (!menuButtons[i].active) {
+    if (menuButtons[i] && !menuButtons[i].active) {
       return;
     }
     e.target
@@ -231,6 +240,78 @@ const SelectedFrame = (props) => {
           />
         </Fragment>
       ))}
+
+      {state.colorMenuVisible && (
+        <>
+          <Rect
+            id="popup-menu"
+            name={"popup-menu"}
+            x={x + width + buttonWidth + 2 * padding}
+            y={y + padding}
+            width={buttonWidth + padding * 2}
+            height={(padding * 3 + buttonHeight) * config.tile.options.length + padding}
+            stroke="grey"
+            strokeWidth={1}
+            cornerRadius={12}
+            fill="#ffffff"
+            shadowColor="grey"
+            shadowBlur={5}
+            shadowOffset={{ x: 3, y: 3 }}
+            shadowOpacity={0.5}
+          />
+          {config.tile.options.map(({ name, fill }, i) => {
+            const id = i + 100;
+            return (
+              <Fragment key={name}>
+                <Rect
+                  id={"menu-item-" + id}
+                  name={"popup-menu"}
+                  x={x + width + buttonWidth + 3 * padding}
+                  y={y + 2 * padding + (padding * 3 + buttonHeight) * i}
+                  width={buttonWidth}
+                  height={buttonHeight + padding * 2}
+                  cornerRadius={5}
+                  onMouseEnter={(e) => onMouseEnter(e, id)}
+                  onMouseLeave={(e) => onMouseLeave(e, id)}
+                  onPointerClick={(e) => {
+                    e.cancelBubble = true;
+                    state.setColor(i);
+                  }}
+                />
+                <Rect
+                  name={"popup-menu"}
+                  x={x + width + buttonWidth + padding * 4}
+                  y={y + padding * 3 + (padding * 3 + buttonHeight) * i}
+                  width={20}
+                  height={20}
+                  fill={fill}
+                  onMouseEnter={(e) => onMouseEnter(e, id)}
+                  onMouseLeave={(e) => onMouseLeave(e, id)}
+                  onPointerClick={(e) => {
+                    e.cancelBubble = true;
+                    state.setColor(i);
+                  }}
+                />
+                <Text
+                  id={"menu-item-text" + id}
+                  name={"popup-menu"}
+                  x={x + width + buttonWidth + padding * 5 + 20}
+                  y={y + padding * 3 + (padding * 3 + buttonHeight) * i}
+                  text={name}
+                  fontSize={18}
+                  fontFamily="Calibri"
+                  onPointerClick={(e) => {
+                    e.cancelBubble = true;
+                    state.setColor(i);
+                  }}
+                  onMouseEnter={(e) => onMouseEnter(e, id)}
+                  onMouseLeave={(e) => onMouseLeave(e, id)}
+                />
+              </Fragment>
+            );
+          })}
+        </>
+      )}
     </>
   );
 };
