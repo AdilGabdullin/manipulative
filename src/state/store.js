@@ -50,8 +50,8 @@ export const useAppStore = create((set) => ({
     0.001: 0,
   },
 
-  fullscreen: true,
-  workspace: "Place Value",
+  // fullscreen: true,
+  // workspace: "Place Value",
 
   setMode: (value) =>
     set(
@@ -118,6 +118,10 @@ export const useAppStore = create((set) => ({
     set(
       produce((state) => {
         state.workspace = workspace;
+        state.offset.x = 0;
+        state.offset.y = 0;
+        state.scale = 1.0;
+        keepOrigin(state);
         if (["Place Value", "Subtraction"].includes(workspace)) {
           for (const id in current(state.elements)) {
             if (diskInWrongColumn(state, state.elements[id])) {

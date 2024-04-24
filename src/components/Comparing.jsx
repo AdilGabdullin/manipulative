@@ -8,7 +8,7 @@ import { format } from "./Disk";
 
 export const margin = 10;
 export const buttonHeight = 64;
-export const buttonWidth = 140;
+export const buttonWidth = 150;
 export const scrollSize = 14;
 export const stroke = "grey";
 export const commonProps = {

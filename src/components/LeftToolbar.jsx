@@ -4,6 +4,7 @@ import { fontSize, format, magnet, radius } from "./Disk";
 import { Fragment } from "react";
 import { darkenColor, fromStageXY, toStageXY } from "../util";
 import { getValueRects } from "./PlaceValue";
+import { buttonHeight, margin } from "./Comparing";
 
 export const leftToolbarWidth = 180;
 
@@ -72,9 +73,10 @@ const LeftToolbar = () => {
       if (exist >= 10) return;
       const { x, y, width } = getValueRects(state)[value];
       const left = (width - radius * 4) / 2;
+      const headHeight = buttonHeight + 2 * margin;
       pos = {
         x: x + left + (1 + (exist % 2) * 2) * radius,
-        y: y + left * state.fullscreen + (1 + Math.floor(exist / 2) * 2) * radius,
+        y: y + headHeight + left * state.fullscreen + (1 + Math.floor(exist / 2) * 2) * radius,
       };
     } else {
       const last = elements[lastActiveElement];
