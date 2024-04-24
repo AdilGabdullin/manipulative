@@ -31,8 +31,19 @@ const LeftToolbar = () => {
   const options = Object.values(allOptions)
     .toSorted((a, b) => b.value - a.value)
     .filter(({ value }) => value >= minValue && value <= maxValue);
-  const top = (height - radius * 2 * options.length) / (options.length + 1);
-  const left = (leftToolbarWidth - 2 * radius) / 2;
+
+  const optionPairs = options.reduce((pairs, option) => {
+    const lastIndex = pairs.length - 1;
+    const last = pairs[lastIndex] || [];
+    if (last.length == 2 || (last.length == 1 && options.length % 2 == 1 && pairs.length == 1)) {
+      return [...pairs, [option]];
+    } else {
+      return pairs.toSpliced(lastIndex, 1, [...last, option]);
+    }
+  }, []);
+  const top = (height - radius * 2 * optionPairs.length) / (optionPairs.length + 1);
+  const left1 = (leftToolbarWidth - 2 * radius) / 2;
+  const left2 = (leftToolbarWidth - 4 * radius) / 3;
 
   const onDragMove = (e) => {
     const s = e.target.x() > leftToolbarWidth ? scale : 1.0;
@@ -81,21 +92,40 @@ const LeftToolbar = () => {
   return (
     <>
       <Rect fill="#f3f9ff" x={0} y={0} width={leftToolbarWidth} height={height} />
-      {options.map(({ value, color }, i) => {
+      {optionPairs.map(([option1, option2], i) => {
+        const left = option2 ? left2 : left1;
         const x = left + radius;
+        const x2 = x + left + radius * 2;
         const y = top + i * (top + radius * 2) + radius;
+        const value1 = option1?.value;
+        const value2 = option2?.value;
+        const color1 = option1?.color;
+        const color2 = option2?.color;
+
         return (
-          <Fragment key={value}>
-            <Disk value={value} x={x} y={y} color={color} />
+          <Fragment key={i}>
+            <Disk value={value1} x={x} y={y} color={color1} />
             <Group
               x={x}
               y={y}
               draggable
               onDragMove={onDragMove}
-              onDragEnd={onDragEnd(value, color, { x, y })}
-              onPointerClick={onPointerClick(value, color)}
+              onDragEnd={onDragEnd(value1, color1, { x, y })}
+              onPointerClick={onPointerClick(value1, color1)}
             >
-              <Disk value={value} x={0} y={0} color={color} />
+              <Disk value={value1} x={0} y={0} color={color1} />
+            </Group>
+
+            <Disk value={value2} x={x2} y={y} color={color2} />
+            <Group
+              x={x2}
+              y={y}
+              draggable
+              onDragMove={onDragMove}
+              onDragEnd={onDragEnd(value2, color2, { x: x2, y })}
+              onPointerClick={onPointerClick(value2, color2)}
+            >
+              <Disk value={value2} x={0} y={0} color={color2} />
             </Group>
           </Fragment>
         );
