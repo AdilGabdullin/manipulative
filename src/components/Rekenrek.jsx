@@ -193,9 +193,7 @@ export function rekenrekTargets(id, beadNumber) {
   const ids = [`${id}-left-line`, `${id}-mid-line`, `${id}-right-line`];
   for (let i = 0; i < beadNumber; i += 1) {
     ids.push(`${id}-label-${i}`);
-    for (let k = 0; k < 4; k += 1) {
-      ids.push(`${id}-${i}-${k}`);
-    }
+    ids.push(`${id}-${i}`);
   }
   return ids;
 }
