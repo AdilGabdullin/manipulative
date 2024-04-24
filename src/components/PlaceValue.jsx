@@ -122,18 +122,18 @@ export function getValueRects(state) {
   const headHeight = buttonHeight + 2 * margin;
   const mainHeight = totalHeight - buttonHeight - margin - headHeight;
   const x0 = -(totalWidth + scrollSize) / 2;
-  const y0 = -(totalHeight + scrollSize) / 2 + headHeight;
+  const y0 = -(totalHeight + scrollSize) / 2 ;
   const columns = Math.log10(maxValue / minValue) + 1;
   const columnWidth = totalWidth / columns;
   const rects = {};
   for (let x = 0, value = maxValue; value >= minValue; x += columnWidth, value /= 10) {
-    rects[value] = { x: x0 + x, y: y0, width: columnWidth, height: mainHeight };
+    rects[value] = { x: x0 + x, y: y0, width: columnWidth, height: mainHeight + headHeight };
   }
   rects.all = {
     x: x0,
     y: y0,
     width: totalWidth,
-    height: mainHeight,
+    height: mainHeight + headHeight,
   };
   return rects;
 }
@@ -177,6 +177,16 @@ export function diskInBreakColumn(state, e) {
     e.type == "disk" &&
     isPointInRect(e, rects.all) &&
     isPointInRect(e, rects[e.value / 10])
+  );
+}
+
+export function diskInRegroupColumn(state, e) {
+  const rects = getValueRects(state);
+  return (
+    ["Place Value", "Subtraction"].includes(state.workspace) &&
+    e.type == "disk" &&
+    isPointInRect(e, rects.all) &&
+    isPointInRect(e, rects[e.value * 10])
   );
 }
 

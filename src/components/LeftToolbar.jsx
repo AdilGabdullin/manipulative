@@ -116,17 +116,19 @@ const LeftToolbar = () => {
               <Disk value={value1} x={0} y={0} color={color1} />
             </Group>
 
-            <Disk value={value2} x={x2} y={y} color={color2} />
-            <Group
-              x={x2}
-              y={y}
-              draggable
-              onDragMove={onDragMove}
-              onDragEnd={onDragEnd(value2, color2, { x: x2, y })}
-              onPointerClick={onPointerClick(value2, color2)}
-            >
-              <Disk value={value2} x={0} y={0} color={color2} />
-            </Group>
+            {option2 && <Disk value={value2} x={x2} y={y} color={color2} />}
+            {option2 && (
+              <Group
+                x={x2}
+                y={y}
+                draggable
+                onDragMove={onDragMove}
+                onDragEnd={onDragEnd(value2, color2, { x: x2, y })}
+                onPointerClick={onPointerClick(value2, color2)}
+              >
+                <Disk value={value2} x={0} y={0} color={color2} />
+              </Group>
+            )}
           </Fragment>
         );
       })}

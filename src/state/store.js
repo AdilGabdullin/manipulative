@@ -1,14 +1,14 @@
 import { create } from "zustand";
 import { current, produce } from "immer";
-import { leftToolbarWidth } from "../components/LeftToolbar";
-import { clearSelected, elementBox, newId, numberBetween } from "../util";
+import { getColor, leftToolbarWidth } from "../components/LeftToolbar";
+import { arrayChunk, clearSelected, elementBox, newId, numberBetween } from "../util";
 import { topToolbarHeight } from "../components/TopToolbar";
 import { maxOffset } from "../components/Scrolls";
 import { freeDrawingSlice } from "./freeDrawingSlice";
 import { historySlice, pushHistory } from "./historySlice";
-import { createTenDisks, breakRegroupSlice } from "./breakRegroup";
+import { createTenDisks, breakRegroupSlice, disksByValue, avgPos } from "./breakRegroup";
 import { menuHeight } from "../components/Menu";
-import { diskInBreakColumn, diskInWrongColumn, getSubtractors } from "../components/PlaceValue";
+import { diskInBreakColumn, diskInRegroupColumn, diskInWrongColumn, getSubtractors } from "../components/PlaceValue";
 
 export const gridStep = 60;
 export const boardSize = {
@@ -49,6 +49,9 @@ export const useAppStore = create((set) => ({
     0.01: 0,
     0.001: 0,
   },
+
+  fullscreen: true,
+  workspace: "Place Value",
 
   setMode: (value) =>
     set(
@@ -221,9 +224,44 @@ export const useAppStore = create((set) => ({
   relocateSelected: (dx, dy) =>
     set(
       produce((state) => {
+        const toMoved = (disk) => ({ ...disk, x: disk.x + dx, y: disk.y + dy });
+        // regroup
+        const regrouped = [];
+        const entries = Object.entries(
+          disksByValue(current(state), (disk) => diskInRegroupColumn(state, toMoved(disk)))
+        );
+        for (const [value, list] of entries) {
+          for (const chunk of arrayChunk(list, 10)) {
+            if (chunk.length < 10) continue;
+            const id = newId();
+            const { x, y } = avgPos(chunk, dx, dy);
+            state.elements[id] = {
+              id,
+              type: "disk",
+              x,
+              y,
+              color: getColor(value * 10),
+              value: value * 10,
+              visible: false,
+              visibleAfterMove: true,
+              locked: false,
+            };
+            for (const { id } of chunk) {
+              const disk = state.elements[id];
+              disk.moveFrom = { x: disk.x + dx, y: disk.y + dy };
+              disk.x = x;
+              disk.y = y;
+              disk.deleteAfterMove = true;
+              disk.ignoreSum = true;
+              regrouped.push(disk.id);
+            }
+            state.animation = true;
+          }
+        }
+        // end regroup
         for (const id of state.selected) {
           const element = state.elements[id];
-          if (!element) continue;
+          if (!element || regrouped.includes(element.id)) continue;
           const nextPosition = { ...current(element), x: element.x + dx, y: element.y + dy };
           if (diskInWrongColumn(state, nextPosition)) {
             if (diskInBreakColumn(current(state), nextPosition)) {
@@ -241,6 +279,7 @@ export const useAppStore = create((set) => ({
         }
         if (state.animation) {
           clearSelected(state);
+          state.lastActiveElement = null;
         }
         pushHistory(state);
       })

@@ -4,6 +4,7 @@ import { leftToolbarWidth } from "./LeftToolbar";
 import { menuHeight } from "./Menu";
 import { numberBetween, sum } from "../util";
 import { useRef, useState } from "react";
+import { format } from "./Disk";
 
 export const margin = 10;
 export const buttonHeight = 64;
@@ -92,7 +93,7 @@ export const Button = ({ x, y, value }) => {
         x={0}
         y={(buttonHeight - fontSize) / 2}
         width={buttonWidth}
-        text={value}
+        text={format(value)}
         fontSize={fontSize}
         {...textProps}
       />

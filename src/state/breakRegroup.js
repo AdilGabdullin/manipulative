@@ -79,11 +79,12 @@ export const breakRegroupSlice = (set) => ({
     ),
 });
 
-export function disksByValue(state) {
+export function disksByValue(state, filter) {
   const { elements, maxValue, selected } = state;
-  const disks = Object.values(elements).filter(
-    (e) => e.type == "disk" && e.value < maxValue && selected.includes(e.id)
-  );
+  let disks = Object.values(elements).filter((e) => e.type == "disk" && e.value < maxValue && selected.includes(e.id));
+  if (filter) {
+    disks = disks.filter(filter);
+  }
   return Object.groupBy(disks, (e) => e.value);
 }
 
@@ -96,8 +97,8 @@ export function regroupPossible(state) {
   return Object.values(disksByValue(state)).some((arr) => arr.length >= 10);
 }
 
-function avgPos(disks) {
-  return { x: avg(disks.map((d) => d.x)), y: avg(disks.map((d) => d.y)) };
+export function avgPos(disks, shiftX = 0, shiftY = 0) {
+  return { x: shiftX + avg(disks.map((d) => d.x)), y: shiftY + avg(disks.map((d) => d.y)) };
 }
 
 export function createTenDisks(state, source) {
