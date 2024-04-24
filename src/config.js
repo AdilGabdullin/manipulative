@@ -47,6 +47,7 @@ export const config = {
       { fill: "#f06292", stroke: "#e92265", name: "Pink" },
       { fill: "#9c27b0", stroke: "#7d1fa3", name: "Purple" },
       { fill: "#ff9800", stroke: "#f67e00", name: "Orange" },
+      { fill: "brown", stroke: "#5C4033", name: "Brown" },
     ],
   },
 };
