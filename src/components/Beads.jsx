@@ -45,10 +45,8 @@ const Beads = (props) => {
       nodes[k].setAttrs({ x: Math.max(nodes[k].x(), x - d * (i - k)) });
     }
     if (showBeadGroups) {
-
       for (let k = 0; k < beadNumber; k += 1) {
-        const label = nodes[k].children[0];
-        label.visible(label < stop(k));
+        nodes[k].children[0].visible(nodes[k].x() < stop(k) - 2);
       }
       const labels = createBeadLabels(
         beadNumber,
