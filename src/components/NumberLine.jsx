@@ -174,7 +174,7 @@ export function magnetToLine(tile, state) {
   const size = config.tile.size;
   const { x, y } = zeroPos(state);
   const { min, max } = state.elements.numberLine;
-  for (let i = 0; i < max - min + 1; i++) {
+  for (let i = -1; i < max - min + 1; i++) {
     const topPoint = { x: x + i * size, y };
     const bottomPoint = { x: x + i * size, y: y + size };
     if (pointsIsClose(tile, topPoint, 20)) return topPoint;

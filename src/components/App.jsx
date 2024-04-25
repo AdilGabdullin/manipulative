@@ -295,6 +295,7 @@ const App = () => {
         >
           {state.showGrid && <Grid />}
           <Elements />
+          <GroupLabels />
           <SelectRect />
         </Layer>
         <Layer
@@ -311,7 +312,6 @@ const App = () => {
             <LeftToolbar findOne={findOne} />
             <Menu />
             <Summary />
-            <GroupLabels />
             <Scrolls />
             <SelectedFrame findOne={findOne} />
           </Layer>

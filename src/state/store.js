@@ -38,7 +38,7 @@ export const useAppStore = create((set) => ({
       min: 0,
       max: 20,
       denominator: 1,
-    }
+    },
   },
   lastActiveElement: null,
   selected: [],
@@ -86,6 +86,10 @@ export const useAppStore = create((set) => ({
     set(
       produce((state) => {
         state.workspace = workspace;
+        state.offset.x = 0;
+        state.offset.y = 0;
+        state.scale = 1.0;
+        keepOrigin(state);
       })
     ),
   toggle: (field) =>
