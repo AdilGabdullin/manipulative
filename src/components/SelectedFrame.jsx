@@ -6,6 +6,7 @@ import ShapeResizeHandles from "./ShapeResizeHandles";
 import { createTextArea } from "./TextElement";
 import { magnetToAll } from "./Tile";
 import { config } from "../config";
+import { lineMagnet } from "./NumberLine";
 
 const SelectedFrame = (props) => {
   const state = useAppStore();
@@ -50,7 +51,9 @@ const SelectedFrame = (props) => {
   const onPointerDown = (e) => {};
 
   const onDragStart = (e) => {
-    setVisibility(e, false);
+    if (!hidePopup) {
+      setVisibility(e, false);
+    }
   };
 
   const others = { ...elements };
@@ -61,10 +64,14 @@ const SelectedFrame = (props) => {
     let dx = Math.round((e.target.x() - x) / state.scale);
     let dy = Math.round((e.target.y() - y) / state.scale);
 
+    let pos = null;
     for (const id of selected) {
       const tile = elements[id];
-      if (tile.type != "tile") continue;
-      const pos = magnetToAll({ ...tile, x: tile.x + dx, y: tile.y + dy }, others, state);
+      if (tile.type == "number-line") {
+        pos = lineMagnet(tile.x + dx, tile.y + dy, state);
+      } else if (tile.type == "tile") {
+        pos = magnetToAll({ ...tile, x: tile.x + dx, y: tile.y + dy }, others, state);
+      }
       if (pos) {
         dx = pos.x - tile.x;
         dy = pos.y - tile.y;
@@ -81,7 +88,9 @@ const SelectedFrame = (props) => {
     const dx = (e.target.x() - x) / state.scale;
     const dy = (e.target.y() - y) / state.scale;
     state.relocateSelected(dx, dy);
-    setVisibilityFrame(e, true);
+    if (!hidePopup) {
+      setVisibilityFrame(e, true);
+    }
   };
 
   let menuButtons = [
@@ -166,6 +175,8 @@ const SelectedFrame = (props) => {
       });
   };
 
+  const hidePopup = selected.includes("numberLine");
+
   return (
     <>
       <Rect
@@ -197,54 +208,55 @@ const SelectedFrame = (props) => {
         shadowBlur={5}
         shadowOffset={{ x: 3, y: 3 }}
         shadowOpacity={0.5}
+        visible={!hidePopup}
       />
       <ShapeResizeHandles x={x} y={y} width={width} height={height} findOne={props.findOne} />
-      {menuButtons.map(({ text, active, onPointerClick }, i) => (
-        <Fragment key={text}>
-          <Rect
-            id={"menu-item-" + i}
-            name={"popup-menu"}
-            x={x + width + padding * 2}
-            y={y + padding + (padding * 3 + buttonHeight) * i}
-            width={buttonWidth}
-            height={buttonHeight + padding * 2}
-            cornerRadius={5}
-            onMouseEnter={(e) => onMouseEnter(e, i)}
-            onMouseLeave={(e) => onMouseLeave(e, i)}
-            onPointerClick={(e) => {
-              e.cancelBubble = true;
-              if (!active) {
-                return;
-              }
-              onPointerClick(e);
-            }}
-          />
-          <Text
-            id={"menu-item-text" + i}
-            name={"popup-menu"}
-            x={x + width + padding * 3}
-            y={y + padding * 2 + (padding * 3 + buttonHeight) * i}
-            text={text}
-            fill={active ? "black" : "#aaaaaa"}
-            fontSize={18}
-            fontFamily="Calibri"
-            onPointerClick={(e) => {
-              e.cancelBubble = true;
-              if (!active) {
-                return;
-              }
-              onPointerClick(e);
-            }}
-            onMouseEnter={(e) => onMouseEnter(e, i)}
-            onMouseLeave={(e) => onMouseLeave(e, i)}
-          />
-        </Fragment>
-      ))}
+      {!hidePopup &&
+        menuButtons.map(({ text, active, onPointerClick }, i) => (
+          <Fragment key={text}>
+            <Rect
+              id={"menu-item-" + i}
+              name={"popup-menu"}
+              x={x + width + padding * 2}
+              y={y + padding + (padding * 3 + buttonHeight) * i}
+              width={buttonWidth}
+              height={buttonHeight + padding * 2}
+              cornerRadius={5}
+              onMouseEnter={(e) => onMouseEnter(e, i)}
+              onMouseLeave={(e) => onMouseLeave(e, i)}
+              onPointerClick={(e) => {
+                e.cancelBubble = true;
+                if (!active) {
+                  return;
+                }
+                onPointerClick(e);
+              }}
+            />
+            <Text
+              id={"menu-item-text" + i}
+              name={"popup-menu"}
+              x={x + width + padding * 3}
+              y={y + padding * 2 + (padding * 3 + buttonHeight) * i}
+              text={text}
+              fill={active ? "black" : "#aaaaaa"}
+              fontSize={18}
+              fontFamily="Calibri"
+              onPointerClick={(e) => {
+                e.cancelBubble = true;
+                if (!active) {
+                  return;
+                }
+                onPointerClick(e);
+              }}
+              onMouseEnter={(e) => onMouseEnter(e, i)}
+              onMouseLeave={(e) => onMouseLeave(e, i)}
+            />
+          </Fragment>
+        ))}
 
       {state.colorMenuVisible && (
         <>
           <Rect
-            id="popup-menu"
             name={"popup-menu"}
             x={x + width + buttonWidth + 2 * padding}
             y={y + padding}

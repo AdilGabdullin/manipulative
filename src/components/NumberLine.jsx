@@ -170,7 +170,7 @@ export function magnetToLine(tile, state) {
   return null;
 }
 
-function lineMagnet(x, y, state) {
+export function lineMagnet(x, y, state) {
   const size = config.tile.size;
   const elements = state.elements;
   const { min, max, height } = elements.numberLine;
@@ -186,7 +186,7 @@ function lineMagnet(x, y, state) {
       }
     }
   }
-  return { x, y };
+  return null;
 }
 
 export default NumberLine;
