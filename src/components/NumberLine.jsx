@@ -9,7 +9,7 @@ import { pointsIsClose } from "../util";
 export const nlWidth = config.tile.size * 22;
 export const nlHeight = 26;
 export const nlLineWidth = 4;
-const nlMinWidth = 100;
+const nlMinWidth = config.tile.size * 3;
 
 const NumberLine = (props) => {
   const state = useAppStore();
@@ -50,6 +50,7 @@ const NumberLine = (props) => {
   };
 
   const k = mk(state, denominator).k;
+  const size = config.tile.size;
 
   return (
     <Group
@@ -105,18 +106,12 @@ const NumberLine = (props) => {
         onPointerEnter={(e) => setColor([e.target], colors.blue)}
         onPointerLeave={(e) => setColor([e.target], colors.black)}
         onDragMove={(e) => {
-          const dx = Math.min(e.target.x() - 0, width - nlMinWidth);
+          let dx = Math.min(e.target.x() - 0, width - nlMinWidth);
+          dx = Math.round(dx / size) * size;
           e.target.setAttrs({ x: dx, y: height / 2 });
-          line.current.setAttrs({ x: linePos.x + dx, points: [0, 0, width - headSize * 2 - dx, 0] });
-          getNotchGroups(e).forEach((notchGroup, i) => {
-            notchGroup.x(notchX(i, { ...props, width: width - dx, shift: dx }, k));
-          });
-        }}
-        onDragEnd={(e) => {
-          const dx = Math.min(e.target.x() - 0, width - nlMinWidth);
-          e.target.setAttrs({ x: 0, y: height / 2 });
-          line.current.setAttrs(linePos);
-          updateElement(id, { x: x + dx, width: width - dx });
+          const numberLine = state.elements.numberLine;
+          const { x, y, width: nWidth, min, max } = numberLine;
+          state.updateElement("numberLine", { x: x + dx, width: nWidth - dx, min: min + dx / size });
         }}
       />
       <Line
@@ -131,18 +126,11 @@ const NumberLine = (props) => {
         onPointerEnter={(e) => setColor([e.target], colors.blue)}
         onPointerLeave={(e) => setColor([e.target], colors.black)}
         onDragMove={(e) => {
-          const dx = Math.max(e.target.x() - width, nlMinWidth - width);
+          let dx = Math.max(e.target.x() - width, nlMinWidth - width);
+          dx = Math.round(dx / size) * size;
           e.target.setAttrs({ x: width + dx, y: height / 2 });
-          line.current.setAttrs({ points: [0, 0, width - headSize * 2 + dx, 0] });
-          getNotchGroups(e).forEach((notchGroup, i) => {
-            notchGroup.x(notchX(i, { ...props, width: width + dx }, k));
-          });
-        }}
-        onDragEnd={(e) => {
-          const dx = Math.max(e.target.x() - width, nlMinWidth - width);
-          e.target.setAttrs({ x: width, y: height / 2 });
-          line.current.setAttrs(linePos);
-          updateElement(id, { width: width + dx });
+          const numberLine = state.elements.numberLine;
+          state.updateElement("numberLine", { width: numberLine.width + dx, max: numberLine.max + dx / size });
         }}
       />
       <Notches {...props} />
@@ -150,13 +138,12 @@ const NumberLine = (props) => {
   );
 };
 
-export function notchStep(range, workspace = "Integers", denominator = 1) {
+export function notchStep() {
   return 1;
 }
 
-export function notchX(i, { width, height, min, max, shift }, k = 1) {
-  const step = Math.floor((width - 4 * height) / (max - min) / k);
-  return (1 + i) * step + width * 0.000001;
+export function notchX(i) {
+  return (1 + i) * config.tile.size;
 }
 
 export function mk() {
