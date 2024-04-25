@@ -13,7 +13,7 @@ const nlMinWidth = 100;
 
 const NumberLine = (props) => {
   const state = useAppStore();
-  const { origin, relocateElement, updateElement, selectIds, selected, removeElements } = state;
+  const { origin, relocateElement, updateElement, selectIds, selected } = state;
   let { id, x, y, width, height, visible, locked, min, max, denominator } = props;
   x = Math.round(x);
   y = Math.round(y);
@@ -58,6 +58,14 @@ const NumberLine = (props) => {
       {...groupPos}
       visible={visible !== undefined ? visible : true}
       draggable={!locked}
+      onDragMove={(e) => {
+        if (e.target === group.current) {
+          const pos = lineMagnet(e.target.x() - origin.x, e.target.y() - origin.y, state);
+          if (pos) {
+            e.target.setAttrs({ x: origin.x + pos.x, y: origin.y + pos.y });
+          }
+        }
+      }}
       onDragEnd={(e) => {
         if (e.target === group.current) {
           relocateElement(id, e.target.x() - groupPos.x, e.target.y() - groupPos.y);
@@ -103,7 +111,6 @@ const NumberLine = (props) => {
           getNotchGroups(e).forEach((notchGroup, i) => {
             notchGroup.x(notchX(i, { ...props, width: width - dx, shift: dx }, k));
           });
-          removeElements();
         }}
         onDragEnd={(e) => {
           const dx = Math.min(e.target.x() - 0, width - nlMinWidth);
@@ -130,7 +137,6 @@ const NumberLine = (props) => {
           getNotchGroups(e).forEach((notchGroup, i) => {
             notchGroup.x(notchX(i, { ...props, width: width + dx }, k));
           });
-          removeElements();
         }}
         onDragEnd={(e) => {
           const dx = Math.max(e.target.x() - width, nlMinWidth - width);
@@ -170,11 +176,30 @@ export function magnetToLine(tile, state) {
   const { min, max } = state.elements.numberLine;
   for (let i = 0; i < max - min + 1; i++) {
     const topPoint = { x: x + i * size, y };
-    const bottomPoint = { x: x + i * size, y: y + size};
+    const bottomPoint = { x: x + i * size, y: y + size };
     if (pointsIsClose(tile, topPoint, 20)) return topPoint;
     if (pointsIsClose(tile, bottomPoint, 20)) return bottomPoint;
   }
   return null;
+}
+
+function lineMagnet(x, y, state) {
+  const size = config.tile.size;
+  const elements = state.elements;
+  const { min, max, height } = elements.numberLine;
+  if (state.showGrid) {
+    return { x: Math.round(x / size) * size, y: Math.round(y / size) * size - height / 2 };
+  }
+  const dxStop = (max - min + 2) * size;
+  for (const tile of Object.values(elements)) {
+    if (tile.type != "tile") continue;
+    for (const dy of [height / 2 - size, height / 2]) {
+      for (let dx = 0; dx < dxStop; dx += size) {
+        if (pointsIsClose(tile, { x: x + dx, y: y + dy }, 20)) return { x: tile.x - dx, y: tile.y - dy };
+      }
+    }
+  }
+  return { x, y };
 }
 
 export default NumberLine;
