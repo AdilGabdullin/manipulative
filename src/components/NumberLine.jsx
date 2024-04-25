@@ -158,7 +158,7 @@ export function mk() {
 
 export function zeroPos(state) {
   const size = config.tile.size;
-  const { x, y, height } = state.numberLine;
+  const { x, y, height } = state.elements.numberLine;
   return { x: Math.round(x + size), y: Math.round(y + height / 2 - size) };
 }
 

@@ -87,7 +87,7 @@ export const ToolbarTile = (props) => {
           ? { x: -size, y: -size }
           : zeroPos(state);
       const last = elements[state.lastActiveElement];
-      if (last) {
+      if (last && last.type == "tile") {
         pos.x = last.x + size;
         pos.y = last.y;
       }
