@@ -48,7 +48,7 @@ export const useAppStore = create((set) => ({
   showSummary: true,
 
   fullscreen: true,
-  showGrid: true,
+  // showGrid: true,
   showSummary: false,
   workspace: workspace.numberLine,
 

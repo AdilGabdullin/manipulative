@@ -1,9 +1,10 @@
 import { Group, Line, Rect } from "react-konva";
 import { useAppStore } from "../state/store";
-import { colors, config } from "../config";
+import { colors, config, workspace } from "../config";
 import { useRef } from "react";
 import { DenominatorSelector, RangeSelector } from "./RangeSelector";
 import Notches from "./Notches";
+import { pointsIsClose } from "../util";
 
 export const nlWidth = config.tile.size * 22;
 export const nlHeight = 26;
@@ -160,6 +161,20 @@ export function zeroPos(state) {
   const size = config.tile.size;
   const { x, y, height } = state.elements.numberLine;
   return { x: Math.round(x + size), y: Math.round(y + height / 2 - size) };
+}
+
+export function magnetToLine(tile, state) {
+  if (state.workspace != workspace.numberLine) return null;
+  const size = config.tile.size;
+  const { x, y } = zeroPos(state);
+  const { min, max } = state.elements.numberLine;
+  for (let i = 0; i < max - min + 1; i++) {
+    const topPoint = { x: x + i * size, y };
+    const bottomPoint = { x: x + i * size, y: y + size};
+    if (pointsIsClose(tile, topPoint, 20)) return topPoint;
+    if (pointsIsClose(tile, bottomPoint, 20)) return bottomPoint;
+  }
+  return null;
 }
 
 export default NumberLine;

@@ -4,7 +4,7 @@ import { getStageXY, halfPixel, numberBetween, pointsIsClose, setVisibility } fr
 import { useAppStore } from "../state/store";
 import { useEffect, useRef } from "react";
 import { Animation } from "konva/lib/Animation";
-import { zeroPos } from "./NumberLine";
+import { magnetToLine, zeroPos } from "./NumberLine";
 
 export const Tile = ({ id, x, y, size, fill, stroke, visible, events }) => {
   x = halfPixel(x);
@@ -82,10 +82,7 @@ export const ToolbarTile = (props) => {
     },
     onPointerClick: (e) => {
       const size = config.tile.size;
-      const pos =
-        state.workspace == workspace.basic
-          ? { x: -size, y: -size }
-          : zeroPos(state);
+      const pos = state.workspace == workspace.basic ? { x: -size, y: -size } : zeroPos(state);
       const last = elements[state.lastActiveElement];
       if (last && last.type == "tile") {
         pos.x = last.x + size;
@@ -160,7 +157,7 @@ export function magnetToAll(tile, elements, state) {
     const pos = magnetToOne(tile, element);
     if (pos) return pos;
   }
-  return null;
+  return magnetToLine(tile, state);
 }
 
 function magnetToOne(tile, other) {
