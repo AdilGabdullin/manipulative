@@ -7,7 +7,7 @@ import LineElement from "./LineElement";
 import { BoardTile, Tile, getSize } from "./Tile";
 import { config, workspace } from "../config";
 import NumberLine from "./NumberLine";
-import Graph from "./Graph";
+import Graph, { GraphLines } from "./Graph";
 
 const elementList = {
   text: TextElement,
@@ -26,6 +26,7 @@ const Elements = () => {
   }
   return (
     <>
+      {state.workspace == workspace.graph && <GraphLines />}
       {Object.values(elements)
         .toSorted((e1, e2) => e1.x - e2.x - (e1.y - e2.y) * 100)
         .map((element) => {

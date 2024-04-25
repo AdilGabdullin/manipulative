@@ -10,23 +10,15 @@ const notchSize = 7;
 const Graph = () => {
   const state = useAppStore();
   const topHead = useRef();
-  const { origin, showGrid } = state;
+  const { origin } = state;
   const { x, y, width, height } = graphProps(state);
-
-  const notches = [...Array(height / size - 1).keys()].map((i) => ({
-    y: height - (i + 1) * size,
-    text: (i + 1).toString(),
-  }));
   const color = colors.black;
   return (
     <Group x={origin.x + x} y={origin.y + y}>
       <Line points={[0, 0, 0, height, width, height]} stroke={color} strokeWidth={4} />
-
       <Line ref={topHead} points={[0, 0, -headSize, headSize, headSize, headSize]} stroke={color} fill={color} closed />
-
-      {notches.map(({ y, text }, i) => (
+      {notches(height).map(({ y, text }, i) => (
         <Fragment key={i}>
-          {!showGrid && <Line y={y} points={[0, 0, width, 0]} stroke="#ecf5ff" />}
           <Line x={-notchSize} y={y} points={[0, 0, 2 * notchSize, 0]} stroke={color} />
           <Text
             text={text}
@@ -43,7 +35,21 @@ const Graph = () => {
   );
 };
 
-function graphProps(state) {
+export const GraphLines = () => {
+  const state = useAppStore();
+  const { origin, showGrid } = state;
+  const { x, y, width, height } = graphProps(state);
+  return (
+    <Group x={origin.x + x} y={origin.y + y}>
+      {!showGrid &&
+        notches(height).map(({ y }, i) => (
+          <Fragment key={i}>{<Line y={y} points={[0, 0, width, 0]} stroke="#ecf5ff" />}</Fragment>
+        ))}
+    </Group>
+  );
+};
+
+export function graphProps(state) {
   const x = -9 * size;
   const y = -6 * size;
   const width = 17 * size;
@@ -52,8 +58,15 @@ function graphProps(state) {
 }
 
 export function graphZeroPos(state) {
-  const { x, y, width, height } = graphProps(state);
+  const { x, y, height } = graphProps(state);
   return { x: x, y: y + height - size };
+}
+
+function notches(height) {
+  return [...Array(height / size - 1).keys()].map((i) => ({
+    y: height - (i + 1) * size,
+    text: (i + 1).toString(),
+  }));
 }
 
 export default Graph;

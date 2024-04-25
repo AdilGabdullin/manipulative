@@ -152,7 +152,7 @@ export const BoardTile = (props) => {
 };
 
 export function magnetToAll(tile, elements, state) {
-  if (state.showGrid) {
+  if (state.showGrid || state.workspace == workspace.graph) {
     const size = config.tile.size;
     const { x, y } = tile;
     return { x: Math.round(x / size) * size, y: Math.round(y / size) * size };
