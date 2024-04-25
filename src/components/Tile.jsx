@@ -1,9 +1,10 @@
 import { Group, Rect } from "react-konva";
-import { config } from "../config";
-import { getStageXY, halfPixel, pointsIsClose, setVisibility } from "../util";
+import { config, workspace } from "../config";
+import { getStageXY, halfPixel, numberBetween, pointsIsClose, setVisibility } from "../util";
 import { useAppStore } from "../state/store";
 import { useEffect, useRef } from "react";
 import { Animation } from "konva/lib/Animation";
+import { zeroPos } from "./NumberLine";
 
 export const Tile = ({ id, x, y, size, fill, stroke, visible, events }) => {
   x = halfPixel(x);
@@ -81,7 +82,10 @@ export const ToolbarTile = (props) => {
     },
     onPointerClick: (e) => {
       const size = config.tile.size;
-      const pos = { x: -size, y: -size };
+      const pos =
+        state.workspace == workspace.basic
+          ? { x: -size, y: -size }
+          : zeroPos(state);
       const last = elements[state.lastActiveElement];
       if (last) {
         pos.x = last.x + size;

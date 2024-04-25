@@ -156,4 +156,10 @@ export function mk() {
   return { m: 10, k: 1 };
 }
 
+export function zeroPos(state) {
+  const size = config.tile.size;
+  const { x, y, height } = state.numberLine;
+  return { x: Math.round(x + size), y: Math.round(y + height / 2 - size) };
+}
+
 export default NumberLine;
