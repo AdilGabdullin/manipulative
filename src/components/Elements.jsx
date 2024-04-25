@@ -5,7 +5,8 @@ import RectElement from "./RectElement";
 import EllipseElement from "./EllipseElement";
 import LineElement from "./LineElement";
 import { BoardTile, Tile, getSize } from "./Tile";
-import { config } from "../config";
+import { config, workspace } from "../config";
+import NumberLine from "./NumberLine";
 
 const elementList = {
   text: TextElement,
@@ -17,7 +18,7 @@ const elementList = {
 
 const Elements = () => {
   const state = useAppStore();
-  const { elements, finishDelay, finishAnimations } = state;
+  const { elements, finishDelay, finishAnimations, numberLine } = state;
 
   if (finishDelay) {
     setTimeout(finishAnimations, finishDelay + 50);
@@ -35,12 +36,9 @@ const Elements = () => {
       <Line id="shadow-line" visible={false} lineCap={"round"} lineJoin={"round"} />
       <Text id="shadow-text" visible={false} fill={"black"} fontSize={36} text="Text" fontFamily="Calibri" />
       <Tile id="shadow-tile" visible={true} size={config.tile.size} />
+      {state.workspace == workspace.numberLine && <NumberLine {...numberLine} />}
     </>
   );
 };
-
-function sortedElements(elements) {
-  return Object.values(elements);
-}
 
 export default Elements;

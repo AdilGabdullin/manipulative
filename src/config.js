@@ -14,7 +14,7 @@ export const colors = {
 
 export const workspace = {
   basic: "Basic",
-  // solving: "Solving",
+  numberLine: "Number Line",
 };
 
 export const config = {
@@ -40,7 +40,8 @@ export const config = {
   tile: {
     size: 60,
     options: [
-      { fill: "#ffeb3b", stroke: "#fdd935", name: "Yellow" },
+      // { fill: "#ffeb3b", stroke: "#fdd935", name: "Yellow" },
+      { fill: "#ffeb3b", stroke: "black", name: "Yellow" },
       { fill: "#f44336", stroke: "#d5302f", name: "Red" },
       { fill: "#2196f3", stroke: "#1978d4", name: "Green" },
       { fill: "#4caf50", stroke: "#39903d", name: "Blue" },

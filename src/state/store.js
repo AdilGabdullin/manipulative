@@ -7,6 +7,7 @@ import { maxOffset } from "../components/Scrolls";
 import { freeDrawingSlice } from "./freeDrawingSlice";
 import { historySlice, pushHistory } from "./historySlice";
 import { workspace, config } from "../config";
+import { nlHeight, nlWidth } from "../components/NumberLine";
 
 export const gridStep = 60;
 export const boardSize = {
@@ -26,13 +27,30 @@ export const useAppStore = create((set) => ({
   width: 0,
   height: 0,
   origin: { x: 0, y: 0 },
+  elements: {},
+  numberLine: {
+    id: "number-line",
+    type: "number-line",
+    x: 0 - nlWidth / 2,
+    y: 0 - nlHeight / 2,
+    width: nlWidth,
+    height: nlHeight,
+    min: 0,
+    max: 20,
+    denominator: 1,
+  },
+  lastActiveElement: null,
   selected: [],
   lockSelect: false,
-  // showGrid: true,
+  showGrid: false,
   showLabels: true,
   showSummary: true,
 
   fullscreen: true,
+  showGrid: true,
+  showSummary: false,
+  workspace: workspace.numberLine,
+
   toggleGlobal: (field) =>
     set(
       produce((state) => {
@@ -43,8 +61,6 @@ export const useAppStore = create((set) => ({
         }
       })
     ),
-  elements: {},
-  lastActiveElement: null,
   setValue: (field, value) =>
     set(
       produce((state) => {

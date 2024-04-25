@@ -22,7 +22,11 @@ const Grid = ({}) => {
   return (
     <>
       {lines.map((props, i) => (
-        <Line key={i} {...props} stroke={colors.grey} strokeWidth={2} />
+        <Line key={i} {...props}
+          stroke={colors.grey}
+          // stroke={colors.black}
+          strokeWidth={2}
+        />
       ))}
     </>
   );
