@@ -7,6 +7,7 @@ import LineElement from "./LineElement";
 import { BoardTile, Tile, getSize } from "./Tile";
 import { config, workspace } from "../config";
 import NumberLine from "./NumberLine";
+import Graph from "./Graph";
 
 const elementList = {
   text: TextElement,
@@ -37,6 +38,7 @@ const Elements = () => {
       <Text id="shadow-text" visible={false} fill={"black"} fontSize={36} text="Text" fontFamily="Calibri" />
       <Tile id="shadow-tile" visible={true} size={config.tile.size} />
       {state.workspace == workspace.numberLine && <NumberLine {...elements.numberLine} />}
+      {state.workspace == workspace.graph && <Graph {...elements.graph} />}
     </>
   );
 };

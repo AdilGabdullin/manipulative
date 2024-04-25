@@ -9,7 +9,7 @@ import { historySlice, pushHistory } from "./historySlice";
 import { workspace, config } from "../config";
 import { nlHeight, nlWidth } from "../components/NumberLine";
 
-export const gridStep = 60;
+const size = config.tile.size;
 export const boardSize = {
   width: 2460,
   height: 1660,
@@ -39,6 +39,14 @@ export const useAppStore = create((set) => ({
       max: 20,
       denominator: 1,
     },
+    graph: {
+      id: "graph",
+      type: "graph",
+      x: -9 * size,
+      y: -6 * size,
+      width: 17 * size,
+      height: 11 * size,
+    },
   },
   lastActiveElement: null,
   selected: [],
@@ -50,7 +58,7 @@ export const useAppStore = create((set) => ({
   fullscreen: true,
   // showGrid: true,
   showSummary: false,
-  workspace: workspace.numberLine,
+  workspace: workspace.graph,
 
   toggleGlobal: (field) =>
     set(

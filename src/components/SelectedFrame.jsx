@@ -5,7 +5,7 @@ import { elementBox, halfPixel, setVisibility, setVisibilityFrame } from "../uti
 import ShapeResizeHandles from "./ShapeResizeHandles";
 import { createTextArea } from "./TextElement";
 import { magnetToAll } from "./Tile";
-import { config } from "../config";
+import { config, workspace } from "../config";
 import { lineMagnet } from "./NumberLine";
 
 const SelectedFrame = (props) => {
@@ -334,8 +334,10 @@ function getBounds(state) {
   let yMin = Infinity;
   let xMax = -Infinity;
   let yMax = -Infinity;
-  Object.keys(elements).map((key) => {
+  Object.keys(elements).forEach((key) => {
     const element = elements[key];
+    if (element.id == "numberLine" && state.workspace != workspace.numberLine) return;
+    if (element.id == "graph" && state.workspace != workspace.graph) return;
     const { x, y, width, height } = elementBox(element);
     if (selected.includes(element.id)) {
       if (x < xMin) xMin = x;

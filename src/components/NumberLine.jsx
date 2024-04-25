@@ -2,7 +2,6 @@ import { Group, Line, Rect } from "react-konva";
 import { useAppStore } from "../state/store";
 import { colors, config, workspace } from "../config";
 import { useRef } from "react";
-import { DenominatorSelector, RangeSelector } from "./RangeSelector";
 import Notches from "./Notches";
 import { pointsIsClose } from "../util";
 
