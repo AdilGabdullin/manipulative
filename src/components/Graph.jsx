@@ -8,14 +8,10 @@ const headSize = 13;
 const notchSize = 7;
 
 const Graph = () => {
-  const { origin, showGrid } = useAppStore();
-
-  const x = origin.x - 9 * size;
-  const y = origin.y - 6 * size;
-  const width = 17 * size;
-  const height = 11 * size;
-
+  const state = useAppStore();
   const topHead = useRef();
+  const { origin, showGrid } = state;
+  const { x, y, width, height } = graphProps(state);
 
   const notches = [...Array(height / size - 1).keys()].map((i) => ({
     y: height - (i + 1) * size,
@@ -23,7 +19,7 @@ const Graph = () => {
   }));
   const color = colors.black;
   return (
-    <Group x={x} y={y}>
+    <Group x={origin.x + x} y={origin.y + y}>
       <Line points={[0, 0, 0, height, width, height]} stroke={color} strokeWidth={4} />
 
       <Line ref={topHead} points={[0, 0, -headSize, headSize, headSize, headSize]} stroke={color} fill={color} closed />
@@ -46,5 +42,18 @@ const Graph = () => {
     </Group>
   );
 };
+
+function graphProps(state) {
+  const x = -9 * size;
+  const y = -6 * size;
+  const width = 17 * size;
+  const height = 11 * size;
+  return { x, y, width, height };
+}
+
+export function graphZeroPos(state) {
+  const { x, y, width, height } = graphProps(state);
+  return { x: x, y: y + height - size };
+}
 
 export default Graph;

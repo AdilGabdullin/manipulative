@@ -121,7 +121,9 @@ export const useAppStore = create((set) => ({
       produce((state) => {
         const curr = current(state);
         for (const id in curr.elements) {
-          delete state.elements[id];
+          if (id != "numberLine") {
+            delete state.elements[id];
+          }
         }
         clearSelected(state);
         state.lastActiveElement = null;

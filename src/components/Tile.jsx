@@ -4,7 +4,10 @@ import { getStageXY, halfPixel, numberBetween, pointsIsClose, setVisibility } fr
 import { useAppStore } from "../state/store";
 import { useEffect, useRef } from "react";
 import { Animation } from "konva/lib/Animation";
-import { magnetToLine, zeroPos } from "./NumberLine";
+import { magnetToLine, lineZeroPos } from "./NumberLine";
+import { graphZeroPos } from "./Graph";
+
+const size = config.tile.size;
 
 export const Tile = ({ id, x, y, size, fill, stroke, visible, events }) => {
   x = halfPixel(x);
@@ -81,14 +84,16 @@ export const ToolbarTile = (props) => {
       }
     },
     onPointerClick: (e) => {
-      const size = config.tile.size;
-      const pos = state.workspace == workspace.basic ? { x: -size, y: -size } : zeroPos(state);
       const last = elements[state.lastActiveElement];
       if (last && last.type == "tile") {
-        pos.x = last.x + size;
-        pos.y = last.y;
+        if (state.workspace == workspace.graph) {
+          add({ x: last.x, y: last.y - size });
+        } else {
+          add({ x: last.x + size, y: last.y });
+        }
+      } else {
+        add(firstPos(state));
       }
-      add(pos);
     },
   };
 
@@ -199,4 +204,21 @@ function animateMove(node, xFrom, yFrom, xTo, yTo) {
 
 export function getSize(state) {
   return Math.round(config.tile.size * state.scale);
+}
+
+function firstPos(state) {
+  switch (state.workspace) {
+    case workspace.basic:
+      return { x: -size, y: -size };
+      break;
+    case workspace.numberLine:
+      return lineZeroPos(state);
+      break;
+    case workspace.graph:
+      return graphZeroPos(state);
+      break;
+    case workspace.ppw:
+      console.error("ppw first pos not implemented");
+      break;
+  }
 }

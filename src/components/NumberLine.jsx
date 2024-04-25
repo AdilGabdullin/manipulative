@@ -149,7 +149,7 @@ export function mk() {
   return { m: 10, k: 1 };
 }
 
-export function zeroPos(state) {
+export function lineZeroPos(state) {
   const size = config.tile.size;
   const { x, y, height } = state.elements.numberLine;
   return { x: Math.round(x + size), y: Math.round(y + height / 2 - size) };
@@ -158,7 +158,7 @@ export function zeroPos(state) {
 export function magnetToLine(tile, state) {
   if (state.workspace != workspace.numberLine) return null;
   const size = config.tile.size;
-  const { x, y } = zeroPos(state);
+  const { x, y } = lineZeroPos(state);
   const { min, max } = state.elements.numberLine;
   for (let i = -1; i < max - min + 1; i++) {
     const topPoint = { x: x + i * size, y };
