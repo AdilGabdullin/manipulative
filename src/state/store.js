@@ -90,6 +90,7 @@ export const useAppStore = create((set) => ({
         state.offset.y = 0;
         state.scale = 1.0;
         keepOrigin(state);
+        clearSelected(state);
         for (const id in state.elements) {
           if (state.elements[id].type == "block") {
             delete state.elements[id];
