@@ -51,9 +51,7 @@ const SelectedFrame = (props) => {
   const onPointerDown = (e) => {};
 
   const onDragStart = (e) => {
-    if (!hidePopup) {
-      setVisibility(e, false);
-    }
+    setVisibility(e, false);
   };
 
   const others = { ...elements };
@@ -88,9 +86,10 @@ const SelectedFrame = (props) => {
     const dx = (e.target.x() - x) / state.scale;
     const dy = (e.target.y() - y) / state.scale;
     state.relocateSelected(dx, dy);
-    if (!hidePopup) {
-      setVisibilityFrame(e, true);
-    }
+    e.target
+      .getStage()
+      .find(".drag-hidden")
+      .forEach((node) => node.visible(true));
   };
 
   let menuButtons = [

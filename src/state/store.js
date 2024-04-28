@@ -38,6 +38,7 @@ export const useAppStore = create((set) => ({
       min: 0,
       max: 20,
       denominator: 1,
+      locked: true,
     },
   },
   lastActiveElement: null,
@@ -89,6 +90,7 @@ export const useAppStore = create((set) => ({
         state.offset.x = 0;
         state.offset.y = 0;
         state.scale = 1.0;
+        state.elements.numberLine.locked = workspace != "Number Line";
         keepOrigin(state);
       })
     ),
