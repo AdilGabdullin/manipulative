@@ -49,12 +49,15 @@ export const GraphLines = () => {
   );
 };
 
+function round(x) {
+  return Math.floor(x / size) * size;
+}
+
 export function graphProps(state) {
-  const x = -9 * size;
-  const y = -6 * size;
-  const width = 17 * size;
-  const height = 11 * size;
-  return { x, y, width, height };
+  const scale = state.scale;
+  const width = Math.min(round((state.width - config.leftToolbar.width) / scale - 60), 20 * size);
+  const height = Math.min(round(state.height / scale - 100), 11 * size);
+  return { x: round(-width / 2) + size, y: round(-height / 2), width, height };
 }
 
 export function graphZeroPos(state) {

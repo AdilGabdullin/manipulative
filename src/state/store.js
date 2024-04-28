@@ -9,7 +9,6 @@ import { historySlice, pushHistory } from "./historySlice";
 import { workspace, config } from "../config";
 import { nlHeight, nlWidth } from "../components/NumberLine";
 
-const size = config.tile.size;
 export const boardSize = {
   width: 2460,
   height: 1660,
@@ -49,8 +48,8 @@ export const useAppStore = create((set) => ({
   showSummary: true,
 
   fullscreen: true,
-  // showGrid: true,
-  showSummary: false,
+  showGrid: true,
+  showSummary: true,
   workspace: workspace.graph,
 
   toggleGlobal: (field) =>
