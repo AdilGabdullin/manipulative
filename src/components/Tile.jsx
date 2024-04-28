@@ -117,13 +117,9 @@ export const BoardTile = (props) => {
   const x = props.x + origin.x;
   const y = props.y + origin.y;
   const groupRef = useRef();
-  const { moveTo } = props;
-  useEffect(() => {
-    if (moveTo) animateMove(groupRef.current.children[0], x, y, moveTo.x + origin.x, moveTo.y + origin.y);
-  }, [moveTo]);
 
   const events = {
-    draggable: true,
+    draggable: !props.locked,
     onDragStart: (e) => {
       setVisibility(e, false);
     },
@@ -184,23 +180,6 @@ function magnetToOne(tile, other) {
     if (pointsIsClose({ x: x + dx, y: y + dy }, other)) return { x: other.x - dx, y: other.y - dy };
   }
   return null;
-}
-
-function animateMove(node, xFrom, yFrom, xTo, yTo) {
-  const animation = new Animation(({ time }) => {
-    if (time > config.animationDuration) {
-      animation.stop();
-      // node.setAttrs({ x: 0, y: 0 });
-      return;
-    }
-    const t = time / config.animationDuration;
-    const k = (t * t) / (2 * (t * t - t) + 1);
-    node.setAttrs({
-      x: xFrom * (1 - k) + xTo * k,
-      y: yFrom * (1 - k) + yTo * k,
-    });
-  }, node.getLayer());
-  animation.start();
 }
 
 export function getSize(state) {
