@@ -3,7 +3,6 @@ import { config } from "../config";
 import { useAppStore } from "../state/store";
 
 const margin = 16;
-const itemWidth = 40;
 const squareWidth = 20;
 const fontSize = 36;
 const height = config.summary.height;
@@ -15,13 +14,18 @@ const Summary = () => {
   }
   const sums = getSums(state.elements);
   const colors = config.colors;
-  const width = margin + sums.length * (itemWidth + margin);
+  const widths = sums.map((s) => (s.count < 10 ? 40 : 60));
+  const width = (sums.length + 1) * margin + widths.reduce((sum, w) => sum + w, 0);
+  const xs = [margin];
+  for (let i = 1; i < sums.length; i += 1) {
+    xs.push(xs[i - 1] + widths[i - 1] + margin);
+  }
   const y = (height - squareWidth) / 2;
   return (
     <Group x={(state.width + config.leftToolbar.width - width) / 2} y={state.height - 86} visible={sums.length > 0}>
       <Rect width={width} height={height} strokeWidth={4} cornerRadius={8} stroke={colors.grey} fill={colors.white} />
       {sums.map(({ color, count }, i) => (
-        <Item key={color} color={color} count={count} x={margin + (itemWidth + margin) * i} y={y} />
+        <Item key={color} color={color} count={count} x={xs[i]} y={y} />
       ))}
     </Group>
   );
