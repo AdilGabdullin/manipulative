@@ -1,5 +1,5 @@
 import { current, produce } from "immer";
-import { arrayChunk, avg, clearSelected, cos, newId, sin } from "../util";
+import { arrayChunk, avg, clearSelected, cos, halfPixel, newId, sin } from "../util";
 import { pushHistory } from "./historySlice";
 import config from "../config";
 import { getSizes } from "../components/Block";
@@ -99,9 +99,12 @@ export const breakRegroupSlice = (set) => ({
     ),
 });
 
-function blocksByValue(state) {
+export function blocksByValue(state, filter) {
   const { elements, selected } = state;
-  const blocks = Object.values(elements).filter((e) => e.type == "block" && e.label != 1000 && selected.includes(e.id));
+  let blocks = Object.values(elements).filter((e) => e.type == "block" && e.label != 1000 && selected.includes(e.id));
+  if (filter) {
+    blocks = blocks.filter(filter);
+  }
   return Object.groupBy(blocks, (e) => e.label);
 }
 
@@ -109,7 +112,7 @@ export function regroupPossible(state) {
   return Object.values(blocksByValue(state)).some((arr) => arr.length >= 10);
 }
 
-function avgPos(blocks, label, scale) {
+export function avgPos(blocks, label, scale) {
   const pos = { x: avg(blocks.map((d) => d.x)), y: avg(blocks.map((d) => d.y)) };
   switch (label) {
     case "1":
@@ -158,7 +161,7 @@ function createBlocks100(state, { x, y }) {
   }
 }
 
-function createBlock(state, label, x, y, dx, dy, visibleAfterMove = false) {
+export function createBlock(state, label, x, y, dx, dy, visibleAfterMove = false) {
   const { scale } = getSizes(state);
   const id = newId();
   const props = config.block.options[label];
@@ -167,9 +170,9 @@ function createBlock(state, label, x, y, dx, dy, visibleAfterMove = false) {
     ...props,
     id,
     type: "block",
-    x,
-    y,
-    moveTo: { x: x + dx, y: y + dy },
+    x: halfPixel(x),
+    y: halfPixel(y),
+    moveTo: { x: halfPixel(x + dx), y: halfPixel(y + dy) },
     width: width * scale,
     height: height * scale,
     top: top * scale,

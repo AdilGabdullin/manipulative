@@ -1,13 +1,14 @@
 import { create } from "zustand";
 import { current, produce } from "immer";
-import { clearSelected, elementBox, newId, numberBetween } from "../util";
+import { arrayChunk, clearSelected, elementBox, newId, numberBetween } from "../util";
 import { topToolbarHeight } from "../components/TopToolbar";
 import { maxOffset } from "../components/Scrolls";
 import { freeDrawingSlice } from "./freeDrawingSlice";
 import { historySlice, pushHistory } from "./historySlice";
 import config from "../config";
-import { breakBlock, breakRegroupSlice } from "./breakRegroupSlice";
-import { elementInBreakColumn, elementInWrongColumn } from "../components/PlaceValue";
+import { avgPos, blocksByValue, breakBlock, breakRegroupSlice, createBlock } from "./breakRegroupSlice";
+import { elementInBreakColumn, elementInRegroupColumn, elementInWrongColumn } from "../components/PlaceValue";
+import { getSizes } from "../components/Block";
 
 export const gridStep = 60;
 export const boardSize = {
@@ -37,7 +38,7 @@ export const useAppStore = create((set) => ({
   multiColored: true,
 
   // fullscreen: true,
-  // workspace: config.workspace.addition,
+  // workspace: config.workspace.placeValue,
 
   toggleGlobal: (field) =>
     set(
@@ -85,6 +86,10 @@ export const useAppStore = create((set) => ({
     set(
       produce((state) => {
         state.workspace = workspace;
+        state.offset.x = 0;
+        state.offset.y = 0;
+        state.scale = 1.0;
+        keepOrigin(state);
         for (const id in state.elements) {
           if (state.elements[id].type == "block") {
             delete state.elements[id];
@@ -192,9 +197,36 @@ export const useAppStore = create((set) => ({
     set(
       produce((state) => {
         let haveAnimation = false;
+        // regroup
+        const regrouped = [];
+        const toMoved = (block) => ({ ...block, x: block.x + dx, y: block.y + dy });
+        const { scale, depthStepX, depthStepY } = getSizes(state);
+        const curState = current(state);
+        const entries = Object.entries(blocksByValue(curState, (e) => elementInRegroupColumn(curState, toMoved(e))));
+        for (const [label, list] of entries) {
+          for (const chunk of arrayChunk(list, 10)) {
+            if (chunk.length < 10) continue;
+            haveAnimation = true;
+            state.finishDelay = config.animationDuration;
+            const { x, y } = avgPos(chunk, label, scale);
+            createBlock(state, label * 10, x, y, dx, dy, true);
+            chunk.forEach(({ id }, i) => {
+              const block = state.elements[id];
+              block.x += dx;
+              block.y += dy;
+              if (label == 1) block.moveTo = { x: x + dx, y: y + dy + scale * i };
+              if (label == 10) block.moveTo = { x: x + dx + scale * i, y: y + dy };
+              if (label == 100) block.moveTo = { x: x + dx + depthStepX * i, y: y + dy - depthStepY * i };
+              block.deleteAfterMove = true;
+              regrouped.push(id);
+            });
+          }
+        }
+        // end regroup
+
         for (const id of state.selected) {
           const element = state.elements[id];
-          if (!element) continue;
+          if (!element || regrouped.includes(element.id)) continue;
           element.x += dx;
           element.y += dy;
           if (elementInBreakColumn(state, element)) {

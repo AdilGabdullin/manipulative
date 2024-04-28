@@ -123,4 +123,11 @@ export function elementInBreakColumn(state, element) {
   }
 }
 
+export function elementInRegroupColumn(state, element) {
+  if (state.workspace == config.workspace.placeValue && element.type == "block") {
+    const { rects } = placeValueProps(state);
+    return element.label != "1000" && pointInRect(center(element), rects[parseInt(element.label) * 10]);
+  }
+}
+
 export default PlaceValue;
