@@ -1,5 +1,5 @@
 import { Group, Rect, Text } from "react-konva";
-import { config } from "../config";
+import { config, workspace } from "../config";
 import { useAppStore } from "../state/store";
 
 const margin = 16;
@@ -9,7 +9,7 @@ const height = config.summary.height;
 
 const Summary = () => {
   const state = useAppStore();
-  if (!state.showSummary || !state.width) {
+  if (!state.showSummary || !state.width || state.workspace == workspace.ppw) {
     return null;
   }
   const sums = getSums(state.elements);

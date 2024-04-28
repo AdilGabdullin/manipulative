@@ -6,6 +6,7 @@ import { useEffect, useRef } from "react";
 import { Animation } from "konva/lib/Animation";
 import { magnetToLine, lineZeroPos } from "./NumberLine";
 import { graphZeroPos } from "./Graph";
+import { getPPWSize } from "./PartPartWhole";
 
 const size = config.tile.size;
 
@@ -218,7 +219,8 @@ function firstPos(state) {
       return graphZeroPos(state);
       break;
     case workspace.ppw:
-      console.error("ppw first pos not implemented");
+      const { width } = getPPWSize(state);
+      return { x: -width / 2 + size / 2, y: size / 2 };
       break;
   }
 }

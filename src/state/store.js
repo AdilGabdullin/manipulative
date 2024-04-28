@@ -50,7 +50,7 @@ export const useAppStore = create((set) => ({
   // fullscreen: true,
   // showGrid: true,
   // showSummary: true,
-  workspace: workspace.ppw,
+  // workspace: workspace.ppw,
 
   toggleGlobal: (field) =>
     set(
