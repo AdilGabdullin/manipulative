@@ -24,13 +24,14 @@ export const ToolbarTile = (props) => {
   const state = useAppStore();
   const { origin, elements, addElement } = state;
   const shadow = useRef();
-  const size = getSize(state);
+  const size = config.tile.size;
+  const scaledSize = getSize(state);
 
   const outOfToolbar = (e) => e.target.getStage().getPointerPosition().x > config.leftToolbar.width;
 
   const placeProps = (e) => {
     const { x, y } = getStageXY(e.target.getStage(), state);
-    return { x: x - size / 2, y: y - size / 2 };
+    return { x: x - scaledSize / 2, y: y - scaledSize / 2 };
   };
 
   let boardShadow = null;
@@ -39,7 +40,6 @@ export const ToolbarTile = (props) => {
   };
 
   const add = (pos, place) => {
-    const size = config.tile.size;
     addElement({
       ...props,
       type: "tile",
