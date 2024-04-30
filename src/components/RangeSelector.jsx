@@ -77,6 +77,15 @@ export const RangeSelector = (props) => {
         height={rectHeight}
         fill={colors.blue}
       />
+      <Text
+        text="Range"
+        x={start - r}
+        y={y - rectHeight / 2 + 40}
+        width={end - start + 2 * r}
+        align="center"
+        fontFamily="Calibri"
+        fontSize={28}
+      />
       <Group ref={leftCircle} x={start + leftIndex * step} y={y} draggable {...events.left}>
         <Circle radius={r} fill={colors.blue} />
         <Text y={16} text={props.min} x={-50} width={100} align="center" fontSize={20} fontFamily="Calibri" />
@@ -131,6 +140,15 @@ export const DenominatorSelector = (props) => {
         height={rectHeight}
         fill={colors.grey}
         cornerRadius={rectHeight / 2}
+      />
+      <Text
+        text="Denominator"
+        x={start - r}
+        y={y - rectHeight / 2 + 40}
+        width={end - start + 2 * r}
+        align="center"
+        fontFamily="Calibri"
+        fontSize={28}
       />
       <Group ref={circle} x={start + index * step} y={y} draggable {...events}>
         <Circle radius={r} fill={colors.blue} />
