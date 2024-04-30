@@ -25,7 +25,7 @@ const StraightArrow = (props) => {
   const textProps = ({ width, height, isBlue, shiftX, shiftY, text }) => {
     shiftX = shiftX || 0;
     shiftY = shiftY || 0;
-    const color = isBlue ? colors.blue : colors.red;
+    const color = isBlue ? colors.green : colors.red;
     const prefix = width == 0 ? "" : isBlue ? "+" : "-";
     return {
       x: shiftX - 100,
@@ -137,7 +137,7 @@ export function arcProps({ width, height, isBlue, shiftX, shiftY }) {
   return {
     x: shiftX + (isBlue ? 0 : headSize),
     y: shiftY + height / 2 - strokeWidth / 2,
-    fill: isBlue ? colors.blue : colors.red,
+    fill: isBlue ? colors.green : colors.red,
     width: width - headSize,
     height: strokeWidth,
   };
@@ -148,7 +148,7 @@ export function headProps({ width, height, isBlue, shiftX, shiftY }) {
   shiftY = shiftY || 0;
   width = Math.abs(width);
 
-  const color = isBlue ? colors.blue : colors.red;
+  const color = isBlue ? colors.green : colors.red;
   return {
     x: isBlue ? Math.abs(width) + shiftX : 0 + shiftX,
     y: shiftY,

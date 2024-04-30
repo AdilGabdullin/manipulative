@@ -24,7 +24,7 @@ const RectShape = (props) => {
   const textProps = ({ width, height, isBlue, shiftX, shiftY, text }) => {
     shiftX = shiftX || 0;
     shiftY = shiftY || 0;
-    const color = isBlue ? colors.blue : colors.red;
+    const color = isBlue ? colors.green : colors.red;
     const prefix = width == 0 ? "" : isBlue ? "+" : "-";
     return {
       x: shiftX - 100,
@@ -145,7 +145,7 @@ export function arcProps({ width, height, isBlue, shiftX, shiftY }) {
   return {
     x: shiftX,
     y: shiftY,
-    fill: isBlue ? colors.blue : colors.red,
+    fill: isBlue ? colors.green : colors.red,
     width: width,
     height: height,
   };

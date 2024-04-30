@@ -28,7 +28,7 @@ const Arrow = (props) => {
   const textProps = ({ width, height, isBlue, shiftX, shiftY, text }) => {
     shiftX = shiftX || 0;
     shiftY = shiftY || 0;
-    const color = isBlue ? colors.blue : colors.red;
+    const color = isBlue ? colors.green : colors.red;
     const prefix = width == 0 ? "" : isBlue ? "+" : "-";
     return {
       x: shiftX - 100,
@@ -175,7 +175,7 @@ export function arcProps({ width, height, isBlue, shiftX, shiftY }) {
   return {
     x: width / 2 + shiftX,
     y: height + shiftY,
-    fill: isBlue ? colors.blue : colors.red,
+    fill: isBlue ? colors.green : colors.red,
     scaleX: isBlue ? 1 : -1,
     data:
       width < 5
@@ -206,7 +206,7 @@ export function headProps({ width, height, isBlue, shiftX, shiftY }) {
   } else if (width / height > 1) {
     alpha *= 0.7;
   }
-  const color = isBlue ? colors.blue : colors.red;
+  const color = isBlue ? colors.green : colors.red;
   return {
     x: isBlue ? Math.abs(width) + shiftX : 0 + shiftX,
     y: height + shiftY,
