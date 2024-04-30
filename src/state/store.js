@@ -29,6 +29,7 @@ export const useAppStore = create((set) => ({
   selected: [],
   lockSelect: false,
   showLabels: true,
+  mixedNumbers: false,
 
   // fullscreen: true,
   // workspace: "Fractions",

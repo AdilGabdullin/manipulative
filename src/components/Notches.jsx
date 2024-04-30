@@ -53,16 +53,18 @@ const NotchLine = ({ height, id, short }) => {
 };
 
 const NotchText = ({ height, text, denominator }) => {
-  const { workspace } = useAppStore();
+  const { workspace, mixedNumbers } = useAppStore();
   const [textVisible, setTextVisible] = useState(true);
 
   const textRef = useRef();
   const lineRef = useRef();
   const lineRef2 = useRef();
   const textRef2 = useRef();
+  const textRef3 = useRef();
   const rectRef = useRef();
 
   const minus = round(text) < 0 && workspace == "Fractions";
+  let wholePart = 0;
 
   if (workspace == "Decimals") {
     text = text.toFixed(1);
@@ -74,6 +76,10 @@ const NotchText = ({ height, text, denominator }) => {
         text = Math.round(text);
       } else {
         text = Math.round(text * denominator);
+        if (mixedNumbers) {
+          wholePart = Math.floor(Math.abs(text / denominator));
+          text = text % denominator;
+        }
       }
     }
     text = Math.abs(text);
@@ -85,6 +91,7 @@ const NotchText = ({ height, text, denominator }) => {
     onPointerEnter: (e) => {
       textRef.current.setAttrs({ fill: colors.blue });
       textRef2.current.setAttrs({ fill: colors.blue });
+      textRef3.current.setAttrs({ fill: colors.blue });
       lineRef.current.setAttrs({ stroke: colors.blue });
       lineRef2.current.setAttrs({ stroke: colors.blue });
       if (!textVisible) {
@@ -94,6 +101,7 @@ const NotchText = ({ height, text, denominator }) => {
     onPointerLeave: (e) => {
       textRef.current.setAttrs({ fill: colors.black });
       textRef2.current.setAttrs({ fill: colors.black });
+      textRef3.current.setAttrs({ fill: colors.black });
       lineRef.current.setAttrs({ stroke: colors.black });
       lineRef2.current.setAttrs({ stroke: colors.black });
       if (!textVisible) {
@@ -135,7 +143,7 @@ const NotchText = ({ height, text, denominator }) => {
       />
       <Line
         ref={lineRef2}
-        x={round(-textWidth * 0.6 + (denominator == 1 ? 5 : 0))}
+        x={round(-textWidth * 0.6 + (denominator == 1 ? 5 : 0) + (wholePart != 0 ? -8 : 0))}
         y={round(height * 1.25 + 19)}
         points={[-10, 0, -5, 0]}
         stroke={colors.black}
@@ -149,6 +157,17 @@ const NotchText = ({ height, text, denominator }) => {
         x={-textWidth / 2}
         y={height * 1.25 + 20}
         width={textWidth}
+        align="center"
+        fontFamily="Calibri"
+        fontSize={20}
+      />
+      <Text
+        ref={textRef3}
+        text={wholePart}
+        visible={textVisible && wholePart != 0}
+        x={-textWidth * 2.6}
+        y={height * 1.25 + 10}
+        width={textWidth * 3}
         align="center"
         fontFamily="Calibri"
         fontSize={20}

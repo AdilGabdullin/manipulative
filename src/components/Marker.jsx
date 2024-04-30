@@ -102,6 +102,8 @@ export function markerMagnet(props, state) {
       } else if (state.workspace == "Fractions") {
         if (Math.round(text * k) == 0) {
           text = 0;
+        } else if (Math.round((text * k)) / k == Math.round(text)) {
+          text = Math.round(text);
         } else {
           text = `${Math.round(text * k)}/${k}`;
         }

@@ -36,7 +36,26 @@ const DefaultMenu = (props) => {
       shift: 0,
       fill: state.showLabels,
     },
+    {
+      text: "Fractions",
+      field: "mixedNumbers",
+      width: 66,
+      shift: -40,
+      fill: !state.mixedNumbers,
+    },
+    {
+      text: "Mixed numbers",
+      field: "mixedNumbers",
+      width: 110,
+      shift: -60,
+      fill: state.mixedNumbers,
+    },
   ];
+
+  if (state.workspace != "Fractions") {
+    buttons = [buttons[0]];
+  }
+
   const padding = 8;
   const buttonHeight = 20;
   const buttonWidth = 110;
