@@ -28,6 +28,7 @@ export const useAppStore = create((set) => ({
   origin: { x: 0, y: 0 },
   selected: [],
   lockSelect: false,
+  showLabels: true,
 
   // fullscreen: true,
   // workspace: "Fractions",
@@ -85,7 +86,7 @@ export const useAppStore = create((set) => ({
   toggle: (field) =>
     set(
       produce((state) => {
-        state.field = !state.field;
+        state[field] = !state[field];
       })
     ),
 

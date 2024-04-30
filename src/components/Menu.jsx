@@ -29,6 +29,13 @@ const DefaultMenu = (props) => {
   const { x, y } = props;
 
   let buttons = [
+    {
+      text: "Labels",
+      field: "showLabels",
+      width: 46,
+      shift: 0,
+      fill: state.showLabels,
+    },
   ];
   const padding = 8;
   const buttonHeight = 20;
@@ -36,6 +43,7 @@ const DefaultMenu = (props) => {
 
   const onPointerClick = (field, text) => (e) => {
     e.cancelBubble = true;
+    state.toggle(field);
   };
 
   return (

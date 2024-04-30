@@ -118,7 +118,14 @@ const StraightArrow = (props) => {
       {/* <Rect x={0} y={0} width={width} height={height} stroke={"black"}/> */}
       <Rect ref={arc} {...arcProps(props)} />
       <Path ref={head} {...headProps(props)} draggable={!locked} onDragMove={headDragMove} onDragEnd={headDragEnd} />
-      <Text ref={textRef} fontFamily="Calibri" fontSize={24} align="center" {...textProps(props)} />
+      <Text
+        ref={textRef}
+        fontFamily="Calibri"
+        fontSize={24}
+        align="center"
+        visible={state.showLabels}
+        {...textProps(props)}
+      />
     </Group>
   );
 };

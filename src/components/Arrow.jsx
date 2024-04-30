@@ -145,7 +145,14 @@ const Arrow = (props) => {
         onDragMove={resizeHandleDragMove}
         onDragEnd={resizeHandleDragEnd}
       />
-      <Text ref={textRef} fontFamily="Calibri" fontSize={24} align="center" {...textProps(props)} />
+      <Text
+        ref={textRef}
+        fontFamily="Calibri"
+        fontSize={24}
+        align="center"
+        visible={state.showLabels}
+        {...textProps(props)}
+      />
     </Group>
   );
 };
