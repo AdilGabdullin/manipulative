@@ -8,10 +8,10 @@ import { BasicSummary, fontSize, generateSum } from "./Summary";
 
 const factorsSize = Math.round(baseSize * 1.5);
 
-const Factors = () => {
+const Substitute = () => {
   const state = useAppStore();
   const { origin, showSummary } = state;
-  if (!state.width || state.workspace != workspace.factors) return null;
+  if (!state.width || state.workspace != workspace.substitute) return null;
   const rect = solvingRectProps(state);
   const { x, y, width, height } = rect;
 
@@ -20,13 +20,7 @@ const Factors = () => {
 
   return (
     <Group x={Math.round(origin.x + x)} y={Math.round(origin.y + y)}>
-      <Line x={0} y={0} points={[-1, 0, width, 0]} {...commonProps} />
-      <Line x={0} y={factorsSize} points={[0, 0, width, 0]} {...commonProps} />
-      <Line x={0} y={0} points={[0, -1, 0, height]} {...commonProps} />
-      <Line x={factorsSize} y={0} points={[0, 0, 0, height]} {...commonProps} />
-      {showSummary && sums.left != "0" && <BasicSummary text={sums.left} x={-margin} align={true} y={(height - fontSize) / 2} />}
-      {showSummary && sums.top != "0" && <BasicSummary text={sums.top} x={width / 2} y={-56 - margin} />}
-      {showSummary && sums.main != "0" && <BasicSummary text={sums.main} x={width / 2} y={height - 56 - margin} />}
+      <Line x={0} y={0} points={[0, 0, width, 0, width, height, 0, height,0,0]} {...commonProps} />
     </Group>
   );
 };
@@ -75,4 +69,4 @@ export function generateExpressions(state) {
   };
 }
 
-export default Factors;
+export default Substitute;

@@ -15,6 +15,7 @@ export const workspace = {
   basic: "Basic",
   solving: "Solving",
   factors: "Factors",
+  substitute: "Substitute",
 };
 
 export const animationDuration = 400;

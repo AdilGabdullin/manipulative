@@ -65,7 +65,8 @@ const CenterCircle = ({ x, y, value, onPointerClick }) => {
 
 export function solvingRectProps(state) {
   const { width, height, fullscreen } = state;
-  const rectWidth = Math.min(width - leftToolbarWidth - 45, 750);
+  const fullScreen = [workspace.solving, workspace.substitute].includes(state.workspace);
+  const rectWidth = fullScreen ? width - leftToolbarWidth - 45 : Math.min(width - leftToolbarWidth - 45, 750);
   let totalHeight = height - margin * 2 - menuHeight - scrollSize;
   if (fullscreen) {
     totalHeight = Math.min(totalHeight, 600);

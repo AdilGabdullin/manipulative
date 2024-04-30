@@ -15,6 +15,7 @@ import { appSaveText } from "./TextElement";
 import Summary from "./Summary";
 import Solving from "./Solving";
 import Factors from "./Factors";
+import Substitute from "./Substitute";
 
 const App = () => {
   const state = useAppStore();
@@ -294,8 +295,9 @@ const App = () => {
           scaleY={state.scale}
         >
           <Solving />
-          <Factors />
           <Elements />
+          <Factors />
+          <Substitute />
           <SelectRect />
         </Layer>
         <Layer

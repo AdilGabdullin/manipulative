@@ -53,7 +53,7 @@ const SelectedFrame = (props) => {
     setVisibility(e, false);
   };
 
-  const others = {...elements};
+  const others = { ...elements };
   for (const id of selected) {
     delete others[id];
   }
@@ -90,7 +90,7 @@ const SelectedFrame = (props) => {
     {
       text: "Rotate",
       active: tiles.length > 0 && !lockSelect,
-      show: tiles.length > 0 && state.workspace != workspace.factors,
+      show: tiles.length > 0,
       onPointerClick: (e) => {
         state.rotateSelected();
       },

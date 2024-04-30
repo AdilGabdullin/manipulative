@@ -39,7 +39,7 @@ export const BasicSummary = ({ text, x, y, align }) => {
 
 const Summary = () => {
   const state = useAppStore();
-  if (!state.showSummary || !state.width || state.workspace == workspace.factors) {
+  if (!state.showSummary || !state.width || state.workspace == workspace.factors || state.workspace == workspace.substitute) {
     return null;
   }
   const text = state.workspace == workspace.basic ? generateSum(state.elements) : generateExpression(state);

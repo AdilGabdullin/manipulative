@@ -33,9 +33,9 @@ export const useAppStore = create((set) => ({
   selected: [],
   lockSelect: false,
 
-  showYTiles: false,
+  showYTiles: true,
   showSummary: true,
-  multiColored: false,
+  multiColored: true,
 
   toggleGlobal: (field) =>
     set(

@@ -2,16 +2,15 @@ import { Rect } from "react-konva";
 import { useAppStore } from "../state/store";
 import { sum } from "../util";
 import { ToolbarTile } from "./Tile";
-import { workspace } from "../config";
 
 export const leftToolbarWidth = 180;
 
 const LeftToolbar = () => {
-  const { height, showYTiles, workspace: ws } = useAppStore();
+  const { height, showYTiles } = useAppStore();
   return (
     <>
       <Rect fill="#f3f9ff" x={0} y={0} width={leftToolbarWidth} height={height} />
-      {createTiles(height, tileRows(showYTiles, ws != workspace.factors))}
+      {createTiles(height, tileRows(showYTiles, true))}
     </>
   );
 };
