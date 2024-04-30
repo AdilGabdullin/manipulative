@@ -32,6 +32,7 @@ const Marker = ({ x, y, width, height }) => {
     const target = e.target;
     const pos = target.getStage().getPointerPosition();
     const shadow = getShadow(e);
+    const children = shadow.children;
     if (pos.x > leftToolbarWidth) {
       const stagePos = getStageXY(e.target.getStage(), state);
       const props = markerMagnet({ x: stagePos.x - width / 2, y: stagePos.y - height / 2, width, height }, state);
@@ -41,11 +42,19 @@ const Marker = ({ x, y, width, height }) => {
         y: origin.y + props.y,
         visible: true,
       });
-      shadow.children[3].setAttrs({
-        text: props.text,
-        visible: props.text !== "",
-      });
-      shadow.children[4].setAttrs({
+      if (state.workspace == "Fractions") {
+        const { number, wholePart, nominator, denominator } = props.text;
+        children[3].setAttrs({ text: number });
+        children[5].setAttrs({ text: nominator && Math.abs(nominator) });
+        children[6].setAttrs({ text: denominator });
+        children[7].setAttrs({ text: wholePart });
+      } else {
+        children[3].setAttrs({
+          text: props.text,
+          visible: props.text !== "",
+        });
+      }
+      children[4].setAttrs({
         height: props.lineHeight,
         visible: !!props.lineHeight,
       });

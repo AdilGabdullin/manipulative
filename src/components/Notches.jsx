@@ -143,7 +143,7 @@ const NotchText = ({ height, text, denominator }) => {
       />
       <Line
         ref={lineRef2}
-        x={round(-textWidth * 0.6 + (denominator == 1 ? 5 : 0) + (wholePart != 0 ? -8 : 0))}
+        x={round(-textWidth * 0.6 + (denominator == 1 ? 5 : 0) + (wholePart != 0 ? -textWidth * 0.3 : 0))}
         y={round(height * 1.25 + 19)}
         points={[-10, 0, -5, 0]}
         stroke={colors.black}
@@ -165,7 +165,7 @@ const NotchText = ({ height, text, denominator }) => {
         ref={textRef3}
         text={wholePart}
         visible={textVisible && wholePart != 0}
-        x={-textWidth * 2.6}
+        x={-textWidth * 2.4}
         y={height * 1.25 + 10}
         width={textWidth * 3}
         align="center"

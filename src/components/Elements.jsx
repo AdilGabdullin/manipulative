@@ -59,7 +59,7 @@ const Elements = () => {
       <Text id="shadow-text" visible={false} fill={"black"} fontSize={36} text="Text" fontFamily="Calibri" />
       <NumberLine id="shadow-number-line" x={0} y={0} visible={false} width={nlWidth} height={nlHeight} />
       <OpenMarker id="shadow-open-marker" x={0} y={0} visible={false} width={omWidth} height={omHeight} />
-      <Marker id="shadow-marker" x={0} y={0} visible={false} width={mWidth} height={mHeight} />
+      <Marker id="shadow-marker" x={0} y={0} visible={false} text="" width={mWidth} height={mHeight} />
       <Arrow id="shadow-arrow-blue" x={0} y={0} visible={false} width={arWidth} height={arHeight} isBlue={true} />
       <Arrow id="shadow-arrow-red" x={0} y={0} visible={false} width={arWidth} height={arHeight} isBlue={false} />
       <StraightArrow
