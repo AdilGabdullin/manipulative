@@ -72,7 +72,7 @@ const NumberLine = (props) => {
         {...linePos}
         points={[0, 0, width - headSize * 2, 0]}
         strokeWidth={nlLineWidth}
-        stroke={"black"}
+        stroke={colors.woodBrown}
       />
       <Rect
         {...rectPos}
@@ -84,7 +84,7 @@ const NumberLine = (props) => {
         }}
         onPointerLeave={(e) => {
           const notches = e.target.getStage().find(`.${id}-notch`);
-          setColor([...notches, line.current, leftHead.current, rightHead.current], colors.black);
+          setColor([...notches, line.current, leftHead.current, rightHead.current], colors.woodBrown);
         }}
       />
       <Line
@@ -92,12 +92,12 @@ const NumberLine = (props) => {
         x={0}
         y={height / 2}
         points={[0, 0, headSize, headSize, headSize, -headSize, 0, 0]}
-        stroke={"black"}
-        fill="black"
+        stroke={colors.woodBrown}
+        fill={colors.woodBrown}
         closed
         draggable={!locked}
         onPointerEnter={(e) => setColor([e.target], colors.blue)}
-        onPointerLeave={(e) => setColor([e.target], colors.black)}
+        onPointerLeave={(e) => setColor([e.target], colors.woodBrown)}
         onDragMove={(e) => {
           const dx = Math.min(e.target.x() - 0, width - nlMinWidth);
           e.target.setAttrs({ x: dx, y: height / 2 });
@@ -119,12 +119,12 @@ const NumberLine = (props) => {
         x={width}
         y={height / 2}
         points={[0, 0, -headSize, -headSize, -headSize, headSize, 0, 0]}
-        stroke={"black"}
-        fill="black"
+        stroke={colors.woodBrown}
+        fill={colors.woodBrown}
         closed
         draggable={!locked}
         onPointerEnter={(e) => setColor([e.target], colors.blue)}
-        onPointerLeave={(e) => setColor([e.target], colors.black)}
+        onPointerLeave={(e) => setColor([e.target], colors.woodBrown)}
         onDragMove={(e) => {
           const dx = Math.max(e.target.x() - width, nlMinWidth - width);
           e.target.setAttrs({ x: width + dx, y: height / 2 });

@@ -4,6 +4,7 @@ import { nlHeight, nlWidth, nlLineWidth, defaultMinMax } from "../NumberLine";
 import { useAppStore } from "../../state/store";
 import { getStageXY } from "../../util";
 import { useRef } from "react";
+import { colors } from "../../state/colors";
 
 const NumberLine = ({ x, y, width, height }) => {
   const state = useAppStore();
@@ -89,7 +90,7 @@ const MainLine = ({ width, height, headSize }) => {
       y={height / 2}
       points={[0, 0, width - headSize, 0]}
       strokeWidth={nlLineWidth}
-      stroke={"black"}
+      stroke={colors.woodBrown}
     />
   );
 };
@@ -100,8 +101,8 @@ const LeftHead = ({ width, height, headSize }) => {
       x={0}
       y={height / 2}
       points={[0, 0, headSize, headSize, headSize, -headSize, 0, 0]}
-      stroke={"black"}
-      fill="black"
+      stroke={colors.woodBrown}
+      fill={colors.woodBrown}
       closed
     />
   );
@@ -113,8 +114,8 @@ const RightHead = ({ width, height, headSize }) => {
       x={width}
       y={height / 2}
       points={[0, 0, -headSize, -headSize, -headSize, headSize, 0, 0]}
-      stroke={"black"}
-      fill="black"
+      stroke={colors.woodBrown}
+      fill={colors.woodBrown}
       closed
     />
   );
@@ -130,8 +131,8 @@ const Notches = ({ width, height, headSize }) => {
       y={height / 4}
       points={[0, 0, 0, height / 2]}
       strokeWidth={nlLineWidth / 2}
-      stroke={"black"}
-      fill="black"
+      stroke={colors.woodBrown}
+      fill={colors.woodBrown}
       lineCap="round"
     />
   ));

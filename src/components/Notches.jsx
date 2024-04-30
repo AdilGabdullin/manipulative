@@ -4,6 +4,8 @@ import { colors } from "../state/colors";
 import { useRef, useState } from "react";
 import { nlLineWidth, notchStep, notchX } from "./NumberLine";
 
+const { round } = Math;
+
 const Notches = (props) => {
   const { workspace } = useAppStore();
   const { id, min, max, denominator } = props;
@@ -43,8 +45,8 @@ const NotchLine = ({ height, id, short }) => {
       y={height / 2 - size / 2}
       points={[0, 0, 0, size]}
       strokeWidth={nlLineWidth / 2}
-      stroke={"black"}
-      fill="black"
+      stroke={colors.woodBrown}
+      fill={colors.woodBrown}
       lineCap="round"
     />
   );
@@ -60,7 +62,7 @@ const NotchText = ({ height, text, denominator }) => {
   const textRef2 = useRef();
   const rectRef = useRef();
 
-  const minus = text < 0 && workspace == "Fractions";
+  const minus = round(text) < 0 && workspace == "Fractions";
 
   if (workspace == "Decimals") {
     text = text.toFixed(1);
@@ -125,18 +127,18 @@ const NotchText = ({ height, text, denominator }) => {
       <Line
         ref={lineRef}
         x={0}
-        y={height * 1.25 + 19}
+        y={round(height * 1.25 + 19)}
         points={[-textWidth * 0.6, 0, textWidth * 0.6, 0]}
-        stroke="black"
+        stroke={colors.black}
         strokeWidth={2}
         visible={textVisible && denominator != 1}
       />
       <Line
         ref={lineRef2}
-        x={-textWidth * 0.6 + (denominator == 1 ? 5 : 0)}
-        y={height * 1.25 + 19}
+        x={round(-textWidth * 0.6 + (denominator == 1 ? 5 : 0))}
+        y={round(height * 1.25 + 19)}
         points={[-10, 0, -5, 0]}
-        stroke="black"
+        stroke={colors.black}
         strokeWidth={2}
         visible={textVisible && minus}
       />
@@ -160,7 +162,6 @@ const NotchText = ({ height, text, denominator }) => {
         strokeWidth={2}
         visible={!textVisible}
       />
-      {/* <Rect x={-textWidth / 2} y={height * 1.25} width={textWidth} height={40} stroke={"black"} /> */}
     </Group>
   );
 };
