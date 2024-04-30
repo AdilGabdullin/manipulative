@@ -54,11 +54,11 @@ const Marker = (props) => {
       }}
       onPointerClick={() => selectIds([id], locked)}
     >
-      <Circle x={cx} y={cy} radius={r2} fill={colors.purple} />
+      <Circle x={cx} y={cy} radius={r2} fill={colors.yellow} />
       <Circle x={cx} y={cy} radius={r1} fill={colors.white} />
       <Path
-        stroke={colors.purple}
-        fill={colors.purple}
+        stroke={colors.yellow}
+        fill={colors.yellow}
         data={`
             M ${cx - dx} ${cy + dy}
             A ${r2} ${r2} 0 0 0 ${cx + dx} ${cy + dy}
@@ -67,16 +67,16 @@ const Marker = (props) => {
           `}
       />
       <Text
-        x={0}
+        x={-width}
         y={cy - 28 / 2}
-        width={width}
+        width={width * 3}
         text={workspace == "Dicimals" ? text.toFixed(1) : text}
-        fill={colors.purple}
+        fill={colors.black}
         fontFamily="Calibri"
         fontSize={28}
         align="center"
       />
-      <Rect visible={!!lineHeight} x={cx - 1} y={height} width={2} height={lineHeight || 0} fill={colors.purple} />
+      <Rect visible={!!lineHeight} x={cx - 1} y={height} width={2} height={lineHeight || 0} fill={colors.yellow} />
     </Group>
   );
 };
@@ -93,12 +93,20 @@ export function markerMagnet(props, state) {
     ) {
       const firstNotch = line.x + line.height * 2;
       const range = line.max - line.min;
-      const step = (((line.width - line.height * 4) / range) * notchStep(range)) / k;
-      let text = (Math.round((x + width / 2 - firstNotch) / step) * notchStep(range)) / k;
-      if (state.workspace == "Fractions") {
-        text = `${text * k}/${k}`;
+      const x0 = firstNotch - width / 2;
+      let step = (((line.width - line.height * 4) / range) * notchStep(range)) / k;
+      let text = (line.min * k + Math.round((x - x0) / step) * notchStep(range)) / k;
+      if (state.workspace == "Integers") {
+        text = line.min + Math.round((((x - x0) / step) * notchStep(range)) / k);
+        step = (line.width - line.height * 4) / range / k;
+      } else if (state.workspace == "Fractions") {
+        if (Math.round(text * k) == 0) {
+          text = 0;
+        } else {
+          text = `${Math.round(text * k)}/${k}`;
+        }
       }
-      const newX = firstNotch - width / 2 + Math.round((x + width / 2 - firstNotch) / step) * step;
+      const newX = x0 + Math.round((x - x0) / step) * step;
       return { ...props, x: newX, y, lineHeight: line.y + line.height / 2 - y - height, text };
     }
   }

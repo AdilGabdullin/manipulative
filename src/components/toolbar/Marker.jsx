@@ -79,11 +79,11 @@ const Marker = ({ x, y, width, height }) => {
   return (
     <>
       <Group ref={toolbarShadow} x={x} y={y} visible={false}>
-        <Circle x={cx} y={cy} radius={r2} fill={colors.purple} />
+        <Circle x={cx} y={cy} radius={r2} fill={colors.yellow} />
         <Circle x={cx} y={cy} radius={r1} fill={colors.white} />
         <Path
-          stroke={colors.purple}
-          fill={colors.purple}
+          stroke={colors.yellow}
+          fill={colors.yellow}
           data={`
             M ${cx - dx} ${cy + dy}
             A ${r2} ${r2} 0 0 0 ${cx + dx} ${cy + dy}
@@ -93,11 +93,11 @@ const Marker = ({ x, y, width, height }) => {
         />
       </Group>
       <Group x={x} y={y} draggable onDragStart={onDragStart} onDragMove={onDragMove} onDragEnd={onDragEnd}>
-        <Circle x={cx} y={cy} radius={r2} fill={colors.purple} />
+        <Circle x={cx} y={cy} radius={r2} fill={colors.yellow} />
         <Circle x={cx} y={cy} radius={r1} fill={colors.white} />
         <Path
-          stroke={colors.purple}
-          fill={colors.purple}
+          stroke={colors.yellow}
+          fill={colors.yellow}
           data={`
             M ${cx - dx} ${cy + dy}
             A ${r2} ${r2} 0 0 0 ${cx + dx} ${cy + dy}
