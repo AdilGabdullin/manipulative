@@ -47,7 +47,7 @@ const Marker = (props) => {
           children[7].setAttrs({ text: wholePart });
         } else {
           children[3].setAttrs({
-            text: newProps.text,
+            text: newProps.text.number,
             visible: newProps.text !== "",
           });
         }
@@ -140,7 +140,7 @@ export function markerMagnet(props, state) {
       let step = (((line.width - line.height * 4) / range) * notchStep(range)) / k;
       let text = (line.min * k + Math.round((x - x0) / step) * notchStep(range)) / k;
       if (state.workspace == "Integers") {
-        text = line.min + Math.round((((x - x0) / step) * notchStep(range)) / k);
+        text = { number: line.min + Math.round((((x - x0) / step) * notchStep(range)) / k) };
         step = (line.width - line.height * 4) / range / k;
       } else if (state.workspace == "Fractions") {
         if (Math.round(text * k) == 0) {
@@ -152,13 +152,15 @@ export function markerMagnet(props, state) {
             nominator: Math.abs(Math.round(text * k)),
             wholePart: 0,
             denominator: k,
-            negative: Math.round(text * k) < 0
+            negative: Math.round(text * k) < 0,
           };
           if (state.mixedNumbers) {
             text.wholePart = Math.floor(Math.abs(text.nominator / text.denominator));
             text.nominator = text.nominator % text.denominator;
           }
         }
+      } else {
+        text = { number: text };
       }
       const newX = x0 + Math.round((x - x0) / step) * step;
       return { ...props, x: newX, y, lineHeight: line.y + line.height / 2 - y - height, text };

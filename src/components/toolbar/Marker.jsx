@@ -50,7 +50,7 @@ const Marker = ({ x, y, width, height }) => {
         children[7].setAttrs({ text: wholePart });
       } else {
         children[3].setAttrs({
-          text: props.text,
+          text: props.text.number,
           visible: props.text !== "",
         });
       }
