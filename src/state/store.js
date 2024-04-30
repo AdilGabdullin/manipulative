@@ -165,6 +165,18 @@ export const useAppStore = create((set) => ({
         clearSelected(state);
         state.lastActiveElement = null;
         document.getElementById("editable-text")?.remove();
+        state.subtractorCounts = {
+          1_000_000: 0,
+          100_000: 0,
+          10_000: 0,
+          1000: 0,
+          100: 0,
+          10: 0,
+          1: 0,
+          0.1: 0,
+          0.01: 0,
+          0.001: 0,
+        };
         pushHistory(state);
       })
     ),

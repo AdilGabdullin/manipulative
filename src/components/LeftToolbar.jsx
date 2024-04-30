@@ -9,16 +9,16 @@ import { buttonHeight, margin } from "./Comparing";
 export const leftToolbarWidth = 180;
 
 export const allOptions = {
-  1_000_000: { value: 1_000_000, color: darkenColor("#c2185b"), text: "Millions" },
-  100_000: { value: 100_000, color: darkenColor("#afb42b"), text: "Hundred\nThousands" },
-  10_000: { value: 10_000, color: darkenColor("#3f51b5"), text: "Ten\nThousands" },
-  1000: { value: 1000, color: darkenColor("#9c27b0"), text: "Thousands" },
-  100: { value: 100, color: darkenColor("#8bc34a"), text: "Hundreds" },
-  10: { value: 10, color: darkenColor("#e91e63"), text: "Tens" },
-  1: { value: 1, color: darkenColor("#2196f3"), text: "Ones" },
-  0.1: { value: 0.1, color: darkenColor("#795548"), text: "Tenths" },
-  0.01: { value: 0.01, color: darkenColor("#009688"), text: "Hundredths" },
-  0.001: { value: 0.001, color: darkenColor("#ffa000"), text: "Thousandths" },
+  1_000_000: { value: 1_000_000, color: darkenColor("#c2185b"), text: "Millions" , headColor: "#90EE90"},
+  100_000: { value: 100_000, color: darkenColor("#afb42b"), text: "Hundred\nThousands" , headColor: "yellow"},
+  10_000: { value: 10_000, color: darkenColor("#3f51b5"), text: "Ten\nThousands" , headColor: "yellow"},
+  1000: { value: 1000, color: darkenColor("#9c27b0"), text: "Thousands" , headColor: "yellow"},
+  100: { value: 100, color: darkenColor("#8bc34a"), text: "Hundreds" , headColor: "#FFB6C1"},
+  10: { value: 10, color: darkenColor("#e91e63"), text: "Tens" , headColor: "#FFB6C1"},
+  1: { value: 1, color: darkenColor("#2196f3"), text: "Ones" , headColor: "#FFB6C1"},
+  0.1: { value: 0.1, color: darkenColor("#795548"), text: "Tenths" , headColor: "#C4A484"},
+  0.01: { value: 0.01, color: darkenColor("#009688"), text: "Hundredths" , headColor: "#C4A484"},
+  0.001: { value: 0.001, color: darkenColor("#ffa000"), text: "Thousandths" , headColor: "#C4A484"},
 };
 
 export function getColor(value) {

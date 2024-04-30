@@ -48,12 +48,12 @@ const PlaceValue = () => {
   );
 };
 
-const Head = ({ x, width, height, color, text }) => {
+const Head = ({ x, width, height, color, headColor, text }) => {
   const fontSize = 28;
   const shift = text.includes("\n") ? fontSize : fontSize / 2;
   return (
     <Group x={x} y={0}>
-      <Rect {...commonProps} x={0} y={0} width={width} height={height} fill={color} cornerRadius={0} />
+      <Rect {...commonProps} x={0} y={0} width={width} height={height} fill={headColor || color} cornerRadius={0} />
       <Rect {...commonProps} x={margin} y={margin} width={width - margin * 2} height={buttonHeight} fill="white" />
       <Text
         x={margin}
@@ -94,8 +94,8 @@ const Subtractor = ({ x, y, count }) => {
         text={count}
         width={subtractorSize}
         fontSize={fontSize}
-        fill={"#333"}
-        stroke={"#333"}
+        fill={"#e75480"}
+        stroke={"#e75480"}
         align={"center"}
         fontFamily={"Calibri"}
       />
