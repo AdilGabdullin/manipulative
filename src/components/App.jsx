@@ -296,8 +296,8 @@ const App = () => {
         >
           <Solving />
           <Elements />
-          <Factors />
           <Substitute />
+          <Factors />
           <SelectRect />
         </Layer>
         <Layer

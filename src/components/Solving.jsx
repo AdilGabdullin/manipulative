@@ -66,14 +66,18 @@ const CenterCircle = ({ x, y, value, onPointerClick }) => {
 export function solvingRectProps(state) {
   const { width, height, fullscreen } = state;
   const fullScreen = [workspace.solving, workspace.substitute].includes(state.workspace);
+  const yShift = workspace.factors == state.workspace;
   const rectWidth = fullScreen ? width - leftToolbarWidth - 45 : Math.min(width - leftToolbarWidth - 45, 750);
   let totalHeight = height - margin * 2 - menuHeight - scrollSize;
   if (fullscreen) {
     totalHeight = Math.min(totalHeight, 600);
   }
-  const rectHeight = totalHeight - buttonHeight - margin;
+  let rectHeight = totalHeight - buttonHeight - margin;
+  if (state.workspace == workspace.substitute) {
+    rectHeight += Math.round(baseSize * 1.5);
+  }
   const x = -rectWidth / 2;
-  const y = -(totalHeight + scrollSize) / 2 + (state.workspace == workspace.factors ? baseSize * 1.5 : 0);
+  const y = -(totalHeight + scrollSize) / 2 + (yShift ? baseSize * 1.5 : 0);
   return { x, y, width: rectWidth, height: rectHeight };
 }
 

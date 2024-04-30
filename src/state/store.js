@@ -73,19 +73,10 @@ export const useAppStore = create((set) => ({
     set(
       produce((state) => {
         state.workspace = ws;
-        if (ws == workspace.factors) {
-          state.multiColored = true;
-          state.showYTiles = true;
-          state.showSummary = true;
-          for (const id in current(state.elements)) {
-            const element = state.elements[id];
-            if (element.type == tileType && element.text.includes("-")) {
-              delete state.elements[id];
-            }
-          }
-          clearSelected(state);
-          pushHistory(state);
-        }
+        state.offset.x = 0;
+        state.offset.y = 0;
+        state.scale = 1.0;
+        keepOrigin(state);
       })
     ),
   toggle: (field) =>
