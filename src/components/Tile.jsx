@@ -1,14 +1,15 @@
 import { Group, Rect } from "react-konva";
 import { config, workspace } from "../config";
-import { getStageXY, halfPixel, numberBetween, pointsIsClose, setVisibility } from "../util";
+import { getStageXY, halfPixel, pointsIsClose, setVisibility } from "../util";
 import { useAppStore } from "../state/store";
-import { useEffect, useRef } from "react";
+import { useRef } from "react";
 import { magnetToLine, lineZeroPos } from "./NumberLine";
 import { graphZeroPos } from "./Graph";
+import TileLabel from "./TileLabel";
 
 const size = config.tile.size;
 
-export const Tile = ({ id, x, y, width, height, fill, stroke, visible, events }) => {
+export const Tile = ({ id, x, y, width, height, fill, stroke, visible, denominator, events }) => {
   x = halfPixel(x);
   y = halfPixel(y);
   width = Math.round(width) - 1;
@@ -16,6 +17,7 @@ export const Tile = ({ id, x, y, width, height, fill, stroke, visible, events })
   return (
     <Group id={id} x={x} y={y} visible={visible} {...events}>
       <Rect width={width} height={height} fill={fill} stroke={stroke} strokeWidth={1} />
+      <TileLabel {...{ x, y, width, height, denominator }} />
     </Group>
   );
 };

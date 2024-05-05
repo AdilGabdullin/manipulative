@@ -46,6 +46,7 @@ export const useAppStore = create((set) => ({
   showGrid: false,
   showLabels: true,
   orientation: "Horizontal",
+  labels: "Fractions",
 
   fullscreen: true,
 

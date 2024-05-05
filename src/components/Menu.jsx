@@ -28,7 +28,7 @@ const DefaultMenu = (props) => {
   const { x, y } = props;
   const { padding } = config.menu;
 
-  const widths = [100];
+  const widths = [100, 70];
   const xs = [];
   widths.forEach((w, i) => {
     let sumWidth = 0;
@@ -44,12 +44,24 @@ const DefaultMenu = (props) => {
         x={xs[0]}
         y={y + padding}
         width={widths[0]}
-        dropWidth={widths[0]}
+        dropWidth={100}
         text="Orientation"
         options={["Vertical", "Horizontal"]}
         active={state.orientation}
         onSelect={(value) => {
           state.setValue("orientation", value);
+        }}
+      />
+      <SelectButton
+        x={xs[1]}
+        y={y + padding}
+        width={widths[1]}
+        dropWidth={100}
+        text="Labels"
+        options={["Fractions", "Decimals", "Percents", "Blank"]}
+        active={state.orientation}
+        onSelect={(value) => {
+          state.setValue("labels", value);
         }}
       />
     </>
