@@ -8,7 +8,7 @@ export const mWidth = 70;
 export const mHeight = 100;
 
 const Marker = (props) => {
-  const { id, x, y, width, height, visible, locked, text, lineHeight } = props;
+  const { id, x, y, width, height, visible, locked, lineHeight } = props;
   const state = useAppStore();
   const { origin, selectIds, updateElement, workspace } = state;
 
@@ -24,6 +24,19 @@ const Marker = (props) => {
     x: origin.x + x,
     y: origin.y + y,
   };
+
+  let text = props.text;
+  if (state.workspace == "Fractions" && typeof text == "object" && text.number === undefined) {
+    text = { ...text };
+    if (state.mixedNumbers && text.nominator > text.denominator) {
+      text.wholePart = Math.floor(Math.abs(text.nominator / text.denominator));
+      text.nominator = text.nominator % text.denominator;
+    }
+    if (!state.mixedNumbers && text.wholePart != 0) {
+      text.nominator += text.wholePart * text.denominator;
+      text.wholePart = 0;
+    }
+  }
 
   return (
     <Group
@@ -111,13 +124,7 @@ const Marker = (props) => {
         align="center"
         visible={workspace == "Fractions"}
       />
-      <Text
-        y={cy - 10}
-        fill={colors.black}
-        fontFamily="Calibri"
-        fontSize={20}
-        {...wholePartAttrs(text)}
-      />
+      <Text y={cy - 10} fill={colors.black} fontFamily="Calibri" fontSize={20} {...wholePartAttrs(text)} />
       <Line
         x={cx}
         y={cy}
