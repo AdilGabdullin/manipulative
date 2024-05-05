@@ -45,11 +45,10 @@ export const useAppStore = create((set) => ({
   lockSelect: false,
   showGrid: false,
   showLabels: true,
-  showSummary: true,
+  orientation: "Horizontal",
 
   // fullscreen: true,
   // showGrid: true,
-  // showSummary: true,
   // workspace: workspace.ppw,
 
   toggleGlobal: (field) =>

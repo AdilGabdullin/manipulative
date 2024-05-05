@@ -13,7 +13,6 @@ import FreeDrawing from "./FreeDrawing";
 import ImagePreloader from "./ImagePreloader";
 import { appSaveText } from "./TextElement";
 import Grid from "./Grid";
-import Summary from "./Summary";
 import GroupLabels from "./GroupLabels";
 
 const App = () => {
@@ -311,7 +310,6 @@ const App = () => {
           <Layer id="interface-layer">
             <LeftToolbar findOne={findOne} />
             <Menu />
-            <Summary />
             <Scrolls />
             <SelectedFrame findOne={findOne} />
           </Layer>

@@ -8,7 +8,6 @@ import { BoardTile, Tile, getSize } from "./Tile";
 import { config, workspace } from "../config";
 import NumberLine from "./NumberLine";
 import Graph, { GraphLines } from "./Graph";
-import PartPartWhole from "./PartPartWhole";
 
 const elementList = {
   text: TextElement,
@@ -28,7 +27,6 @@ const Elements = () => {
   return (
     <>
       {state.workspace == workspace.graph && <GraphLines />}
-      {state.workspace == workspace.ppw && <PartPartWhole />}
       {Object.values(elements)
         .toSorted((e1, e2) => e1.x - e2.x - (e1.y - e2.y) * 100)
         .map((element) => {
@@ -39,7 +37,7 @@ const Elements = () => {
       <Ellipse id="shadow-ellipse" visible={false} />
       <Line id="shadow-line" visible={false} lineCap={"round"} lineJoin={"round"} />
       <Text id="shadow-text" visible={false} fill={"black"} fontSize={36} text="Text" fontFamily="Calibri" />
-      <Tile id="shadow-tile" visible={true} size={config.tile.size} />
+      <Tile id="shadow-tile" visible={true} width={config.tile.size} height={config.tile.size} />
       {state.workspace == workspace.numberLine && <NumberLine {...elements.numberLine} />}
       {state.workspace == workspace.graph && <Graph />}
     </>

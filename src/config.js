@@ -26,9 +26,6 @@ export const config = {
     width: 180,
     padding: 20,
   },
-  summary: {
-    height: 56,
-  },
   menu: {
     padding: 8,
     height: 52,
@@ -41,17 +38,6 @@ export const config = {
   colors,
   tile: {
     size: 60,
-    options: [
-      { fill: "#ffeb3b", stroke: "#fdd935", name: "Yellow" },
-      { fill: "#f44336", stroke: "#d5302f", name: "Red" },
-      { fill: "#2196f3", stroke: "#1978d4", name: "Green" },
-      { fill: "#4caf50", stroke: "#39903d", name: "Blue" },
-      { fill: "#f06292", stroke: "#e92265", name: "Pink" },
-      { fill: "#9c27b0", stroke: "#7d1fa3", name: "Purple" },
-      { fill: "#ff9800", stroke: "#f67e00", name: "Orange" },
-      { fill: "brown", stroke: "#5C4033", name: "Brown" },
-    ],
-
     options: [
       { fill: "#f44336", stroke: "#d73130", denominator: 1 },
       { fill: "#f06292", stroke: "#e92467", denominator: 2 },

@@ -3,10 +3,8 @@ import { config, workspace } from "../config";
 import { getStageXY, halfPixel, numberBetween, pointsIsClose, setVisibility } from "../util";
 import { useAppStore } from "../state/store";
 import { useEffect, useRef } from "react";
-import { Animation } from "konva/lib/Animation";
 import { magnetToLine, lineZeroPos } from "./NumberLine";
 import { graphZeroPos } from "./Graph";
-import { getPPWSize } from "./PartPartWhole";
 
 const size = config.tile.size;
 
@@ -197,10 +195,6 @@ function firstPos(state) {
       break;
     case workspace.graph:
       return graphZeroPos(state);
-      break;
-    case workspace.ppw:
-      const { width } = getPPWSize(state);
-      return { x: -width / 2 + size / 2, y: size / 2 };
       break;
   }
 }

@@ -1,7 +1,7 @@
 import { Group, Line, Rect, Text } from "react-konva";
 import { useAppStore } from "../state/store";
 import BrushMenu from "./BrushMenu";
-import {config} from "../config";
+import { config } from "../config";
 import { useRef, useState } from "react";
 
 const Menu = () => {
@@ -24,10 +24,11 @@ const Menu = () => {
 };
 
 const DefaultMenu = (props) => {
+  const state = useAppStore();
   const { x, y } = props;
   const { padding } = config.menu;
 
-  const widths = [55, 65, 86];
+  const widths = [100];
   const xs = [];
   widths.forEach((w, i) => {
     let sumWidth = 0;
@@ -39,9 +40,18 @@ const DefaultMenu = (props) => {
 
   return (
     <>
-      <ToggleButton x={xs[0]} y={y + padding} width={widths[0]} text="Grid" field="showGrid" />
-      <ToggleButton x={xs[1]} y={y + padding} width={widths[1]} text="Labels" field="showLabels" />
-      <ToggleButton x={xs[2]} y={y + padding} width={widths[2]} text="Summary" field="showSummary" />
+      <SelectButton
+        x={xs[0]}
+        y={y + padding}
+        width={widths[0]}
+        dropWidth={widths[0]}
+        text="Orientation"
+        options={["Vertical", "Horizontal"]}
+        active={state.orientation}
+        onSelect={(value) => {
+          state.setValue("orientation", value);
+        }}
+      />
     </>
   );
 };
@@ -76,17 +86,10 @@ const ToggleButton = ({ x, y, text, width, field }) => {
   );
 };
 
-const SelectButton = ({ x, y, width, dropWidth, text, field }) => {
-  const state = useAppStore();
+const SelectButton = ({ x, y, width, active, dropWidth, text, field, options, onSelect }) => {
   const [open, setOpen] = useState(false);
   const colors = config.colors;
   const { padding, height } = config.menu;
-
-  const active = state[field];
-  const options = { ...config[field] };
-  const onSelect = (value) => {
-    state.setValue(field, value);
-  };
 
   return (
     <Group
