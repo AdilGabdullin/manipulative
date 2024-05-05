@@ -40,11 +40,12 @@ const Marker = (props) => {
         const newProps = markerMagnet({ ...props, x: x + dx, y: y + dy }, state);
         target.setAttrs({ x: origin.x + newProps.x, y: origin.y + newProps.y });
         if (workspace == "Fractions") {
-          const { number, wholePart, nominator, denominator } = newProps.text;
+          const { number, wholePart, nominator, denominator, width } = newProps.text;
           children[3].setAttrs({ text: number });
           children[5].setAttrs({ text: nominator && Math.abs(nominator) });
           children[6].setAttrs({ text: denominator });
           children[7].setAttrs({ text: wholePart });
+          children[8].setAttrs({ visible: true, points: [-(width || 0) * 0.6, 0, (width || 0) * 0.6, 0] });
         } else {
           children[3].setAttrs({
             text: newProps.text.number,
@@ -89,7 +90,7 @@ const Marker = (props) => {
       <Rect visible={!!lineHeight} x={cx - 1} y={height} width={2} height={lineHeight || 0} fill={colors.yellow} />
       <Text
         x={-width}
-        y={cy + 2}
+        y={cy - 20}
         width={width * 3}
         text={text.nominator}
         fill={colors.black}
@@ -100,7 +101,7 @@ const Marker = (props) => {
       />
       <Text
         x={-width}
-        y={cy + 28}
+        y={cy + 4}
         width={width * 3}
         text={text.denominator}
         fill={colors.black}
@@ -110,16 +111,33 @@ const Marker = (props) => {
         visible={workspace == "Fractions"}
       />
       <Text
-        x={-width * 2}
-        y={cy + 28}
+        x={-width * 2 + 50}
+        y={cy - 10}
         width={width * 3}
         text={text.wholePart}
         fill={colors.black}
         fontFamily="Calibri"
         fontSize={20}
         align="center"
+        visible={workspace == "Fractions" && text.wholePart != 0}
+      />
+      <Line
+        x={cx}
+        y={cy}
+        points={[-(text.width || 0) * 0.6, 0, (text.width || 0) * 0.6, 0]}
+        stroke={colors.black}
+        strokeWidth={2}
         visible={workspace == "Fractions"}
       />
+      {/* <Line
+        ref={lineRef2}
+        x={round(-textWidth * 0.6 + (denominator == 1 ? 5 : 0) + (wholePart != 0 ? -textWidth * 0.3 : 0))}
+        y={round(height * 1.25 + 19)}
+        points={[-10, 0, -5, 0]}
+        stroke={colors.black}
+        strokeWidth={2}
+        visible={textVisible && minus}
+      /> */}
     </Group>
   );
 };
@@ -158,6 +176,7 @@ export function markerMagnet(props, state) {
             text.wholePart = Math.floor(Math.abs(text.nominator / text.denominator));
             text.nominator = text.nominator % text.denominator;
           }
+          text.width = Math.max(text.nominator.toString().length * 12, text.denominator.toString().length * 12);
         }
       } else {
         text = { number: text };

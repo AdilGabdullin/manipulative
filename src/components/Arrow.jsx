@@ -174,7 +174,7 @@ export function arcProps({ width, height, isBlue, shiftX, shiftY }) {
   }
   return {
     x: width / 2 + shiftX,
-    y: height + shiftY,
+    y: height + shiftY + 1,
     fill: isBlue ? colors.green : colors.red,
     scaleX: isBlue ? 1 : -1,
     data:
@@ -196,6 +196,7 @@ export function arcProps({ width, height, isBlue, shiftX, shiftY }) {
 export function headProps({ width, height, isBlue, shiftX, shiftY }) {
   shiftX = shiftX || 0;
   shiftY = shiftY || 0;
+  shiftX += Math.random() / 100000;
   const ry2 = height + strokeWidth / 2;
 
   width = Math.abs(width);

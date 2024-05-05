@@ -16,7 +16,7 @@ const NumberLine = (props) => {
   const { id, x, y, width, height, visible, locked, min, max, denominator } = props;
   const showNotches = workspace != "Open";
   const headSize = height / 2;
-  const groupPos = { x: origin.x + x, y: origin.y + y };
+  const groupPos = { x: Math.round(origin.x + x), y: Math.round(origin.y + y) };
   const rectPos = { x: headSize, y: 0 };
   const linePos = { x: headSize, y: height / 2 };
 
@@ -185,6 +185,7 @@ export function defaultMinMax(workspace) {
       return { min: 0, max: 1, denominator: 1 };
       break;
     case "Fractions":
+      return { min: -3, max: -2, denominator: 13 };
       return { min: 0, max: 1, denominator: 7 };
       break;
     case "Open":

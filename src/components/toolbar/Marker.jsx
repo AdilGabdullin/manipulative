@@ -43,11 +43,12 @@ const Marker = ({ x, y, width, height }) => {
         visible: true,
       });
       if (state.workspace == "Fractions") {
-        const { number, wholePart, nominator, denominator } = props.text;
+        const { number, wholePart, nominator, denominator, width } = props.text;
         children[3].setAttrs({ text: number });
         children[5].setAttrs({ text: nominator && Math.abs(nominator) });
         children[6].setAttrs({ text: denominator });
         children[7].setAttrs({ text: wholePart });
+        children[8].setAttrs({ visible: true, points: [-(width || 0) * 0.6, 0, (width || 0) * 0.6, 0] });
       } else {
         children[3].setAttrs({
           text: props.text.number,

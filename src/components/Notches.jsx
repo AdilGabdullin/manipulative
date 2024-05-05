@@ -37,7 +37,7 @@ const Notches = (props) => {
 };
 
 const NotchLine = ({ height, id, short }) => {
-  const size = short ? height / 3 : height / 2;
+  const size = short ? 8 : 14;
   return (
     <Line
       name={`${id}-notch`}
