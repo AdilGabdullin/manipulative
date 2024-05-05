@@ -44,8 +44,9 @@ const Marker = (props) => {
           children[3].setAttrs({ text: number });
           children[5].setAttrs({ text: nominator && Math.abs(nominator) });
           children[6].setAttrs({ text: denominator });
-          children[7].setAttrs({ text: wholePart });
+          children[7].setAttrs(wholePartAttrs(newProps.text));
           children[8].setAttrs({ visible: true, points: [-(width || 0) * 0.6, 0, (width || 0) * 0.6, 0] });
+          children[9].setAttrs(minusAttrs(newProps.text));
         } else {
           children[3].setAttrs({
             text: newProps.text.number,
@@ -111,15 +112,11 @@ const Marker = (props) => {
         visible={workspace == "Fractions"}
       />
       <Text
-        x={-width * 2 + 50}
         y={cy - 10}
-        width={width * 3}
-        text={text.wholePart}
         fill={colors.black}
         fontFamily="Calibri"
         fontSize={20}
-        align="center"
-        visible={workspace == "Fractions" && text.wholePart != 0}
+        {...wholePartAttrs(text)}
       />
       <Line
         x={cx}
@@ -129,15 +126,7 @@ const Marker = (props) => {
         strokeWidth={2}
         visible={workspace == "Fractions"}
       />
-      {/* <Line
-        ref={lineRef2}
-        x={round(-textWidth * 0.6 + (denominator == 1 ? 5 : 0) + (wholePart != 0 ? -textWidth * 0.3 : 0))}
-        y={round(height * 1.25 + 19)}
-        points={[-10, 0, -5, 0]}
-        stroke={colors.black}
-        strokeWidth={2}
-        visible={textVisible && minus}
-      /> */}
+      <Line y={cy} points={[-10, 0, -5, 0]} stroke={colors.black} strokeWidth={2} {...minusAttrs(text)} />
     </Group>
   );
 };
@@ -186,6 +175,27 @@ export function markerMagnet(props, state) {
     }
   }
   return { ...props, lineHeight: 0, text: "" };
+}
+
+function minusAttrs(text) {
+  return {
+    visible: !!text && !!text.negative && !text.number && text.number != 0,
+    x:
+      38 +
+      Math.round(-24 * 0.6 + (text.denominator == 1 ? 5 : 0) + (text.wholePart != 0 ? -24 * 0.3 : 0)) +
+      (text.width < 24 ? 6 : 0),
+  };
+}
+
+function wholePartAttrs(text) {
+  return {
+    text: text.wholePart,
+    visible: text.wholePart != 0,
+    x:
+      32 +
+      Math.round(-24 * 0.6 + (text.denominator == 1 ? 5 : 0) + (text.wholePart != 0 ? -24 * 0.3 : 0)) +
+      (text.width < 24 ? 6 : 0),
+  };
 }
 
 export default Marker;

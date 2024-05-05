@@ -59,7 +59,7 @@ const NumberLine = (props) => {
       id={id}
       {...groupPos}
       visible={visible !== undefined ? visible : true}
-      draggable={!locked}
+      draggable={!locked && selected.length == 0}
       onDragEnd={(e) => {
         if (e.target === group.current) {
           relocateElement(id, e.target.x() - groupPos.x, e.target.y() - groupPos.y);
@@ -185,7 +185,7 @@ export function defaultMinMax(workspace) {
       return { min: 0, max: 1, denominator: 1 };
       break;
     case "Fractions":
-      return { min: -3, max: -2, denominator: 13 };
+      return { min: -3, max: 2, denominator: 11 };
       return { min: 0, max: 1, denominator: 7 };
       break;
     case "Open":
