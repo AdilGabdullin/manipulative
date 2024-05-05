@@ -10,13 +10,14 @@ import { getPPWSize } from "./PartPartWhole";
 
 const size = config.tile.size;
 
-export const Tile = ({ id, x, y, size, fill, stroke, visible, events }) => {
+export const Tile = ({ id, x, y, width, height, fill, stroke, visible, events }) => {
   x = halfPixel(x);
   y = halfPixel(y);
-  size = Math.round(size) - 1;
+  width = Math.round(width) - 1;
+  height = Math.round(height) - 1;
   return (
     <Group id={id} x={x} y={y} visible={visible} {...events}>
-      <Rect width={size} height={size} fill={fill} stroke={stroke} strokeWidth={1} />
+      <Rect width={width} height={height} fill={fill} stroke={stroke} strokeWidth={1} />
     </Group>
   );
 };

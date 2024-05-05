@@ -51,5 +51,17 @@ export const config = {
       { fill: "#ff9800", stroke: "#f67e00", name: "Orange" },
       { fill: "brown", stroke: "#5C4033", name: "Brown" },
     ],
+
+    options: [
+      { fill: "#f44336", stroke: "#d73130", denominator: 1 },
+      { fill: "#f06292", stroke: "#e92467", denominator: 2 },
+      { fill: "#ff9800", stroke: "#f57f07", denominator: 3 },
+      { fill: "#ffeb3b", stroke: "#fed936", denominator: 4 },
+      { fill: "#4caf50", stroke: "#388f3d", denominator: 5 },
+      { fill: "#03a9f4", stroke: "#0a8cd2", denominator: 6 },
+      { fill: "#3f51b5", stroke: "#3240a0", denominator: 8 },
+      { fill: "#9c27b0", stroke: "#7d22a3", denominator: 10 },
+      { fill: "#616161", stroke: "#2b2e31", denominator: 12 },
+    ],
   },
 };
