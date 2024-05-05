@@ -55,6 +55,11 @@ const Marker = ({ x, y, width, height }) => {
           text: props.text.number,
           visible: props.text !== "",
         });
+        children[5].setAttr("visible", false);
+        children[6].setAttr("visible", false);
+        children[7].setAttr("visible", false);
+        children[8].setAttr("visible", false);
+        children[9].setAttr("visible", false);
       }
       children[4].setAttrs({
         height: props.lineHeight,

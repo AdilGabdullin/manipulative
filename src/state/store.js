@@ -32,8 +32,8 @@ export const useAppStore = create((set) => ({
   mixedNumbers: false,
 
   fullscreen: true,
-  workspace: "Fractions",
-  mixedNumbers: true,
+  // workspace: "Fractions",
+  // mixedNumbers: true,
   toggleGlobal: (field) =>
     set(
       produce((state) => {
@@ -377,8 +377,7 @@ export function initElements() {
       y: 0 - nlHeight / 2,
       width: nlWidth,
       height: nlHeight,
-      // ...defaultMinMax("Integers"),
-      ...defaultMinMax("Fractions"),
+      ...defaultMinMax("Integers"),
     },
   };
 }
