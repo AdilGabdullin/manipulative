@@ -15,7 +15,7 @@ export const Tile = ({ id, x, y, width, height, fill, stroke, visible, events })
   height = Math.round(height) - 1;
   return (
     <Group id={id} x={x} y={y} visible={visible} {...events}>
-      <Rect width={width} height={height} fill={fill} stroke={"black" || stroke} strokeWidth={1} />
+      <Rect width={width} height={height} fill={fill} stroke={stroke} strokeWidth={1} />
     </Group>
   );
 };
@@ -31,7 +31,12 @@ export const ToolbarTile = (props) => {
 
   const placeProps = (e) => {
     const { x, y } = getStageXY(e.target.getStage(), state);
-    return { x: x - scaledSize / 2, y: y - scaledSize / 2 };
+    return {
+      x: x - scaledSize / 2,
+      y: y - scaledSize / 2,
+      width: state.orientation == "Horizontal" ? (size / props.denominator) * 8 : size,
+      height: state.orientation == "Horizontal" ? size : (size / props.denominator) * 8,
+    };
   };
 
   let boardShadow = null;
@@ -46,8 +51,8 @@ export const ToolbarTile = (props) => {
       x: pos ? pos.x : place.x,
       y: pos ? pos.y : place.y,
       size: size,
-      width: state.orientation == "Horizontal" ? (size / props.denominator) * 8 : size,
-      height: state.orientation == "Horizontal" ? size : (size / props.denominator) * 8,
+      width: place.width,
+      height: place.height,
       fill: props.fill,
       fillColor: props.fill,
       stroke: props.stroke,
@@ -56,13 +61,11 @@ export const ToolbarTile = (props) => {
 
   const events = {
     onDragStart: (e) => {
+      const { width, height } = placeProps(e);
       shadow.current.setAttrs({
         visible: true,
       });
-      getBoardShadow(e).children[0].setAttrs({
-        width: state.orientation == "Horizontal" ? (size / props.denominator) * 8 : size,
-        height: state.orientation == "Horizontal" ? size : (size / props.denominator) * 8,
-      });
+      getBoardShadow(e).children[0].setAttrs({ width: width - 1, height: height - 1 });
     },
     onDragMove: (e) => {
       const target = e.target;
@@ -90,15 +93,16 @@ export const ToolbarTile = (props) => {
       }
     },
     onPointerClick: (e) => {
+      const place = placeProps(e);
       const last = elements[state.lastActiveElement];
       if (last && last.type == "tile") {
         if (state.workspace == workspace.graph) {
-          add({ x: last.x, y: last.y - size });
+          add({ x: last.x, y: last.y - size }, place);
         } else {
-          add({ x: last.x + size, y: last.y });
+          add({ x: last.x + size, y: last.y }, place);
         }
       } else {
-        add(firstPos(state));
+        add(firstPos(state), place);
       }
     },
   };
@@ -154,11 +158,6 @@ export const BoardTile = (props) => {
 };
 
 export function magnetToAll(tile, elements, state) {
-  if (state.showGrid || state.workspace == workspace.graph) {
-    const size = config.tile.size;
-    const { x, y } = tile;
-    return { x: Math.round(x / size) * size, y: Math.round(y / size) * size };
-  }
   for (const [id, element] of Object.entries(elements)) {
     if (tile.id == id || element.type != "tile") continue;
     const pos = magnetToOne(tile, element);
@@ -168,18 +167,27 @@ export function magnetToAll(tile, elements, state) {
 }
 
 function magnetToOne(tile, other) {
-  const size = other.size;
-  const { x, y } = tile;
+  const { x, y, width, height } = tile;
   const options = [
-    [-size, -size],
-    [0, -size],
-    [size, -size],
-    [-size, 0],
+    [width, height],
+    [0, height],
+    [width - other.width, height],
+    [-other.width, height],
+
+    [width, 0],
     [0, 0],
-    [size, 0],
-    [-size, size],
-    [0, size],
-    [size, size],
+    [width - other.width, 0],
+    [-other.width, 0],
+
+    [width, height - other.height],
+    [0, height - other.height],
+    [width - other.width, height - other.height],
+    [-other.width, height - other.height],
+
+    [width, -other.height],
+    [0, -other.height],
+    [width - other.width, -other.height],
+    [-other.width, -other.height],
   ];
   for (const [dx, dy] of options) {
     if (pointsIsClose({ x: x + dx, y: y + dy }, other)) return { x: other.x - dx, y: other.y - dy };

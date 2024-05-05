@@ -13,7 +13,6 @@ import FreeDrawing from "./FreeDrawing";
 import ImagePreloader from "./ImagePreloader";
 import { appSaveText } from "./TextElement";
 import Grid from "./Grid";
-import GroupLabels from "./GroupLabels";
 
 const App = () => {
   const state = useAppStore();
@@ -294,7 +293,6 @@ const App = () => {
         >
           {state.showGrid && <Grid />}
           <Elements />
-          <GroupLabels />
           <SelectRect />
         </Layer>
         <Layer
