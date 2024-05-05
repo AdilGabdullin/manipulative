@@ -17,7 +17,7 @@ const LeftToolbarStack = () => {
   const { tile, leftToolbar } = config;
   const width = leftToolbar.width;
   const { height, fullscreen } = state;
-  const count = tile.options.length
+  const count = tile.options.length;
   const size = fullscreen ? 60 : 50;
   const margin = (height - size * count) / (count + 1);
   const sizes = getSizes(size, count);
@@ -27,12 +27,11 @@ const LeftToolbarStack = () => {
       {tile.options.map((op, i) => (
         <Fragment key={i}>
           <ToolbarTile
+            {...op}
             x={(width - sizes[i]) / 2}
             y={(margin + size) * i + margin}
             width={sizes[i]}
             height={size}
-            fill={op.fill}
-            stroke={op.stroke}
           />
         </Fragment>
       ))}
@@ -59,24 +58,22 @@ const LeftToolbarColumns = () => {
       {column1.map((op, i) => (
         <Fragment key={i}>
           <ToolbarTile
+            {...op}
             x={(width - size * 2) / 3}
             y={margin1 * (i + 1) + sum(sizes.slice(0, i))}
             width={size}
             height={sizes[i]}
-            fill={op.fill}
-            stroke={op.stroke}
           />
         </Fragment>
       ))}
       {column2.map((op, i) => (
         <Fragment key={i}>
           <ToolbarTile
+            {...op}
             x={((width - size * 2) * 2) / 3 + size}
             y={margin1 + margin2 * i + sum(sizes.slice(4, 4 + i))}
             width={size}
             height={sizes[4 + i]}
-            fill={op.fill}
-            stroke={op.stroke}
           />
         </Fragment>
       ))}

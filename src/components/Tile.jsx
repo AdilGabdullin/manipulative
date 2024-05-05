@@ -46,8 +46,8 @@ export const ToolbarTile = (props) => {
       x: pos ? pos.x : place.x,
       y: pos ? pos.y : place.y,
       size: size,
-      width: size,
-      height: size,
+      width: state.orientation == "Horizontal" ? (size / props.denominator) * 8 : size,
+      height: state.orientation == "Horizontal" ? size : (size / props.denominator) * 8,
       fill: props.fill,
       fillColor: props.fill,
       stroke: props.stroke,
@@ -56,7 +56,13 @@ export const ToolbarTile = (props) => {
 
   const events = {
     onDragStart: (e) => {
-      shadow.current.visible(true);
+      shadow.current.setAttrs({
+        visible: true,
+      });
+      getBoardShadow(e).children[0].setAttrs({
+        width: state.orientation == "Horizontal" ? (size / props.denominator) * 8 : size,
+        height: state.orientation == "Horizontal" ? size : (size / props.denominator) * 8,
+      });
     },
     onDragMove: (e) => {
       const target = e.target;
