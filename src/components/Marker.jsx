@@ -177,17 +177,17 @@ export function markerMagnet(props, state) {
   return { ...props, lineHeight: 0, text: "" };
 }
 
-function minusAttrs(text) {
+export function minusAttrs(text) {
   return {
     visible: !!text && !!text.negative && !text.number && text.number != 0,
     x:
-      38 +
+      37 +
       Math.round(-24 * 0.6 + (text.denominator == 1 ? 5 : 0) + (text.wholePart != 0 ? -24 * 0.3 : 0)) +
       (text.width < 24 ? 6 : 0),
   };
 }
 
-function wholePartAttrs(text) {
+export function wholePartAttrs(text) {
   return {
     text: text.wholePart,
     visible: text.wholePart != 0,

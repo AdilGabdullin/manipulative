@@ -63,7 +63,7 @@ const NotchText = ({ height, text, denominator }) => {
   const textRef3 = useRef();
   const rectRef = useRef();
 
-  const minus = round(text) < 0 && workspace == "Fractions";
+  const minus = text < 0 && workspace == "Fractions";
   let wholePart = 0;
 
   if (workspace == "Decimals") {

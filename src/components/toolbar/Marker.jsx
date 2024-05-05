@@ -4,7 +4,7 @@ import { useAppStore } from "../../state/store";
 import { leftToolbarWidth } from "../LeftToolbar";
 import { cos, getStageXY, sin } from "../../util";
 import { useRef } from "react";
-import { mHeight, mWidth, markerMagnet } from "../Marker";
+import { mHeight, mWidth, markerMagnet, minusAttrs, wholePartAttrs } from "../Marker";
 
 const Marker = ({ x, y, width, height }) => {
   const state = useAppStore();
@@ -43,12 +43,13 @@ const Marker = ({ x, y, width, height }) => {
         visible: true,
       });
       if (state.workspace == "Fractions") {
-        const { number, wholePart, nominator, denominator, width } = props.text;
+        const { number, nominator, denominator, width } = props.text;
         children[3].setAttrs({ text: number });
         children[5].setAttrs({ text: nominator && Math.abs(nominator) });
         children[6].setAttrs({ text: denominator });
-        children[7].setAttrs({ text: wholePart });
+        children[7].setAttrs(wholePartAttrs(props.text));
         children[8].setAttrs({ visible: true, points: [-(width || 0) * 0.6, 0, (width || 0) * 0.6, 0] });
+        children[9].setAttrs(minusAttrs(props.text));
       } else {
         children[3].setAttrs({
           text: props.text.number,
