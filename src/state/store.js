@@ -47,9 +47,7 @@ export const useAppStore = create((set) => ({
   showLabels: true,
   orientation: "Horizontal",
 
-  // fullscreen: true,
-  // showGrid: true,
-  // workspace: workspace.ppw,
+  fullscreen: true,
 
   toggleGlobal: (field) =>
     set(
