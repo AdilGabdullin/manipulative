@@ -96,10 +96,10 @@ export const ToolbarTile = (props) => {
       const place = placeProps(e);
       const last = elements[state.lastActiveElement];
       if (last && last.type == "tile") {
-        if (state.workspace == workspace.graph) {
-          add({ x: last.x, y: last.y - size }, place);
+        if (state.orientation == "Horizontal") {
+          add({ x: last.x + last.width, y: last.y }, place);
         } else {
-          add({ x: last.x + size, y: last.y }, place);
+          add({ x: last.x, y: last.y - place.height }, place);
         }
       } else {
         add(firstPos(state), place);
