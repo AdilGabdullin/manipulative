@@ -31,9 +31,7 @@ export const useAppStore = create((set) => ({
   showLabels: true,
   mixedNumbers: false,
 
-  fullscreen: true,
-  // workspace: "Fractions",
-  // mixedNumbers: true,
+  // fullscreen: true,
   toggleGlobal: (field) =>
     set(
       produce((state) => {
@@ -220,8 +218,8 @@ export const useAppStore = create((set) => ({
     set(
       produce((state) => {
         const element = state.elements[id];
-        if (attrs.width == 0 && [ "straight-arrow", "rect-shape"].includes(element.type) ) {
-            delete state.elements[id];
+        if (attrs.width == 0 && ["straight-arrow", "rect-shape"].includes(element.type)) {
+          delete state.elements[id];
         } else {
           for (const key in attrs) {
             element[key] = attrs[key];
@@ -338,7 +336,7 @@ export const useAppStore = create((set) => ({
         const selectedTarget = selected.length == 1 && elements[selected[0]];
         const activeTarget = selected.length == 0 && lastActiveElement && elements[lastActiveElement];
         const target = selectedTarget || activeTarget;
-        if (workspace != "Open" || !target || target.text === undefined ) return;
+        if (workspace != "Open" || !target || target.text === undefined) return;
         const text = "" + target.text;
         if (key == "Backspace") {
           target.text = text.substring(0, text.length - 1);

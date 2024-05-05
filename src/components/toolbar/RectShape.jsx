@@ -74,12 +74,33 @@ const RectShape = (props) => {
     }
   };
 
+  const onPointerClick = (e) => {
+    const others = [...Object.values(state.elements)].filter((el) => el.type == "rect-shape");
+    const last = others[others.length - 1];
+    if (last) {
+      addElement({
+        ...last,
+        isBlue: isBlue,
+        x: last.x + last.width,
+      });
+    }
+  };
+
   return (
     <>
       <Group ref={toolbarShadow} x={x} y={y} visible={false}>
         <Rect {...arcProps(props)} />
       </Group>
-      <Group ref={group} x={x} y={y} draggable onDragStart={onDragStart} onDragMove={onDragMove} onDragEnd={onDragEnd}>
+      <Group
+        ref={group}
+        x={x}
+        y={y}
+        draggable
+        onDragStart={onDragStart}
+        onDragMove={onDragMove}
+        onDragEnd={onDragEnd}
+        onPointerClick={onPointerClick}
+      >
         <Rect {...arcProps(props)} />
         <Rect ref={rect} x={0} y={0} width={width} height={height} />
       </Group>
