@@ -4,11 +4,11 @@ import { colors, config, workspace } from "../config";
 import { useRef } from "react";
 import Notches from "./Notches";
 import { pointsIsClose } from "../util";
+import { DenominatorSelector } from "./RangeSelector";
 
-export const nlWidth = config.tile.size * 22;
+export const nlWidth = config.tile.size * 18;
 export const nlHeight = 26;
 export const nlLineWidth = 4;
-const nlMinWidth = config.tile.size * 3;
 
 const NumberLine = (props) => {
   const state = useAppStore();
@@ -26,19 +26,6 @@ const NumberLine = (props) => {
   const leftHead = useRef();
   const rightHead = useRef();
 
-  let notchGroups = null;
-  const getNotchGroups = (e) => {
-    if (notchGroups) return notchGroups;
-    notchGroups = [];
-    const stage = e.target.getStage();
-
-    const iStep = 1;
-    for (let index = 0, i = 0; i < max - min + iStep / 2; i += iStep, index++) {
-      notchGroups.push(stage.findOne(`#${id}-notch-${index}`));
-    }
-    return notchGroups;
-  };
-
   const setColor = (targets, color) => {
     for (const target of targets) {
       target.setAttrs({
@@ -47,9 +34,6 @@ const NumberLine = (props) => {
       });
     }
   };
-
-  const k = mk(state, denominator).k;
-  const size = config.tile.size;
 
   return (
     <Group
@@ -101,17 +85,6 @@ const NumberLine = (props) => {
         stroke={"black"}
         fill="black"
         closed
-        draggable={!locked}
-        onPointerEnter={(e) => setColor([e.target], colors.blue)}
-        onPointerLeave={(e) => setColor([e.target], colors.black)}
-        onDragMove={(e) => {
-          let dx = Math.min(e.target.x() - 0, width - nlMinWidth);
-          dx = Math.round(dx / size) * size;
-          e.target.setAttrs({ x: dx, y: height / 2 });
-          const numberLine = state.elements.numberLine;
-          const { x, y, width: nWidth, min, max } = numberLine;
-          state.updateElement("numberLine", { x: x + dx, width: nWidth - dx, min: min + dx / size });
-        }}
       />
       <Line
         ref={rightHead}
@@ -121,18 +94,10 @@ const NumberLine = (props) => {
         stroke={"black"}
         fill="black"
         closed
-        draggable={!locked}
-        onPointerEnter={(e) => setColor([e.target], colors.blue)}
-        onPointerLeave={(e) => setColor([e.target], colors.black)}
-        onDragMove={(e) => {
-          let dx = Math.max(e.target.x() - width, nlMinWidth - width);
-          dx = Math.round(dx / size) * size;
-          e.target.setAttrs({ x: width + dx, y: height / 2 });
-          const numberLine = state.elements.numberLine;
-          state.updateElement("numberLine", { width: numberLine.width + dx, max: numberLine.max + dx / size });
-        }}
       />
       <Notches {...props} />
+
+      {state.selected.includes("numberLine") && <DenominatorSelector {...props} />}
     </Group>
   );
 };
@@ -142,7 +107,8 @@ export function notchStep() {
 }
 
 export function notchX(i) {
-  return (1 + i) * config.tile.size;
+  const { size } = config.tile;
+  return i * size * 8 + size;
 }
 
 export function mk() {

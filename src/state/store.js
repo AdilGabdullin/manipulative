@@ -35,7 +35,7 @@ export const useAppStore = create((set) => ({
       width: nlWidth,
       height: nlHeight,
       min: 0,
-      max: 20,
+      max: 2,
       denominator: 1,
       locked: true,
     },

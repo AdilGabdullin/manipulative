@@ -15,8 +15,6 @@ export const colors = {
 export const workspace = {
   basic: "Basic",
   numberLine: "Number Line",
-  graph: "Graph",
-  ppw: "Part-Part-Whole",
 };
 
 export const config = {
