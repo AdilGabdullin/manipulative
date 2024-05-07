@@ -9,7 +9,7 @@ import TileLabel, { decimalsVisible, fractionsVisible, labelColor, labelText, ov
 
 const size = config.tile.size;
 
-export const Tile = ({ id, x, y, width, height, fill, stroke, visible, denominator, events }) => {
+export const Tile = ({ id, x, y, width, height, fill, stroke, visible, denominator, boardTile, events }) => {
   x = halfPixel(x);
   y = halfPixel(y);
   width = Math.round(width) - 1;
@@ -17,7 +17,7 @@ export const Tile = ({ id, x, y, width, height, fill, stroke, visible, denominat
   return (
     <Group id={id} x={x} y={y} visible={visible} {...events}>
       <Rect width={width} height={height} fill={fill} stroke={stroke} strokeWidth={1} />
-      <TileLabel {...{ x, y, width, height, denominator, fill }} />
+      <TileLabel {...{ x, y, width, height, denominator, fill, boardTile }} />
     </Group>
   );
 };
@@ -173,7 +173,7 @@ export const BoardTile = (props) => {
   };
   return (
     <Group x={0} y={0} ref={groupRef}>
-      <Tile {...props} x={x} y={y} events={events} />
+      <Tile {...props} x={x} y={y} events={events} boardTile={true} />
     </Group>
   );
 };

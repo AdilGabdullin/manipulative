@@ -2,20 +2,20 @@ import { Group, Line, Text } from "react-konva";
 import { useAppStore } from "../state/store";
 import { colors } from "../config";
 
-const fontSize = 25;
-const textProps = {
-  fontFamily: "Calibri",
-  fontSize: fontSize,
-  align: "center",
-};
-
-const TileLabel = ({ x, y, width, height, denominator, fill }) => {
+const TileLabel = ({ x, y, width, height, denominator, fill, boardTile }) => {
   const state = useAppStore();
   const { labels } = state;
   const color = labelColor(denominator, !!fill);
 
   const fVisible = fractionsVisible(denominator, labels);
   const dVisible = decimalsVisible(denominator, labels);
+
+  const fontSize = boardTile && height > width ? labelFontSize(denominator, labels) : 25;
+  const textProps = {
+    fontFamily: "Calibri",
+    fontSize: fontSize,
+    align: "center",
+  };
 
   return (
     <Group x={width / 2} y={height / 2}>
@@ -112,6 +112,10 @@ export function fractionsVisible(denominator, labels) {
 
 export function decimalsVisible(denominator, labels) {
   return denominator == 1 || labels == "Decimals" || labels == "Percents";
+}
+
+export function labelFontSize(denominator, labels) {
+  return denominator == 12 && labels == "Decimals" ? 16 : 25;
 }
 
 export default TileLabel;
