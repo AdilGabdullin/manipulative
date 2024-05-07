@@ -106,6 +106,7 @@ const SelectedFrame = (props) => {
       active: !lockSelect,
       show: selected.some((id) => elements[id].type == "tile"),
       onPointerClick: (e) => {
+        state.rotateSelected();
       },
     },
     {

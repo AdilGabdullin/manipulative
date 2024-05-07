@@ -343,6 +343,20 @@ export const useAppStore = create((set) => ({
         });
       })
     ),
+  rotateSelected: () =>
+    set(
+      produce((state) => {
+        for (const id of state.selected) {
+          const element = state.elements[id];
+          if (element.type != "tile") continue;
+          const { x, y, width, height } = element;
+          element.width = height;
+          element.height = width;
+          element.x = x + width / 2 - height / 2;
+          element.y = y + height / 2 - width / 2;
+        }
+      })
+    ),
   action: () => set(produce((state) => {})),
 }));
 
