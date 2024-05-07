@@ -28,7 +28,7 @@ const Elements = () => {
     <>
       {state.workspace == workspace.graph && <GraphLines />}
       {Object.values(elements)
-        .toSorted((e1, e2) => e1.x - e2.x - (e1.y - e2.y) * 100)
+        .toSorted((e1, e2) => e1.x + e1.y - e2.x - e2.y)
         .map((element) => {
           const Element = elementList[element.type];
           return Element && <Element key={element.id} {...element} />;

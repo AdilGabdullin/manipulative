@@ -268,7 +268,7 @@ export const useAppStore = create((set) => ({
   copySelected: () =>
     set(
       produce((state) => {
-        const shift = 20;
+        const shift = 30;
         const { elements } = current(state);
         for (const id of state.selected) {
           const element = elements[id];
