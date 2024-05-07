@@ -5,7 +5,14 @@ import { useAppStore } from "../state/store";
 import { useRef } from "react";
 import { magnetToLine, lineZeroPos } from "./NumberLine";
 import { graphZeroPos } from "./Graph";
-import TileLabel, { decimalsVisible, fractionsVisible, labelColor, labelText, overlineText } from "./TileLabel";
+import TileLabel, {
+  decimalsVisible,
+  fractionsVisible,
+  labelColor,
+  labelFontSize,
+  labelText,
+  overlineText,
+} from "./TileLabel";
 
 const size = config.tile.size;
 
@@ -67,6 +74,7 @@ export const ToolbarTile = (props) => {
   const events = {
     onDragStart: (e) => {
       const { width, height } = placeProps(e);
+      const fontSize = labelFontSize(true, height > width, null, props.denominator, state.labels);
       const children = getBoardShadow(e).children;
       const fill = labelColor(props.denominator);
       shadow.current.setAttrs({
@@ -74,17 +82,21 @@ export const ToolbarTile = (props) => {
       });
       children[0].setAttrs({ width: width - 1, height: height - 1 });
       children[1].setAttrs({ x: (width - 1) / 2, y: (height - 1) / 2 });
-      children[1].children[0].setAttrs({ fill: fill, visible: fVisible });
+      children[1].children[0].setAttrs({ fill: fill, fontSize: fontSize, y: -fontSize + 1, visible: fVisible });
       children[1].children[1].setAttrs({ stroke: fill, visible: fVisible });
-      children[1].children[2].setAttrs({ text: props.denominator, fill: fill, visible: fVisible });
+      children[1].children[2].setAttrs({ text: props.denominator, fill: fill, fontSize: fontSize, visible: fVisible });
       children[1].children[3].setAttrs({
         text: labelText(props.denominator, state.labels),
         fill: fill,
+        fontSize: fontSize,
+        y: -fontSize / 2,
         visible: dVisible,
       });
       children[1].children[4].setAttrs({
         text: overlineText(props.denominator, state.labels),
         fill: fill,
+        fontSize: fontSize,
+        y: -fontSize / 2,
         visible: dVisible,
       });
     },

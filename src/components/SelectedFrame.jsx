@@ -86,10 +86,7 @@ const SelectedFrame = (props) => {
     const dx = (e.target.x() - x) / state.scale;
     const dy = (e.target.y() - y) / state.scale;
     state.relocateSelected(dx, dy);
-    e.target
-      .getStage()
-      .find(".drag-hidden")
-      .forEach((node) => node.visible(true));
+    setVisibility(e, true);
   };
 
   let menuButtons = [

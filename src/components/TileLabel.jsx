@@ -1,6 +1,7 @@
 import { Group, Line, Text } from "react-konva";
 import { useAppStore } from "../state/store";
 import { colors } from "../config";
+import { halfPixel } from "../util";
 
 const TileLabel = ({ x, y, width, height, denominator, fill, boardTile }) => {
   const state = useAppStore();
@@ -10,7 +11,7 @@ const TileLabel = ({ x, y, width, height, denominator, fill, boardTile }) => {
   const fVisible = fractionsVisible(denominator, labels);
   const dVisible = decimalsVisible(denominator, labels);
 
-  const fontSize = boardTile && height > width ? labelFontSize(denominator, labels) : 25;
+  const fontSize = labelFontSize(boardTile, height > width, state.orientation == "Vertical", denominator, labels);
   const textProps = {
     fontFamily: "Calibri",
     fontSize: fontSize,
@@ -18,7 +19,7 @@ const TileLabel = ({ x, y, width, height, denominator, fill, boardTile }) => {
   };
 
   return (
-    <Group x={width / 2} y={height / 2}>
+    <Group x={halfPixel(width / 2)} y={halfPixel(height / 2)}>
       <Text x={-50} width={100} y={-fontSize + 1} text={"1"} fill={color} visible={fVisible} {...textProps} />
       <Line points={[-13, 0, 13, 0]} stroke={color} visible={fVisible} />
       <Text x={-50} width={100} y={1} text={denominator} fill={color} visible={fVisible} {...textProps} />
@@ -114,8 +115,17 @@ export function decimalsVisible(denominator, labels) {
   return denominator == 1 || labels == "Decimals" || labels == "Percents";
 }
 
-export function labelFontSize(denominator, labels) {
-  return denominator == 12 && labels == "Decimals" ? 16 : 25;
+export function labelFontSize(boardTile, tileVertical, stateVertical, denominator, labels) {
+  if (boardTile) {
+    if (labels == "Fractions" && denominator == 12 && !tileVertical) return 18;
+    if (labels == "Decimals" && denominator == 12 && tileVertical) return 16;
+    if (labels == "Percents" && denominator == 12 && tileVertical) return 18;
+  } else {
+    if (labels == "Fractions" && denominator >= 10 && stateVertical) return 18;
+    if (labels == "Decimals" && (denominator == 8 || denominator == 12) && stateVertical) return 18;
+    if (labels == "Percents" && [1, 3, 6, 8].includes(denominator) && stateVertical) return 18;
+  }
+  return 25;
 }
 
 export default TileLabel;

@@ -49,8 +49,8 @@ export const useAppStore = create((set) => ({
   labels: "Fractions",
 
   // fullscreen: true,
-  orientation: "Vertical",
-  labels: "Percents",
+  // orientation: "Vertical",
+  // labels: "Fractions",
 
   toggleGlobal: (field) =>
     set(
