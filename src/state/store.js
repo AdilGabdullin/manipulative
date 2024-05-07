@@ -6,7 +6,7 @@ import { topToolbarHeight } from "../components/TopToolbar";
 import { maxOffset } from "../components/Scrolls";
 import { freeDrawingSlice } from "./freeDrawingSlice";
 import { historySlice, pushHistory } from "./historySlice";
-import { defaultMinMax, nlHeight, nlWidth } from "../components/NumberLine";
+import { defaultMinMax, mk, nlHeight, nlWidth, notchStep } from "../components/NumberLine";
 
 export const gridStep = 60;
 export const boardSize = {
@@ -336,7 +336,50 @@ export const useAppStore = create((set) => ({
         const selectedTarget = selected.length == 1 && elements[selected[0]];
         const activeTarget = selected.length == 0 && lastActiveElement && elements[lastActiveElement];
         const target = selectedTarget || activeTarget;
-        if (workspace != "Open" || !target || target.text === undefined) return;
+        if (!target) return;
+        if ((key == "ArrowRight" || key == "ArrowLeft") && target.type == "marker") {
+          let { x, y, width, height } = current(target);
+          const line = current(state.elements["default-line"]);
+          const { k } = mk(current(state), line.denominator || 1);
+          const firstNotch = line.x + line.height * 2;
+          const range = line.max - line.min;
+          const x0 = firstNotch - width / 2;
+          let step = (((line.width - line.height * 4) / range) * notchStep(range)) / k;
+          let text = (line.min * k + Math.round((x - x0) / step) * notchStep(range)) / k;
+          if (state.workspace == "Integers") {
+            x += ((key == "ArrowRight" ? 1 : -1) * (line.width - line.height * 4)) / range / k;
+            text = { number: line.min + Math.round((((x - x0) / step) * notchStep(range)) / k) };
+            step = (line.width - line.height * 4) / range / k;
+          } else if (state.workspace == "Fractions") {
+            x += key == "ArrowRight" ? step : -step;
+            text = (line.min * k + Math.round((x - x0) / step) * notchStep(range)) / k;
+            if (Math.round(text * k) == 0) {
+              text = { number: 0 };
+            } else if (Math.round(text * k) / k == Math.round(text)) {
+              text = { number: Math.round(text) };
+            } else {
+              text = {
+                nominator: Math.abs(Math.round(text * k)),
+                wholePart: 0,
+                denominator: k,
+                negative: Math.round(text * k) < 0,
+              };
+              if (state.mixedNumbers) {
+                text.wholePart = Math.floor(Math.abs(text.nominator / text.denominator));
+                text.nominator = text.nominator % text.denominator;
+              }
+              text.width = Math.max(text.nominator.toString().length * 12, text.denominator.toString().length * 12);
+            }
+          } else {
+            x += key == "ArrowRight" ? step : -step;
+            text = { number: (line.min * k + Math.round((x - x0) / step) * notchStep(range)) / k };
+          }
+          target.x = x;
+          target.text = text;
+          return;
+        }
+
+        if (workspace != "Open" || target.text === undefined) return;
         const text = "" + target.text;
         if (key == "Backspace") {
           target.text = text.substring(0, text.length - 1);
