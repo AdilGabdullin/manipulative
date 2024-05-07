@@ -29,13 +29,13 @@ const DefaultMenu = (props) => {
   let { x, y } = props;
 
   const buttons = [
-    {
-      text: "Y-Tiles",
-      field: "showYTiles",
-      fill: state.showYTiles,
-      width: 50,
-      onClick: () => state.toggleShowYTiles(),
-    },
+    // {
+    //   text: "Y-Tiles",
+    //   field: "showYTiles",
+    //   fill: state.showYTiles,
+    //   width: 50,
+    //   onClick: () => state.toggleShowYTiles(),
+    // },
     {
       text: "Summary",
       field: "showSummary",
@@ -43,13 +43,13 @@ const DefaultMenu = (props) => {
       width: 70,
       onClick: () => state.setValue("showSummary", !state.showSummary),
     },
-    {
-      text: "Multi-colored",
-      field: "multiColored",
-      fill: state.multiColored,
-      width: 100,
-      onClick: () => state.setValue("multiColored", !state.multiColored),
-    },
+    // {
+    //   text: "Multi-colored",
+    //   field: "multiColored",
+    //   fill: state.multiColored,
+    //   width: 100,
+    //   onClick: () => state.setValue("multiColored", !state.multiColored),
+    // },
   ];
   const padding = 8;
   const buttonHeight = 20;
