@@ -45,12 +45,12 @@ const LeftToolbarColumns = () => {
   const width = leftToolbar.width;
   const { height, fullscreen } = state;
   const size = fullscreen ? 60 : 50;
-  const sizes = getSizes(size, tile.options.length);
+  const sizes = getSizes2(size, tile.options.length);
 
-  const column1 = tile.options.slice(0, 4);
-  const margin1 = (height - sum(sizes.slice(0, 4))) / 5;
-  const column2 = tile.options.slice(4);
-  const margin2 = (height - margin1 * 2 - sum(sizes.slice(4))) / 4;
+  const column1 = tile.options.slice(0, 2);
+  const margin1 = (height - sum(sizes.slice(0, 2))) / 3;
+  const column2 = tile.options.slice(2);
+  const margin2 = (height - margin1 * 2 - sum(sizes.slice(2))) / 6;
 
   return (
     <>
@@ -71,9 +71,9 @@ const LeftToolbarColumns = () => {
           <ToolbarTile
             {...op}
             x={((width - size * 2) * 2) / 3 + size}
-            y={margin1 + margin2 * i + sum(sizes.slice(4, 4 + i))}
+            y={margin1 + margin2 * i + sum(sizes.slice(2, 2 + i))}
             width={size}
-            height={sizes[4 + i]}
+            height={sizes[2 + i]}
           />
         </Fragment>
       ))}
@@ -88,6 +88,14 @@ function getSizes(size, number) {
   const sizes = [];
   for (let i = 0; i < number; i += 1) {
     sizes.push(startWidth - sizeStep * i);
+  }
+  return sizes;
+}
+
+function getSizes2(size, number) {
+  const sizes = [];
+  for (let i = 0; i < number; i += 1) {
+    sizes.push((6 * size) / (i + 1));
   }
   return sizes;
 }
