@@ -50,7 +50,7 @@ export const useAppStore = create((set) => ({
 
   // fullscreen: true,
   // orientation: "Vertical",
-  // labels: "Fractions",
+  // workspace: workspace.numberLine,
 
   toggleGlobal: (field) =>
     set(
@@ -89,7 +89,6 @@ export const useAppStore = create((set) => ({
         state.offset.x = 0;
         state.offset.y = 0;
         state.scale = 1.0;
-        state.elements.numberLine.locked = workspace != "Number Line";
         keepOrigin(state);
       })
     ),

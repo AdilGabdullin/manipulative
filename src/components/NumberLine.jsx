@@ -115,22 +115,30 @@ export function mk() {
   return { m: 10, k: 1 };
 }
 
-export function lineZeroPos(state) {
+export function lineZeroPos(state, yShift = 0) {
   const size = config.tile.size;
   const { x, y, height } = state.elements.numberLine;
-  return { x: Math.round(x + size), y: Math.round(y + height / 2 - size) };
+  return { x: Math.round(x + size), y: Math.round(y + height / 2 + yShift) };
 }
 
 export function magnetToLine(tile, state) {
   if (state.workspace != workspace.numberLine) return null;
-  const size = config.tile.size;
+  const { width, height } = tile;
   const { x, y } = lineZeroPos(state);
-  const { min, max } = state.elements.numberLine;
-  for (let i = -1; i < max - min + 1; i++) {
-    const topPoint = { x: x + i * size, y };
-    const bottomPoint = { x: x + i * size, y: y + size };
-    if (pointsIsClose(tile, topPoint, 20)) return topPoint;
-    if (pointsIsClose(tile, bottomPoint, 20)) return bottomPoint;
+  const { min, max, denominator } = state.elements.numberLine;
+  const range = max - min;
+  const iStep = 1 / denominator;
+
+  for (let i = 0; i < range + iStep / 2; i += iStep) {
+    const points = [
+      { x: x - 60 + notchX(i), y: y - height },
+      { x: x - 60 + notchX(i), y: y },
+      { x: x - 60 + notchX(i) - width, y: y - height },
+      { x: x - 60 + notchX(i) - width, y: y },
+    ];
+    for (const p of points) {
+      if (pointsIsClose(tile, p, 20)) return p;
+    }
   }
   return null;
 }

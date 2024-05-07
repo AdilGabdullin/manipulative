@@ -135,7 +135,7 @@ export const ToolbarTile = (props) => {
           add({ x: last.x, y: last.y - place.height }, place);
         }
       } else {
-        add(firstPos(state), place);
+        add(firstPos(state, place.height), place);
       }
     },
   };
@@ -232,16 +232,13 @@ export function getSize(state) {
   return Math.round(config.tile.size * state.scale);
 }
 
-function firstPos(state) {
+function firstPos(state, height) {
   switch (state.workspace) {
     case workspace.basic:
       return { x: -size, y: -size };
       break;
     case workspace.numberLine:
-      return lineZeroPos(state);
-      break;
-    case workspace.graph:
-      return graphZeroPos(state);
+      return lineZeroPos(state, -height);
       break;
   }
 }
