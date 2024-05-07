@@ -5,7 +5,7 @@ import { useAppStore } from "../state/store";
 import { useRef } from "react";
 import { magnetToLine, lineZeroPos } from "./NumberLine";
 import { graphZeroPos } from "./Graph";
-import TileLabel from "./TileLabel";
+import TileLabel, { labelColor } from "./TileLabel";
 
 const size = config.tile.size;
 
@@ -17,7 +17,7 @@ export const Tile = ({ id, x, y, width, height, fill, stroke, visible, denominat
   return (
     <Group id={id} x={x} y={y} visible={visible} {...events}>
       <Rect width={width} height={height} fill={fill} stroke={stroke} strokeWidth={1} />
-      <TileLabel {...{ x, y, width, height, denominator }} />
+      <TileLabel {...{ x, y, width, height, denominator, fill }} />
     </Group>
   );
 };
@@ -64,10 +64,16 @@ export const ToolbarTile = (props) => {
   const events = {
     onDragStart: (e) => {
       const { width, height } = placeProps(e);
+      const children = getBoardShadow(e).children;
+      const fill = labelColor(props.denominator);
       shadow.current.setAttrs({
         visible: true,
       });
-      getBoardShadow(e).children[0].setAttrs({ width: width - 1, height: height - 1 });
+      children[0].setAttrs({ width: width - 1, height: height - 1 });
+      children[1].setAttrs({ x: (width - 1) / 2, y: (height - 1) / 2 });
+      children[1].children[0].setAttrs({ fill: fill });
+      children[1].children[1].setAttrs({ stroke: fill });
+      children[1].children[2].setAttrs({ text: props.denominator, fill: fill });
     },
     onDragMove: (e) => {
       const target = e.target;

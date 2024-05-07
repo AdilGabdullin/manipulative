@@ -2,20 +2,17 @@ import { Group, Line, Text } from "react-konva";
 import { useAppStore } from "../state/store";
 import { colors } from "../config";
 
-const TileLabel = ({ width, height, denominator }) => {
+const fontSize = 25;
+const textProps = {
+  fontFamily: "Calibri",
+  fontSize: fontSize,
+  align: "center",
+};
+
+const TileLabel = ({ x, y, width, height, denominator, fill }) => {
   const state = useAppStore();
   const { labels } = state;
-
-  const fontSize = 25;
-  const padding = (height - fontSize * 2) / 3;
-
-  const textProps = {
-    fill: colors.white,
-    fontFamily: "Calibri",
-    fontSize: 25,
-    width,
-    align: "center",
-  };
+  const color = labelColor(denominator, !!fill);
 
   if (labels == "Blank") {
     return null;
@@ -23,26 +20,19 @@ const TileLabel = ({ width, height, denominator }) => {
 
   if (labels == "Fractions") {
     return (
-      <>
-        <Text y={padding} text={"1"} {...textProps} />
-        {/* <Line
-      name="drag-hidden"
-      points={[
-        x0 + cos(alpha - 10) * r2,
-        y0 + sin(alpha - 10) * r2,
-        x0 + cos(alpha + 10) * r2,
-        y0 + sin(alpha + 10) * r2,
-      ]}
-      stroke={color}
-      lineJoin="round"
-      lineCap="round"
-    /> */}
-        <Text y={height - padding - fontSize} text={denominator} {...textProps} />
-      </>
+      <Group x={width / 2} y={height / 2}>
+        <Text x={-50} width={100} y={-fontSize + 1} text={"1"} fill={color} {...textProps} />
+        <Line points={[-13, 0, 13, 0]} stroke={color} />
+        <Text x={-50} width={100} y={1} text={denominator} fill={color} {...textProps} />
+      </Group>
     );
   }
 
   return null;
 };
+
+export function labelColor(denominator, isFilled = true) {
+  return !isFilled || denominator == 4 ? colors.black : colors.white;
+}
 
 export default TileLabel;
