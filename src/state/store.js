@@ -89,6 +89,7 @@ export const useAppStore = create((set) => ({
         state.offset.x = 0;
         state.offset.y = 0;
         state.scale = 1.0;
+        clearSelected(state);
         keepOrigin(state);
       })
     ),
