@@ -1,7 +1,8 @@
-import { Group, Line, Rect, Text } from "react-konva";
+import { Group, Line, Text } from "react-konva";
 import { useAppStore } from "../state/store";
 import { colors, config } from "../config";
-import { Fragment, useRef } from "react";
+import { Fragment } from "react";
+import RangeSelector from "./RangeSelector";
 
 const size = config.tile.size;
 const headSize = 13;
@@ -9,23 +10,23 @@ const notchSize = 7;
 
 const Graph = () => {
   const state = useAppStore();
-  const topHead = useRef();
-  const { origin } = state;
+  const { origin, graphMultiplier } = state;
   const { x, y, width, height } = graphProps(state);
   const color = colors.black;
   return (
     <Group x={origin.x + x} y={origin.y + y}>
       <Line points={[0, 0, 0, height, width, height]} stroke={color} strokeWidth={4} />
-      <Line ref={topHead} points={[0, 0, -headSize, headSize, headSize, headSize]} stroke={color} fill={color} closed />
-      {notches(height).map(({ y, text }, i) => (
+      <Line points={[0, 0, -headSize, headSize, headSize, headSize]} stroke={color} fill={color} closed />
+      <RangeSelector width={width} height={height} multiplier={graphMultiplier} />
+      {notches(height, graphMultiplier).map(({ y, text }, i) => (
         <Fragment key={i}>
           <Line x={-notchSize} y={y} points={[0, 0, 2 * notchSize, 0]} stroke={color} />
           <Text
             text={text}
-            x={-notchSize - 28}
-            y={y - 10}
-            width={30}
-            align="center"
+            x={-notchSize - 75}
+            y={y - 9}
+            width={70}
+            align="right"
             fontFamily="Calibri"
             fontSize={20}
           />
@@ -65,10 +66,10 @@ export function graphZeroPos(state) {
   return { x: x, y: y + height - size };
 }
 
-function notches(height) {
+function notches(height, multiplier = 1) {
   return [...Array(height / size - 1).keys()].map((i) => ({
     y: height - (i + 1) * size,
-    text: (i + 1).toString(),
+    text: ((i + 1) * multiplier).toString(),
   }));
 }
 

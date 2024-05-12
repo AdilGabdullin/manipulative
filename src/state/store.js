@@ -46,11 +46,11 @@ export const useAppStore = create((set) => ({
   showGrid: false,
   showLabels: true,
   showSummary: true,
+  graphMultiplier: 1,
 
   // fullscreen: true,
   // showGrid: true,
-  // showSummary: true,
-  // workspace: workspace.ppw,
+  // workspace: workspace.graph,
 
   toggleGlobal: (field) =>
     set(
