@@ -90,6 +90,7 @@ export const useAppStore = create((set) => ({
         state.offset.y = 0;
         state.scale = 1.0;
         state.elements.numberLine.locked = workspace != "Number Line";
+        clearSelected(state);
         keepOrigin(state);
       })
     ),
