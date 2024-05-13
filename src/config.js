@@ -57,5 +57,6 @@ export const config = {
   },
   frame: {
     size: 70,
+    shift: 5,
   },
 };

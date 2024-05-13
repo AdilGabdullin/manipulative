@@ -40,19 +40,22 @@ export const ToolbarTile = (props) => {
     return boardShadow || (boardShadow = e.target.getStage().findOne("#shadow-tile"));
   };
 
-  const add = (pos, place) => {
-    addElement({
-      ...props,
-      type: "tile",
-      x: pos ? pos.x : place.x,
-      y: pos ? pos.y : place.y,
-      size: size,
-      width: size,
-      height: size,
-      fill: props.fill,
-      fillColor: props.fill,
-      stroke: props.stroke,
-    });
+  const add = (pos, place, keepLastActive = false) => {
+    addElement(
+      {
+        ...props,
+        type: "tile",
+        x: pos ? pos.x : place.x,
+        y: pos ? pos.y : place.y,
+        size: size,
+        width: size,
+        height: size,
+        fill: props.fill,
+        fillColor: props.fill,
+        stroke: props.stroke,
+      },
+      keepLastActive
+    );
   };
 
   const events = {
@@ -92,6 +95,9 @@ export const ToolbarTile = (props) => {
         } else {
           add({ x: last.x + size, y: last.y });
         }
+      } else if (last && last.type == "frame") {
+        const shift = config.frame.shift;
+        add({ x: last.x + shift, y: last.y + shift }, null, true);
       } else {
         add(firstPos(state));
       }
@@ -192,13 +198,12 @@ function magnetToFrame(tile, frame) {
     return null;
   }
   const options = [];
-  const size = config.frame.size;
+  const { size, shift } = config.frame;
   for (let x = 0; x < frame.width; x += size) {
     for (let y = 0; y < frame.height; y += size) {
       options.push([-x, -y]);
     }
   }
-  const shift = 5;
   const { x, y } = tile;
   for (const [dx, dy] of options) {
     if (pointsIsClose({ x: x + dx - shift, y: y + dy - shift }, frame, size / 2)) {

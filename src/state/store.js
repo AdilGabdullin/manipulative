@@ -309,13 +309,15 @@ export const useAppStore = create((set) => ({
       })
     ),
 
-  addElement: (element) =>
+  addElement: (element, keepLastActive = false) =>
     set(
       produce((state) => {
         const id = newId();
         state.elements[id] = { ...element, id, locked: false };
         state.fdMode = null;
-        state.lastActiveElement = id;
+        if (!keepLastActive) {
+          state.lastActiveElement = id;
+        }
         clearSelected(state);
         pushHistory(state);
       })
