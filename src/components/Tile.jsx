@@ -1,6 +1,6 @@
 import { Group, Rect } from "react-konva";
 import { config, workspace } from "../config";
-import { getStageXY, halfPixel, numberBetween, pointsIsClose, setVisibility } from "../util";
+import { getStageXY, halfPixel, numberBetween, pointInRect, pointsIsClose, setVisibility } from "../util";
 import { useAppStore } from "../state/store";
 import { useEffect, useRef } from "react";
 import { Animation } from "konva/lib/Animation";
@@ -154,6 +154,11 @@ export function magnetToAll(tile, elements, state) {
     const { x, y } = tile;
     return { x: Math.round(x / size) * size, y: Math.round(y / size) * size };
   }
+  for (const element of Object.values(elements)) {
+    if (element.type != "frame") continue;
+    const pos = magnetToFrame(tile, element);
+    if (pos) return pos;
+  }
   for (const [id, element] of Object.entries(elements)) {
     if (tile.id == id || element.type != "tile") continue;
     const pos = magnetToOne(tile, element);
@@ -178,6 +183,27 @@ function magnetToOne(tile, other) {
   ];
   for (const [dx, dy] of options) {
     if (pointsIsClose({ x: x + dx, y: y + dy }, other)) return { x: other.x - dx, y: other.y - dy };
+  }
+  return null;
+}
+
+function magnetToFrame(tile, frame) {
+  if (!pointInRect({ x: tile.x + 30, y: tile.y + 30 }, frame)) {
+    return null;
+  }
+  const options = [];
+  const size = config.frame.size;
+  for (let x = 0; x < frame.width; x += size) {
+    for (let y = 0; y < frame.height; y += size) {
+      options.push([-x, -y]);
+    }
+  }
+  const shift = 5;
+  const { x, y } = tile;
+  for (const [dx, dy] of options) {
+    if (pointsIsClose({ x: x + dx - shift, y: y + dy - shift }, frame, size / 2)) {
+      return { x: frame.x - dx + shift, y: frame.y - dy + shift };
+    }
   }
   return null;
 }
