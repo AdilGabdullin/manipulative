@@ -88,7 +88,7 @@ const NumberLine = (props) => {
         stroke={"black"}
         fill="black"
         closed
-        draggable={!locked}
+        draggable={!locked && !fdMode}
         onPointerEnter={(e) => setColor([e.target], colors.blue)}
         onPointerLeave={(e) => setColor([e.target], colors.black)}
         onDragMove={(e) => {
@@ -108,7 +108,7 @@ const NumberLine = (props) => {
         stroke={"black"}
         fill="black"
         closed
-        draggable={!locked}
+        draggable={!locked && !fdMode}
         onPointerEnter={(e) => setColor([e.target], colors.blue)}
         onPointerLeave={(e) => setColor([e.target], colors.black)}
         onDragMove={(e) => {

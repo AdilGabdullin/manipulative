@@ -4,7 +4,7 @@ import { colors } from "../config";
 import { useRef } from "react";
 
 const RangeSelector = (props) => {
-  const { setValue, fullscreen} = useAppStore();
+  const { setValue, fullscreen, fdMode } = useAppStore();
   const r = 12;
 
   const values = [1, 2, 5, 10, 20, 50, 100];
@@ -54,7 +54,7 @@ const RangeSelector = (props) => {
         fontSize={28}
         visible={fullscreen}
       />
-      <Group ref={circle} x={start + index * step} y={y} draggable {...events}>
+      <Group ref={circle} x={start + index * step} y={y} draggable={!fdMode} {...events}>
         <Circle radius={r} fill={colors.blue} />
         <Text y={16} text={props.multiplier} x={-50} width={100} align="center" fontSize={20} fontFamily="Calibri" />
       </Group>
