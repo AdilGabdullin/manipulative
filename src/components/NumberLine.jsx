@@ -12,7 +12,7 @@ const nlMinWidth = config.tile.size * 3;
 
 const NumberLine = (props) => {
   const state = useAppStore();
-  const { origin, relocateElement, updateElement, selectIds, selected } = state;
+  const { origin, relocateElement, fdMode, selectIds } = state;
   let { id, x, y, width, height, visible, locked, min, max, denominator } = props;
   x = Math.round(x);
   y = Math.round(y);
@@ -26,20 +26,8 @@ const NumberLine = (props) => {
   const leftHead = useRef();
   const rightHead = useRef();
 
-  let notchGroups = null;
-  const getNotchGroups = (e) => {
-    if (notchGroups) return notchGroups;
-    notchGroups = [];
-    const stage = e.target.getStage();
-
-    const iStep = 1;
-    for (let index = 0, i = 0; i < max - min + iStep / 2; i += iStep, index++) {
-      notchGroups.push(stage.findOne(`#${id}-notch-${index}`));
-    }
-    return notchGroups;
-  };
-
   const setColor = (targets, color) => {
+    if (fdMode) return;
     for (const target of targets) {
       target.setAttrs({
         stroke: color,
@@ -48,7 +36,6 @@ const NumberLine = (props) => {
     }
   };
 
-  const k = mk(state, denominator).k;
   const size = config.tile.size;
 
   return (
@@ -57,7 +44,7 @@ const NumberLine = (props) => {
       id={id}
       {...groupPos}
       visible={visible !== undefined ? visible : true}
-      draggable={!locked}
+      draggable={!locked && !fdMode}
       onDragMove={(e) => {
         if (e.target === group.current) {
           const pos = lineMagnet(e.target.x() - origin.x, e.target.y() - origin.y, state);

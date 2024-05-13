@@ -25,7 +25,7 @@ const Frame = ({ id, x, y, width, height, resizable, visible, locked }) => {
   };
 
   return (
-    <Group id={id} x={x} y={y} visible={visible} draggable={true} {...events}>
+    <Group id={id} x={x} y={y} visible={visible} draggable={!locked && !fdMode} {...events}>
       <Rect x={0} y={0} width={width} height={height} strokeWidth={2} stroke={colors.black} />
       {xs.map((x) => (
         <Line key={x} points={[x, 0, x, height]} strokeWidth={2} stroke={colors.black} />
