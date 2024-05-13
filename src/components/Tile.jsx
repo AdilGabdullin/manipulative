@@ -189,7 +189,7 @@ export function getSize(state) {
 function firstPos(state) {
   switch (state.workspace) {
     case workspace.basic:
-      return { x: -size, y: -size };
+      return { x: -size / 2, y: -size / 2 };
       break;
     case workspace.numberLine:
       return lineZeroPos(state);

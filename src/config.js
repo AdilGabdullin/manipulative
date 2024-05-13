@@ -55,4 +55,7 @@ export const config = {
       { fill: "black", stroke: "#222222", name: "Black" },
     ],
   },
+  frame: {
+    size: 70,
+  },
 };

@@ -9,6 +9,7 @@ import { config, workspace } from "../config";
 import NumberLine from "./NumberLine";
 import Graph, { GraphLines } from "./Graph";
 import PartPartWhole from "./PartPartWhole";
+import Frame from "./Frame";
 
 const elementList = {
   text: TextElement,
@@ -16,6 +17,7 @@ const elementList = {
   ellipse: EllipseElement,
   line: LineElement,
   tile: BoardTile,
+  frame: Frame,
 };
 
 const Elements = () => {
@@ -46,13 +48,13 @@ const Elements = () => {
 
 function sortElements(elements) {
   elements = Object.values(elements);
-  const typeRectOrEllipse = (e) => ["rect", "ellipse"].includes(e.type);
-  const typeTextOrLine = (e) => ["text", "line"].includes(e.type);
-  const typeOther = (e) => !["rect", "ellipse", "text", "line"].includes(e.type);
+  const back = (e) => ["rect", "ellipse", "frame"].includes(e.type);
+  const front = (e) => ["text", "line"].includes(e.type);
+  const others = (e) => !["rect", "ellipse", "frame", "text", "line"].includes(e.type);
   return [
-    ...elements.filter(typeRectOrEllipse),
-    ...elements.filter(typeOther).toSorted((e1, e2) => e1.x - e2.x - (e1.y - e2.y) * 100),
-    ...elements.filter(typeTextOrLine),
+    ...elements.filter(back),
+    ...elements.filter(others).toSorted((e1, e2) => e1.x - e2.x - (e1.y - e2.y) * 100),
+    ...elements.filter(front),
   ];
 }
 

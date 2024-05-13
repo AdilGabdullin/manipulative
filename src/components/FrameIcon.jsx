@@ -1,17 +1,35 @@
-import { colors } from "../config";
+import { colors, config } from "../config";
+import { useAppStore } from "../state/store";
 import { halfPixel } from "../util";
 
 const buttonSize = 31;
 const lineStyle = { fill: "rgb(0,0,0,0)", strokeWidth: 1, stroke: colors.menuIcon };
+const { size } = config.frame;
 
-const FrameIcon = ({ rows, columns, resizable, onDragStart, onClick }) => {
+const FrameIcon = ({ rows, columns, resizable, onDragStart }) => {
+  const state = useAppStore();
   const { xs, ys } = xy(rows, columns);
   const left = xs[0];
   const right = xs[columns];
   const top = ys[0];
   const bottom = ys[rows];
+  const width = size * columns;
+  const height = size * rows;
   return (
-    <div style={{ width: buttonSize, height: buttonSize }} draggable="true" onDragStart={onDragStart} onClick={onClick}>
+    <div
+      style={{ width: buttonSize, height: buttonSize }}
+      draggable="true"
+      onDragStart={onDragStart}
+      onClick={() => {
+        state.addElement({
+          type: "frame",
+          x: -width / 2,
+          y: -height / 2,
+          width: width,
+          height: height,
+        });
+      }}
+    >
       <svg
         style={{
           display: "block",
