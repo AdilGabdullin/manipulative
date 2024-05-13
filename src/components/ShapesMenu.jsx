@@ -1,7 +1,9 @@
+import { colors } from "../config";
 import { useAppStore } from "../state/store";
+import FrameIcon from "./FrameIcon";
 
-const color = "purple";
-const buttonSize = 30;
+const color = colors.menuIcon;
+export const buttonSize = 30;
 
 const containerStyle = {
   display: "flex",
@@ -33,6 +35,31 @@ export const ShapesMenu = () => {
 
   return (
     <div style={containerStyle}>
+      <FrameIcon
+        rows={1}
+        columns={5}
+        onDragStart={onDragStart("frame5")}
+        onClick={() => {
+          console.log("frame5");
+        }}
+      />
+      <FrameIcon
+        rows={2}
+        columns={5}
+        onDragStart={onDragStart("frame10")}
+        onClick={() => {
+          console.log("frame10");
+        }}
+      />
+      <FrameIcon
+        rows={3}
+        columns={3}
+        resizable={true}
+        onDragStart={onDragStart("resizable-frame")}
+        onClick={() => {
+          console.log("resizable");
+        }}
+      />
       <div
         style={buttonStyle}
         draggable="true"

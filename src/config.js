@@ -10,6 +10,7 @@ export const colors = {
   grey: "#e0e0e0",
   darkGrey: "grey",
   solitude: "#e8f4fe",
+  menuIcon: "purple",
 };
 
 export const workspace = {
