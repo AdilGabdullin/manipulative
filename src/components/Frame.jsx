@@ -1,26 +1,49 @@
 import { Group, Rect, Line } from "react-konva";
 import { useAppStore } from "../state/store";
 import { colors, config } from "../config";
+import { center, pointInRect } from "../util";
 
 const size = config.frame.size;
 
-const Frame = ({ id, x, y, width, height, resizable, visible, locked }) => {
-  const { origin, fdMode, selectIds, clearSelect, relocateElement } = useAppStore();
-  x = Math.round(origin.x + (x || 0));
-  y = Math.round(origin.y + (y || 0));
-
+const Frame = (props) => {
+  const { id, width, height, resizable, visible, locked } = props;
+  const { elements, origin, fdMode, selectIds, relocateElements } = useAppStore();
+  const x = Math.round(origin.x + (props.x || 0));
+  const y = Math.round(origin.y + (props.y || 0));
   const { xs, ys } = xy(width, height);
+
+  let tiles = null;
+  const getTiles = (e) => {
+    const inFrame = (tile) => pointInRect(center(tile), props);
+    const tiles = Object.values(elements).filter((e) => e.type == "tile" && inFrame(e));
+    const stage = e.target.getStage();
+    return tiles.map((tile) => ({
+      node: stage.findOne("#" + tile.id),
+      x: tile.x,
+      y: tile.y,
+      id: tile.id,
+    }));
+  };
 
   const events = {
     onPointerClick: (e) => {
       if (fdMode) return;
-      selectIds([id], locked);
+      selectIds([...getTiles(e).map((t) => t.id), id], locked);
     },
     onDragStart: (e) => {
-      clearSelect();
+      tiles = getTiles(e);
+    },
+    onDragMove: (e) => {
+      const dx = e.target.x() - x;
+      const dy = e.target.y() - y;
+      if (tiles) {
+        tiles.forEach(({ node, x, y }, i) => {
+          node.setAttrs({ x: origin.x + x + dx, y: origin.y + y + dy });
+        });
+      }
     },
     onDragEnd: (e) => {
-      relocateElement(id, e.target.x() - x, e.target.y() - y);
+      relocateElements([...tiles.map((t) => t.id), id], e.target.x() - x, e.target.y() - y);
     },
   };
 

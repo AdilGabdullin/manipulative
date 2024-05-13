@@ -1,7 +1,7 @@
 import { create } from "zustand";
 import { current, produce } from "immer";
 import { leftToolbarWidth } from "../components/LeftToolbar";
-import { clearSelected, elementBox, newId, numberBetween } from "../util";
+import { center, clearSelected, elementBox, newId, numberBetween, pointInRect } from "../util";
 import { topToolbarHeight } from "../components/TopToolbar";
 import { maxOffset } from "../components/Scrolls";
 import { freeDrawingSlice } from "./freeDrawingSlice";
@@ -48,7 +48,7 @@ export const useAppStore = create((set) => ({
   showSummary: true,
   graphMultiplier: 1,
 
-  // fullscreen: true,
+  fullscreen: true,
   // showGrid: true,
   // workspace: workspace.graph,
 
@@ -184,10 +184,15 @@ export const useAppStore = create((set) => ({
           const { id, locked } = element;
           if (!locked && boxInRect(elementBox(element))) {
             selected.push(id);
+            if (element.type == "frame") {
+              const inFrame = (tile) => pointInRect(center(tile), element);
+              const tiles = Object.values(state.elements).filter((e) => e.type == "tile" && inFrame(e));
+              selected.push(...tiles.map((t) => t.id));
+            }
           }
         }
       });
-      return { ...state, selected, lockSelect: false, colorMenuVisible: false };
+      return { ...state, selected: [...new Set(selected)], lockSelect: false, colorMenuVisible: false };
     }),
 
   selectIds: (ids, lockSelect) => set((state) => ({ ...state, selected: ids, lockSelect, colorMenuVisible: false })),

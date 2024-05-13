@@ -1,6 +1,6 @@
 import { Text } from "react-konva";
 import { useAppStore } from "../state/store";
-import { combineBoxList, numberBetween } from "../util";
+import { center, combineBoxList, numberBetween, pointInRect } from "../util";
 import { config } from "../config";
 
 const GroupLabels = ({}) => {
@@ -35,8 +35,11 @@ const GroupLabel = ({ x, y, text, color }) => {
 };
 
 function createGroups(elements) {
+  elements = Object.values(elements);
   let groups = [];
-  const tiles = Object.values(elements).filter((e) => e.type == "tile");
+  const frames = elements.filter((e) => e.type == "frame");
+  const inFrame = (tile) => frames.some((frame) => pointInRect(center(tile), frame));
+  const tiles = elements.filter((e) => e.type == "tile" && !inFrame(e));
   for (const tile of tiles) {
     const mergeIndexes = [];
     for (const [index, group] of Object.entries(groups)) {
