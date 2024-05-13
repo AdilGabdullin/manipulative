@@ -23,9 +23,9 @@ const FrameIcon = ({ rows, columns, resizable, onDragStart }) => {
       onClick={() => {
         state.addElement({
           type: "frame",
-          x: -width / 2,
+          x: resizable ? -(width + size) / 2 : -width / 2,
           y: -height / 2,
-          width: width,
+          width: resizable ? width + size : width,
           height: height,
         });
       }}

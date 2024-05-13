@@ -44,7 +44,7 @@ const Elements = () => {
       <Tile id="shadow-tile" visible={true} size={config.tile.size} />
       <Frame id="shadow-frame-5" visible={false} width={5 * frameSize} height={1 * frameSize} />
       <Frame id="shadow-frame-10" visible={false} width={5 * frameSize} height={2 * frameSize} />
-      <Frame id="shadow-frame-resizable" visible={false} width={3 * frameSize} height={3 * frameSize} />
+      <Frame id="shadow-frame-resizable" visible={false} width={4 * frameSize} height={3 * frameSize} />
       {state.workspace == workspace.numberLine && <NumberLine {...elements.numberLine} />}
       {state.workspace == workspace.graph && <Graph />}
     </>

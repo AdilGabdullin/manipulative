@@ -234,7 +234,7 @@ const App = () => {
       case "frame-resizable":
         getShadow("shadow-frame-resizable").setAttrs({
           visible: true,
-          x: x - (frameSize * 3) / 2,
+          x: x - (frameSize * 4) / 2,
           y: y - (frameSize * 3) / 2,
         });
         break;
@@ -293,7 +293,7 @@ const App = () => {
         break;
       case "frame-resizable":
         {
-          const width = frameSize * 3;
+          const width = frameSize * 4;
           const height = frameSize * 3;
           state.addElement({ type: "frame", x: x - width / 2, y: y - height / 2, width, height });
           getShadow("shadow-" + shape).visible(false);
