@@ -15,6 +15,7 @@ import { appSaveText } from "./TextElement";
 import Grid from "./Grid";
 import Summary from "./Summary";
 import GroupLabels from "./GroupLabels";
+import { config } from "../config";
 
 const App = () => {
   const state = useAppStore();
@@ -164,6 +165,7 @@ const App = () => {
   };
 
   // shapes menu events
+  const frameSize = config.frame.size;
   const shadow = null;
   const getShadow = (id) => {
     return shadow || findOne(id);
@@ -215,6 +217,27 @@ const App = () => {
           y,
         });
         break;
+      case "frame-5":
+        getShadow("shadow-frame-5").setAttrs({
+          visible: true,
+          x: x - (frameSize * 5) / 2,
+          y: y - (frameSize * 1) / 2,
+        });
+        break;
+      case "frame-10":
+        getShadow("shadow-frame-10").setAttrs({
+          visible: true,
+          x: x - (frameSize * 5) / 2,
+          y: y - (frameSize * 2) / 2,
+        });
+        break;
+      case "frame-resizable":
+        getShadow("shadow-frame-resizable").setAttrs({
+          visible: true,
+          x: x - (frameSize * 3) / 2,
+          y: y - (frameSize * 3) / 2,
+        });
+        break;
     }
   };
 
@@ -251,6 +274,30 @@ const App = () => {
       case "line":
         state.addElement({ type: "line", x: x - 60, y: y, x2: 120, y2: 0 });
         getShadow("shadow-" + shape).visible(false);
+        break;
+      case "frame-5":
+        {
+          const width = frameSize * 5;
+          const height = frameSize * 1;
+          state.addElement({ type: "frame", x: x - width / 2, y: y - height / 2, width, height });
+          getShadow("shadow-" + shape).visible(false);
+        }
+        break;
+      case "frame-10":
+        {
+          const width = frameSize * 5;
+          const height = frameSize * 2;
+          state.addElement({ type: "frame", x: x - width / 2, y: y - height / 2, width, height });
+          getShadow("shadow-" + shape).visible(false);
+        }
+        break;
+      case "frame-resizable":
+        {
+          const width = frameSize * 3;
+          const height = frameSize * 3;
+          state.addElement({ type: "frame", x: x - width / 2, y: y - height / 2, width, height });
+          getShadow("shadow-" + shape).visible(false);
+        }
         break;
     }
   };

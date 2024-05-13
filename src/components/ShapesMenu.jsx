@@ -35,9 +35,9 @@ export const ShapesMenu = () => {
 
   return (
     <div style={containerStyle}>
-      <FrameIcon rows={1} columns={5} onDragStart={onDragStart("frame5")} />
-      <FrameIcon rows={2} columns={5} onDragStart={onDragStart("frame10")} />
-      <FrameIcon rows={3} columns={3} resizable={true} onDragStart={onDragStart("resizable-frame")} />
+      <FrameIcon rows={1} columns={5} onDragStart={onDragStart("frame-5")} />
+      <FrameIcon rows={2} columns={5} onDragStart={onDragStart("frame-10")} />
+      <FrameIcon rows={3} columns={3} resizable={true} onDragStart={onDragStart("frame-resizable")} />
       <div
         style={buttonStyle}
         draggable="true"
