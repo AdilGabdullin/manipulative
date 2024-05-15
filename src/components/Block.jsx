@@ -7,13 +7,14 @@ import { Animation } from "konva/lib/Animation";
 import { elementInBreakColumn, elementInWrongColumn } from "./PlaceValue";
 import { rectProps } from "./Factors";
 
-export const Block = ({ id, x, y, size, label, scale, visible, events }) => {
+export const Block = ({ id, x, y, size, label, scale, visible, events, stroke }) => {
   x = halfPixel(x);
   y = halfPixel(y);
   const multiColored = useAppStore((state) => state.multiColored);
-  const { angle, depthScale, options, stroke } = config.block;
+  const { angle, depthScale, options } = config.block;
   const option = options[label];
   const { fill, dark } = multiColored ? option : options[10];
+  stroke = stroke || option.stroke;
   const [sx, sy, sz] = size || option.size;
   const width = sx * scale;
   const height = sy * scale;
