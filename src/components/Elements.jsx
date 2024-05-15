@@ -52,7 +52,7 @@ function sortElements(elements) {
   const typeOther = (e) => !["rect", "ellipse", "text", "line"].includes(e.type);
   return [
     ...elements.filter(typeRectOrEllipse),
-    ...elements.filter(typeOther).toSorted((e1, e2) => e2.x - e1.x - (e1.y - e2.y) * 100),
+    ...elements.filter(typeOther).toSorted((e1, e2) => (e2.x - e1.x) / 10 - (e1.y - e2.y)),
     ...elements.filter(typeTextOrLine),
   ];
 }

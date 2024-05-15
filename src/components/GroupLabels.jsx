@@ -78,7 +78,7 @@ function intersect({ x, y, width, height }, other) {
 
 function addTopRight(block) {
   const { x, y, width, height, top, right } = block;
-  return { x: x, y: y - top, width: width + right, height: height + top };
+  return { x: x - right, y: y - top, width: width + right, height: height + top };
 }
 
 export default GroupLabels;

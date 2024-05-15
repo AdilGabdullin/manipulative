@@ -41,7 +41,7 @@ const PlaceValue = () => {
 };
 
 const Head = ({ x, width, height, column }) => {
-  const color = "purple";
+  const color = "pink";
   const fontSize = 28;
   const shift = column.includes("\n") ? fontSize : fontSize / 2;
   return (
