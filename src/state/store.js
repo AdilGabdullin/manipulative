@@ -50,7 +50,7 @@ export const useAppStore = create((set) => ({
 
   // fullscreen: true,
   // orientation: "Vertical",
-  // workspace: workspace.numberLine,
+  workspace: workspace.wall,
 
   toggleGlobal: (field) =>
     set(

@@ -8,6 +8,7 @@ import { BoardTile, Tile, getSize } from "./Tile";
 import { config, workspace } from "../config";
 import NumberLine from "./NumberLine";
 import Graph, { GraphLines } from "./Graph";
+import Wall from "./Wall";
 
 const elementList = {
   text: TextElement,
@@ -40,6 +41,7 @@ const Elements = () => {
       <Tile id="shadow-tile" visible={true} width={config.tile.size} height={config.tile.size} />
       {state.workspace == workspace.numberLine && <NumberLine {...elements.numberLine} />}
       {state.workspace == workspace.graph && <Graph />}
+      {state.workspace == workspace.wall && <Wall />}
     </>
   );
 };

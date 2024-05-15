@@ -15,6 +15,7 @@ export const colors = {
 export const workspace = {
   basic: "Basic",
   numberLine: "Number Line",
+  wall: "Wall",
 };
 
 export const config = {
