@@ -38,7 +38,7 @@ export const Block = ({ id, x, y, size, label, scale, visible, events }) => {
     lines.push({ x: scale * i, y: 0, points: vPoints });
   }
   for (let i = 1; i <= sz; i += 1) {
-    lines.push({ x:  depthStepX * i, y: -depthStepY * i, points: vPoints });
+    lines.push({ x: depthStepX * i, y: -depthStepY * i, points: vPoints });
   }
   for (let i = 0; i <= sx; i += 1) {
     lines.push({ x: scale * i, y: 0, points: zPoints });
@@ -69,9 +69,8 @@ export const ToolbarBlock = (props) => {
   const state = useAppStore();
   const { origin, elements, addElement, breakPlaced } = state;
   const shadow = useRef();
-  const scale = [config.workspace.addition, config.workspace.subtraction].includes(state.workspace)
-    ? config.block.size / 2
-    : config.block.size;
+  const isAddition = [config.workspace.addition, config.workspace.subtraction].includes(state.workspace);
+  const scale = isAddition ? config.block.size / 2 : config.block.size;
 
   const outOfToolbar = (e) => e.target.getStage().getPointerPosition().x > config.leftToolbar.width;
 
@@ -141,7 +140,7 @@ export const ToolbarBlock = (props) => {
       const pos = { x: (-width / 2) * scale, y: (-height / 2) * scale };
       const last = elements[state.lastActiveElement];
       if (last) {
-        pos.x = last.x + width * scale;
+        pos.x = last.x + last.width + (isAddition ? scale : 0);
         pos.y = last.y;
       }
       add(pos);
