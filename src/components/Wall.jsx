@@ -1,7 +1,7 @@
 import { Group, Line } from "react-konva";
-import { colors, config } from "../config";
+import { colors, config, workspace } from "../config";
 import { useAppStore } from "../state/store";
-import { halfPixel } from "../util";
+import { halfPixel, pointsIsClose } from "../util";
 
 const size = config.tile.size;
 
@@ -42,23 +42,14 @@ function wallRect(state) {
 
 export function magnetToWall(tile, state) {
   if (state.workspace != workspace.wall) return null;
-  // const { width, height } = tile;
-  // const { x, y } = lineZeroPos(state);
-  // const { min, max, denominator } = state.elements.numberLine;
-  // const range = max - min;
-  // const iStep = 1 / denominator;
-
-  // for (let i = 0; i < range + iStep / 2; i += iStep) {
-  //   const points = [
-  //     { x: x - 60 + notchX(i), y: y - height },
-  //     { x: x - 60 + notchX(i), y: y },
-  //     { x: x - 60 + notchX(i) - width, y: y - height },
-  //     { x: x - 60 + notchX(i) - width, y: y },
-  //   ];
-  //   for (const p of points) {
-  //     if (pointsIsClose(tile, p, 20)) return p;
-  //   }
-  // }
+  const rect = wallRect(state);
+  const { x, width, height } = rect;
+  for (let y = rect.y; y < rect.y + height; y += size) {
+    const left = { x, y };
+    if (pointsIsClose(tile, left, 20)) return left;
+    const right = { x: x + width - tile.width, y };
+    if (pointsIsClose(tile, right, 20)) return right;
+  }
   return null;
 }
 

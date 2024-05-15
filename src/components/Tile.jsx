@@ -4,7 +4,6 @@ import { getStageXY, halfPixel, pointsIsClose, setVisibility } from "../util";
 import { useAppStore } from "../state/store";
 import { useRef } from "react";
 import { magnetToLine, lineZeroPos } from "./NumberLine";
-import { graphZeroPos } from "./Graph";
 import TileLabel, {
   decimalsVisible,
   fractionsVisible,
@@ -13,6 +12,7 @@ import TileLabel, {
   labelText,
   overlineText,
 } from "./TileLabel";
+import { magnetToWall } from "./Wall";
 
 const size = config.tile.size;
 
@@ -40,11 +40,12 @@ export const ToolbarTile = (props) => {
 
   const placeProps = (e) => {
     const { x, y } = getStageXY(e.target.getStage(), state);
+    const m = state.workspace == workspace.wall ? 16 : 8;
     return {
       x: x - scaledSize / 2,
       y: y - scaledSize / 2,
-      width: state.orientation == "Horizontal" ? (size / props.denominator) * 8 : size,
-      height: state.orientation == "Horizontal" ? size : (size / props.denominator) * 8,
+      width: state.orientation == "Horizontal" ? (size / props.denominator) * m : size,
+      height: state.orientation == "Horizontal" ? size : (size / props.denominator) * m,
     };
   };
 
@@ -196,7 +197,7 @@ export function magnetToAll(tile, elements, state) {
     const pos = magnetToOne(tile, element);
     if (pos) return pos;
   }
-  return magnetToLine(tile, state);
+  return magnetToLine(tile, state) || magnetToWall(tile, state);
 }
 
 function magnetToOne(tile, other) {
