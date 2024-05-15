@@ -121,7 +121,7 @@ function lineBox(element) {
 
 function blockBox(element) {
   const { x, y, width, height, right, top } = element;
-  return { x: x, y: y - top, width: width + right, height: height + top };
+  return { x: x-right, y: y - top, width: width + right, height: height + top };
 }
 
 export function cos(rotation) {

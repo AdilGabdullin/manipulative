@@ -7,14 +7,13 @@ import { Animation } from "konva/lib/Animation";
 import { elementInBreakColumn, elementInWrongColumn } from "./PlaceValue";
 import { rectProps } from "./Factors";
 
-export const Block = ({ id, x, y, size, label, scale, visible, events, stroke }) => {
+export const Block = ({ id, x, y, size, label, scale, visible, events }) => {
   x = halfPixel(x);
   y = halfPixel(y);
   const multiColored = useAppStore((state) => state.multiColored);
   const { angle, depthScale, options } = config.block;
   const option = options[label];
-  const { fill, dark } = multiColored ? option : options[10];
-  stroke = stroke || option.stroke;
+  const { fill, dark, dark2, stroke } = multiColored ? option : options[1000];
   const [sx, sy, sz] = size || option.size;
   const width = sx * scale;
   const height = sy * scale;
@@ -51,13 +50,13 @@ export const Block = ({ id, x, y, size, label, scale, visible, events, stroke })
   return (
     <Group id={id} x={x} y={y} visible={visible} {...events}>
       <Rect width={width} height={height} fill={fill} />
-      <Line x={0} y={0} points={[0, 0, depthX, -depthY, depthX + width, -depthY, width, 0]} closed fill={fill} />
+      <Line x={0} y={0} points={[0, 0, depthX, -depthY, depthX + width, -depthY, width, 0]} closed fill={dark} />
       <Line
         x={0}
         y={0}
         points={[0, 0, 0 + depthX, -depthY, depthX + 0, height - depthY, 0, height]}
         closed
-        fill={dark}
+        fill={dark2}
       />
       {lines.map((props, i) => (
         <Line key={i} {...props} stroke={stroke} strokeWidth={1} />
