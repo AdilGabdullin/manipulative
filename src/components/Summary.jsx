@@ -1,11 +1,13 @@
 import { Rect, Text } from "react-konva";
 import config from "../config";
 import { useAppStore } from "../state/store";
+import { summarySection } from "./Addition";
+
+const { fontSize, height } = config.summary;
+const colors = config.colors;
 
 export const BasicSummary = ({ text, x, y, align }) => {
   text = text.toString();
-  const { fontSize, height } = config.summary;
-  const colors = config.colors;
   const width = text.length * 15 + 32;
   x = align ? x - width : x - width / 2;
   return (
@@ -31,6 +33,21 @@ export const BasicSummary = ({ text, x, y, align }) => {
         align="center"
       />
     </>
+  );
+};
+
+export const AdditionSummary = ({ sum, right, y }) => {
+  return (
+    <Text
+      x={right - summarySection}
+      y={y - fontSize / 2 + 2}
+      text={config.intl.format(sum)}
+      fontSize={fontSize}
+      stroke={colors.blue}
+      fill={colors.blue}
+      width={summarySection}
+      align="center"
+    />
   );
 };
 
