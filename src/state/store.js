@@ -315,7 +315,9 @@ export const useAppStore = create((set) => ({
         const id = newId();
         state.elements[id] = { ...element, id, locked: false };
         state.fdMode = null;
-        state.lastActiveElement = id;
+        const frames = Object.values(current(state.elements)).filter((e) => e.type == "frame");
+        const frame = frames.find((frame) => pointInRect(center(element), frame));
+        state.lastActiveElement = frame ? frame.id : id;
         clearSelected(state);
         pushHistory(state);
       })
@@ -324,12 +326,26 @@ export const useAppStore = create((set) => ({
   addTileToFrame: (tile, frameId) =>
     set(
       produce((state) => {
-        const shift = config.frame.shift;
+        const { size, shift } = config.frame;
+        const frame = state.elements[frameId];
+        const tiles = Object.values(current(state.elements)).filter((e) => e.type == "tile");
+        const slots = [];
+        for (let y = shift + 30; y < frame.height + shift + 30; y += size) {
+          for (let x = shift + 30; x < frame.width + shift + 30; x += size) {
+            slots.push({ x: frame.x + x, y: frame.y + y });
+          }
+        }
         const id = newId();
-        const { x, y } = state.elements[frameId];
-        state.elements[id] = { ...tile, x: x + shift, y: y + shift, id: id, locked: false };
+        const emptySlot = slots.find((slot) => !tiles.some((tile) => pointInRect(slot, tile)));
+        if (emptySlot) {
+          const { x, y } = emptySlot;
+          state.elements[id] = { ...tile, x: x - 30, y: y - 30, id: id, locked: false };
+        } else {
+          const { x, y, width, height } = frame;
+          state.elements[id] = { ...tile, x: x + width + shift, y: y + height + shift, id: id, locked: false };
+          state.lastActiveElement = id;
+        }
         state.fdMode = null;
-        // state.lastActiveElement = id;
         clearSelected(state);
         pushHistory(state);
       })
