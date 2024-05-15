@@ -24,10 +24,11 @@ const Menu = () => {
 };
 
 const DefaultMenu = (props) => {
+  const { numberSet, setValue } = useAppStore();
   const { x, y } = props;
   const { padding } = config.menu;
 
-  const widths = [110, 90, 65, 86, 120];
+  const widths = [84, 70, 65, 86, 124];
   const xs = [];
   widths.forEach((w, i) => {
     let sumWidth = 0;
@@ -39,23 +40,39 @@ const DefaultMenu = (props) => {
 
   return (
     <>
-      <SelectButton x={xs[0]} y={y + padding} width={widths[0]} dropWidth={150} text="Number Set" field="numberSet" />
-      <SelectButton x={xs[1]} y={y + padding} width={widths[1]} dropWidth={90} text="Block Set" field="blockSet" />
+      <ToggleButton
+        x={xs[0]}
+        y={y + padding}
+        width={widths[0]}
+        dropWidth={150}
+        text={numberSet}
+        field="numberSet"
+        opposite
+        onClick={() => {
+          const { whole, decimal } = config.numberSet;
+          setValue("numberSet", numberSet == whole ? decimal : whole);
+        }}
+      />
+      <SelectButton x={xs[1]} y={y + padding} width={widths[1]} dropWidth={100} text="Range" field="blockSet" />
       <ToggleButton x={xs[2]} y={y + padding} width={widths[2]} text="Labels" field="showLabels" />
       <ToggleButton x={xs[3]} y={y + padding} width={widths[3]} text="Summary" field="showSummary" />
-      <ToggleButton x={xs[4]} y={y + padding} width={widths[4]} text="Multi-colored" field="multiColored" />
+      <ToggleButton x={xs[4]} y={y + padding} width={widths[4]} text="Mono-colored" field="multiColored" opposite />
     </>
   );
 };
 
-const ToggleButton = ({ x, y, text, width, field }) => {
+const ToggleButton = ({ x, y, text, width, field, opposite, onClick }) => {
   const state = useAppStore();
   const colors = config.colors;
   const { padding, height } = config.menu;
-  const fill = state[field];
+  const fill = opposite ? !state[field] : state[field];
+
+  if (text.length > 12) {
+    y = y - 8;
+  }
 
   return (
-    <Group key={text} onPointerClick={() => state.toggle(field)}>
+    <Group onPointerClick={onClick || (() => state.toggle(field))}>
       <Rect
         x={x}
         y={y}
@@ -86,7 +103,7 @@ const SelectButton = ({ x, y, width, dropWidth, text, field }) => {
 
   const active = state[field];
   const options = { ...config[field] };
-  if ((state.workspace == config.workspace.factors)) {
+  if (state.workspace == config.workspace.factors) {
     delete options.cubes;
   }
   const onSelect = (value) => {

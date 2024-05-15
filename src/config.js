@@ -12,9 +12,9 @@ const config = {
     decimal: "Decimals",
   },
   blockSet: {
-    cubes: "Cubes",
-    flats: "Flats",
-    rods: "Rods",
+    cubes: "Thousands",
+    flats: "Hundreds",
+    rods: "Tens",
   },
   colors: {
     black: "#000000",
