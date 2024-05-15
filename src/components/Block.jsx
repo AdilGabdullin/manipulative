@@ -219,9 +219,9 @@ export function magnetToAll(block, elements, factorsRect) {
   if (factorsRect) {
     const size = config.block.size;
     const points = [
-      { x: factorsRect.x + 2.3 * size, y: factorsRect.y + 0.6 * size },
-      { x: factorsRect.x + 0.3 * size, y: factorsRect.y + 2.5 * size },
-      { x: factorsRect.x + 2.3 * size, y: factorsRect.y + 2.5 * size },
+      { x: factorsRect.x + (2.3 + 0.433) * size, y: factorsRect.y + 0.6 * size },
+      { x: factorsRect.x + (0.3 + 0.433) * size, y: factorsRect.y + 2.5 * size },
+      { x: factorsRect.x + (2.3 + 0.433) * size, y: factorsRect.y + 2.5 * size },
     ];
     for (const pos of points) {
       if (pointsIsClose(block, pos)) {
