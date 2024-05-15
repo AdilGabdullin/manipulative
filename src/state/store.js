@@ -242,6 +242,10 @@ export const useAppStore = create((set) => ({
         for (const key in attrs) {
           state.elements[id][key] = attrs[key];
         }
+        if (state.elements[id].type == "frame") {
+          clearSelected(state);
+          state.selected.push(id);
+        }
         if (doPush) pushHistory(state);
       })
     ),

@@ -10,7 +10,8 @@ const FrameResizeHandle = (props) => {
   const { selected, elements, origin, scale, offset } = state;
   const { x, y, width, height, findOne } = props;
 
-  const element = selected.length == 1 && elements[selected[0]];
+  const id = selected.find((id) => elements[id].type == "frame");
+  const element = elements[id];
   if (element?.type != "frame" || !element?.resizable) {
     return null;
   }
@@ -26,8 +27,9 @@ const FrameResizeHandle = (props) => {
   let frameNode = null;
   let circles = null;
 
-  const ratio = element.type == "text" ? width / height : null;
-
+  const frameSize = config.frame.size;
+  const minX = x + (16 + frameSize) * scale;
+  const minY = y + (16 + frameSize) * scale;
   const onDragMove = (e) => {
     if (!elementNode) {
       elementNode = findOne(element.id);
@@ -40,6 +42,12 @@ const FrameResizeHandle = (props) => {
     }
 
     const target = e.target;
+    if (target.x() < minX) {
+      target.x(minX);
+    }
+    if (target.y() < minY) {
+      target.y(minY);
+    }
     const x = props.x / scale + offset.x + 8;
     const y = props.y / scale + offset.y + 8;
     const width = Math.abs(target.x() - props.x) / scale - 16;
@@ -80,13 +88,15 @@ const FrameResizeHandle = (props) => {
       .getStage()
       .find(".popup-menu")
       .forEach((node) => node.visible(true));
-    const x = props.x / scale + offset.x + 8;
-    const y = props.y / scale + offset.y + 8;
-    const width = Math.abs(target.x() - props.x) / scale - 16;
-    const height = Math.abs(target.y() - props.y) / scale - 16;
-    const size = config.frame.size;
-    const round = (x) => Math.round(x / size) * size;
-    state.updateElement(element.id, { x: x - origin.x, y: y - origin.y, width: round(width), height: round(height) });
+    const round = (x) => Math.round(x / frameSize) * frameSize;
+    const width = round(Math.abs(target.x() - props.x) / scale - 16);
+    const height = round(Math.abs(target.y() - props.y) / scale - 16);
+    frameNode.setAttrs({
+      width: (width + 16) * scale,
+      height: (height + 16) * scale,
+    });
+    circles[0].setAttrs({ x: props.x + (width + 16) * scale, y: props.y + (height + 16) * scale });
+    state.updateElement(element.id, { width, height });
   };
   return (
     <>
