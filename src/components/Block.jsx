@@ -140,7 +140,7 @@ export const ToolbarBlock = (props) => {
       const pos = { x: (-width / 2) * scale, y: (-height / 2) * scale };
       const last = elements[state.lastActiveElement];
       if (last) {
-        pos.x = last.x + last.width + (isAddition ? scale : 0);
+        pos.x = last.x + last.width + scale;
         pos.y = last.y;
       }
       add(pos);
