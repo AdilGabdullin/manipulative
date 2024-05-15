@@ -23,7 +23,7 @@ export const Tile = ({ id, x, y, size, fill, stroke, visible, events }) => {
 
 export const ToolbarTile = (props) => {
   const state = useAppStore();
-  const { origin, elements, addElement } = state;
+  const { origin, elements, addElement, addTileToFrame } = state;
   const shadow = useRef();
   const size = config.tile.size;
   const scaledSize = getSize(state);
@@ -40,22 +40,24 @@ export const ToolbarTile = (props) => {
     return boardShadow || (boardShadow = e.target.getStage().findOne("#shadow-tile"));
   };
 
-  const add = (pos, place, keepLastActive = false) => {
-    addElement(
-      {
-        ...props,
-        type: "tile",
-        x: pos ? pos.x : place.x,
-        y: pos ? pos.y : place.y,
-        size: size,
-        width: size,
-        height: size,
-        fill: props.fill,
-        fillColor: props.fill,
-        stroke: props.stroke,
-      },
-      keepLastActive
-    );
+  const add = (pos, place, frameId) => {
+    const tile = {
+      ...props,
+      type: "tile",
+      x: pos ? pos.x : place?.x,
+      y: pos ? pos.y : place?.y,
+      size: size,
+      width: size,
+      height: size,
+      fill: props.fill,
+      fillColor: props.fill,
+      stroke: props.stroke,
+    };
+    if (frameId) {
+      addTileToFrame(tile, frameId);
+    } else {
+      addElement(tile);
+    }
   };
 
   const events = {
@@ -96,8 +98,7 @@ export const ToolbarTile = (props) => {
           add({ x: last.x + size, y: last.y });
         }
       } else if (last && last.type == "frame") {
-        const shift = config.frame.shift;
-        add({ x: last.x + shift, y: last.y + shift }, null, true);
+        add(null, null, last.id);
       } else {
         add(firstPos(state));
       }

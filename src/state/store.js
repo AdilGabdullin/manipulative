@@ -309,15 +309,27 @@ export const useAppStore = create((set) => ({
       })
     ),
 
-  addElement: (element, keepLastActive = false) =>
+  addElement: (element) =>
     set(
       produce((state) => {
         const id = newId();
         state.elements[id] = { ...element, id, locked: false };
         state.fdMode = null;
-        if (!keepLastActive) {
-          state.lastActiveElement = id;
-        }
+        state.lastActiveElement = id;
+        clearSelected(state);
+        pushHistory(state);
+      })
+    ),
+
+  addTileToFrame: (tile, frameId) =>
+    set(
+      produce((state) => {
+        const shift = config.frame.shift;
+        const id = newId();
+        const { x, y } = state.elements[frameId];
+        state.elements[id] = { ...tile, x: x + shift, y: y + shift, id: id, locked: false };
+        state.fdMode = null;
+        // state.lastActiveElement = id;
         clearSelected(state);
         pushHistory(state);
       })
