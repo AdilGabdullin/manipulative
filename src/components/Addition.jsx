@@ -49,7 +49,7 @@ const Addition = () => {
       <Line x={0} y={Math.round(mainHeight / 3)} points={[0, 0, totalWidth, 0]} {...commonProps} />
       <Line x={0} y={Math.round((mainHeight / 3) * 2)} points={[0, 0, totalWidth, 0]} {...commonProps} />
       {sectionSeparators.map((x) => (
-        <Line x={x} y={0} points={[0, 0, 0, mainHeight]} {...commonProps} />
+        <Line key={x} x={x} y={0} points={[0, 0, 0, mainHeight]} {...commonProps} />
       ))}
 
       <Circle x={0} y={mainHeight / 2} radius={r} {...commonProps} />
