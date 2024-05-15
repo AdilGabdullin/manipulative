@@ -89,6 +89,11 @@ export const useAppStore = create((set) => ({
         state.offset.x = 0;
         state.offset.y = 0;
         state.scale = 1.0;
+        for (const id in current(state.elements)) {
+          if (id != "numberLine") {
+            delete state.elements[id];
+          }
+        }
         clearSelected(state);
         keepOrigin(state);
       })
