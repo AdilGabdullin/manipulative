@@ -97,6 +97,10 @@ export const useAppStore = create((set) => ({
           }
         }
         state.blockSet = workspace == config.workspace.factors ? config.blockSet.flats : config.blockSet.cubes;
+        if ([config.workspace.addition, config.workspace.subtraction].includes(workspace)) {
+          state.showSummary = true;
+          state.showLabels = false;
+        }
         pushHistory(state);
       })
     ),

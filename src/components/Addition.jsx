@@ -38,7 +38,7 @@ const Addition = () => {
   const { cubes, flats } = config.blockSet;
   const sections = blockSet == cubes ? 4 : blockSet == flats ? 3 : 2;
   const sectionSeparators = [];
-  const step = (totalWidth - summarySection) / sections;
+  const step = (totalWidth - (state.showSummary ? summarySection : 0)) / sections;
   for (let x = step; x < totalWidth; x += step) {
     sectionSeparators.push(Math.round(x));
   }
@@ -58,9 +58,13 @@ const Addition = () => {
         <Line x={0} y={mainHeight / 2} points={[0, -l, 0, l]} {...commonProps} strokeWidth={4} />
       )}
 
-      <AdditionSummary y={mainHeight / 6} right={totalWidth} sum={sums[0]} />
-      <AdditionSummary y={mainHeight / 2} right={totalWidth} sum={sums[1]} />
-      <AdditionSummary y={(mainHeight * 5) / 6} right={totalWidth} sum={sums[2]} />
+      {state.showSummary && (
+        <>
+          <AdditionSummary y={mainHeight / 6} right={totalWidth} sum={sums[0]} />
+          <AdditionSummary y={mainHeight / 2} right={totalWidth} sum={sums[1]} />
+          <AdditionSummary y={(mainHeight * 5) / 6} right={totalWidth} sum={sums[2]} />
+        </>
+      )}
     </Group>
   );
 };
