@@ -295,7 +295,7 @@ const App = () => {
         {
           const width = frameSize * 4;
           const height = frameSize * 3;
-          state.addElement({ type: "frame", x: x - width / 2, y: y - height / 2, width, height });
+          state.addElement({ type: "frame", x: x - width / 2, y: y - height / 2, width, height, resizable: true });
           getShadow("shadow-" + shape).visible(false);
         }
         break;

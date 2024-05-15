@@ -7,6 +7,7 @@ import { createTextArea } from "./TextElement";
 import { magnetToAll } from "./Tile";
 import { config, workspace } from "../config";
 import { lineMagnet } from "./NumberLine";
+import FrameResizeHandle from "./FrameResizeHandle";
 
 const SelectedFrame = (props) => {
   const state = useAppStore();
@@ -217,6 +218,7 @@ const SelectedFrame = (props) => {
         visible={!hidePopup}
       />
       <ShapeResizeHandles x={x} y={y} width={width} height={height} findOne={props.findOne} />
+      <FrameResizeHandle x={x} y={y} width={width} height={height} findOne={props.findOne} />
       {!hidePopup &&
         menuButtons.map(({ text, active, onPointerClick }, i) => (
           <Fragment key={text}>

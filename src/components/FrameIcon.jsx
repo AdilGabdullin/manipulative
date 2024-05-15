@@ -27,6 +27,7 @@ const FrameIcon = ({ rows, columns, resizable, onDragStart }) => {
           y: -height / 2,
           width: resizable ? width + size : width,
           height: height,
+          resizable,
         });
       }}
     >
