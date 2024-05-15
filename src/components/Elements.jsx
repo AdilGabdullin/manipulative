@@ -28,12 +28,10 @@ const Elements = () => {
 
   return (
     <>
-      {Object.values(elements)
-        .toSorted((e1, e2) => e2.x - e1.x - (e1.y - e2.y) * 100)
-        .map((element) => {
-          const Element = elementList[element.type];
-          return <Element key={element.id} {...element} />;
-        })}
+      {sortElements(elements).map((element) => {
+        const Element = elementList[element.type];
+        return <Element key={element.id} {...element} />;
+      })}
       <Rect id="shadow-rect" visible={false} />
       <Ellipse id="shadow-ellipse" visible={false} />
       <Line id="shadow-line" visible={false} lineCap={"round"} lineJoin={"round"} />
@@ -46,5 +44,17 @@ const Elements = () => {
     </>
   );
 };
+
+function sortElements(elements) {
+  elements = Object.values(elements);
+  const typeRectOrEllipse = (e) => ["rect", "ellipse"].includes(e.type);
+  const typeTextOrLine = (e) => ["text", "line"].includes(e.type);
+  const typeOther = (e) => !["rect", "ellipse", "text", "line"].includes(e.type);
+  return [
+    ...elements.filter(typeRectOrEllipse),
+    ...elements.filter(typeOther).toSorted((e1, e2) => e2.x - e1.x - (e1.y - e2.y) * 100),
+    ...elements.filter(typeTextOrLine),
+  ];
+}
 
 export default Elements;

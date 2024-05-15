@@ -174,7 +174,7 @@ export const BoardBlock = (props) => {
 
   const factorsRect = state.workspace == config.workspace.factors && rectProps(state);
   const events = {
-    draggable: true,
+    draggable: !props.locked && !state.fdMode,
     onDragStart: (e) => {
       setVisibility(e, false);
     },
