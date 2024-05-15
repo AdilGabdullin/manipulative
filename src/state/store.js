@@ -48,7 +48,7 @@ export const useAppStore = create((set) => ({
   showSummary: true,
   graphMultiplier: 1,
 
-  fullscreen: true,
+  // fullscreen: true,
   // showGrid: true,
   // workspace: workspace.graph,
 

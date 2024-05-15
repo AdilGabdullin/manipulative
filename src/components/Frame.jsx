@@ -1,9 +1,10 @@
-import { Group, Rect, Line } from "react-konva";
+import { Group, Rect, Line, Text } from "react-konva";
 import { useAppStore } from "../state/store";
 import { colors, config } from "../config";
 import { center, pointInRect } from "../util";
 
 const size = config.frame.size;
+const fontSize = 32;
 
 const Frame = (props) => {
   const { id, width, height, resizable, visible, locked } = props;
@@ -56,7 +57,24 @@ const Frame = (props) => {
       {ys.map((y) => (
         <Line key={y} points={[0, y, width, y]} strokeWidth={2} stroke={colors.black} />
       ))}
+
+      {resizable && <SizeText x={width / 2} y={-20} text={(width / size).toString()} />}
+      {resizable && <SizeText x={-20} y={height / 2} text={(height / size).toString()} />}
     </Group>
+  );
+};
+
+const SizeText = (props) => {
+  return (
+    <Text
+      {...props}
+      x={props.x - 50}
+      y={props.y - fontSize / 2}
+      width={100}
+      fontSize={fontSize}
+      fontFamily="Calibri"
+      align="center"
+    />
   );
 };
 
