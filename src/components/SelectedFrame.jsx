@@ -91,6 +91,16 @@ const SelectedFrame = (props) => {
 
   let menuButtons = [
     {
+      text: "Rotate",
+      active: !lockSelect,
+      show: selected.length == 1 && elements[selected[0]]?.type == "frame",
+      onPointerClick: (e) => {
+        const id = selected[0];
+        const { width, height } = state.elements[id];
+        state.updateElement(id, { width: height, height: width });
+      },
+    },
+    {
       text: "Edit",
       active: !lockSelect,
       show: selected.length == 1 && elements[selected[0]]?.type == "text",

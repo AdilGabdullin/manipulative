@@ -218,7 +218,9 @@ export const useAppStore = create((set) => ({
         if (!element) return;
         element.x += dx;
         element.y += dy;
-        state.lastActiveElement = id;
+        const frames = Object.values(current(state.elements)).filter((e) => e.type == "frame");
+        const frame = frames.find((frame) => pointInRect(center(element), frame));
+        state.lastActiveElement = frame ? frame.id : id;
         pushHistory(state);
       })
     ),
