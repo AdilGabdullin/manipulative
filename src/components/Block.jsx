@@ -18,8 +18,8 @@ export const Block = ({ id, x, y, size, label, scale, visible, events, stroke })
   const [sx, sy, sz] = size || option.size;
   const width = sx * scale;
   const height = sy * scale;
-  const depthStepX = cos(angle) * scale * depthScale;
-  const depthStepY = sin(angle) * scale * depthScale;
+  const depthStepX = Math.round(cos(angle) * scale * depthScale);
+  const depthStepY = Math.round(sin(angle) * scale * depthScale);
   const depthX = depthStepX * sz;
   const depthY = depthStepY * sz;
 
@@ -39,13 +39,13 @@ export const Block = ({ id, x, y, size, label, scale, visible, events, stroke })
     lines.push({ x: scale * i, y: 0, points: vPoints });
   }
   for (let i = 1; i <= sz; i += 1) {
-    lines.push({ x: width + depthStepX * i, y: -depthStepY * i, points: vPoints });
+    lines.push({ x:  depthStepX * i, y: -depthStepY * i, points: vPoints });
   }
   for (let i = 0; i <= sx; i += 1) {
     lines.push({ x: scale * i, y: 0, points: zPoints });
   }
   for (let i = 1; i <= sy; i += 1) {
-    lines.push({ x: width, y: scale * i, points: zPoints });
+    lines.push({ x: 0, y: scale * i, points: zPoints });
   }
 
   return (
@@ -55,7 +55,7 @@ export const Block = ({ id, x, y, size, label, scale, visible, events, stroke })
       <Line
         x={0}
         y={0}
-        points={[width, 0, width + depthX, -depthY, depthX + width, height - depthY, width, height]}
+        points={[0, 0, 0 + depthX, -depthY, depthX + 0, height - depthY, 0, height]}
         closed
         fill={dark}
       />

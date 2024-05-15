@@ -29,7 +29,7 @@ const Elements = () => {
   return (
     <>
       {Object.values(elements)
-        .toSorted((e1, e2) => e1.x - e2.x - (e1.y - e2.y) * 100)
+        .toSorted((e1, e2) => e2.x - e1.x - (e1.y - e2.y) * 100)
         .map((element) => {
           const Element = elementList[element.type];
           return <Element key={element.id} {...element} />;

@@ -31,7 +31,7 @@ const config = {
   animationDuration: 400,
   block: {
     size: 20,
-    angle: 30,
+    angle: 150,
     depthScale: 0.5,
     stroke: "white",
     options: {

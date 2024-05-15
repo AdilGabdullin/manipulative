@@ -13,7 +13,7 @@ const LeftToolbar = () => {
   let y = gap;
   for (const block of blocks) {
     const { height, right, top, scale } = block;
-    block.x = (width - (block.width + right) * scale) / 2;
+    block.x = (width - (block.width - right) * scale) / 2;
     block.y = y;
     y += (height + top) * scale + gap;
   }
