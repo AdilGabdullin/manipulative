@@ -124,6 +124,9 @@ export const useAppStore = create((set) => ({
           state.height = window.innerHeight - topToolbarHeight;
           state.fullscreen = true;
         }
+        if (state.workspace == "Wall") {
+          state.scale = state.fullscreen ? 1.0 : 0.7;
+        }
         keepOrigin(state);
       })
     ),

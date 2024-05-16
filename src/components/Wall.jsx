@@ -115,9 +115,13 @@ const Tracker = ({ x, y, width, height }) => {
   };
   return (
     <Group x={x + pos} y={y} {...events}>
-      <Circle x={0} y={-size / 2} fill={color} radius={12} />
+      <Circle x={0} y={-size / 2} fill={color} radius={11} />
       <Line points={[0, -size / 2, 0, height]} strokeWidth={2} stroke={colors.blue} />
-      <Line points={[0, height + size - bigNotch, 0, height + size + bigNotch]} strokeWidth={2} stroke={colors.white} />
+      <Line
+        points={[0, height + size - bigNotch - 1, 0, height + size + bigNotch + 1]}
+        strokeWidth={4}
+        stroke={colors.white}
+      />
       <Circle
         x={0}
         y={height + size}
@@ -136,7 +140,7 @@ export function wallRect(state) {
   const height = size * 9;
   return {
     x: -width / 2 + 0.5,
-    y: -height / 2 - size + 0.5,
+    y: -height / 2 - size + 10.5,
     width,
     height,
   };
