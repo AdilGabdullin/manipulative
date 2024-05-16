@@ -1,7 +1,7 @@
 import { Circle, Group, Line } from "react-konva";
 import { colors, config, workspace } from "../config";
 import { useAppStore } from "../state/store";
-import { halfPixel, numberBetween, pointsIsClose } from "../util";
+import { boxesIntersect, halfPixel, numberBetween, pointsIsClose } from "../util";
 import { NotchText } from "./Notches";
 
 const size = config.tile.size;
@@ -155,8 +155,19 @@ export function magnetToWall(tile, state) {
   return null;
 }
 
-export function wallPos(state) {
-  return wallRect(state);
+export function wallNextTilePos(state, tileWidth) {
+  const tiles = Object.values(state.elements).filter((e) => e.type == "tile");
+  const freePlace = (x, y) =>
+    tiles.every((tile) => !boxesIntersect(tile, { x: x + 1, y: y + 1, width: tileWidth - 2, height: size - 2 }));
+  const rect = wallRect(state);
+  for (let y = rect.y; y < rect.y + rect.height; y += size) {
+    for (let x = rect.x; x < rect.x + rect.width; x += tileWidth) {
+      if (freePlace(x, y)) {
+        return { x, y };
+      }
+    }
+  }
+  return null;
 }
 
 export default Wall;
