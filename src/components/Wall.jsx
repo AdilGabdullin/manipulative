@@ -2,6 +2,7 @@ import { Group, Line, Rect } from "react-konva";
 import { colors, config, workspace } from "../config";
 import { useAppStore } from "../state/store";
 import { halfPixel, pointsIsClose } from "../util";
+import { NotchText } from "./Notches";
 
 const size = config.tile.size;
 
@@ -53,11 +54,20 @@ const WallLine = ({ x, y, width, height }) => {
     <Group x={x} y={y + height + size}>
       <Line points={[0, 0, width, 0]} {...lineProps2} />
       <Line x={0} points={[0, 0, width, 0]} {...lineProps2} />
-      <Line points={[0, -bigNotch, 0, bigNotch]} {...lineProps2} />
-      {notches.map((x) => (
-        <Line key={x} points={[x, -smallNotch, x, smallNotch]} {...lineProps2} />
+      <Group x={0}>
+        <Line points={[0, -bigNotch, 0, bigNotch]} {...lineProps2} />
+        <NotchText height={10} denominator={1} text={0} />
+      </Group>
+      {notches.map((x, i) => (
+        <Group key={x} x={x}>
+          <Line points={[0, -smallNotch, 0, smallNotch]} {...lineProps2} />
+          <NotchText height={10} denominator={10} text={(i + 1) / 10} />
+        </Group>
       ))}
-      <Line points={[width - 1, -bigNotch, width - 1, bigNotch]} {...lineProps2} />
+      <Group x={width - 1}>
+        <Line points={[0, -bigNotch, 0, bigNotch]} {...lineProps2} />
+        <NotchText height={10} denominator={1} text={1} />
+      </Group>
     </Group>
   );
 };

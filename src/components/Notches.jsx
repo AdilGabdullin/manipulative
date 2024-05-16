@@ -41,7 +41,7 @@ const NotchLine = ({ height, id, short }) => {
   );
 };
 
-const NotchText = ({ height, text, denominator }) => {
+export const NotchText = ({ height, text, denominator }) => {
   const { workspace, mixedNumbers } = useAppStore();
   const [textVisible, setTextVisible] = useState(true);
 
