@@ -3,6 +3,7 @@ import { useAppStore } from "../state/store";
 import { colors } from "../config";
 import { useRef, useState } from "react";
 import { nlLineWidth, notchX } from "./NumberLine";
+import { roundTo } from "../util";
 
 const { round } = Math;
 
@@ -42,34 +43,40 @@ const NotchLine = ({ height, id, short }) => {
 };
 
 export const NotchText = ({ height, text, denominator }) => {
-  const { workspace, mixedNumbers } = useAppStore();
+  const { workspace, labels } = useAppStore();
   const [textVisible, setTextVisible] = useState(true);
 
   const textRef = useRef();
   const lineRef = useRef();
-  const lineRef2 = useRef();
   const textRef2 = useRef();
   const textRef3 = useRef();
   const rectRef = useRef();
 
-  const minus = text < 0 && workspace == "Fractions";
   let wholePart = 0;
 
-  if (denominator != 1) {
-    if (Math.abs(text - Math.round(text)) < 0.0001) {
-      denominator = 1;
-      text = Math.round(text);
-    } else {
-      text = Math.round(text * denominator);
-      if (mixedNumbers) {
-        wholePart = Math.floor(Math.abs(text / denominator));
-        text = text % denominator;
+  if (labels == "Fractions") {
+    if (denominator != 1) {
+      if (Math.abs(text - Math.round(text)) < 0.0001) {
+        denominator = 1;
+        text = Math.round(text);
+      } else {
+        text = Math.round(text * denominator);
       }
     }
+    text = Math.abs(text);
+  } else if (labels == "Decimals") {
+    text = roundTo(text, 3);
+  } else if (labels == "Percents") {
+    text = `${roundTo(text * 100, 1)}%`;
+  } else {
+    if (Math.abs(text - Math.round(text)) > 0.0001) {
+      text = "";
+    } else {
+      text = Math.round(text);
+    }
   }
-  text = Math.abs(text);
 
-  const textWidth = Math.max(text.toString().length * 12, denominator.toString().length * 12);
+  const textWidth = Math.max(text.toString().length * 13, denominator.toString().length * 12);
 
   const events = {
     onPointerEnter: (e) => {
@@ -77,7 +84,6 @@ export const NotchText = ({ height, text, denominator }) => {
       textRef2.current.setAttrs({ fill: colors.blue });
       textRef3.current.setAttrs({ fill: colors.blue });
       lineRef.current.setAttrs({ stroke: colors.blue });
-      lineRef2.current.setAttrs({ stroke: colors.blue });
       if (!textVisible) {
         rectRef.current.setAttr("stroke", colors.blue);
       }
@@ -87,7 +93,6 @@ export const NotchText = ({ height, text, denominator }) => {
       textRef2.current.setAttrs({ fill: colors.black });
       textRef3.current.setAttrs({ fill: colors.black });
       lineRef.current.setAttrs({ stroke: colors.black });
-      lineRef2.current.setAttrs({ stroke: colors.black });
       if (!textVisible) {
         rectRef.current.setAttr("stroke", null);
       }
@@ -123,21 +128,12 @@ export const NotchText = ({ height, text, denominator }) => {
         points={[-textWidth * 0.6, 0, textWidth * 0.6, 0]}
         stroke={colors.black}
         strokeWidth={2}
-        visible={textVisible && denominator != 1}
-      />
-      <Line
-        ref={lineRef2}
-        x={round(-textWidth * 0.6 + (denominator == 1 ? 5 : 0) + (wholePart != 0 ? -textWidth * 0.3 : 0))}
-        y={round(height * 1.25 + 19)}
-        points={[-10, 0, -5, 0]}
-        stroke={colors.black}
-        strokeWidth={2}
-        visible={textVisible && minus}
+        visible={textVisible && denominator != 1 && labels == "Fractions"}
       />
       <Text
         ref={textRef2}
         text={denominator}
-        visible={textVisible && denominator != 1}
+        visible={textVisible && denominator != 1 && labels == "Fractions"}
         x={-textWidth / 2}
         y={height * 1.25 + 20}
         width={textWidth}

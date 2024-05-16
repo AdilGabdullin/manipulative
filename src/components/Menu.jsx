@@ -60,7 +60,7 @@ const DefaultMenu = (props) => {
         options={["Fractions", "Decimals", "Percents", "Blank"]}
         active={state.orientation}
         onSelect={(value) => {
-          state.setValue("labels", value);
+          state.setLabels(value);
         }}
       />
 

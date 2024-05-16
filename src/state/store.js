@@ -52,9 +52,9 @@ export const useAppStore = create((set) => ({
   showWallTracker: true,
   wallAutofilled: false,
 
-  fullscreen: true,
+  // fullscreen: true,
   // orientation: "Vertical",
-  workspace: workspace.wall,
+  // workspace: workspace.wall,
 
   toggleGlobal: (field) =>
     set(
@@ -390,6 +390,18 @@ export const useAppStore = create((set) => ({
           fillWall(state);
         }
         pushHistory(state);
+      })
+    ),
+  setLabels: (value) =>
+    set(
+      produce((state) => {
+        state.labels = value;
+        if (value == "Decimals" || value == "Percents") {
+          const line = state.elements.numberLine;
+          if (line.denominator == 12) {
+            line.denominator = 10;
+          }
+        }
       })
     ),
   action: () => set(produce((state) => {})),

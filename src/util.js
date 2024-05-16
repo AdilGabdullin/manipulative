@@ -194,3 +194,7 @@ export function center({ x, y, width, height }) {
 export function halfPixel(x) {
   return Math.floor(x || 0) + 0.5;
 }
+
+export function roundTo(n, decimalPlaces) {
+  return +(+(Math.round(n + "e+" + decimalPlaces) + "e-" + decimalPlaces)).toFixed(decimalPlaces);
+}

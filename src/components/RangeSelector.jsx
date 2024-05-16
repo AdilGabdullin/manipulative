@@ -4,10 +4,12 @@ import { colors } from "../config";
 import { useRef } from "react";
 
 export const DenominatorSelector = (props) => {
-  const { updateElement } = useAppStore();
+  const { updateElement, labels } = useAppStore();
   const r = 12;
-
-  const values = [1, 2, 3, 4, 5, 6, 8, 10, 12];
+  const values = [1, 2, 3, 4, 5, 6, 8, 10];
+  if (labels != "Decimals" && labels != "Percents") {
+    values.push(12);
+  }
   const start = props.width / 4;
   const end = (props.width * 3) / 4;
   const y = 100;
