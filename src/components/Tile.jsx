@@ -155,14 +155,14 @@ export const ToolbarTile = (props) => {
 
 export const BoardTile = (props) => {
   const state = useAppStore();
-  const { origin, selectIds, elements } = state;
+  const { origin, selectIds, elements, fdMode } = state;
   const { id, locked } = props;
   const x = props.x + origin.x;
   const y = props.y + origin.y;
   const groupRef = useRef();
 
   const events = {
-    draggable: !props.locked,
+    draggable: !props.locked && !fdMode,
     onDragStart: (e) => {
       setVisibility(e, false);
     },

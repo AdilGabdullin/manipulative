@@ -93,6 +93,7 @@ export const useAppStore = create((set) => ({
         state.offset.x = 0;
         state.offset.y = 0;
         state.scale = 1.0;
+        state.wallAutofilled = false;
         for (const id in current(state.elements)) {
           if (id != "numberLine") {
             delete state.elements[id];
@@ -374,7 +375,9 @@ export const useAppStore = create((set) => ({
         clearSelected(state);
         const elements = state.elements;
         for (const id in current(elements)) {
-          delete elements[id];
+          if (id != "numberLine") {
+            delete elements[id];
+          }
         }
         if (state.wallAutofilled) {
           state.wallAutofilled = false;
