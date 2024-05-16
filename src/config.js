@@ -46,7 +46,7 @@ export const config = {
       { fill: "#03a9f4", stroke: "#0a8cd2", denominator: 6 },
       { fill: "#3f51b5", stroke: "#3240a0", denominator: 8 },
       { fill: "#9c27b0", stroke: "#7d22a3", denominator: 10 },
-      { fill: "#616161", stroke: "#2b2e31", denominator: 12 },
+      { fill: "#616161", stroke: "#444444", denominator: 12 },
     ],
   },
 };
