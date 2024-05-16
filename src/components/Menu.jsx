@@ -1,7 +1,7 @@
 import { Group, Line, Rect, Text } from "react-konva";
 import { useAppStore } from "../state/store";
 import BrushMenu from "./BrushMenu";
-import { config } from "../config";
+import { config, workspace } from "../config";
 import { useRef, useState } from "react";
 
 const Menu = () => {
@@ -28,7 +28,7 @@ const DefaultMenu = (props) => {
   const { x, y } = props;
   const { padding } = config.menu;
 
-  const widths = [100, 70, 90, 70, 70];
+  const widths = [95, 70, 90, 70, 70];
   const xs = [];
   widths.forEach((w, i) => {
     let sumWidth = 0;
@@ -40,16 +40,13 @@ const DefaultMenu = (props) => {
 
   return (
     <>
-      <SelectButton
+      <ToggleButton
         x={xs[0]}
         y={y + padding}
         width={widths[0]}
-        dropWidth={100}
-        text="Orientation"
-        options={["Vertical", "Horizontal"]}
-        active={state.orientation}
-        onSelect={(value) => {
-          state.setValue("orientation", value);
+        text={state.orientation}
+        onClick={() => {
+          state.setValue("orientation", state.orientation == "Horizontal" ? "Vertical" : "Horizontal");
         }}
       />
       <SelectButton
@@ -64,16 +61,21 @@ const DefaultMenu = (props) => {
           state.setValue("labels", value);
         }}
       />
-      <ToggleButton x={xs[2]} y={y + padding} width={widths[2]} text="Wall Line" field="showWallLine" />
-      <ToggleButton x={xs[3]} y={y + padding} width={widths[3]} text="Tracker" field="showWallTracker" />
-      <ToggleButton
-        x={xs[4]}
-        y={y + padding}
-        width={widths[3]}
-        text="Autofill"
-        field="wallAutofilled"
-        onClick={() => state.autofillWall()}
-      />
+
+      {state.workspace == workspace.wall && (
+        <>
+          <ToggleButton x={xs[2]} y={y + padding} width={widths[2]} text="Wall Line" field="showWallLine" />
+          <ToggleButton x={xs[3]} y={y + padding} width={widths[3]} text="Tracker" field="showWallTracker" />
+          <ToggleButton
+            x={xs[4]}
+            y={y + padding}
+            width={widths[3]}
+            text="Autofill"
+            field="wallAutofilled"
+            onClick={() => state.autofillWall()}
+          />
+        </>
+      )}
     </>
   );
 };
