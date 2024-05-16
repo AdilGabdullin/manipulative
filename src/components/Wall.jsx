@@ -75,7 +75,7 @@ const WallLine = ({ x, y, width, height }) => {
 
 const Tracker = ({ x, y, width, height }) => {
   const pos = width - 1;
-  const { origin, fdMode, elements } = useAppStore();
+  const { origin, fdMode, elements, showWallLine } = useAppStore();
   x = Math.round(origin.x + x);
   y = Math.round(origin.y + y);
   const minX = x;
@@ -118,7 +118,15 @@ const Tracker = ({ x, y, width, height }) => {
       <Circle x={0} y={-size / 2} fill={color} radius={12} />
       <Line points={[0, -size / 2, 0, height]} strokeWidth={2} stroke={colors.blue} />
       <Line points={[0, height + size - bigNotch, 0, height + size + bigNotch]} strokeWidth={2} stroke={colors.white} />
-      <Circle x={0} y={height + size} fill={color} radius={8} strokeWidth={2} stroke={colors.white} />
+      <Circle
+        x={0}
+        y={height + size}
+        fill={color}
+        radius={8}
+        strokeWidth={2}
+        stroke={colors.white}
+        visible={showWallLine}
+      />
     </Group>
   );
 };
@@ -145,6 +153,10 @@ export function magnetToWall(tile, state) {
     if (pointsIsClose(tile, right, 20)) return right;
   }
   return null;
+}
+
+export function wallPos(state) {
+  return wallRect(state);
 }
 
 export default Wall;

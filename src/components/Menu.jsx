@@ -46,7 +46,9 @@ const DefaultMenu = (props) => {
         width={widths[0]}
         text={state.orientation}
         onClick={() => {
-          state.setValue("orientation", state.orientation == "Horizontal" ? "Vertical" : "Horizontal");
+          if (state.workspace != workspace.wall) {
+            state.setValue("orientation", state.orientation == "Horizontal" ? "Vertical" : "Horizontal");
+          }
         }}
       />
       <SelectButton

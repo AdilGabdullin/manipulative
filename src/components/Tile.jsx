@@ -12,7 +12,7 @@ import TileLabel, {
   labelText,
   overlineText,
 } from "./TileLabel";
-import { magnetToWall } from "./Wall";
+import { magnetToWall, wallPos } from "./Wall";
 
 const size = config.tile.size;
 
@@ -128,6 +128,11 @@ export const ToolbarTile = (props) => {
     },
     onPointerClick: (e) => {
       const place = placeProps(e);
+      if (state.workspace == workspace.wall) {
+        const pos = wallPos(state);
+        if (pos) add(pos, place);
+        return;
+      }
       const last = elements[state.lastActiveElement];
       if (last && last.type == "tile") {
         if (state.orientation == "Horizontal") {
