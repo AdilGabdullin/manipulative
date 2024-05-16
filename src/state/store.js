@@ -92,7 +92,7 @@ export const useAppStore = create((set) => ({
         state.workspace = workspace;
         state.offset.x = 0;
         state.offset.y = 0;
-        state.scale = 1.0;
+        state.scale = workspace == "Wall" && !state.fullscreen ? 0.7 : 1.0;
         state.wallAutofilled = false;
         for (const id in current(state.elements)) {
           if (id != "numberLine") {
