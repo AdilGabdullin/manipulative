@@ -29,7 +29,7 @@ const Wall = ({}) => {
   );
 };
 
-function wallRect(state) {
+export function wallRect(state) {
   const width = size * 16;
   const height = size * 9;
   return {

@@ -28,7 +28,7 @@ const DefaultMenu = (props) => {
   const { x, y } = props;
   const { padding } = config.menu;
 
-  const widths = [100, 70];
+  const widths = [100, 70, 90, 70, 70];
   const xs = [];
   widths.forEach((w, i) => {
     let sumWidth = 0;
@@ -64,18 +64,28 @@ const DefaultMenu = (props) => {
           state.setValue("labels", value);
         }}
       />
+      <ToggleButton x={xs[2]} y={y + padding} width={widths[2]} text="Wall Line" field="showWallLine" />
+      <ToggleButton x={xs[3]} y={y + padding} width={widths[3]} text="Tracker" field="showWallTracker" />
+      <ToggleButton
+        x={xs[4]}
+        y={y + padding}
+        width={widths[3]}
+        text="Autofill"
+        field="wallAutofilled"
+        onClick={() => state.autofillWall()}
+      />
     </>
   );
 };
 
-const ToggleButton = ({ x, y, text, width, field }) => {
+const ToggleButton = ({ x, y, text, width, field, onClick }) => {
   const state = useAppStore();
   const colors = config.colors;
   const { padding, height } = config.menu;
   const fill = state[field];
 
   return (
-    <Group key={text} onPointerClick={() => state.toggle(field)}>
+    <Group key={text} onPointerClick={onClick || (() => state.toggle(field))}>
       <Rect
         x={x}
         y={y}

@@ -8,6 +8,7 @@ import { freeDrawingSlice } from "./freeDrawingSlice";
 import { historySlice, pushHistory } from "./historySlice";
 import { workspace, config } from "../config";
 import { nlHeight, nlWidth } from "../components/NumberLine";
+import { wallRect } from "../components/Wall";
 
 export const boardSize = {
   width: 2460,
@@ -47,6 +48,9 @@ export const useAppStore = create((set) => ({
   showLabels: true,
   orientation: "Horizontal",
   labels: "Fractions",
+  showWallLine: true,
+  showWallTracker: true,
+  wallAutofilled: false,
 
   fullscreen: true,
   // orientation: "Vertical",
@@ -364,10 +368,53 @@ export const useAppStore = create((set) => ({
         }
       })
     ),
+  autofillWall: () =>
+    set(
+      produce((state) => {
+        clearSelected(state);
+        const elements = state.elements;
+        for (const id in current(elements)) {
+          delete elements[id];
+        }
+        if (state.wallAutofilled) {
+          state.wallAutofilled = false;
+        } else {
+          state.wallAutofilled = true;
+          fillWall(state);
+        }
+        pushHistory(state);
+      })
+    ),
   action: () => set(produce((state) => {})),
 }));
 
 function keepOrigin(state) {
   state.origin.x = Math.round(((state.width - leftToolbarWidth) / 2 + leftToolbarWidth) / state.scale);
   state.origin.y = Math.round(((state.height - config.menu.height) / 2 + config.menu.height) / state.scale);
+}
+
+function fillWall(state) {
+  const { x, y } = wallRect(state);
+  const { size, options } = config.tile;
+  options.forEach(({ fill, stroke, denominator }, row) => {
+    for (let i = 0; i < denominator; i += 1) {
+      const id = newId();
+      const width = (size / denominator) * 16;
+      state.elements[id] = {
+        id,
+        locked: false,
+        type: "tile",
+        x: x + i * width,
+        y: y + row * size,
+        width: width,
+        height: size,
+        size: size,
+        fillColor: fill,
+        fill,
+        stroke,
+        denominator,
+      };
+      state.lastActiveElement = id;
+    }
+  });
 }
