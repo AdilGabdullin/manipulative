@@ -27,7 +27,7 @@ const DefaultMenu = (props) => {
   const { x, y } = props;
   const { padding } = config.menu;
 
-  const widths = [55, 65, 86];
+  const widths = [55, 86];
   const xs = [];
   widths.forEach((w, i) => {
     let sumWidth = 0;
@@ -40,8 +40,7 @@ const DefaultMenu = (props) => {
   return (
     <>
       <ToggleButton x={xs[0]} y={y + padding} width={widths[0]} text="Grid" field="showGrid" />
-      <ToggleButton x={xs[1]} y={y + padding} width={widths[1]} text="Labels" field="showLabels" />
-      <ToggleButton x={xs[2]} y={y + padding} width={widths[2]} text="Summary" field="showSummary" />
+      <ToggleButton x={xs[1]} y={y + padding} width={widths[1]} text="Summary" field="showSummary" />
     </>
   );
 };

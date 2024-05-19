@@ -14,7 +14,6 @@ import ImagePreloader from "./ImagePreloader";
 import { appSaveText } from "./TextElement";
 import Grid from "./Grid";
 import Summary from "./Summary";
-import GroupLabels from "./GroupLabels";
 import { config } from "../config";
 
 const App = () => {
@@ -342,7 +341,6 @@ const App = () => {
         >
           {state.showGrid && <Grid />}
           <Elements />
-          <GroupLabels />
           <SelectRect />
         </Layer>
         <Layer
