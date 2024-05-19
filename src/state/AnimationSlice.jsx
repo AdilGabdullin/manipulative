@@ -1,7 +1,7 @@
-import { allPairs, boxesIntersect, clearSelected, halfPixel, invertText, newId, oppositeText } from "../util";
+import { allPairs, boxesIntersect, clearSelected, newId, oppositeText } from "../util";
 import { current, produce } from "immer";
 import { pushHistory } from "./historySlice";
-import { animationDuration } from "../config";
+import { animationDuration, config } from "../config";
 
 export const animationSlice = (set) => ({
   finishDelay: null,
@@ -55,7 +55,7 @@ export const animationSlice = (set) => ({
       produce((state) => {
         for (const id of current(state.selected)) {
           const element = state.elements[id];
-          if (element.type == "tile") {
+          if (element.type == "tile" && ["+", "-"].includes(element.text)) {
             element.invert = true;
           }
         }
@@ -88,7 +88,13 @@ export const animationSlice = (set) => ({
             delete state.elements[id];
           }
           if (element.invert) {
-            element.text = invertText(element.text);
+            if (element.text == "+") {
+              element.text = "-";
+              element.fill = config.tile.options[1].fill;
+            } else {
+              element.text = "+";
+              element.fill = config.tile.options[0].fill;
+            }
             delete element.invert;
           }
           if (element.rotate) {
@@ -156,5 +162,4 @@ function addZero(state, { x, y }) {
   };
   state.fdMode = null;
   state.lastActiveElement = id;
-  clearSelected(state);
 }

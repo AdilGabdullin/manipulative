@@ -1,6 +1,15 @@
 import { Group, Rect } from "react-konva";
 import { animationDuration, colors, config, workspace } from "../config";
-import { blendColors, getStageXY, halfPixel, hexToRgb, pointInRect, pointsIsClose, setVisibility } from "../util";
+import {
+  blendColors,
+  getStageXY,
+  halfPixel,
+  hexToRgb,
+  pointInRect,
+  pointsIsClose,
+  rgbToHex,
+  setVisibility,
+} from "../util";
 import { useAppStore } from "../state/store";
 import { useEffect, useRef } from "react";
 import { magnetToLine, lineZeroPos } from "./NumberLine";
@@ -35,9 +44,14 @@ export const Tile = ({ id, x, y, size, fill, visible, events, text }) => {
         <>
           <Rect width={size} height={size} fill={fill} cornerRadius={size / 2} />
           <Rect x={size / 4} y={size / 2 - signWidth / 2} width={size / 2} height={signWidth} fill={colors.white} />
-          {text == "+" && (
-            <Rect y={size / 4} x={size / 2 - signWidth / 2} height={size / 2} width={signWidth} fill={colors.white} />
-          )}
+          <Rect
+            y={size / 4}
+            x={size / 2 - signWidth / 2}
+            height={size / 2}
+            width={signWidth}
+            fill={colors.white}
+            opacity={text == "+" ? 1 : 0}
+          />
         </>
       )}
     </Group>
@@ -149,10 +163,9 @@ export const BoardTile = (props) => {
   useEffect(() => {
     // if (annihilation) animateAnnihilation(groupRef.current);
     if (moveTo) animateMove(groupRef.current, moveTo.x - props.x, moveTo.y - props.y);
-    // if (invert) {
-    //   const inSolving = state.workspace == workspace.solving && boxesIntersect(props, solvingRectProps(state));
-    //   animateInvert(groupRef.current, props, origin, multiColored, inSolving);
-    // }
+    if (invert) {
+      animateInvert(groupRef.current, props);
+    }
   }, [annihilation, moveTo, invert]);
 
   const events = {
@@ -303,6 +316,27 @@ function animateAnnihilation(node) {
     const k = (t * t) / (2 * (t * t - t) + 1);
     circle.setAttrs({ opacity: (1 - k) / 2 + 0.5, fill: blendColors(circleFrom, circleTo, k) });
     lines.forEach((line) => line.setAttrs({ fill: blendColors(lineFrom, lineTo, k) }));
+  }, node.getLayer());
+  animation.start();
+}
+
+function animateInvert(node, props) {
+  const [circle, ...lines] = node.children[0].children;
+  const isPlus = props.text == "+";
+  const option = config.tile.options[isPlus ? 1 : 0];
+  const from = hexToRgb(props.fill);
+  const to = hexToRgb(option.fill);
+  const animation = new Animation(({ time }) => {
+    if (time > animationDuration) {
+      animation.stop();
+      circle.setAttr("fill", option.fill);
+      lines[1].setAttr("opacity", isPlus ? 0 : 1);
+      return;
+    }
+    const t = time / animationDuration;
+    const k = (t * t) / (2 * (t * t - t) + 1);
+    circle.setAttr("fill", blendColors(from, to, k));
+    lines[1].setAttr("opacity", isPlus ? 1 - k : k);
   }, node.getLayer());
   animation.start();
 }

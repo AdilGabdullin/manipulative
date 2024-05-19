@@ -91,6 +91,8 @@ const SelectedFrame = (props) => {
   };
 
   const tiles = selected.map((id) => elements[id]).filter((el) => el.type == "tile");
+  const plusTiles = tiles.some((t) => t.text == "+");
+  const minusTiles = tiles.some((t) => t.text == "-");
   let menuButtons = [
     {
       text: "Rotate",
@@ -119,8 +121,16 @@ const SelectedFrame = (props) => {
       },
     },
     {
+      text: "Invert",
+      active: true,
+      show: minusTiles || plusTiles,
+      onPointerClick: (e) => {
+        state.invertSelected();
+      },
+    },
+    {
       text: "Zero Pair",
-      active: tiles.some((t) => t.text == "-") && tiles.some((t) => t.text == "+"),
+      active: minusTiles && plusTiles,
       show: tiles.length > 0,
       onPointerClick: (e) => {
         state.zeroPair();
