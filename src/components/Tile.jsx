@@ -1,6 +1,6 @@
 import { Group, Rect } from "react-konva";
 import { animationDuration, colors, config, workspace } from "../config";
-import { getStageXY, halfPixel, pointInRect, pointsIsClose, setVisibility } from "../util";
+import { blendColors, getStageXY, halfPixel, hexToRgb, pointInRect, pointsIsClose, setVisibility } from "../util";
 import { useAppStore } from "../state/store";
 import { useEffect, useRef } from "react";
 import { magnetToLine, lineZeroPos } from "./NumberLine";
@@ -9,9 +9,8 @@ import { getPPWSize } from "./PartPartWhole";
 import { Animation } from "konva/lib/Animation";
 
 const size = config.tile.size;
-const zeroOpacity = 0.5;
 
-export const Tile = ({ id, x, y, size, fill, stroke, visible, events, text }) => {
+export const Tile = ({ id, x, y, size, fill, visible, events, text }) => {
   x = halfPixel(x);
   y = halfPixel(y);
   size = Math.round(size);
@@ -20,18 +19,24 @@ export const Tile = ({ id, x, y, size, fill, stroke, visible, events, text }) =>
     <Group id={id} x={x} y={y} visible={visible} {...events}>
       {text == "0" ? (
         <>
-          <Rect width={size} height={size} fill={fill} cornerRadius={size / 2} opacity={zeroOpacity} />
-          <Rect y={size / 2} width={size} height={size} fill={fill} cornerRadius={size / 2} opacity={zeroOpacity} />
-          <Rect x={size / 4} y={size / 2 - signWidth / 2} width={size / 2} height={signWidth} fill="black" />
-          <Rect y={size / 4} x={size / 2 - signWidth / 2} height={size / 2} width={signWidth} fill="black" />
-          <Rect x={size / 4} y={halfPixel(size - signWidth / 2)} width={size / 2} height={signWidth} fill="black" />
+          <Rect width={size} height={size} fill={fill} cornerRadius={size / 2} opacity={0.5} />
+          <Rect y={size / 2} width={size} height={size} fill={fill} cornerRadius={size / 2} opacity={0.5} />
+          <Rect x={size / 4} y={size / 2 - signWidth / 2} width={size / 2} height={signWidth} fill={colors.black} />
+          <Rect y={size / 4} x={size / 2 - signWidth / 2} height={size / 2} width={signWidth} fill={colors.black} />
+          <Rect
+            x={size / 4}
+            y={halfPixel(size - signWidth / 2)}
+            width={size / 2}
+            height={signWidth}
+            fill={colors.black}
+          />
         </>
       ) : (
         <>
           <Rect width={size} height={size} fill={fill} cornerRadius={size / 2} />
-          <Rect x={size / 4} y={size / 2 - signWidth / 2} width={size / 2} height={signWidth} fill="white" />
+          <Rect x={size / 4} y={size / 2 - signWidth / 2} width={size / 2} height={signWidth} fill={colors.white} />
           {text == "+" && (
-            <Rect y={size / 4} x={size / 2 - signWidth / 2} height={size / 2} width={signWidth} fill="white" />
+            <Rect y={size / 4} x={size / 2 - signWidth / 2} height={size / 2} width={signWidth} fill={colors.white} />
           )}
         </>
       )}
@@ -281,17 +286,23 @@ function animateMove(node, x, y) {
 
 function animateAnnihilation(node) {
   const [circle, ...lines] = node.children[0].children;
-  circle.setAttrs({ opacity: 1, fill: colors.darkGrey });
+
+  const circleFrom = hexToRgb(circle.getAttr("fill"));
+  const circleTo = hexToRgb(colors.darkGrey);
+  const lineFrom = hexToRgb(lines[0].getAttr("fill"));
+  const lineTo = hexToRgb(colors.black);
+
   const animation = new Animation(({ time }) => {
     if (time > animationDuration) {
       animation.stop();
-      circle.setAttrs({ opacity: zeroOpacity, fill: colors.darkGrey });
+      circle.setAttrs({ opacity: 0.5, fill: colors.darkGrey });
       lines.forEach((line) => line.setAttrs({ fill: colors.black }));
       return;
     }
     const t = time / animationDuration;
     const k = (t * t) / (2 * (t * t - t) + 1);
-    circle.setAttr("opacity", (1 - k) / 2 + 0.5);
+    circle.setAttrs({ opacity: (1 - k) / 2 + 0.5, fill: blendColors(circleFrom, circleTo, k) });
+    lines.forEach((line) => line.setAttrs({ fill: blendColors(lineFrom, lineTo, k) }));
   }, node.getLayer());
   animation.start();
 }
