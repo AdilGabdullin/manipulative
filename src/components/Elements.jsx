@@ -41,7 +41,9 @@ const Elements = () => {
       <Ellipse id="shadow-ellipse" visible={false} />
       <Line id="shadow-line" visible={false} lineCap={"round"} lineJoin={"round"} />
       <Text id="shadow-text" visible={false} fill={"black"} fontSize={36} text="Text" fontFamily="Calibri" />
-      <Tile id="shadow-tile" visible={true} size={config.tile.size} />
+      <Tile id="shadow-tile+" visible={true} size={config.tile.size} text="+" fill={config.tile.options[0].fill}/>
+      <Tile id="shadow-tile-" visible={true} size={config.tile.size} text="-" fill={config.tile.options[1].fill}/>
+      <Tile id="shadow-tile0" visible={true} size={config.tile.size} text="0" fill={config.tile.options[2].fill}/>
       <Frame id="shadow-frame-5" visible={false} width={5 * frameSize} height={1 * frameSize} />
       <Frame id="shadow-frame-10" visible={false} width={5 * frameSize} height={2 * frameSize} />
       <Frame id="shadow-frame-resizable" visible={false} width={4 * frameSize} height={3 * frameSize} />

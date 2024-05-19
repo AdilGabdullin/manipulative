@@ -1,9 +1,8 @@
-import { Group, Rect, Text } from "react-konva";
-import { colors, config, workspace } from "../config";
-import { getStageXY, halfPixel, numberBetween, pointInRect, pointsIsClose, setVisibility } from "../util";
+import { Group, Rect } from "react-konva";
+import { config, workspace } from "../config";
+import { getStageXY, halfPixel, pointInRect, pointsIsClose, setVisibility } from "../util";
 import { useAppStore } from "../state/store";
-import { useEffect, useRef } from "react";
-import { Animation } from "konva/lib/Animation";
+import { useRef } from "react";
 import { magnetToLine, lineZeroPos } from "./NumberLine";
 import { graphZeroPos } from "./Graph";
 import { getPPWSize } from "./PartPartWhole";
@@ -54,7 +53,7 @@ export const ToolbarTile = (props) => {
 
   let boardShadow = null;
   const getBoardShadow = (e) => {
-    return boardShadow || (boardShadow = e.target.getStage().findOne("#shadow-tile"));
+    return boardShadow || (boardShadow = e.target.getStage().findOne("#shadow-tile" + props.text));
   };
 
   const add = (pos, place, frameId) => {
@@ -65,7 +64,7 @@ export const ToolbarTile = (props) => {
       y: pos ? pos.y : place?.y,
       size: size,
       width: size,
-      height: size,
+      height: size * props.height,
       fill: props.fill,
       fillColor: props.fill,
       stroke: props.stroke,
@@ -91,7 +90,6 @@ export const ToolbarTile = (props) => {
       const y = halfPixel(origin.y + (pos ? pos.y : place.y));
       const boardShadow = getBoardShadow(e);
       boardShadow.setAttrs({ x, y, visible: out });
-      boardShadow.children[0].setAttrs({ fill: props.fill });
     },
     onDragEnd: (e) => {
       const target = e.target;

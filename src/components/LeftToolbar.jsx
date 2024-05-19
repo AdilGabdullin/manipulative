@@ -28,6 +28,7 @@ const LeftToolbar = () => {
           fill={op.fill}
           stroke={op.stroke}
           text={op.text}
+          height={op.height || 1}
         />
       ))}
     </>

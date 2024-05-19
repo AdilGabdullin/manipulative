@@ -41,11 +41,11 @@ export const config = {
   },
   colors,
   tile: {
-    size: 60,
+    size: 62,
     options: [
       { fill: colors.yellow, stroke: colors.black, text: "+" },
       { fill: colors.red, stroke: colors.black, text: "-" },
-      { fill: colors.darkGrey, stroke: colors.black, text: "0" },
+      { fill: colors.darkGrey, stroke: colors.black, text: "0", height: 1.5 },
     ],
   },
   frame: {
