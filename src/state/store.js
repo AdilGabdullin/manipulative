@@ -162,7 +162,7 @@ export const useAppStore = create((set) => ({
       })
     ),
 
-  clearSelect: () => set((state) => ({ ...state, selected: [], lockSelect: false, colorMenuVisible: false })),
+  clearSelect: () => set((state) => ({ ...state, selected: [], lockSelect: false })),
 
   select: (downPos, upPos) =>
     set((state) => {
@@ -194,10 +194,10 @@ export const useAppStore = create((set) => ({
           }
         }
       });
-      return { ...state, selected: [...new Set(selected)], lockSelect: false, colorMenuVisible: false };
+      return { ...state, selected: [...new Set(selected)], lockSelect: false };
     }),
 
-  selectIds: (ids, lockSelect) => set((state) => ({ ...state, selected: ids, lockSelect, colorMenuVisible: false })),
+  selectIds: (ids, lockSelect) => set((state) => ({ ...state, selected: ids, lockSelect })),
 
   relocateSelected: (dx, dy) =>
     set(
@@ -364,12 +364,6 @@ export const useAppStore = create((set) => ({
         state.fdMode = null;
         clearSelected(state);
         pushHistory(state);
-      })
-    ),
-  openColorMenu: () =>
-    set(
-      produce((state) => {
-        state.colorMenuVisible = true;
       })
     ),
   setColor: (colorIndex) =>
