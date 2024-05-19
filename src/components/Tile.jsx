@@ -1,5 +1,5 @@
-import { Group, Rect } from "react-konva";
-import { config, workspace } from "../config";
+import { Group, Rect, Text } from "react-konva";
+import { colors, config, workspace } from "../config";
 import { getStageXY, halfPixel, numberBetween, pointInRect, pointsIsClose, setVisibility } from "../util";
 import { useAppStore } from "../state/store";
 import { useEffect, useRef } from "react";
@@ -10,13 +10,30 @@ import { getPPWSize } from "./PartPartWhole";
 
 const size = config.tile.size;
 
-export const Tile = ({ id, x, y, size, fill, stroke, visible, events }) => {
+export const Tile = ({ id, x, y, size, fill, stroke, visible, events, text }) => {
   x = halfPixel(x);
   y = halfPixel(y);
-  size = Math.round(size) - 1;
+  size = Math.round(size);
+  const signWidth = 5;
   return (
     <Group id={id} x={x} y={y} visible={visible} {...events}>
-      <Rect width={size} height={size} fill={fill} stroke={stroke} strokeWidth={1} />
+      {text == "0" ? (
+        <>
+          <Rect width={size} height={size} fill={fill} cornerRadius={size / 2} opacity={0.5} />
+          <Rect y={size / 2} width={size} height={size} fill={fill} cornerRadius={size / 2} opacity={0.5} />
+          <Rect x={size / 4} y={size / 2 - signWidth / 2} width={size / 2} height={signWidth} fill="black" />
+          <Rect y={size / 4} x={size / 2 - signWidth / 2} height={size / 2} width={signWidth} fill="black" />
+          <Rect x={size / 4} y={halfPixel(size - signWidth / 2)} width={size / 2} height={signWidth} fill="black" />
+        </>
+      ) : (
+        <>
+          <Rect width={size} height={size} fill={fill} cornerRadius={size / 2} />
+          <Rect x={size / 4} y={size / 2 - signWidth / 2} width={size / 2} height={signWidth} fill="white" />
+          {text == "+" && (
+            <Rect y={size / 4} x={size / 2 - signWidth / 2} height={size / 2} width={signWidth} fill="white" />
+          )}
+        </>
+      )}
     </Group>
   );
 };
@@ -74,7 +91,7 @@ export const ToolbarTile = (props) => {
       const y = halfPixel(origin.y + (pos ? pos.y : place.y));
       const boardShadow = getBoardShadow(e);
       boardShadow.setAttrs({ x, y, visible: out });
-      boardShadow.children[0].setAttrs({ fill: props.fill, stroke: props.stroke });
+      boardShadow.children[0].setAttrs({ fill: props.fill });
     },
     onDragEnd: (e) => {
       const target = e.target;
