@@ -8,6 +8,7 @@ import { freeDrawingSlice } from "./freeDrawingSlice";
 import { historySlice, pushHistory } from "./historySlice";
 import { workspace, config } from "../config";
 import { nlHeight, nlWidth } from "../components/NumberLine";
+import { animationSlice } from "./AnimationSlice";
 
 export const boardSize = {
   width: 2460,
@@ -17,6 +18,7 @@ export const boardSize = {
 export const useAppStore = create((set) => ({
   ...freeDrawingSlice(set),
   ...historySlice(set),
+  ...animationSlice(set),
   imagesReady: false,
   loadedImagesCount: 0,
   offset: { x: 0, y: 0 },

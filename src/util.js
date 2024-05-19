@@ -194,3 +194,22 @@ export function center({ x, y, width, height }) {
 export function halfPixel(x) {
   return Math.floor(x || 0) + 0.5;
 }
+
+export function allPairs(xs) {
+  xs = xs.toSorted((a, b) => a.text.charCodeAt(0) - b.text.charCodeAt(0));
+  const pairs = [];
+  for (let i = 0; i < xs.length - 1; i += 1) {
+    for (let k = i + 1; k < xs.length; k += 1) {
+      pairs.push([xs[i], xs[k]]);
+    }
+  }
+  return pairs;
+}
+
+export function oppositeText(that, other) {
+  return (that == "-" && other == "+") || (that == "+" && other == "-");
+}
+
+export function invertText(text) {
+  return text.match(/-/) ? text.slice(1) : "-" + text;
+}

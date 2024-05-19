@@ -1,11 +1,12 @@
 import { Group, Rect } from "react-konva";
-import { config, workspace } from "../config";
+import { animationDuration, config, workspace } from "../config";
 import { getStageXY, halfPixel, pointInRect, pointsIsClose, setVisibility } from "../util";
 import { useAppStore } from "../state/store";
-import { useRef } from "react";
+import { useEffect, useRef } from "react";
 import { magnetToLine, lineZeroPos } from "./NumberLine";
 import { graphZeroPos } from "./Graph";
 import { getPPWSize } from "./PartPartWhole";
+import { Animation } from "konva/lib/Animation";
 
 const size = config.tile.size;
 
@@ -135,10 +136,19 @@ export const ToolbarTile = (props) => {
 export const BoardTile = (props) => {
   const state = useAppStore();
   const { origin, selectIds, elements, fdMode } = state;
-  const { id, locked } = props;
+  const { id, locked, annihilation, moveTo, invert } = props;
   const x = props.x + origin.x;
   const y = props.y + origin.y;
   const groupRef = useRef();
+
+  useEffect(() => {
+    // if (annihilation) animateAnnihilation(groupRef.current);
+    if (moveTo) animateMove(groupRef.current, moveTo.x - props.x, moveTo.y - props.y);
+    // if (invert) {
+    //   const inSolving = state.workspace == workspace.solving && boxesIntersect(props, solvingRectProps(state));
+    //   animateInvert(groupRef.current, props, origin, multiColored, inSolving);
+    // }
+  }, [annihilation, moveTo, invert]);
 
   const events = {
     draggable: !locked && !fdMode,
@@ -249,4 +259,22 @@ function firstPos(state) {
       return { x: -width / 2 + size / 2, y: size / 2 };
       break;
   }
+}
+
+function animateMove(node, x, y) {
+  const animation = new Animation(({ time }) => {
+    if (time > animationDuration) {
+      animation.stop();
+      node.setAttrs({ x, y });
+      // animateAnnihilation(node);
+      return;
+    }
+    const t = time / animationDuration;
+    const k = (t * t) / (2 * (t * t - t) + 1);
+    node.setAttrs({
+      x: x * k,
+      y: y * k,
+    });
+  }, node.getLayer());
+  animation.start();
 }

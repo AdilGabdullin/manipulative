@@ -90,6 +90,7 @@ const SelectedFrame = (props) => {
     setVisibility(e, true);
   };
 
+  const tiles = selected.map((id) => elements[id]).filter((el) => el.type == "tile");
   let menuButtons = [
     {
       text: "Rotate",
@@ -118,9 +119,17 @@ const SelectedFrame = (props) => {
       },
     },
     {
+      text: "Zero Pair",
+      active: tiles.some((t) => t.text == "-") && tiles.some((t) => t.text == "+"),
+      show: tiles.length > 0,
+      onPointerClick: (e) => {
+        state.zeroPair();
+      },
+    },
+    {
       text: "Fill On/Off",
       active: !lockSelect,
-      show: selected.some((id) => elements[id].type == "tile" || elements[id].fill != undefined),
+      show: selected.some((id) => elements[id].fill != undefined),
       onPointerClick: (e) => {
         state.toggleValueSelected("fill");
       },

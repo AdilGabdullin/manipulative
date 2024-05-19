@@ -20,9 +20,10 @@ export const workspace = {
   ppw: "Part-Part-Whole",
 };
 
+export const animationDuration = 400;
+
 export const config = {
   intl: new Intl.NumberFormat("en-US"),
-  animationDuration: 400,
   leftToolbar: {
     width: 180,
     padding: 20,
