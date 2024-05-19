@@ -1,5 +1,5 @@
 import { Group, Rect } from "react-konva";
-import { animationDuration, config, workspace } from "../config";
+import { animationDuration, colors, config, workspace } from "../config";
 import { getStageXY, halfPixel, pointInRect, pointsIsClose, setVisibility } from "../util";
 import { useAppStore } from "../state/store";
 import { useEffect, useRef } from "react";
@@ -9,6 +9,7 @@ import { getPPWSize } from "./PartPartWhole";
 import { Animation } from "konva/lib/Animation";
 
 const size = config.tile.size;
+const zeroOpacity = 0.5;
 
 export const Tile = ({ id, x, y, size, fill, stroke, visible, events, text }) => {
   x = halfPixel(x);
@@ -19,8 +20,8 @@ export const Tile = ({ id, x, y, size, fill, stroke, visible, events, text }) =>
     <Group id={id} x={x} y={y} visible={visible} {...events}>
       {text == "0" ? (
         <>
-          <Rect width={size} height={size} fill={fill} cornerRadius={size / 2} opacity={0.5} />
-          <Rect y={size / 2} width={size} height={size} fill={fill} cornerRadius={size / 2} opacity={0.5} />
+          <Rect width={size} height={size} fill={fill} cornerRadius={size / 2} opacity={zeroOpacity} />
+          <Rect y={size / 2} width={size} height={size} fill={fill} cornerRadius={size / 2} opacity={zeroOpacity} />
           <Rect x={size / 4} y={size / 2 - signWidth / 2} width={size / 2} height={signWidth} fill="black" />
           <Rect y={size / 4} x={size / 2 - signWidth / 2} height={size / 2} width={signWidth} fill="black" />
           <Rect x={size / 4} y={halfPixel(size - signWidth / 2)} width={size / 2} height={signWidth} fill="black" />
@@ -67,7 +68,6 @@ export const ToolbarTile = (props) => {
       width: size,
       height: size * props.height,
       fill: props.fill,
-      fillColor: props.fill,
       stroke: props.stroke,
     };
     if (frameId) {
@@ -266,7 +266,7 @@ function animateMove(node, x, y) {
     if (time > animationDuration) {
       animation.stop();
       node.setAttrs({ x, y });
-      // animateAnnihilation(node);
+      animateAnnihilation(node);
       return;
     }
     const t = time / animationDuration;
@@ -275,6 +275,23 @@ function animateMove(node, x, y) {
       x: x * k,
       y: y * k,
     });
+  }, node.getLayer());
+  animation.start();
+}
+
+function animateAnnihilation(node) {
+  const [circle, ...lines] = node.children[0].children;
+  circle.setAttrs({ opacity: 1, fill: colors.darkGrey });
+  const animation = new Animation(({ time }) => {
+    if (time > animationDuration) {
+      animation.stop();
+      circle.setAttrs({ opacity: zeroOpacity, fill: colors.darkGrey });
+      lines.forEach((line) => line.setAttrs({ fill: colors.black }));
+      return;
+    }
+    const t = time / animationDuration;
+    const k = (t * t) / (2 * (t * t - t) + 1);
+    circle.setAttr("opacity", (1 - k) / 2 + 0.5);
   }, node.getLayer());
   animation.start();
 }

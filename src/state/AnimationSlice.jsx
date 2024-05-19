@@ -1,4 +1,4 @@
-import { allPairs, boxesIntersect, clearSelected, invertText, oppositeText } from "../util";
+import { allPairs, boxesIntersect, clearSelected, halfPixel, invertText, newId, oppositeText } from "../util";
 import { current, produce } from "immer";
 import { pushHistory } from "./historySlice";
 import { animationDuration } from "../config";
@@ -31,15 +31,19 @@ export const animationSlice = (set) => ({
             const that = elements[id1];
             const other = elements[id2];
             that.moveTo = {
-              x: (that.x + other.x) / 2,
-              y: (that.y + other.y) / 2 - that.size / 4,
+              x: Math.round((that.x + other.x) / 2),
+              y: Math.round((that.y + other.y) / 2 - that.size / 4),
             };
             other.moveTo = {
-              x: (that.x + other.x) / 2,
-              y: (that.y + other.y) / 2 + that.size / 4,
+              x: Math.round((that.x + other.x) / 2),
+              y: Math.round((that.y + other.y) / 2 + that.size / 4),
             };
-            // that.delete = true;
-            // other.delete = true;
+            that.delete = true;
+            that.zeroPos = {
+              x: Math.round((that.x + other.x) / 2),
+              y: Math.round((that.y + other.y) / 2 - that.size / 4),
+            };
+            other.delete = true;
           }
           state.finishDelay = animationDuration * 2;
           clearSelected(state);
@@ -78,6 +82,9 @@ export const animationSlice = (set) => ({
         for (const id in current(state.elements)) {
           const element = state.elements[id];
           if (element.delete) {
+            if (element.zeroPos) {
+              addZero(state, element.zeroPos);
+            }
             delete state.elements[id];
           }
           if (element.invert) {
@@ -130,4 +137,24 @@ export function searchOpposites(state) {
     }
   }
   return opposites;
+}
+
+function addZero(state, { x, y }) {
+  const id = newId();
+  state.elements[id] = {
+    type: "tile",
+    id,
+    x,
+    y,
+    width: 62,
+    height: 93,
+    size: 62,
+    fill: "grey",
+    stroke: "#000000",
+    text: "0",
+    locked: false,
+  };
+  state.fdMode = null;
+  state.lastActiveElement = id;
+  clearSelected(state);
 }
