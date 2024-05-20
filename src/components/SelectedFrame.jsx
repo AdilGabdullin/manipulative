@@ -87,6 +87,7 @@ const SelectedFrame = (props) => {
     setVisibility(e, true);
   };
 
+  const isChips = state.workspace == workspace.chips;
   const tiles = selected.map((id) => elements[id]).filter((el) => el.type == "tile");
   const plusTiles = tiles.some((t) => t.text == "+");
   const minusTiles = tiles.some((t) => t.text == "-");
@@ -113,7 +114,7 @@ const SelectedFrame = (props) => {
     {
       text: "Invert",
       active: !lockSelect,
-      show: minusTiles || plusTiles,
+      show: isChips && (minusTiles || plusTiles),
       onPointerClick: (e) => {
         state.invertSelected();
       },
@@ -121,7 +122,7 @@ const SelectedFrame = (props) => {
     {
       text: "Break",
       active: !lockSelect,
-      show: zeroTiles,
+      show: isChips && zeroTiles,
       onPointerClick: (e) => {
         state.breakSelected();
       },
@@ -129,7 +130,7 @@ const SelectedFrame = (props) => {
     {
       text: "Zero Pair",
       active: !lockSelect,
-      show: minusTiles && plusTiles,
+      show: isChips && minusTiles && plusTiles,
       onPointerClick: (e) => {
         state.zeroPair();
       },
