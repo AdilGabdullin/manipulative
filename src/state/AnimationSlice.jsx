@@ -1,7 +1,7 @@
 import { allPairs, boxesIntersect, clearSelected, newId, oppositeText } from "../util";
 import { current, produce } from "immer";
 import { pushHistory } from "./historySlice";
-import { animationDuration, config } from "../config";
+import { animationDuration, colors, config } from "../config";
 
 export const animationSlice = (set) => ({
   finishDelay: null,
@@ -63,13 +63,13 @@ export const animationSlice = (set) => ({
         clearSelected(state);
       })
     ),
-  rotateSelected: () =>
+  breakSelected: () =>
     set(
       produce((state) => {
         for (const id of current(state.selected)) {
           const element = state.elements[id];
-          if (element.type == "tile") {
-            element.rotate = true;
+          if (element.type == "tile" && element.text == "0") {
+            element.break = true;
           }
         }
         state.finishDelay = animationDuration;
@@ -97,13 +97,9 @@ export const animationSlice = (set) => ({
             }
             delete element.invert;
           }
-          if (element.rotate) {
-            const { x, y, width, height } = element;
-            element.width = height;
-            element.height = width;
-            element.x = x + width / 2 - height / 2;
-            element.y = y + height / 2 - width / 2;
-            delete element.rotate;
+          if (element.break) {
+            addPlusMinus(state, element);
+            delete state.elements[id];
           }
         }
         state.finishDelay = null;
@@ -155,11 +151,34 @@ function addZero(state, { x, y }) {
     width: 62,
     height: 93,
     size: 62,
-    fill: "grey",
-    stroke: "#000000",
+    fill: colors.darkGrey,
     text: "0",
     locked: false,
   };
+  state.fdMode = null;
+  state.lastActiveElement = id;
+}
+
+function addPlusMinus(state, { x, y }) {
+  let id;
+  const add = (y, text, fill) => {
+    id = newId();
+    state.elements[id] = {
+      type: "tile",
+      id,
+      x,
+      y,
+      width: 62,
+      height: 62,
+      size: 62,
+      fill: fill,
+      text: text,
+      locked: false,
+    };
+  };
+  const size = config.tile.size;
+  add(y - size / 2, "+", colors.yellow);
+  add(y + size, "-", colors.red);
   state.fdMode = null;
   state.lastActiveElement = id;
 }

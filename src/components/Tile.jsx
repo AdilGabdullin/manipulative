@@ -1,15 +1,6 @@
 import { Group, Rect } from "react-konva";
 import { animationDuration, colors, config, workspace } from "../config";
-import {
-  blendColors,
-  getStageXY,
-  halfPixel,
-  hexToRgb,
-  pointInRect,
-  pointsIsClose,
-  rgbToHex,
-  setVisibility,
-} from "../util";
+import { blendColors, getStageXY, halfPixel, hexToRgb, pointInRect, pointsIsClose, setVisibility } from "../util";
 import { useAppStore } from "../state/store";
 import { useEffect, useRef } from "react";
 import { magnetToLine, lineZeroPos } from "./NumberLine";
@@ -166,7 +157,10 @@ export const BoardTile = (props) => {
     if (invert) {
       animateInvert(groupRef.current, props);
     }
-  }, [annihilation, moveTo, invert]);
+    if (props.break) {
+      animateBreak(groupRef.current);
+    }
+  }, [moveTo, invert, props.break]);
 
   const events = {
     draggable: !locked && !fdMode,
@@ -337,6 +331,59 @@ function animateInvert(node, props) {
     const k = (t * t) / (2 * (t * t - t) + 1);
     circle.setAttr("fill", blendColors(from, to, k));
     lines[1].setAttr("opacity", isPlus ? 1 - k : k);
+  }, node.getLayer());
+  animation.start();
+}
+
+function animateBreak(node) {
+  const [top, bottom, plus1, plus2, minus] = node.children[0].children;
+  const move = size / 2;
+
+  const topFrom = top.getAttr("y");
+  const topTo = topFrom - move;
+  const plus1From = plus1.getAttr("y");
+  const plus1To = plus1From - move;
+  const plus2From = plus2.getAttr("y");
+  const plus2To = plus2From - move;
+  const bottomFrom = bottom.getAttr("y");
+  const bottomTo = bottomFrom + move;
+  const minusFrom = minus.getAttr("y");
+  const minusTo = minusFrom + move;
+
+  const black = hexToRgb(colors.black);
+  const white = hexToRgb(colors.white);
+  const topFillFrom = hexToRgb(top.getAttr("fill"));
+  const topFillTo = hexToRgb(colors.yellow);
+  const bottomFillFrom = hexToRgb(bottom.getAttr("fill"));
+  const bottomFillTo = hexToRgb(colors.red);
+
+  const animation = new Animation(({ time }) => {
+    if (time > animationDuration) {
+      animation.stop();
+      top.setAttrs({ y: topTo, opacity: 1, fill: colors.yellow });
+      bottom.setAttrs({ y: bottomTo, opacity: 1, fill: colors.red });
+      plus1.setAttrs({ y: plus1To, fill: colors.white });
+      plus2.setAttrs({ y: plus2To, fill: colors.white });
+      minus.setAttrs({ y: minusTo, fill: colors.white });
+      return;
+    }
+    const t = time / animationDuration;
+    const k = (t * t) / (2 * (t * t - t) + 1);
+
+    const lineFill = blendColors(black, white, k);
+    top.setAttrs({
+      y: topFrom * (1 - k) + topTo * k,
+      opacity: k / 2 + 0.5,
+      fill: blendColors(topFillFrom, topFillTo, k),
+    });
+    plus1.setAttrs({ y: plus1From * (1 - k) + plus1To * k, fill: lineFill });
+    plus2.setAttrs({ y: plus2From * (1 - k) + plus2To * k, fill: lineFill });
+    bottom.setAttrs({
+      y: bottomFrom * (1 - k) + bottomTo * k,
+      opacity: k / 2 + 0.5,
+      fill: blendColors(bottomFillFrom, bottomFillTo, k),
+    });
+    minus.setAttrs({ y: minusFrom * (1 - k) + minusTo * k, fill: lineFill });
   }, node.getLayer());
   animation.start();
 }

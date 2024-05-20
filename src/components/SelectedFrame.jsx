@@ -126,7 +126,7 @@ const SelectedFrame = (props) => {
       active: !lockSelect,
       show: zeroTiles,
       onPointerClick: (e) => {
-        state.zeroPair();
+        state.breakSelected();
       },
     },
     {
