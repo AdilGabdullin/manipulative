@@ -15,6 +15,7 @@ import { appSaveText } from "./TextElement";
 import Grid from "./Grid";
 import Summary from "./Summary";
 import { config, workspace } from "../config";
+import BasicSummary from "./BasicSummary";
 
 const App = () => {
   const state = useAppStore();
@@ -359,7 +360,8 @@ const App = () => {
           <Layer id="interface-layer">
             <LeftToolbar findOne={findOne} />
             <Menu />
-            <Summary />
+            {state.workspace == workspace.basic && <BasicSummary />}
+            {state.workspace == workspace.chips && <Summary />}
             <Scrolls />
             <SelectedFrame findOne={findOne} />
           </Layer>
