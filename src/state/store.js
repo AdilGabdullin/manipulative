@@ -8,7 +8,7 @@ import { freeDrawingSlice } from "./freeDrawingSlice";
 import { historySlice, pushHistory } from "./historySlice";
 import { workspace, config } from "../config";
 import { nlHeight, nlWidth } from "../components/NumberLine";
-import { animationSlice } from "./AnimationSlice";
+import { animationSlice } from "./animationSlice";
 
 export const boardSize = {
   width: 2460,

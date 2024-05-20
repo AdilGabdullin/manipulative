@@ -36,6 +36,7 @@ const App = () => {
 
   useEffect(() => {
     containerRef.current.focus();
+    state.checkAnnihilations();
   });
 
   if (state.width == 0) {

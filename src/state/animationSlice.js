@@ -1,4 +1,4 @@
-import { allPairs, boxesIntersect, clearSelected, newId, oppositeText } from "../util";
+import { allPairs, boxesIntersect, clearSelected, distance2, newId, oppositeText } from "../util";
 import { current, produce } from "immer";
 import { pushHistory } from "./historySlice";
 import { animationDuration, colors, config } from "../config";
@@ -10,14 +10,12 @@ export const animationSlice = (set) => ({
       produce((state) => {
         const elements = state.elements;
         const annihilations = searchAnnihilations(state);
-        if (annihilations.length > 0) {
+        if (annihilations.length > 0 && !state.finishDelay) {
           for (const [id1, id2] of annihilations) {
-            elements[id1].annihilation = true;
-            elements[id1].delete = true;
-            elements[id2].annihilation = true;
-            elements[id2].delete = true;
+            moveAndZero(elements[id1], elements[id2]);
           }
-          state.finishDelay = animationDuration;
+          state.finishDelay = animationDuration * 2;
+          clearSelected(state);
         }
       })
     ),
@@ -28,22 +26,7 @@ export const animationSlice = (set) => ({
         const opposites = searchOpposites(state);
         if (opposites.length > 0) {
           for (const [id1, id2] of opposites) {
-            const that = elements[id1];
-            const other = elements[id2];
-            that.moveTo = {
-              x: Math.round((that.x + other.x) / 2),
-              y: Math.round((that.y + other.y) / 2 - that.size / 4),
-            };
-            other.moveTo = {
-              x: Math.round((that.x + other.x) / 2),
-              y: Math.round((that.y + other.y) / 2 + that.size / 4),
-            };
-            that.delete = true;
-            that.zeroPos = {
-              x: Math.round((that.x + other.x) / 2),
-              y: Math.round((that.y + other.y) / 2 - that.size / 4),
-            };
-            other.delete = true;
+            moveAndZero(elements[id1], elements[id2]);
           }
           state.finishDelay = animationDuration * 2;
           clearSelected(state);
@@ -113,10 +96,12 @@ export function searchAnnihilations(state) {
   const annihilations = [];
   const elements = state.elements;
   const tiles = Object.values(current(elements)).filter((e) => e.type == "tile");
+  const size = config.tile.size;
+  const threshold = size * size * 0.95;
   const used = [];
   for (const [that, other] of allPairs(tiles)) {
     if (used.includes(that.id) || used.includes(other.id)) continue;
-    if (boxesIntersect(that, other) && oppositeText(that.text, other.text)) {
+    if (distance2(that, other) < threshold && oppositeText(that.text, other.text)) {
       annihilations.push([that.id, other.id]);
       used.push(that.id, other.id);
     }
@@ -139,6 +124,23 @@ export function searchOpposites(state) {
     }
   }
   return opposites;
+}
+
+function moveAndZero(that, other) {
+  that.moveTo = {
+    x: Math.round((that.x + other.x) / 2),
+    y: Math.round((that.y + other.y) / 2 - that.size / 4),
+  };
+  other.moveTo = {
+    x: Math.round((that.x + other.x) / 2),
+    y: Math.round((that.y + other.y) / 2 + that.size / 4),
+  };
+  that.delete = true;
+  that.zeroPos = {
+    x: Math.round((that.x + other.x) / 2),
+    y: Math.round((that.y + other.y) / 2 - that.size / 4),
+  };
+  other.delete = true;
 }
 
 function addZero(state, { x, y }) {

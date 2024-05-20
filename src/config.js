@@ -20,7 +20,7 @@ export const workspace = {
   ppw: "Part-Part-Whole",
 };
 
-export const animationDuration = 400 * 2;
+export const animationDuration = 400;
 
 export const config = {
   intl: new Intl.NumberFormat("en-US"),

@@ -146,13 +146,12 @@ export const ToolbarTile = (props) => {
 export const BoardTile = (props) => {
   const state = useAppStore();
   const { origin, selectIds, elements, fdMode } = state;
-  const { id, locked, annihilation, moveTo, invert } = props;
+  const { id, locked, moveTo, invert } = props;
   const x = props.x + origin.x;
   const y = props.y + origin.y;
   const groupRef = useRef();
 
   useEffect(() => {
-    // if (annihilation) animateAnnihilation(groupRef.current);
     if (moveTo) animateMove(groupRef.current, moveTo.x - props.x, moveTo.y - props.y);
     if (invert) {
       animateInvert(groupRef.current, props);
