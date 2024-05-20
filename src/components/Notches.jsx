@@ -1,8 +1,6 @@
 import { Group, Line, Rect, Text } from "react-konva";
-import { useAppStore } from "../state/store";
 import { colors } from "../config";
 import { useRef, useState } from "react";
-import { nlLineWidth, notchStep, notchX } from "./NumberLine";
 
 const Notches = (props) => {
   const { id, min, max } = props;

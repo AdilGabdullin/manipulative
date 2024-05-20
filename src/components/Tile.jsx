@@ -3,8 +3,6 @@ import { animationDuration, colors, config, workspace } from "../config";
 import { blendColors, getStageXY, halfPixel, hexToRgb, pointInRect, pointsIsClose, setVisibility } from "../util";
 import { useAppStore } from "../state/store";
 import { useEffect, useRef } from "react";
-import { magnetToLine, lineZeroPos } from "./NumberLine";
-import { graphZeroPos } from "./Graph";
 import { getPPWSize } from "./PartPartWhole";
 import { Animation } from "konva/lib/Animation";
 
@@ -118,11 +116,7 @@ export const ToolbarTile = (props) => {
     onPointerClick: (e) => {
       const last = elements[state.lastActiveElement];
       if (last && last.type == "tile") {
-        if (state.workspace == workspace.graph) {
-          add({ x: last.x, y: last.y - size });
-        } else {
-          add({ x: last.x + size, y: last.y });
-        }
+        add({ x: last.x + size, y: last.y });
       } else if (last && last.type == "frame") {
         add(null, null, last.id);
       } else {
@@ -192,7 +186,7 @@ export const BoardTile = (props) => {
 };
 
 export function magnetToAll(tile, elements, state) {
-  if (state.showGrid || state.workspace == workspace.graph) {
+  if (state.showGrid) {
     const size = config.tile.size;
     const { x, y } = tile;
     return { x: Math.round(x / size) * size, y: Math.round(y / size) * size };
@@ -207,7 +201,7 @@ export function magnetToAll(tile, elements, state) {
     const pos = magnetToOne(tile, element);
     if (pos) return pos;
   }
-  return magnetToLine(tile, state);
+  return null;
 }
 
 function magnetToOne(tile, other) {
@@ -255,14 +249,9 @@ export function getSize(state) {
 
 function firstPos(state) {
   switch (state.workspace) {
+    case workspace.chips:
     case workspace.basic:
       return { x: -size / 2, y: -size / 2 };
-      break;
-    case workspace.numberLine:
-      return lineZeroPos(state);
-      break;
-    case workspace.graph:
-      return graphZeroPos(state);
       break;
     case workspace.ppw:
       const { width } = getPPWSize(state);

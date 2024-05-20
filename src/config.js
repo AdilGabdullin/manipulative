@@ -15,8 +15,7 @@ export const colors = {
 
 export const workspace = {
   basic: "Basic",
-  numberLine: "Number Line",
-  graph: "Graph",
+  chips: "Integer Chips",
   ppw: "Part-Part-Whole",
 };
 

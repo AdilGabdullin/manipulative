@@ -6,7 +6,6 @@ import ShapeResizeHandles from "./ShapeResizeHandles";
 import { createTextArea } from "./TextElement";
 import { magnetToAll } from "./Tile";
 import { config, workspace } from "../config";
-import { lineMagnet } from "./NumberLine";
 import FrameResizeHandle from "./FrameResizeHandle";
 
 const SelectedFrame = (props) => {
@@ -66,9 +65,7 @@ const SelectedFrame = (props) => {
     let pos = null;
     for (const id of selected) {
       const tile = elements[id];
-      if (tile.type == "number-line") {
-        pos = lineMagnet(tile.x + dx, tile.y + dy, state);
-      } else if (tile.type == "tile") {
+      if (tile.type == "tile") {
         pos = magnetToAll({ ...tile, x: tile.x + dx, y: tile.y + dy }, others, state);
       }
       if (pos) {
@@ -202,7 +199,7 @@ const SelectedFrame = (props) => {
       });
   };
 
-  const hidePopup = selected.includes("numberLine");
+  const hidePopup = false;
 
   return (
     <>
@@ -293,8 +290,6 @@ function getBounds(state) {
   let yMax = -Infinity;
   Object.keys(elements).forEach((key) => {
     const element = elements[key];
-    if (element.id == "numberLine" && state.workspace != workspace.numberLine) return;
-    if (element.id == "graph" && state.workspace != workspace.graph) return;
     const { x, y, width, height } = elementBox(element);
     if (selected.includes(element.id)) {
       if (x < xMin) xMin = x;

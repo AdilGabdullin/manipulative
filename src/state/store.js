@@ -7,7 +7,6 @@ import { maxOffset } from "../components/Scrolls";
 import { freeDrawingSlice } from "./freeDrawingSlice";
 import { historySlice, pushHistory } from "./historySlice";
 import { workspace, config } from "../config";
-import { nlHeight, nlWidth } from "../components/NumberLine";
 import { animationSlice } from "./animationSlice";
 
 export const boardSize = {
@@ -28,31 +27,13 @@ export const useAppStore = create((set) => ({
   width: 0,
   height: 0,
   origin: { x: 0, y: 0 },
-  elements: {
-    numberLine: {
-      id: "numberLine",
-      type: "number-line",
-      x: 0 - nlWidth / 2,
-      y: 0 - nlHeight / 2,
-      width: nlWidth,
-      height: nlHeight,
-      min: 0,
-      max: 20,
-      denominator: 1,
-      locked: true,
-    },
-  },
+  elements: {},
   lastActiveElement: null,
   selected: [],
   lockSelect: false,
   showGrid: false,
   showLabels: true,
   showSummary: true,
-  graphMultiplier: 1,
-
-  // fullscreen: true,
-  // showGrid: true,
-  // workspace: workspace.graph,
 
   toggleGlobal: (field) =>
     set(
@@ -91,7 +72,6 @@ export const useAppStore = create((set) => ({
         state.offset.x = 0;
         state.offset.y = 0;
         state.scale = 1.0;
-        state.elements.numberLine.locked = workspace != "Number Line";
         clearSelected(state);
         keepOrigin(state);
       })
@@ -125,9 +105,7 @@ export const useAppStore = create((set) => ({
       produce((state) => {
         const curr = current(state);
         for (const id in curr.elements) {
-          if (id != "numberLine") {
-            delete state.elements[id];
-          }
+          delete state.elements[id];
         }
         clearSelected(state);
         state.lastActiveElement = null;

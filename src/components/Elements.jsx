@@ -4,10 +4,8 @@ import TextElement from "./TextElement";
 import RectElement from "./RectElement";
 import EllipseElement from "./EllipseElement";
 import LineElement from "./LineElement";
-import { BoardTile, Tile, getSize } from "./Tile";
+import { BoardTile, Tile } from "./Tile";
 import { config, workspace } from "../config";
-import NumberLine from "./NumberLine";
-import Graph, { GraphLines } from "./Graph";
 import PartPartWhole from "./PartPartWhole";
 import Frame from "./Frame";
 
@@ -31,7 +29,6 @@ const Elements = () => {
   const frameSize = config.frame.size;
   return (
     <>
-      {state.workspace == workspace.graph && <GraphLines />}
       {state.workspace == workspace.ppw && <PartPartWhole />}
       {sortElements(elements).map((element) => {
         const Element = elementList[element.type];
@@ -47,8 +44,6 @@ const Elements = () => {
       <Frame id="shadow-frame-5" visible={false} width={5 * frameSize} height={1 * frameSize} />
       <Frame id="shadow-frame-10" visible={false} width={5 * frameSize} height={2 * frameSize} />
       <Frame id="shadow-frame-resizable" visible={false} width={4 * frameSize} height={3 * frameSize} />
-      {state.workspace == workspace.numberLine && <NumberLine {...elements.numberLine} />}
-      {state.workspace == workspace.graph && <Graph />}
     </>
   );
 };
