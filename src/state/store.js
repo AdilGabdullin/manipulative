@@ -65,13 +65,21 @@ export const useAppStore = create((set) => ({
         keepOrigin(state);
       })
     ),
-  setWorkspace: (workspace) =>
+  setWorkspace: (ws) =>
     set(
       produce((state) => {
-        state.workspace = workspace;
+        state.workspace = ws;
         state.offset.x = 0;
         state.offset.y = 0;
         state.scale = 1.0;
+        if (ws != workspace.chips) {
+          for (const id in current(state.elements)) {
+            const elem = state.elements[id];
+            if (elem.type == "tile" && elem.text == "0") {
+              delete state.elements[id];
+            }
+          }
+        }
         clearSelected(state);
         keepOrigin(state);
       })

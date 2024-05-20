@@ -9,10 +9,13 @@ import { Animation } from "konva/lib/Animation";
 const size = config.tile.size;
 
 export const Tile = ({ id, x, y, size, fill, visible, events, text }) => {
+  const state = useAppStore();
   x = halfPixel(x);
   y = halfPixel(y);
   size = Math.round(size);
   const signWidth = 5;
+
+  const isChips = state.workspace == workspace.chips;
   return (
     <Group id={id} x={x} y={y} visible={visible} {...events}>
       {text == "0" ? (
@@ -32,7 +35,14 @@ export const Tile = ({ id, x, y, size, fill, visible, events, text }) => {
       ) : (
         <>
           <Rect width={size} height={size} fill={fill} cornerRadius={size / 2} />
-          <Rect x={size / 4} y={size / 2 - signWidth / 2} width={size / 2} height={signWidth} fill={colors.white} />
+          <Rect
+            x={size / 4}
+            y={size / 2 - signWidth / 2}
+            width={size / 2}
+            height={signWidth}
+            fill={colors.white}
+            visible={isChips}
+          />
           <Rect
             y={size / 4}
             x={size / 2 - signWidth / 2}
@@ -40,6 +50,7 @@ export const Tile = ({ id, x, y, size, fill, visible, events, text }) => {
             width={signWidth}
             fill={colors.white}
             opacity={text == "+" ? 1 : 0}
+            visible={isChips}
           />
         </>
       )}

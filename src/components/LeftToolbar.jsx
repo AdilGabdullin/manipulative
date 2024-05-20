@@ -1,6 +1,6 @@
 import { Rect } from "react-konva";
 import { useAppStore } from "../state/store";
-import { config } from "../config";
+import { config, workspace } from "../config";
 import { ToolbarTile } from "./Tile";
 
 export const leftToolbarWidth = 180;
@@ -10,7 +10,7 @@ const LeftToolbar = () => {
   const { tile, leftToolbar } = config;
   const width = leftToolbar.width;
   const { height, fullscreen } = state;
-  const options = tile.options;
+  const options = tile.options.slice(0, state.workspace == workspace.chips ? 3 : 2);
   const count = options.length;
   const size = fullscreen ? 60 : 50;
   const left = (width - size) / 2;

@@ -14,7 +14,7 @@ import ImagePreloader from "./ImagePreloader";
 import { appSaveText } from "./TextElement";
 import Grid from "./Grid";
 import Summary from "./Summary";
-import { config } from "../config";
+import { config, workspace } from "../config";
 
 const App = () => {
   const state = useAppStore();
@@ -36,7 +36,9 @@ const App = () => {
 
   useEffect(() => {
     containerRef.current.focus();
-    state.checkAnnihilations();
+    if (state.workspace == workspace.chips) {
+      state.checkAnnihilations();
+    }
   });
 
   if (state.width == 0) {
