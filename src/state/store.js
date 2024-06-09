@@ -1,7 +1,7 @@
 import { create } from "zustand";
 import { current, produce } from "immer";
 import { leftToolbarWidth } from "../components/LeftToolbar";
-import { clearSelected, combineBoxList, elementBox, newId, numberBetween } from "../util";
+import { clearSelected, combineBoxList, elementBox, newId, numberBetween, setNewId } from "../util";
 import { topToolbarHeight } from "../components/TopToolbar";
 import { maxOffset } from "../components/Scrolls";
 import { freeDrawingSlice } from "./freeDrawingSlice";
@@ -394,6 +394,23 @@ export const useAppStore = create((set) => ({
         pushHistory(state);
       })
     ),
+  saveState: (onSave) =>
+    set(
+      produce((state) => {
+        const curr = current(state);
+        curr.historyIndex = 0;
+        const last = curr.history[curr.history.length - 1];
+        curr.history = [last];
+        onSave(JSON.stringify(curr));
+      })
+    ),
+  loadState: (initialState) =>
+    set((state) => {
+      const { elements, fdLines } = initialState;
+      const id = Object.values(elements).length + Object.values(fdLines).length + 1;
+      setNewId(id);
+      return { ...initialState, imagesReady: state.imagesReady };
+    }),
   action: () => set(produce((state) => {})),
 }));
 
