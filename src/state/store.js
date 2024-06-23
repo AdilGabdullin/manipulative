@@ -401,6 +401,8 @@ export const useAppStore = create((set) => ({
         curr.historyIndex = 0;
         const last = curr.history[curr.history.length - 1];
         curr.history = [last];
+        delete curr.width;
+        delete curr.height;
         onSave(JSON.stringify(curr));
       })
     ),
