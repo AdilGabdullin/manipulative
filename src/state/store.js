@@ -1,7 +1,7 @@
 import { create } from "zustand";
 import { current, produce } from "immer";
 import { leftToolbarWidth } from "../components/LeftToolbar";
-import { clearSelected, elementBox, newId, numberBetween, oppositeText } from "../util";
+import { clearSelected, elementBox, newId, numberBetween, oppositeText, setNewId } from "../util";
 import { topToolbarHeight } from "../components/TopToolbar";
 import { maxOffset } from "../components/Scrolls";
 import { freeDrawingSlice } from "./freeDrawingSlice";
@@ -331,6 +331,25 @@ export const useAppStore = create((set) => ({
         state.solvingSign = signs[(signIndex + 1) % signs.length];
       })
     ),
+  saveState: (onSave) =>
+    set(
+      produce((state) => {
+        const curr = {...current(state)};
+        curr.historyIndex = 0;
+        const last = curr.history[curr.history.length - 1];
+        curr.history = [last];
+        delete curr.width;
+        delete curr.height;
+        onSave(JSON.stringify(curr));
+      })
+    ),
+  loadState: (initialState) =>
+    set((state) => {
+      const { elements, fdLines } = initialState;
+      const id = Object.values(elements).length + Object.values(fdLines).length + 1;
+      setNewId(id);
+      return { ...initialState, imagesReady: state.imagesReady };
+    }),
   action: () => set(produce((state) => {})),
 }));
 
