@@ -1,4 +1,5 @@
 import { useAppStore } from "../state/store";
+import { KIND, initialProps } from "./TextElement";
 
 const color = "purple";
 const buttonSize = 30;
@@ -38,22 +39,77 @@ export const ShapesMenu = () => {
         draggable="true"
         onDragStart={onDragStart("editable-text")}
         onClick={() => {
-          state.addElement({
-            type: "text",
-            x: -40,
-            y: -20,
-            text: "Text",
-            fontSize: 36,
-            width: 60,
-            height: 36,
-            newText: true,
-            scale: 1.0,
-          });
+          state.addElement(initialProps[KIND.text]);
         }}
       >
         <svg style={svgStyle} viewBox={`0 0 ${buttonSize} ${buttonSize}`}>
           <text x="6" y="28" style={{ fontSize: 40, fontFamily: "Calibri", stroke: color, fill: color }}>
             T
+          </text>
+        </svg>
+      </div>
+      <div
+        style={buttonStyle}
+        draggable="true"
+        onDragStart={onDragStart("fraction")}
+        onClick={() => {
+          state.addElement(initialProps[KIND.fraction]);
+        }}
+      >
+        <svg style={svgStyle} viewBox={`0 0 ${buttonSize} ${buttonSize}`}>
+          <text x="11" y="12" style={{ fontSize: 16, fontFamily: "Calibri", stroke: color, fill: color }}>
+            1
+          </text>
+          <line
+            x1={8}
+            y1={15}
+            x2={23}
+            y2={15}
+            style={{ fill: "rgb(0,0,0,0)", strokeWidth: 2, stroke: color }}
+          />
+          <text x="11" y="28" style={{ fontSize: 16, fontFamily: "Calibri", stroke: color, fill: color }}>
+            2
+          </text>
+        </svg>
+      </div>
+      <div
+        style={buttonStyle}
+        draggable="true"
+        onDragStart={onDragStart("mixed")}
+        onClick={() => {
+          state.addElement(initialProps[KIND.mixed]);
+        }}
+      >
+        <svg style={svgStyle} viewBox={`0 0 ${buttonSize} ${buttonSize}`}>
+          <text x="0" y="20" style={{ fontSize: 16, fontFamily: "Calibri", stroke: color, fill: color }}>
+            3
+          </text>
+          <text x="11" y="12" style={{ fontSize: 16, fontFamily: "Calibri", stroke: color, fill: color }}>
+            1
+          </text>
+          <line
+            x1={buttonSize / 4}
+            y1={buttonSize / 2}
+            x2={(buttonSize * 3) / 4}
+            y2={buttonSize / 2}
+            style={{ fill: "rgb(0,0,0,0)", strokeWidth: 2, stroke: color }}
+          />
+          <text x="11" y="28" style={{ fontSize: 16, fontFamily: "Calibri", stroke: color, fill: color }}>
+            2
+          </text>
+        </svg>
+      </div>
+      <div
+        style={buttonStyle}
+        draggable="true"
+        onDragStart={onDragStart("exponent")}
+        onClick={() => {
+          state.addElement(initialProps[KIND.exponent]);
+        }}
+      >
+        <svg style={svgStyle} viewBox={`0 0 ${buttonSize} ${buttonSize}`}>
+          <text x="0" y="28" style={{ fontSize: 36, fontFamily: "Calibri", stroke: color, fill: color }}>
+            x²
           </text>
         </svg>
       </div>
