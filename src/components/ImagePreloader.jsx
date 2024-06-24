@@ -9,6 +9,7 @@ const config = [
   { id: "fullscreen-button", src: "buttons/full-screen-min.png" },
   { id: "brush-button", src: "buttons/pencil-min.png" },
   { id: "eraser-button", src: "buttons/eraser-min.png" },
+  { id: "save-button", src: "buttons/save.png" },
   { id: "fill-button", src: "buttons/fill-min.png" },
   { id: "angle-button", src: "buttons/angle-min.png" },
   { id: "band-0", src: "bands/band-0.svg" },
