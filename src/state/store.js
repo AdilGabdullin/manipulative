@@ -1,7 +1,7 @@
 import { create } from "zustand";
 import { current, produce } from "immer";
 import { leftToolbarWidth } from "../components/LeftToolbar";
-import { clearSelected, combineBoxList, elementBox, newId, numberBetween, rotateVector, sin } from "../util";
+import { clearSelected, combineBoxList, elementBox, newId, numberBetween, rotateVector, setNewId, sin } from "../util";
 import { topToolbarHeight } from "../components/TopToolbar";
 import { maxOffset } from "../components/Scrolls";
 import { freeDrawingSlice } from "./freeDrawingSlice";
@@ -380,6 +380,42 @@ export const useAppStore = create((set) => ({
         pushHistory(state);
       })
     ),
+  saveState: (onSave) =>
+    set(
+      produce((state) => {
+        const curr = { ...current(state), elements: { ...current(state).elements } };
+        curr.historyIndex = 0;
+        curr.history = [{ elements: {}, fdLines: {} }];
+        delete curr.width;
+        delete curr.height;
+        for (const id in curr.elements) {
+          const element = curr.elements[id];
+          if (element.type == "cube") {
+            curr.elements[id] = {
+              ...element,
+              image: element.image.id,
+            };
+          }
+        }
+        onSave(JSON.stringify(curr));
+      })
+    ),
+  loadState: (initialState) =>
+    set((state) => {
+      const { elements, fdLines } = initialState;
+      for (const id in elements) {
+        const element = elements[id];
+        if (element.type == "cube") {
+          elements[id] = {
+            ...element,
+            image: document.getElementById(element.image),
+          };
+        }
+      }
+      const id = Object.values(elements).length + Object.values(fdLines).length + 1;
+      setNewId(id);
+      return { ...initialState, imagesReady: state.imagesReady };
+    }),
   action: () => set(produce((state) => {})),
 }));
 

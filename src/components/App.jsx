@@ -13,7 +13,7 @@ import FreeDrawing from "./FreeDrawing";
 import ImagePreloader from "./ImagePreloader";
 import { appSaveText } from "./TextElement";
 
-const App = () => {
+const App = ({ onSave, initialState }) => {
   const state = useAppStore();
   let downPos = null;
   let dragTarget = null;
@@ -21,6 +21,9 @@ const App = () => {
   const containerRef = useRef(null);
 
   // console.log(state);
+  useEffect(() => {
+    if (initialState && state.imagesReady) state.loadState(JSON.parse(initialState));
+  }, [state.imagesReady]);
 
   useLayoutEffect(() => {
     function updateSize() {
@@ -269,7 +272,7 @@ const App = () => {
       tabIndex={1}
       className={"stage-wrap " + (state.fullscreen ? "stage-wrap-fullscreen" : "stage-wrap-default")}
     >
-      <TopToolbar />
+      <TopToolbar onSave={onSave}/>
       <Stage
         ref={stageRef}
         width={state.width}
