@@ -15,11 +15,25 @@
   <script id="manipulative-js" type="module" src="/src/main.jsx"></script>
 
   <script>
+    function saveState(data) {
+      const id = Math.round(Math.random() * 100000);
+      localStorage.setItem(id, data);
+      const urlParams = new URLSearchParams(window.location.search);
+      urlParams.set('id', id);
+      window.location.search = urlParams;
+    }
+
+    function loadInitialState() {
+      const urlParams = new URLSearchParams(window.location.search);
+      const key = urlParams.get("id");
+      return key ? localStorage.getItem(key) : null;
+    }
+
     if (window.runManipulative) {
-      window.runManipulative();
+      window.runManipulative(saveState, loadInitialState());
     } else {
       document.querySelector('#manipulative-js').addEventListener('load', () => {
-        window.runManipulative();
+        window.runManipulative(saveState, loadInitialState());
       });
     }
   </script>

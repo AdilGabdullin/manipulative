@@ -20,7 +20,7 @@ import Factors from "./Factors";
 import Comparing from "./Comparing";
 import Addition from "./Addition";
 
-const App = () => {
+const App = ({ onSave, initialState }) => {
   const state = useAppStore();
   let downPos = null;
   let dragTarget = null;
@@ -28,6 +28,9 @@ const App = () => {
   const containerRef = useRef(null);
 
   // console.log(state);
+  useEffect(() => {
+    if (initialState) state.loadState(JSON.parse(initialState));
+  }, []);
 
   useLayoutEffect(() => {
     function updateSize() {
@@ -267,7 +270,7 @@ const App = () => {
       tabIndex={1}
       className={"stage-wrap " + (state.fullscreen ? "stage-wrap-fullscreen" : "stage-wrap-default")}
     >
-      <TopToolbar />
+      <TopToolbar onSave={onSave}/>
       <Stage
         ref={stageRef}
         width={state.width}
