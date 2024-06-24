@@ -4,10 +4,10 @@ import ShapesMenu from "./ShapesMenu";
 
 export const topToolbarHeight = 42;
 
-const TopToolbar = () => {
+const TopToolbar = ({ onSave }) => {
   return (
     <div className="bottom-toolbar" style={{ height: topToolbarHeight }}>
-      <Buttons />
+      <Buttons onSave={onSave} />
       <div style={{ display: "flex", gap: 16 }}>
         <ShapesMenu />
         <WorkspaceSelector />
@@ -16,7 +16,7 @@ const TopToolbar = () => {
   );
 };
 
-const Buttons = () => {
+const Buttons = ({ onSave }) => {
   const state = useAppStore();
   return (
     <div className="bottom-toolbar-buttons">
@@ -38,6 +38,7 @@ const Buttons = () => {
         onClick={state.toggleEraser}
         active={state.fdMode == "eraser"}
       />
+      <Button text="save" imageSrc="buttons/save.png" onClick={() => state.saveState(onSave)} />
     </div>
   );
 };
@@ -56,7 +57,7 @@ const WorkspaceSelector = () => {
     <div className="workspace-selector">
       <label className="workspace-selector-label">Workspace</label>
       <select onChange={(e) => state.setWorkspace(e.target.value)} value={state.workspace}>
-        {Object.entries(workspace).map(([key,option]) => (
+        {Object.entries(workspace).map(([key, option]) => (
           <option key={key} value={option}>
             {option}
           </option>
