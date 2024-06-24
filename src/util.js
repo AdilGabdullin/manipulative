@@ -1,6 +1,10 @@
 export const SEARCH_THRESHOLD = 6;
 let id = 0;
 
+export function setNewId(initialId) {
+  id = initialId;
+}
+
 export function newId() {
   return `e-${id++}`;
 }
