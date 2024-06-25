@@ -477,16 +477,13 @@ export const useAppStore = create((set) => ({
         curr.history = [last];
         delete curr.width;
         delete curr.height;
+        curr.newId = +newId().split("-")[1];
         onSave(JSON.stringify(curr));
       })
     ),
   loadState: (initialState) =>
     set((state) => {
-      const { geoboardBands, elements, fdLines } = initialState;
-      const sidesLength = geoboardBands.reduce((sum, band) => sum + band.points.length, 0);
-      const id =
-        sidesLength + geoboardBands.length + Object.values(elements).length + Object.values(fdLines).length + 1;
-      setNewId(id);
+      setNewId(initialState.newId);
       return { ...initialState, imagesReady: state.imagesReady };
     }),
   action: () => set(produce((state) => {})),
