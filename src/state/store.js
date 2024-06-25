@@ -8,6 +8,7 @@ import { freeDrawingSlice } from "./freeDrawingSlice";
 import { historySlice, pushHistory } from "./historySlice";
 import { workspace, config } from "../config";
 import { nlHeight, nlWidth } from "../components/NumberLine";
+import { colorOptions } from "../components/TextElement";
 
 export const boardSize = {
   width: 2460,
@@ -47,6 +48,19 @@ export const useAppStore = create((set) => ({
   showLabels: true,
   showSummary: true,
   graphMultiplier: 1,
+  textColorMenuVisible: false,
+  setTextColor: (colorIndex) =>
+    set(
+      produce((state) => {
+        const { fill, stroke } = colorOptions[colorIndex];
+        current(state.selected).forEach((id) => {
+          const element = state.elements[id];
+          if (element.type == "text") {
+            element.color = fill;
+          }
+        });
+      })
+    ),
 
   // fullscreen: true,
   // showGrid: true,
@@ -160,7 +174,14 @@ export const useAppStore = create((set) => ({
       })
     ),
 
-  clearSelect: () => set((state) => ({ ...state, selected: [], lockSelect: false, colorMenuVisible: false })),
+  clearSelect: () =>
+    set((state) => ({
+      ...state,
+      selected: [],
+      lockSelect: false,
+      colorMenuVisible: false,
+      textColorMenuVisible: false,
+    })),
 
   select: (downPos, upPos) =>
     set((state) => {
@@ -192,10 +213,17 @@ export const useAppStore = create((set) => ({
           }
         }
       });
-      return { ...state, selected: [...new Set(selected)], lockSelect: false, colorMenuVisible: false };
+      return {
+        ...state,
+        selected: [...new Set(selected)],
+        lockSelect: false,
+        colorMenuVisible: false,
+        textColorMenuVisible: false,
+      };
     }),
 
-  selectIds: (ids, lockSelect) => set((state) => ({ ...state, selected: ids, lockSelect, colorMenuVisible: false })),
+  selectIds: (ids, lockSelect) =>
+    set((state) => ({ ...state, selected: ids, lockSelect, colorMenuVisible: false, textColorMenuVisible: false })),
 
   relocateSelected: (dx, dy) =>
     set(

@@ -1,6 +1,6 @@
 import { Ellipse, Line, Rect, Text } from "react-konva";
 import { useAppStore } from "../state/store";
-import TextElement from "./TextElement";
+import TextElement, { KIND, initialProps } from "./TextElement";
 import RectElement from "./RectElement";
 import EllipseElement from "./EllipseElement";
 import LineElement from "./LineElement";
@@ -45,6 +45,9 @@ const Elements = () => {
       <Frame id="shadow-frame-5" visible={false} width={5 * frameSize} height={1 * frameSize} />
       <Frame id="shadow-frame-10" visible={false} width={5 * frameSize} height={2 * frameSize} />
       <Frame id="shadow-frame-resizable" visible={false} width={4 * frameSize} height={3 * frameSize} />
+      <TextElement {...initialProps[KIND.fraction]} id="shadow-fraction" visible={false} editing={-1} />
+      <TextElement {...initialProps[KIND.mixed]} id="shadow-mixed" visible={false} editing={-1} />
+      <TextElement {...initialProps[KIND.exponent]} id="shadow-exponent" visible={false} editing={-1} />
       {state.workspace == workspace.numberLine && <NumberLine {...elements.numberLine} />}
       {state.workspace == workspace.graph && <Graph />}
     </>
