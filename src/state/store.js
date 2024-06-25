@@ -9,6 +9,7 @@ import { historySlice, pushHistory } from "./historySlice";
 import { createTenDisks, breakRegroupSlice, disksByValue, avgPos } from "./breakRegroup";
 import { menuHeight } from "../components/Menu";
 import { diskInBreakColumn, diskInRegroupColumn, diskInWrongColumn, getSubtractors } from "../components/PlaceValue";
+import { colorOptions } from "../components/TextElement";
 
 export const gridStep = 60;
 export const boardSize = {
@@ -49,6 +50,19 @@ export const useAppStore = create((set) => ({
     0.01: 0,
     0.001: 0,
   },
+  colorMenuVisible: false,
+  setColor: (colorIndex) =>
+    set(
+      produce((state) => {
+        const { fill, stroke } = colorOptions[colorIndex];
+        current(state.selected).forEach((id) => {
+          const element = state.elements[id];
+          if (element.type == "text") {
+            element.color = fill;
+          }
+        });
+      })
+    ),
 
   // fullscreen: true,
   // workspace: "Place Value",
@@ -205,7 +219,7 @@ export const useAppStore = create((set) => ({
       })
     ),
 
-  clearSelect: () => set((state) => ({ ...state, selected: [], lockSelect: false })),
+  clearSelect: () => set((state) => ({ ...state, selected: [], lockSelect: false, colorMenuVisible: false })),
 
   select: (downPos, upPos) =>
     set((state) => {
@@ -232,10 +246,17 @@ export const useAppStore = create((set) => ({
           }
         }
       });
-      return { ...state, selected, minValueDropdown: false, maxValueDropdown: false, lockSelect: false };
+      return {
+        ...state,
+        selected,
+        minValueDropdown: false,
+        maxValueDropdown: false,
+        lockSelect: false,
+        colorMenuVisible: false,
+      };
     }),
 
-  selectIds: (ids, lockSelect) => set((state) => ({ ...state, selected: ids, lockSelect })),
+  selectIds: (ids, lockSelect) => set((state) => ({ ...state, selected: ids, lockSelect, colorMenuVisible: false })),
 
   relocateSelected: (dx, dy) =>
     set(
@@ -454,7 +475,7 @@ export const useAppStore = create((set) => ({
   saveState: (onSave) =>
     set(
       produce((state) => {
-        const curr = current(state);
+        const curr = {...current(state)};
         curr.historyIndex = 0;
         const last = curr.history[curr.history.length - 1];
         curr.history = [last];
