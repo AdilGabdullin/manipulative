@@ -7,6 +7,10 @@ export function newId() {
   return `e-${id++}`;
 }
 
+export function setNewId(initialId) {
+  id = initialId;
+}
+
 export function pointsIsClose(pos1, pos2, sens = 10) {
   return distance2(pos1, pos2) <= sens ** 2;
 }

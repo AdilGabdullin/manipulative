@@ -11,6 +11,7 @@ const config = {
     { id: "brush-button", src: "buttons/pencil-min.png" },
     { id: "eraser-button", src: "buttons/eraser-min.png" },
     { id: "fill-button", src: "buttons/fill-min.png" },
+    { id: "save-button", src: "buttons/save.png" },
   ],
   rods: [],
 };
