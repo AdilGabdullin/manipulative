@@ -43,13 +43,13 @@ export const config = {
   tile: {
     size: 60,
     options: [
-      { fill: "#4caf50", stroke: "#39903d", name: "Blue" },
+      { fill: "#4caf50", stroke: "#39903d", name: "Green" },
       { fill: "#f06292", stroke: "#e92265", name: "Pink" },
       { fill: "#ff9800", stroke: "#f67e00", name: "Orange" },
       { fill: "#9c27b0", stroke: "#7d1fa3", name: "Purple" },
       { fill: "#ffeb3b", stroke: "#fdd935", name: "Yellow" },
       { fill: "brown", stroke: "#5C4033", name: "Brown" },
-      { fill: "#2196f3", stroke: "#1978d4", name: "Green" },
+      { fill: "#2196f3", stroke: "#1978d4", name: "Blue" },
       { fill: "#f44336", stroke: "#d5302f", name: "Red" },
       { fill: "grey", stroke: "#444444", name: "Grey" },
       { fill: "black", stroke: "#222222", name: "Black" },
