@@ -7,6 +7,7 @@ import { maxOffset } from "../components/Scrolls";
 import { freeDrawingSlice } from "./freeDrawingSlice";
 import { historySlice, pushHistory } from "./historySlice";
 import { unflattenPoints } from "../components/Pattern";
+import { colorOptions } from "../components/TextElement";
 
 export const gridStep = 60;
 export const boardSize = {
@@ -30,6 +31,19 @@ export const useAppStore = create((set) => ({
   origin: { x: 0, y: 0 },
   selected: [],
   lockSelect: false,
+  colorMenuVisible: false,
+  setColor: (colorIndex) =>
+    set(
+      produce((state) => {
+        const { fill, stroke } = colorOptions[colorIndex];
+        current(state.selected).forEach((id) => {
+          const element = state.elements[id];
+          if (element.type == "text") {
+            element.color = fill;
+          }
+        });
+      })
+    ),
 
   // offset: { x: 80, y: -200 },
   // scale: 0.5,
@@ -201,7 +215,7 @@ export const useAppStore = create((set) => ({
       })
     ),
 
-  clearSelect: () => set((state) => ({ ...state, selected: [], lockSelect: false })),
+  clearSelect: () => set((state) => ({ ...state, selected: [], lockSelect: false, colorMenuVisible: false })),
 
   select: (downPos, upPos) =>
     set((state) => {
@@ -228,10 +242,10 @@ export const useAppStore = create((set) => ({
           }
         }
       });
-      return { ...state, selected, lockSelect: false };
+      return { ...state, selected, lockSelect: false, colorMenuVisible: false };
     }),
 
-  selectIds: (ids, lockSelect) => set((state) => ({ ...state, selected: ids, lockSelect })),
+  selectIds: (ids, lockSelect) => set((state) => ({ ...state, selected: ids, lockSelect, colorMenuVisible: false })),
 
   relocateSelected: (dx, dy) =>
     set(
