@@ -388,6 +388,7 @@ export const useAppStore = create((set) => ({
         curr.history = [{ elements: {}, fdLines: {} }];
         delete curr.width;
         delete curr.height;
+        curr.newId = +newId().split("-")[1];
         for (const id in curr.elements) {
           const element = curr.elements[id];
           if (element.type == "cube") {
@@ -412,8 +413,7 @@ export const useAppStore = create((set) => ({
           };
         }
       }
-      const id = Object.values(elements).length + Object.values(fdLines).length + 1;
-      setNewId(id);
+      setNewId(initialState.newId);
       return { ...initialState, imagesReady: state.imagesReady };
     }),
   action: () => set(produce((state) => {})),
