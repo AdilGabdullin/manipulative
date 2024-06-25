@@ -8,6 +8,7 @@ import { freeDrawingSlice } from "./freeDrawingSlice";
 import { historySlice, pushHistory } from "./historySlice";
 import { workspace, config } from "../config";
 import { animationSlice } from "./animationSlice";
+import { colorOptions } from "../components/TextElement";
 
 export const boardSize = {
   width: 2460,
@@ -34,6 +35,19 @@ export const useAppStore = create((set) => ({
   showGrid: false,
   showLabels: true,
   showSummary: true,
+  colorMenuVisible: false,
+  setColorText: (colorIndex) =>
+    set(
+      produce((state) => {
+        const { fill, stroke } = colorOptions[colorIndex];
+        current(state.selected).forEach((id) => {
+          const element = state.elements[id];
+          if (element.type == "text") {
+            element.color = fill;
+          }
+        });
+      })
+    ),
 
   toggleGlobal: (field) =>
     set(
@@ -148,7 +162,7 @@ export const useAppStore = create((set) => ({
       })
     ),
 
-  clearSelect: () => set((state) => ({ ...state, selected: [], lockSelect: false })),
+  clearSelect: () => set((state) => ({ ...state, selected: [], lockSelect: false, colorMenuVisible: false })),
 
   select: (downPos, upPos) =>
     set((state) => {
@@ -180,10 +194,10 @@ export const useAppStore = create((set) => ({
           }
         }
       });
-      return { ...state, selected: [...new Set(selected)], lockSelect: false };
+      return { ...state, selected: [...new Set(selected)], lockSelect: false, colorMenuVisible: false };
     }),
 
-  selectIds: (ids, lockSelect) => set((state) => ({ ...state, selected: ids, lockSelect })),
+  selectIds: (ids, lockSelect) => set((state) => ({ ...state, selected: ids, lockSelect, colorMenuVisible: false })),
 
   relocateSelected: (dx, dy) =>
     set(
@@ -372,7 +386,7 @@ export const useAppStore = create((set) => ({
   saveState: (onSave) =>
     set(
       produce((state) => {
-        const curr = {...current(state)};
+        const curr = { ...current(state) };
         curr.historyIndex = 0;
         const last = curr.history[curr.history.length - 1];
         curr.history = [last];
