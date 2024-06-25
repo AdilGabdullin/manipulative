@@ -444,14 +444,15 @@ export const useAppStore = create((set) => ({
         curr.historyIndex = 0;
         const last = curr.history[curr.history.length - 1];
         curr.history = [last];
+        delete curr.width;
+        delete curr.height;
+        curr.newId = +newId().split("-")[1];
         onSave(JSON.stringify(curr));
       })
     ),
   loadState: (initialState) =>
     set((state) => {
-      const { elements, fdLines } = initialState;
-      const id = Object.values(elements).length + Object.values(fdLines).length + 1;
-      setNewId(id);
+      setNewId(initialState.newId);
       return { ...initialState, imagesReady: state.imagesReady };
     }),
   action: () => set(produce((state) => {})),
