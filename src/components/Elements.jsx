@@ -1,6 +1,6 @@
 import { Ellipse, Line, Rect, Text } from "react-konva";
 import { useAppStore } from "../state/store";
-import TextElement from "./TextElement";
+import TextElement, { KIND, initialProps } from "./TextElement";
 import RectElement from "./RectElement";
 import EllipseElement from "./EllipseElement";
 import config from "../config";
@@ -41,6 +41,9 @@ const Elements = () => {
       <Block id="shadow-block-10-h" visible={false} size={[10, 1, 1]} label={"10"} scale={scale} />
       <Block id="shadow-block-100" visible={false} label={"100"} scale={scale} />
       <Block id="shadow-block-1000" visible={false} label={"1000"} scale={scale} />
+      <TextElement {...initialProps[KIND.fraction]} id="shadow-fraction" visible={false} editing={-1} />
+      <TextElement {...initialProps[KIND.mixed]} id="shadow-mixed" visible={false} editing={-1} />
+      <TextElement {...initialProps[KIND.exponent]} id="shadow-exponent" visible={false} editing={-1} />
     </>
   );
 };
