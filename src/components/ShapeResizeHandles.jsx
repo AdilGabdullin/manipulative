@@ -10,7 +10,12 @@ const ShapeResizeHandles = (props) => {
   const { x, y, width, height, findOne } = props;
 
   const element = elements[selected[0]];
-  if (!element || !["text", "rect", "ellipse", "line"].includes(element.type)) {
+  if (
+    !element ||
+    element.locked ||
+    selected.length > 1 ||
+    !["text", "rect", "ellipse", "line"].includes(element.type)
+  ) {
     return null;
   }
 
@@ -95,6 +100,7 @@ const ShapeResizeHandles = (props) => {
           scale: scaleX,
           width: clientRect.width / scale,
           height: clientRect.height / scale,
+          sizes: elementNode.children.map((node) => node.getClientRect()),
         });
         break;
       case "rect":

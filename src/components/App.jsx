@@ -11,7 +11,7 @@ import SelectedFrame from "./SelectedFrame";
 import Elements from "./Elements";
 import FreeDrawing from "./FreeDrawing";
 import ImagePreloader from "./ImagePreloader";
-import { appSaveText } from "./TextElement";
+import { KIND, appSaveText, initialProps } from "./TextElement";
 import Summary from "./Summary";
 import Solving from "./Solving";
 import Factors from "./Factors";
@@ -187,6 +187,15 @@ const App = ({ onSave, initialState }) => {
       case "text":
         getShadow("shadow-text").setAttrs({ visible: true, x: x - 40, y: y - 20 });
         break;
+      case "fraction":
+        getShadow("shadow-fraction").setAttrs({ visible: true, x: x - 9, y: y - 36 });
+        break;
+      case "mixed":
+        getShadow("shadow-mixed").setAttrs({ visible: true, x: x - 18, y: y - 36 });
+        break;
+      case "exponent":
+        getShadow("shadow-exponent").setAttrs({ visible: true, x: x - 12.35, y: y - 18 });
+        break;
       case "rect":
         getShadow("shadow-" + shape).setAttrs({
           visible: true,
@@ -229,18 +238,41 @@ const App = ({ onSave, initialState }) => {
     const x = pos.x;
     const y = pos.y;
     const shape = dragShape(e);
+    let props;
     switch (shape) {
       case "text":
+        props = initialProps[KIND.text];
         state.addElement({
-          type: "text",
-          x: x - 40,
-          y: y - 20,
-          text: "Text",
-          fontSize: 36,
-          width: 60,
-          height: 36,
-          newText: true,
-          scale: 1.0,
+          ...props,
+          x: props.x + x,
+          y: props.y + y,
+        });
+        getShadow("shadow-" + shape).visible(false);
+        break;
+      case "fraction":
+        props = initialProps[KIND.fraction];
+        state.addElement({
+          ...props,
+          x: props.x + x,
+          y: props.y + y,
+        });
+        getShadow("shadow-" + shape).visible(false);
+        break;
+      case "mixed":
+        props = initialProps[KIND.mixed];
+        state.addElement({
+          ...props,
+          x: props.x + x,
+          y: props.y + y,
+        });
+        getShadow("shadow-" + shape).visible(false);
+        break;
+      case "exponent":
+        props = initialProps[KIND.exponent];
+        state.addElement({
+          ...props,
+          x: props.x + x,
+          y: props.y + y,
         });
         getShadow("shadow-" + shape).visible(false);
         break;
