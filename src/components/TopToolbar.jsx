@@ -6,10 +6,10 @@ export const topToolbarHeight = 42;
 
 const workspaceOptions = ["10 Bead", "20 Bead"];
 
-const TopToolbar = () => {
+const TopToolbar = ({ onSave }) => {
   return (
     <div className="bottom-toolbar" style={{ height: topToolbarHeight }}>
-      <Buttons />
+      <Buttons onSave={onSave}/>
       <div style={{ display: "flex", gap: 16 }}>
         <ShapesMenu />
         <WorkspaceSelector />
@@ -18,7 +18,7 @@ const TopToolbar = () => {
   );
 };
 
-const Buttons = () => {
+const Buttons = ({ onSave }) => {
   const state = useAppStore();
   return (
     <div className="bottom-toolbar-buttons">
@@ -40,6 +40,7 @@ const Buttons = () => {
         onClick={state.toggleEraser}
         active={state.fdMode == "eraser"}
       />
+      <Button text="save" imageSrc="buttons/save.png" onClick={() => state.saveState(onSave)} />
     </div>
   );
 };
