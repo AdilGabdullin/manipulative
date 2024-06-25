@@ -9,6 +9,7 @@ import { historySlice, pushHistory } from "./historySlice";
 import { workspace, config } from "../config";
 import { nlHeight, nlWidth } from "../components/NumberLine";
 import { wallRect } from "../components/Wall";
+import { colorOptions } from "../components/TextElement";
 
 export const boardSize = {
   width: 2460,
@@ -51,6 +52,19 @@ export const useAppStore = create((set) => ({
   showWallLine: true,
   showWallTracker: true,
   wallAutofilled: false,
+  colorMenuVisible: false,
+  setColorText: (colorIndex) =>
+    set(
+      produce((state) => {
+        const { fill, stroke } = colorOptions[colorIndex];
+        current(state.selected).forEach((id) => {
+          const element = state.elements[id];
+          if (element.type == "text") {
+            element.color = fill;
+          }
+        });
+      })
+    ),
 
   // fullscreen: true,
   // orientation: "Vertical",
@@ -173,7 +187,7 @@ export const useAppStore = create((set) => ({
       })
     ),
 
-  clearSelect: () => set((state) => ({ ...state, selected: [], lockSelect: false })),
+  clearSelect: () => set((state) => ({ ...state, selected: [], lockSelect: false, colorMenuVisible: false })),
 
   select: (downPos, upPos) =>
     set((state) => {
@@ -200,10 +214,10 @@ export const useAppStore = create((set) => ({
           }
         }
       });
-      return { ...state, selected, lockSelect: false };
+      return { ...state, selected, lockSelect: false, colorMenuVisible: false };
     }),
 
-  selectIds: (ids, lockSelect) => set((state) => ({ ...state, selected: ids, lockSelect })),
+  selectIds: (ids, lockSelect) => set((state) => ({ ...state, selected: ids, lockSelect, colorMenuVisible: false })),
 
   relocateSelected: (dx, dy) =>
     set(

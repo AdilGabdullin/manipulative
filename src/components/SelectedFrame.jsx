@@ -3,7 +3,7 @@ import { useAppStore } from "../state/store";
 import { Fragment, useEffect } from "react";
 import { elementBox, halfPixel, setVisibility, setVisibilityFrame } from "../util";
 import ShapeResizeHandles from "./ShapeResizeHandles";
-import { createTextArea } from "./TextElement";
+import { KIND, colorOptions, createTextArea } from "./TextElement";
 import { magnetToAll } from "./Tile";
 import { config, workspace } from "../config";
 import { lineMagnet } from "./NumberLine";
@@ -95,7 +95,20 @@ const SelectedFrame = (props) => {
       active: !lockSelect,
       show: selected.length == 1 && elements[selected[0]]?.type == "text",
       onPointerClick: (e) => {
-        createTextArea(e.target.getStage().findOne("#" + selected[0]), state);
+        const stage = e.target.getStage();
+        if (elements[selected[0]].kind == KIND.mixed) {
+          createTextArea(stage.findOne("#" + selected[0] + "?2"), state);
+        } else {
+          createTextArea(stage.findOne("#" + selected[0] + "?0"), state);
+        }
+      },
+    },
+    {
+      text: "Color",
+      active: !lockSelect,
+      show: selected.length == 1 && elements[selected[0]]?.type == "text",
+      onPointerClick: (e) => {
+        state.setValue("colorMenuVisible", true);
       },
     },
     {
@@ -249,6 +262,76 @@ const SelectedFrame = (props) => {
             />
           </Fragment>
         ))}
+      {state.colorMenuVisible && (
+        <>
+          <Rect
+            name={"popup-menu"}
+            x={x + width + buttonWidth + 2 * padding}
+            y={y + padding}
+            width={buttonWidth + padding * 2}
+            height={(padding * 3 + buttonHeight) * colorOptions.length + padding}
+            stroke="grey"
+            strokeWidth={1}
+            cornerRadius={12}
+            fill="#ffffff"
+            shadowColor="grey"
+            shadowBlur={5}
+            shadowOffset={{ x: 3, y: 3 }}
+            shadowOpacity={0.5}
+          />
+          {colorOptions.map(({ name, fill }, i) => {
+            const id = i + 100;
+            return (
+              <Fragment key={name}>
+                <Rect
+                  id={"menu-item-" + id}
+                  name={"popup-menu"}
+                  x={x + width + buttonWidth + 3 * padding}
+                  y={y + 2 * padding + (padding * 3 + buttonHeight) * i}
+                  width={buttonWidth}
+                  height={buttonHeight + padding * 2}
+                  cornerRadius={5}
+                  onMouseEnter={(e) => onMouseEnter(e, id)}
+                  onMouseLeave={(e) => onMouseLeave(e, id)}
+                  onPointerClick={(e) => {
+                    e.cancelBubble = true;
+                    state.setColorText(i);
+                  }}
+                />
+                <Rect
+                  name={"popup-menu"}
+                  x={x + width + buttonWidth + padding * 4}
+                  y={y + padding * 3 + (padding * 3 + buttonHeight) * i}
+                  width={20}
+                  height={20}
+                  fill={fill}
+                  onMouseEnter={(e) => onMouseEnter(e, id)}
+                  onMouseLeave={(e) => onMouseLeave(e, id)}
+                  onPointerClick={(e) => {
+                    e.cancelBubble = true;
+                    state.setColorText(i);
+                  }}
+                />
+                <Text
+                  id={"menu-item-text" + id}
+                  name={"popup-menu"}
+                  x={x + width + buttonWidth + padding * 5 + 20}
+                  y={y + padding * 3 + (padding * 3 + buttonHeight) * i}
+                  text={name}
+                  fontSize={18}
+                  fontFamily="Calibri"
+                  onPointerClick={(e) => {
+                    e.cancelBubble = true;
+                    state.setColorText(i);
+                  }}
+                  onMouseEnter={(e) => onMouseEnter(e, id)}
+                  onMouseLeave={(e) => onMouseLeave(e, id)}
+                />
+              </Fragment>
+            );
+          })}
+        </>
+      )}
     </>
   );
 };
