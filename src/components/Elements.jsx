@@ -1,7 +1,7 @@
 import { Ellipse, Line, Rect, Text } from "react-konva";
 import { useAppStore } from "../state/store";
 import LineElement from "./LineElement";
-import TextElement from "./TextElement";
+import TextElement, { KIND, initialProps } from "./TextElement";
 import RectElement from "./RectElement";
 import EllipseElement from "./EllipseElement";
 import NumberLine, { nlHeight, nlWidth } from "./NumberLine";
@@ -98,6 +98,9 @@ const Elements = () => {
         height={sarHeight}
         isBlue={false}
       />
+      <TextElement {...initialProps[KIND.fraction]} id="shadow-fraction" visible={false} editing={-1} />
+      <TextElement {...initialProps[KIND.mixed]} id="shadow-mixed" visible={false} editing={-1} />
+      <TextElement {...initialProps[KIND.exponent]} id="shadow-exponent" visible={false} editing={-1} />
     </>
   );
 };
